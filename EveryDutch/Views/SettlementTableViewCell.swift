@@ -14,8 +14,39 @@ final class SettlementTableViewCell: UITableViewCell {
     private lazy var baseView: UIView = UIView.configureView(
         color: .normal_white)
     
+    private var contextLbl: UILabel = UILabel.configureLbl(
+        font: UIFont.systemFont(ofSize: 17))
+    
+    private var priceLbl: UILabel = UILabel.configureLbl(
+        font: UIFont.systemFont(ofSize: 17))
+    
+    private var timeLbl: UILabel = UILabel.configureLbl(
+        textColor: .gray,
+        font: UIFont.systemFont(ofSize: 13))
+    
+    private var allPayerLbl: UILabel = UILabel.configureLbl(
+        textColor: .gray,
+        font: UIFont.systemFont(ofSize: 13))
+    
+    
+    private lazy var topStackView: UIStackView = UIStackView.configureStackView(
+        arrangedSubviews: [self.contextLbl, self.priceLbl],
+        axis: .horizontal,
+        spacing: 0,
+        alignment: .fill,
+        distribution: .fill)
+    
+    private lazy var bottomStackView: UIStackView = UIStackView.configureStackView(
+        arrangedSubviews: [self.timeLbl, self.allPayerLbl],
+        axis: .horizontal,
+        spacing: 0,
+        alignment: .fill,
+        distribution: .fill)
+    
+    
     
     // MARK: - 프로퍼티
+    
     
     
     
@@ -45,15 +76,33 @@ extension SettlementTableViewCell {
         self.backgroundColor = .clear
         self.selectionStyle = .none
         self.separatorInset = .zero
+        
+        // MARK: - Fix
+        self.contextLbl.text = "맥도날드 맘스터치 KFC"
+        self.priceLbl.text = "30,000원"
+        self.timeLbl.text = "00 : 23"
+        self.allPayerLbl.text = "쁨 외 1명"
     }
     
     // MARK: - 오토레이아웃 설정
     private func configureAutoLayout() {
         self.addSubview(self.baseView)
+        self.addSubview(self.topStackView)
+        self.addSubview(self.bottomStackView)
         
         self.baseView.snp.makeConstraints { make in
-            make.top.leading.trailing.equalToSuperview()
-            make.bottom.equalToSuperview().offset(-3)
+            make.leading.top.trailing.equalToSuperview()
+            make.bottom.equalToSuperview().offset(-4)
+        }
+        self.topStackView.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(24)
+            make.leading.equalToSuperview().offset(20)
+            make.trailing.equalToSuperview().offset(-20)
+        }
+        self.bottomStackView.snp.makeConstraints { make in
+            make.leading.equalToSuperview().offset(20)
+            make.trailing.equalToSuperview().offset(-20)
+            make.bottom.equalToSuperview().offset(-24)
         }
         
     }

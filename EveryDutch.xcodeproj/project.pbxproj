@@ -14,6 +14,10 @@
 		5F47CD102B3AECB500FCBFA4 /* SettlementRoomCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F47CD0F2B3AECB500FCBFA4 /* SettlementRoomCoordinator.swift */; };
 		5F47CD122B3AECC600FCBFA4 /* SettlementRoomCoordinating.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F47CD112B3AECC600FCBFA4 /* SettlementRoomCoordinating.swift */; };
 		5F47CD142B3AF01400FCBFA4 /* SettlementRoomProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F47CD132B3AF01400FCBFA4 /* SettlementRoomProtocol.swift */; };
+		5F6C43492B3C3B6A00BBC466 /* UIStackView+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6C43482B3C3B6A00BBC466 /* UIStackView+Ext.swift */; };
+		5F6C434B2B3C4C1500BBC466 /* CustomTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6C434A2B3C4C1500BBC466 /* CustomTableView.swift */; };
+		5F6C434D2B3C5BD000BBC466 /* PaddingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6C434C2B3C5BD000BBC466 /* PaddingLabel.swift */; };
+		5F6C434F2B3C712F00BBC466 /* SettlementDetailsTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6C434E2B3C712F00BBC466 /* SettlementDetailsTableView.swift */; };
 		5F70069D2B3B57450028DC8B /* TopViewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F70069C2B3B57450028DC8B /* TopViewTableViewCell.swift */; };
 		5F903E672B3B412A005DE55E /* SettlementTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F903E662B3B412A005DE55E /* SettlementTableViewCell.swift */; };
 		5FE3DE8F2B39CA9B008D58AE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE3DE8E2B39CA9B008D58AE /* AppDelegate.swift */; };
@@ -52,6 +56,10 @@
 		5F47CD0F2B3AECB500FCBFA4 /* SettlementRoomCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettlementRoomCoordinator.swift; sourceTree = "<group>"; };
 		5F47CD112B3AECC600FCBFA4 /* SettlementRoomCoordinating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettlementRoomCoordinating.swift; sourceTree = "<group>"; };
 		5F47CD132B3AF01400FCBFA4 /* SettlementRoomProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettlementRoomProtocol.swift; sourceTree = "<group>"; };
+		5F6C43482B3C3B6A00BBC466 /* UIStackView+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStackView+Ext.swift"; sourceTree = "<group>"; };
+		5F6C434A2B3C4C1500BBC466 /* CustomTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTableView.swift; sourceTree = "<group>"; };
+		5F6C434C2B3C5BD000BBC466 /* PaddingLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddingLabel.swift; sourceTree = "<group>"; };
+		5F6C434E2B3C712F00BBC466 /* SettlementDetailsTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettlementDetailsTableView.swift; sourceTree = "<group>"; };
 		5F70069C2B3B57450028DC8B /* TopViewTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopViewTableViewCell.swift; sourceTree = "<group>"; };
 		5F903E662B3B412A005DE55E /* SettlementTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettlementTableViewCell.swift; sourceTree = "<group>"; };
 		5FE3DE8B2B39CA9B008D58AE /* EveryDutch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EveryDutch.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -147,6 +155,7 @@
 				5FE3DEC32B39CBA4008D58AE /* MainCollectionViewCell.swift */,
 				5F903E662B3B412A005DE55E /* SettlementTableViewCell.swift */,
 				5F70069C2B3B57450028DC8B /* TopViewTableViewCell.swift */,
+				5F6C434E2B3C712F00BBC466 /* SettlementDetailsTableView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -206,6 +215,7 @@
 				5FE3DEB92B39CB7B008D58AE /* UILabel+Ext.swift */,
 				5FE3DED02B39DA9C008D58AE /* UIView+Ext.swift */,
 				5FE3DEDA2B39FA22008D58AE /* NSAttributedString+Ext.swift */,
+				5F6C43482B3C3B6A00BBC466 /* UIStackView+Ext.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -253,6 +263,8 @@
 			isa = PBXGroup;
 			children = (
 				5FE3DED72B39F8F3008D58AE /* InsetTextField.swift */,
+				5F6C434A2B3C4C1500BBC466 /* CustomTableView.swift */,
+				5F6C434C2B3C5BD000BBC466 /* PaddingLabel.swift */,
 			);
 			path = CusttomView;
 			sourceTree = "<group>";
@@ -334,6 +346,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5F47CD102B3AECB500FCBFA4 /* SettlementRoomCoordinator.swift in Sources */,
+				5F6C434D2B3C5BD000BBC466 /* PaddingLabel.swift in Sources */,
 				5FE3DEBE2B39CB8C008D58AE /* MainVC.swift in Sources */,
 				5FE3DECC2B39CC8D008D58AE /* CollectionViewCellVM.swift in Sources */,
 				5FE3DED42B39E8CC008D58AE /* Image_Enum.swift in Sources */,
@@ -351,11 +364,13 @@
 				5FE3DED12B39DA9C008D58AE /* UIView+Ext.swift in Sources */,
 				5FE3DEB42B39CB68008D58AE /* UIButton+Ext.swift in Sources */,
 				5F47CD0C2B3AEC9E00FCBFA4 /* SettlementRoomVC.swift in Sources */,
+				5F6C43492B3C3B6A00BBC466 /* UIStackView+Ext.swift in Sources */,
 				5FE3DEBA2B39CB7B008D58AE /* UILabel+Ext.swift in Sources */,
 				5FE3DEBC2B39CB87008D58AE /* MainCoordinator.swift in Sources */,
 				5FE3DEC42B39CBA4008D58AE /* MainCollectionViewCell.swift in Sources */,
 				5FE3DEC22B39CB9B008D58AE /* MainVM.swift in Sources */,
 				5FE3DE912B39CA9B008D58AE /* SceneDelegate.swift in Sources */,
+				5F6C434B2B3C4C1500BBC466 /* CustomTableView.swift in Sources */,
 				5FE3DEB22B39CB5A008D58AE /* Coordinator.swift in Sources */,
 				5FE3DEC62B39CBD9008D58AE /* MainCoordinating.swift in Sources */,
 				5F47CD0A2B3AE9D800FCBFA4 /* SettingProtocol.swift in Sources */,
@@ -364,6 +379,7 @@
 				5FE3DEC02B39CB95008D58AE /* SettingVC.swift in Sources */,
 				5FE3DEAA2B39CB15008D58AE /* Identifier.swift in Sources */,
 				5FE3DEB02B39CB4A008D58AE /* MainVMProtocol.swift in Sources */,
+				5F6C434F2B3C712F00BBC466 /* SettlementDetailsTableView.swift in Sources */,
 				5F47CD082B3AD8F500FCBFA4 /* SettingVM.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
