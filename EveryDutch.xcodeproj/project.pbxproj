@@ -14,6 +14,8 @@
 		5F47CD102B3AECB500FCBFA4 /* SettlementRoomCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F47CD0F2B3AECB500FCBFA4 /* SettlementRoomCoordinator.swift */; };
 		5F47CD122B3AECC600FCBFA4 /* SettlementRoomCoordinating.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F47CD112B3AECC600FCBFA4 /* SettlementRoomCoordinating.swift */; };
 		5F47CD142B3AF01400FCBFA4 /* SettlementRoomProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F47CD132B3AF01400FCBFA4 /* SettlementRoomProtocol.swift */; };
+		5F70069D2B3B57450028DC8B /* TopViewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F70069C2B3B57450028DC8B /* TopViewTableViewCell.swift */; };
+		5F903E672B3B412A005DE55E /* SettlementTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F903E662B3B412A005DE55E /* SettlementTableViewCell.swift */; };
 		5FE3DE8F2B39CA9B008D58AE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE3DE8E2B39CA9B008D58AE /* AppDelegate.swift */; };
 		5FE3DE912B39CA9B008D58AE /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE3DE902B39CA9B008D58AE /* SceneDelegate.swift */; };
 		5FE3DE982B39CA9C008D58AE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5FE3DE972B39CA9C008D58AE /* Assets.xcassets */; };
@@ -50,6 +52,8 @@
 		5F47CD0F2B3AECB500FCBFA4 /* SettlementRoomCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettlementRoomCoordinator.swift; sourceTree = "<group>"; };
 		5F47CD112B3AECC600FCBFA4 /* SettlementRoomCoordinating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettlementRoomCoordinating.swift; sourceTree = "<group>"; };
 		5F47CD132B3AF01400FCBFA4 /* SettlementRoomProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettlementRoomProtocol.swift; sourceTree = "<group>"; };
+		5F70069C2B3B57450028DC8B /* TopViewTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopViewTableViewCell.swift; sourceTree = "<group>"; };
+		5F903E662B3B412A005DE55E /* SettlementTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettlementTableViewCell.swift; sourceTree = "<group>"; };
 		5FE3DE8B2B39CA9B008D58AE /* EveryDutch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EveryDutch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5FE3DE8E2B39CA9B008D58AE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5FE3DE902B39CA9B008D58AE /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -141,6 +145,8 @@
 			isa = PBXGroup;
 			children = (
 				5FE3DEC32B39CBA4008D58AE /* MainCollectionViewCell.swift */,
+				5F903E662B3B412A005DE55E /* SettlementTableViewCell.swift */,
+				5F70069C2B3B57450028DC8B /* TopViewTableViewCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -333,11 +339,13 @@
 				5FE3DED42B39E8CC008D58AE /* Image_Enum.swift in Sources */,
 				5F47CD122B3AECC600FCBFA4 /* SettlementRoomCoordinating.swift in Sources */,
 				5FE3DED62B39F416008D58AE /* PlusBtnCoordinating.swift in Sources */,
+				5F70069D2B3B57450028DC8B /* TopViewTableViewCell.swift in Sources */,
 				5FE3DEC82B39CC2A008D58AE /* AppCoordinator.swift in Sources */,
 				5FE3DED82B39F8F3008D58AE /* InsetTextField.swift in Sources */,
 				5FE3DEDB2B39FA22008D58AE /* NSAttributedString+Ext.swift in Sources */,
 				5F47CD0E2B3AECA700FCBFA4 /* SettlementRoomVM.swift in Sources */,
 				5FE3DEB62B39CB6F008D58AE /* UIImage+Ext.swift in Sources */,
+				5F903E672B3B412A005DE55E /* SettlementTableViewCell.swift in Sources */,
 				5FE3DE8F2B39CA9B008D58AE /* AppDelegate.swift in Sources */,
 				5FE3DECA2B39CC52008D58AE /* PlusBtnCoordinator.swift in Sources */,
 				5FE3DED12B39DA9C008D58AE /* UIView+Ext.swift in Sources */,

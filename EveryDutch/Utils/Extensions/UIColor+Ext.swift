@@ -16,7 +16,7 @@ extension UIColor {
     }
     
     /// 앱의 흰색 기본 생상
-    static let normal_white: UIColor = UIColor.rgb(r: 204, g: 224, b: 255)
+    static let normal_white: UIColor = UIColor.rgb(r: 224, g: 236, b: 255)
     /// 기본 생상 - 배경 생상
     static let base_Blue: UIColor = UIColor.rgb(r: 204, g: 224, b: 255)
     /// 배경과 구분을 위한 생상 - 레이블 등

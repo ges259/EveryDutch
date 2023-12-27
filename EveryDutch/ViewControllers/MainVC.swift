@@ -22,6 +22,10 @@ final class MainVC: UIViewController {
         view.delegate = self
         view.backgroundColor = .clear
         view.showsVerticalScrollIndicator = false
+        // 컬렉션뷰 레지스터 설정
+        view.register(
+            MainCollectionViewCell.self,
+            forCellWithReuseIdentifier: Identifier.mainCollectionViewCell)
         return view
     }()
     /// 플러스 버튼
@@ -85,10 +89,7 @@ extension MainVC {
         // 네비게이션 타이틀 설정
         self.navigationItem.title = "더치더치"
         
-        // 컬렉션뷰 레지스터 설정
-        self.collectionView.register(
-            MainCollectionViewCell.self,
-            forCellWithReuseIdentifier: Identifier.mainCollectionViewCell)
+
         // 코너레디어스 설정
         self.plusBtn.clipsToBounds = true
         self.plusBtn.layer.cornerRadius = 70 / 2
