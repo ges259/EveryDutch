@@ -18,8 +18,13 @@ final class TopViewTableViewCell: UITableViewCell {
     
     private var priceLbl: PaddingLabel = PaddingLabel()
     
+    private var rightImg: UIImageView = {
+        let img = UIImageView()
+        img.tintColor = .gray
+        return img
+    }()
     
-    private lazy var stackView: UIStackView = UIStackView.configureStackView(
+    private lazy var leftStackView: UIStackView = UIStackView.configureStackView(
         arrangedSubviews: [self.profileImg,
                            self.userName],
         axis: .horizontal,
@@ -28,7 +33,13 @@ final class TopViewTableViewCell: UITableViewCell {
         distribution: .fill)
     
     
-    
+    private lazy var rightStackView: UIStackView = UIStackView.configureStackView(
+        arrangedSubviews: [self.priceLbl,
+                           self.rightImg],
+        axis: .horizontal,
+        spacing: 10,
+        alignment: .center,
+        distribution: .equalCentering)
     
     // MARK: - 프로퍼티
     
@@ -43,7 +54,6 @@ final class TopViewTableViewCell: UITableViewCell {
         
         self.configureUI()
         self.configureAutoLayout()
-        self.configureAction()
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -61,12 +71,10 @@ extension TopViewTableViewCell {
         self.separatorInset = .zero
         
         
-        self.accessoryType = .disclosureIndicator
-        
         
         // MARK: - Fix
         self.profileImg.image = UIImage.person_Fill_Img
-        
+        self.rightImg.image = UIImage.chevronRight
         
         let nameString = ["쁨",
                           "노주영",
@@ -85,35 +93,30 @@ extension TopViewTableViewCell {
         
         self.priceLbl.text = priceString.randomElement()
         self.profileImg.tintColor = .black
-        
-        
-
-        
-        // 가격 레이블의 너비가 내용에 맞게 조절되도록 설정
-//        self.priceLbl.setContentHuggingPriority(.required, for: .horizontal)
-
     }
     
     // MARK: - 오토레이아웃 설정
     private func configureAutoLayout() {
-        self.addSubview(self.stackView)
-        self.addSubview(self.priceLbl)
+        self.addSubview(self.leftStackView)
+        self.addSubview(self.rightStackView)
         
         self.profileImg.snp.makeConstraints { make in
             make.width.height.equalTo(21)
         }
-        self.priceLbl.snp.makeConstraints { make in
-            make.centerY.equalToSuperview()
-            make.trailing.equalToSuperview().offset(-50)
+        self.rightImg.snp.makeConstraints { make in
+            make.height.equalTo(17)
+            make.width.equalTo(10)
+            
         }
-        self.stackView.snp.makeConstraints { make in
+        
+        self.leftStackView.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(20)
             make.centerY.equalToSuperview()
         }
-    }
-    
-    // MARK: - 액션 설정
-    private func configureAction() {
-        
+        self.rightStackView.snp.makeConstraints { make in
+            make.centerY.equalToSuperview()
+            make.trailing.equalToSuperview().offset(-20)
+            make.height.equalTo(22)
+        }
     }
 }

@@ -148,7 +148,7 @@ extension SettingVC {
     // MARK: - 액션 설정
     private func configureAction() {
         // 버튼 생성
-        let backButton = UIBarButtonItem(image: .chevronLeft, style: .done, target: self, action: #selector(backButtonTapped))
+        let backButton = UIBarButtonItem(image: .chevronLeft, style: .done, target: self, action: #selector(self.backButtonTapped))
         // 네비게이션 바의 왼쪽 아이템으로 설정
         self.navigationItem.leftBarButtonItem = backButton
     }

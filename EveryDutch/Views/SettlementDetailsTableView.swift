@@ -48,7 +48,6 @@ extension SettlementDetailsTableView {
             make.edges.equalToSuperview()
         }
     }
-    
 }
 // MARK: - 테이블뷰 델리게이트
 extension SettlementDetailsTableView: UITableViewDelegate {

@@ -19,6 +19,10 @@
 		5F6C434D2B3C5BD000BBC466 /* PaddingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6C434C2B3C5BD000BBC466 /* PaddingLabel.swift */; };
 		5F6C434F2B3C712F00BBC466 /* SettlementDetailsTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6C434E2B3C712F00BBC466 /* SettlementDetailsTableView.swift */; };
 		5F70069D2B3B57450028DC8B /* TopViewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F70069C2B3B57450028DC8B /* TopViewTableViewCell.swift */; };
+		5F87DF252B3C8025001D5B80 /* RoomSettingVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F87DF242B3C8025001D5B80 /* RoomSettingVC.swift */; };
+		5F87DF272B3C810C001D5B80 /* CustomSegmentControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F87DF262B3C810C001D5B80 /* CustomSegmentControl.swift */; };
+		5F87DF2A2B3C999D001D5B80 /* RoomSettingCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F87DF292B3C999D001D5B80 /* RoomSettingCoordinator.swift */; };
+		5F87DF2C2B3C99A3001D5B80 /* RoomSettingCoordinating.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F87DF2B2B3C99A3001D5B80 /* RoomSettingCoordinating.swift */; };
 		5F903E672B3B412A005DE55E /* SettlementTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F903E662B3B412A005DE55E /* SettlementTableViewCell.swift */; };
 		5FE3DE8F2B39CA9B008D58AE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE3DE8E2B39CA9B008D58AE /* AppDelegate.swift */; };
 		5FE3DE912B39CA9B008D58AE /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE3DE902B39CA9B008D58AE /* SceneDelegate.swift */; };
@@ -61,6 +65,10 @@
 		5F6C434C2B3C5BD000BBC466 /* PaddingLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddingLabel.swift; sourceTree = "<group>"; };
 		5F6C434E2B3C712F00BBC466 /* SettlementDetailsTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettlementDetailsTableView.swift; sourceTree = "<group>"; };
 		5F70069C2B3B57450028DC8B /* TopViewTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopViewTableViewCell.swift; sourceTree = "<group>"; };
+		5F87DF242B3C8025001D5B80 /* RoomSettingVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomSettingVC.swift; sourceTree = "<group>"; };
+		5F87DF262B3C810C001D5B80 /* CustomSegmentControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomSegmentControl.swift; sourceTree = "<group>"; };
+		5F87DF292B3C999D001D5B80 /* RoomSettingCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomSettingCoordinator.swift; sourceTree = "<group>"; };
+		5F87DF2B2B3C99A3001D5B80 /* RoomSettingCoordinating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomSettingCoordinating.swift; sourceTree = "<group>"; };
 		5F903E662B3B412A005DE55E /* SettlementTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettlementTableViewCell.swift; sourceTree = "<group>"; };
 		5FE3DE8B2B39CA9B008D58AE /* EveryDutch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EveryDutch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5FE3DE8E2B39CA9B008D58AE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -103,6 +111,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		5F87DF282B3C95FD001D5B80 /* Enum */ = {
+			isa = PBXGroup;
+			children = (
+				5FE3DED32B39E8CC008D58AE /* Image_Enum.swift */,
+			);
+			path = Enum;
+			sourceTree = "<group>";
+		};
 		5FE3DE822B39CA9B008D58AE = {
 			isa = PBXGroup;
 			children = (
@@ -141,6 +157,7 @@
 		5FE3DEA22B39CAA4008D58AE /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				5F87DF282B3C95FD001D5B80 /* Enum */,
 				5FE3DED22B39E8B8008D58AE /* Constants */,
 				5FE3DED92B39FA0D008D58AE /* CusttomView */,
 				5FE3DEAB2B39CB19008D58AE /* Extensions */,
@@ -177,6 +194,7 @@
 				5FE3DEBD2B39CB8C008D58AE /* MainVC.swift */,
 				5FE3DEBF2B39CB95008D58AE /* SettingVC.swift */,
 				5F47CD0B2B3AEC9E00FCBFA4 /* SettlementRoomVC.swift */,
+				5F87DF242B3C8025001D5B80 /* RoomSettingVC.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -188,6 +206,7 @@
 				5FE3DEBB2B39CB87008D58AE /* MainCoordinator.swift */,
 				5FE3DEC92B39CC52008D58AE /* PlusBtnCoordinator.swift */,
 				5F47CD0F2B3AECB500FCBFA4 /* SettlementRoomCoordinator.swift */,
+				5F87DF292B3C999D001D5B80 /* RoomSettingCoordinator.swift */,
 			);
 			path = Coordinators;
 			sourceTree = "<group>";
@@ -236,6 +255,7 @@
 				5FE3DEC52B39CBD9008D58AE /* MainCoordinating.swift */,
 				5FE3DED52B39F416008D58AE /* PlusBtnCoordinating.swift */,
 				5F47CD112B3AECC600FCBFA4 /* SettlementRoomCoordinating.swift */,
+				5F87DF2B2B3C99A3001D5B80 /* RoomSettingCoordinating.swift */,
 			);
 			path = Coordinator_Protocols;
 			sourceTree = "<group>";
@@ -254,7 +274,6 @@
 			isa = PBXGroup;
 			children = (
 				5FE3DEA92B39CB15008D58AE /* Identifier.swift */,
-				5FE3DED32B39E8CC008D58AE /* Image_Enum.swift */,
 			);
 			path = Constants;
 			sourceTree = "<group>";
@@ -265,6 +284,7 @@
 				5FE3DED72B39F8F3008D58AE /* InsetTextField.swift */,
 				5F6C434A2B3C4C1500BBC466 /* CustomTableView.swift */,
 				5F6C434C2B3C5BD000BBC466 /* PaddingLabel.swift */,
+				5F87DF262B3C810C001D5B80 /* CustomSegmentControl.swift */,
 			);
 			path = CusttomView;
 			sourceTree = "<group>";
@@ -349,9 +369,12 @@
 				5F6C434D2B3C5BD000BBC466 /* PaddingLabel.swift in Sources */,
 				5FE3DEBE2B39CB8C008D58AE /* MainVC.swift in Sources */,
 				5FE3DECC2B39CC8D008D58AE /* CollectionViewCellVM.swift in Sources */,
+				5F87DF2C2B3C99A3001D5B80 /* RoomSettingCoordinating.swift in Sources */,
+				5F87DF272B3C810C001D5B80 /* CustomSegmentControl.swift in Sources */,
 				5FE3DED42B39E8CC008D58AE /* Image_Enum.swift in Sources */,
 				5F47CD122B3AECC600FCBFA4 /* SettlementRoomCoordinating.swift in Sources */,
 				5FE3DED62B39F416008D58AE /* PlusBtnCoordinating.swift in Sources */,
+				5F87DF2A2B3C999D001D5B80 /* RoomSettingCoordinator.swift in Sources */,
 				5F70069D2B3B57450028DC8B /* TopViewTableViewCell.swift in Sources */,
 				5FE3DEC82B39CC2A008D58AE /* AppCoordinator.swift in Sources */,
 				5FE3DED82B39F8F3008D58AE /* InsetTextField.swift in Sources */,
@@ -368,6 +391,7 @@
 				5FE3DEBA2B39CB7B008D58AE /* UILabel+Ext.swift in Sources */,
 				5FE3DEBC2B39CB87008D58AE /* MainCoordinator.swift in Sources */,
 				5FE3DEC42B39CBA4008D58AE /* MainCollectionViewCell.swift in Sources */,
+				5F87DF252B3C8025001D5B80 /* RoomSettingVC.swift in Sources */,
 				5FE3DEC22B39CB9B008D58AE /* MainVM.swift in Sources */,
 				5FE3DE912B39CA9B008D58AE /* SceneDelegate.swift in Sources */,
 				5F6C434B2B3C4C1500BBC466 /* CustomTableView.swift in Sources */,

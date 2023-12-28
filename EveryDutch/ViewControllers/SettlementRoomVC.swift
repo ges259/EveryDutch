@@ -24,32 +24,13 @@ final class SettlementRoomVC: UIViewController {
     
     
     
-    private lazy var segmentedCtrl: UISegmentedControl = {
-        let control = UISegmentedControl(items: ["누적 금액",
-                                                 "받아야 할 돈"])
-        // segment 배경색 (비 선택창)
-        control.backgroundColor = UIColor.unselected_gray
-        // segement 선택창 배경 색
-        control.setTitleTextAttributes([
-            NSAttributedString.Key.font : UIFont.systemFont(ofSize: 14),
-            NSAttributedString.Key.foregroundColor : UIColor.black], for: .normal)
-        control.tintColor = .red
-        control.selectedSegmentTintColor = UIColor(white: 1, alpha: 0.3)
-        // 기본 설정 - 0번 인덱스 (누적 금액)
-        control.selectedSegmentIndex = 0
-        return control
-    }()
+    private lazy var segmentedCtrl: CustomSegmentControl = CustomSegmentControl(
+        items: ["누적 금액",
+                "받아야 할 돈"])
     
-    private lazy var topViewTableView: CustomTableView = {
-        let view = CustomTableView()
-        view.delegate = self
-        view.dataSource = self
-        view.register(
-            TopViewTableViewCell.self,
-            forCellReuseIdentifier: Identifier.topViewTableViewCell)
-        view.tag = 2
-        return view
-    }()
+    
+    private lazy var topViewTableView: SettlementDetailsTableView = SettlementDetailsTableView()
+    
     private lazy var topViewBtn: UIButton = UIButton.btnWithTitle(
         font: UIFont.boldSystemFont(ofSize: 17),
         backgroundColor: UIColor.normal_white)
@@ -76,7 +57,6 @@ final class SettlementRoomVC: UIViewController {
         view.register(
             SettlementTableViewCell.self,
             forCellReuseIdentifier: Identifier.settlementTableViewCell)
-        view.tag = 1
         return view
     }()
     private lazy var bottomBtn: UIButton = UIButton.btnWithTitle(
@@ -155,9 +135,9 @@ extension SettlementRoomVC {
         self.topViewIndicator.layer.cornerRadius = 3
         
         self.topViewTableView.clipsToBounds = true
-        self.topViewTableView.layer.cornerRadius = 15
+        self.topViewTableView.layer.cornerRadius = 10
         self.topViewBtn.clipsToBounds = true
-        self.topViewBtn.layer.cornerRadius = 15
+        self.topViewBtn.layer.cornerRadius = 10
         
         self.settlementTableView.clipsToBounds = true
         self.settlementTableView.layer.cornerRadius = 10
@@ -330,6 +310,7 @@ extension SettlementRoomVC {
     
     @objc private func settingBtnTapped() {
         print(#function)
+        self.coordinator?.RoomSettingScreen()
     }
     @objc private func backBtnTapped() {
         self.coordinator?.didFinish()
@@ -346,9 +327,7 @@ extension SettlementRoomVC: UITableViewDelegate {
     func tableView(_ tableView: UITableView,
                    heightForRowAt indexPath: IndexPath)
     -> CGFloat {
-        return tableView.tag == 1
-        ? self.cellHeight
-        : 40
+        return self.cellHeight
     }
 }
 
@@ -367,16 +346,9 @@ extension SettlementRoomVC: UITableViewDataSource {
     func tableView(_ tableView: UITableView,
                    cellForRowAt indexPath: IndexPath)
     -> UITableViewCell {
-        if tableView.tag == 1 {
-            let cell = self.settlementTableView.dequeueReusableCell(withIdentifier: Identifier.settlementTableViewCell, for: indexPath) as! SettlementTableViewCell
-            
-            return cell
-            
-        } else {
-            let cell = self.topViewTableView.dequeueReusableCell(withIdentifier: Identifier.topViewTableViewCell, for: indexPath) as! TopViewTableViewCell
-            
-            return cell
-        }
+        let cell = self.settlementTableView.dequeueReusableCell(withIdentifier: Identifier.settlementTableViewCell, for: indexPath) as! SettlementTableViewCell
+        
+        return cell
     }
 }
 

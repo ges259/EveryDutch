@@ -29,12 +29,12 @@ final class PlusBtnCoordinator: PlusBtnCoordinating {
         // 전체 화면 꽉 채우기
         plusNavController.modalPresentationStyle = .fullScreen
         // 모달로 네비게이션 컨트롤러를 표시
-        nav.present(plusNavController, animated: true)
+        self.nav.present(plusNavController, animated: true)
     }
     
     func didFinish() {
         // 현재 표시된 뷰 컨트롤러를 dismiss
-        nav.dismiss(animated: true) {
+        self.nav.dismiss(animated: true) {
             // 필요한 경우 여기에서 추가적인 정리 작업을 수행
             // 자식 코디네이터를 부모의 배열에서 제거
                 // 즉, PlusBtnCoordinator이 MainCoordinator의 childCoordinators 배열에서 제거

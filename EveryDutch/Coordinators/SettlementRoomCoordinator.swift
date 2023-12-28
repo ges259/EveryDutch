@@ -27,12 +27,19 @@ final class SettlementRoomCoordinator: SettlementRoomCoordinating {
         let settlementRoomVC = SettlementRoomVC(viewModel: settlementRoomVM,
                                                 coordinator: self)
         // push를 통해 화면 이동
-        nav.pushViewController(settlementRoomVC, animated: true)
+        self.nav.pushViewController(settlementRoomVC, animated: true)
+    }
+    
+    func RoomSettingScreen() {
+        let roomSettingCoordinator = RoomSettingCoordinator(nav: self.nav)
+        self.childCoordinators.append(roomSettingCoordinator)
+            roomSettingCoordinator.parentCoordinator = self
+            roomSettingCoordinator.start()
     }
     
     func didFinish() {
         self.nav.popViewController(animated: true)
-        parentCoordinator?.removeChildCoordinator(child: self)
+        self.parentCoordinator?.removeChildCoordinator(child: self)
     }
     
     deinit {

@@ -36,4 +36,32 @@ extension UIButton {
         btn.backgroundColor = backgroundColor
         return btn
     }
+    
+    static func configureCircleBtn(title: String,
+                                   image: UIImage?)
+    -> UIButton {
+        var configuration = UIButton.Configuration.plain()
+        
+        // 타이틀 설정
+        var titleContainer = AttributeContainer()
+        titleContainer.font = UIFont.systemFont(ofSize: 13)
+        configuration.attributedTitle = AttributedString(
+            title,
+            attributes: titleContainer)
+        
+        // 이미지 설정
+        configuration.image = image
+        configuration.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(pointSize: 18)
+        configuration.imagePadding = 10
+        // 이미지가 상단에 위치한 버튼
+        configuration.imagePlacement = .top
+        
+        // 버튼 설정
+        let btn = UIButton(configuration: configuration)
+        btn.tintColor = UIColor.black
+        btn.backgroundColor = UIColor.normal_white
+        
+        // 리턴
+        return btn
+    }
 }

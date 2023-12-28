@@ -8,5 +8,5 @@
 import Foundation
 
 protocol SettlementRoomCoordinating: Coordinator {
-    
+    func RoomSettingScreen()
 }
