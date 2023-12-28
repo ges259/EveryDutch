@@ -8,7 +8,7 @@
 import UIKit
 
 
-final class SettlementRoomCoordinator: SettlementRoomCoordinating {
+final class SettleMoneyRoomCoordinator: SettleMoneyRoomCoordinating {
     weak var parentCoordinator: Coordinator?
     
     var childCoordinators: [Coordinator] = []
@@ -22,9 +22,9 @@ final class SettlementRoomCoordinator: SettlementRoomCoordinating {
     
     func start() {
         // SettlementRoomVM 뷰모델 생성
-        let settlementRoomVM = SettlementRoomVM()
+        let settlementRoomVM = SettleMoneyRoomVM()
         // PlusViewController 인스턴스 생성
-        let settlementRoomVC = SettlementRoomVC(viewModel: settlementRoomVM,
+        let settlementRoomVC = SettleMoneyRoomVC(viewModel: settlementRoomVM,
                                                 coordinator: self)
         // push를 통해 화면 이동
         self.nav.pushViewController(settlementRoomVC, animated: true)

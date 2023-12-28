@@ -7,6 +7,6 @@
 
 import Foundation
 
-protocol SettlementRoomProtocol {
+protocol SettleMoneyRoomProtocol {
     
 }

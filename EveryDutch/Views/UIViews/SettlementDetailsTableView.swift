@@ -11,7 +11,7 @@ import SnapKit
 final class SettlementDetailsTableView: UIView {
     
     // MARK: - 레이아웃
-    private lazy var topViewTableView: CustomTableView = {
+    lazy var topViewTableView: CustomTableView = {
         let view = CustomTableView()
         view.delegate = self
         view.dataSource = self
@@ -69,7 +69,7 @@ extension SettlementDetailsTableView: UITableViewDataSource {
     /// 셀의 개수
     func tableView(_ tableView: UITableView,
                    numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return 30
     }
     
     func tableView(_ tableView: UITableView,

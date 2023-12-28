@@ -1,5 +1,5 @@
 //
-//  SettlementRoomVC.swift
+//  SettleMoneyRoomVC.swift
 //  EveryDutch
 //
 //  Created by 계은성 on 2023/12/26.
@@ -10,7 +10,7 @@ import SnapKit
 
 // MARK: - SettlementRoomVC
 
-final class SettlementRoomVC: UIViewController {
+final class SettleMoneyRoomVC: UIViewController {
     
     // MARK: - 레이아웃
     private lazy var navView: UIView = UIView.configureView(
@@ -69,8 +69,8 @@ final class SettlementRoomVC: UIViewController {
     
     
     // MARK: - 프로퍼티
-    private weak var coordinator: SettlementRoomCoordinating?
-    private var viewModel: SettlementRoomVM?
+    private weak var coordinator: SettleMoneyRoomCoordinating?
+    private var viewModel: SettleMoneyRoomVM?
     
     
     private lazy var cellHeight: CGFloat = self.settlementTableView.frame.width / 7 * 2
@@ -100,8 +100,8 @@ final class SettlementRoomVC: UIViewController {
         self.configureAutoLayout()
         self.configureAction()
     }
-    init(viewModel: SettlementRoomVM,
-         coordinator: SettlementRoomCoordinating) {
+    init(viewModel: SettleMoneyRoomVM,
+         coordinator: SettleMoneyRoomCoordinating) {
         self.viewModel = viewModel
         self.coordinator = coordinator
         super.init(nibName: nil, bundle: nil)
@@ -113,7 +113,7 @@ final class SettlementRoomVC: UIViewController {
 
 // MARK: - 화면 설정
 
-extension SettlementRoomVC {
+extension SettleMoneyRoomVC {
     
     // MARK: - UI 설정
     private func configureUI() {
@@ -147,6 +147,8 @@ extension SettlementRoomVC {
         self.bottomBtn.setTitle("영수증 작성", for: .normal)
         self.navigationItem.title = "대충 방 이름"
         self.topViewBtn.setTitle("버튼", for: .normal)
+        
+        
     }
     
     
@@ -181,7 +183,7 @@ extension SettlementRoomVC {
         }
         self.bottomBtn.snp.makeConstraints { make in
             make.bottom.leading.trailing.equalToSuperview()
-            make.height.equalTo(120)
+            make.height.equalTo(UIDevice.current.bottomBtnHeight)
         }
         self.settlementTableView.snp.makeConstraints { make in
             make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(self.minHeight + 5)
@@ -190,10 +192,10 @@ extension SettlementRoomVC {
             make.bottom.equalTo(self.bottomBtn.snp.top).offset(-5)
         }
         self.topViewTableView.snp.makeConstraints { make in
-            make.height.greaterThanOrEqualTo(200)
+            make.height.equalTo(200)
         }
         self.topViewBtn.snp.makeConstraints { make in
-            make.height.greaterThanOrEqualTo(50)
+            make.height.greaterThanOrEqualTo(45)
         }
         self.stackView.snp.makeConstraints { make in
             make.bottom.equalToSuperview().offset(-35)
@@ -321,7 +323,7 @@ extension SettlementRoomVC {
 
 
 // MARK: - 테이블뷰 델리게이트
-extension SettlementRoomVC: UITableViewDelegate {
+extension SettleMoneyRoomVC: UITableViewDelegate {
     
     
     func tableView(_ tableView: UITableView,
@@ -332,7 +334,7 @@ extension SettlementRoomVC: UITableViewDelegate {
 }
 
 // MARK: - 테이블뷰 데이터 소스
-extension SettlementRoomVC: UITableViewDataSource {
+extension SettleMoneyRoomVC: UITableViewDataSource {
     /// 섹션의 개수
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -354,7 +356,7 @@ extension SettlementRoomVC: UITableViewDataSource {
 
 
 // MARK: - 스크롤뷰 델리게이트
-extension SettlementRoomVC {
+extension SettleMoneyRoomVC {
     /// 메인 테이블을 스크롤하면, topView 닫는 코드
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         // 메인 테이블뷰일 때만,

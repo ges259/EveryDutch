@@ -70,8 +70,6 @@ extension TopViewTableViewCell {
         self.selectionStyle = .none
         self.separatorInset = .zero
         
-        
-        
         // MARK: - Fix
         self.profileImg.image = UIImage.person_Fill_Img
         self.rightImg.image = UIImage.chevronRight

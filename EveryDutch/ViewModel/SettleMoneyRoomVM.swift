@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class SettlementRoomVM: SettlementRoomProtocol {
+final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
     
     
     deinit {

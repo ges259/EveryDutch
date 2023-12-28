@@ -7,6 +7,6 @@
 
 import Foundation
 
-protocol SettlementRoomCoordinating: Coordinator {
+protocol SettleMoneyRoomCoordinating: Coordinator {
     func RoomSettingScreen()
 }
