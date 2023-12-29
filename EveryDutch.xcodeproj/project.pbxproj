@@ -7,13 +7,16 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5F47CD082B3AD8F500FCBFA4 /* SettingVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F47CD072B3AD8F500FCBFA4 /* SettingVM.swift */; };
+		5F47CD082B3AD8F500FCBFA4 /* MultipurposeScreenVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F47CD072B3AD8F500FCBFA4 /* MultipurposeScreenVM.swift */; };
 		5F47CD0A2B3AE9D800FCBFA4 /* SettingProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F47CD092B3AE9D800FCBFA4 /* SettingProtocol.swift */; };
 		5F47CD0C2B3AEC9E00FCBFA4 /* SettleMoneyRoomVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F47CD0B2B3AEC9E00FCBFA4 /* SettleMoneyRoomVC.swift */; };
 		5F47CD0E2B3AECA700FCBFA4 /* SettleMoneyRoomVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F47CD0D2B3AECA700FCBFA4 /* SettleMoneyRoomVM.swift */; };
 		5F47CD102B3AECB500FCBFA4 /* SettleMoneyRoomCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F47CD0F2B3AECB500FCBFA4 /* SettleMoneyRoomCoordinator.swift */; };
 		5F47CD122B3AECC600FCBFA4 /* SettleMoneyRoomCoordinating.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F47CD112B3AECC600FCBFA4 /* SettleMoneyRoomCoordinating.swift */; };
 		5F47CD142B3AF01400FCBFA4 /* SettleMoneyRoomProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F47CD132B3AF01400FCBFA4 /* SettleMoneyRoomProtocol.swift */; };
+		5F4913DB2B3DBE5900CD76A8 /* SettlementCoordinating.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4913DA2B3DBE5900CD76A8 /* SettlementCoordinating.swift */; };
+		5F4913DD2B3DBE7C00CD76A8 /* SettlementCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4913DC2B3DBE7C00CD76A8 /* SettlementCoordinator.swift */; };
+		5F4913DF2B3DD97100CD76A8 /* NoDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4913DE2B3DD97100CD76A8 /* NoDataView.swift */; };
 		5F56C74C2B3D84CF00266C12 /* UIDevice+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F56C74B2B3D84CF00266C12 /* UIDevice+Ext.swift */; };
 		5F6C43492B3C3B6A00BBC466 /* UIStackView+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6C43482B3C3B6A00BBC466 /* UIStackView+Ext.swift */; };
 		5F6C434B2B3C4C1500BBC466 /* CustomTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6C434A2B3C4C1500BBC466 /* CustomTableView.swift */; };
@@ -39,29 +42,32 @@
 		5FE3DEBA2B39CB7B008D58AE /* UILabel+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE3DEB92B39CB7B008D58AE /* UILabel+Ext.swift */; };
 		5FE3DEBC2B39CB87008D58AE /* MainCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE3DEBB2B39CB87008D58AE /* MainCoordinator.swift */; };
 		5FE3DEBE2B39CB8C008D58AE /* MainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE3DEBD2B39CB8C008D58AE /* MainVC.swift */; };
-		5FE3DEC02B39CB95008D58AE /* SettingVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE3DEBF2B39CB95008D58AE /* SettingVC.swift */; };
+		5FE3DEC02B39CB95008D58AE /* MultipurposeScreenVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE3DEBF2B39CB95008D58AE /* MultipurposeScreenVC.swift */; };
 		5FE3DEC22B39CB9B008D58AE /* MainVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE3DEC12B39CB9B008D58AE /* MainVM.swift */; };
 		5FE3DEC42B39CBA4008D58AE /* MainCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE3DEC32B39CBA4008D58AE /* MainCollectionViewCell.swift */; };
 		5FE3DEC62B39CBD9008D58AE /* MainCoordinating.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE3DEC52B39CBD9008D58AE /* MainCoordinating.swift */; };
 		5FE3DEC82B39CC2A008D58AE /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE3DEC72B39CC2A008D58AE /* AppCoordinator.swift */; };
-		5FE3DECA2B39CC52008D58AE /* PlusBtnCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE3DEC92B39CC52008D58AE /* PlusBtnCoordinator.swift */; };
+		5FE3DECA2B39CC52008D58AE /* MultipurposeScreenCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE3DEC92B39CC52008D58AE /* MultipurposeScreenCoordinator.swift */; };
 		5FE3DECC2B39CC8D008D58AE /* CollectionViewCellVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE3DECB2B39CC8D008D58AE /* CollectionViewCellVM.swift */; };
 		5FE3DECF2B39CCAE008D58AE /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 5FE3DECE2B39CCAE008D58AE /* SnapKit */; };
 		5FE3DED12B39DA9C008D58AE /* UIView+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE3DED02B39DA9C008D58AE /* UIView+Ext.swift */; };
 		5FE3DED42B39E8CC008D58AE /* Image_Enum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE3DED32B39E8CC008D58AE /* Image_Enum.swift */; };
-		5FE3DED62B39F416008D58AE /* PlusBtnCoordinating.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE3DED52B39F416008D58AE /* PlusBtnCoordinating.swift */; };
+		5FE3DED62B39F416008D58AE /* MultipurposeScreenCoordinating.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE3DED52B39F416008D58AE /* MultipurposeScreenCoordinating.swift */; };
 		5FE3DED82B39F8F3008D58AE /* InsetTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE3DED72B39F8F3008D58AE /* InsetTextField.swift */; };
 		5FE3DEDB2B39FA22008D58AE /* NSAttributedString+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE3DEDA2B39FA22008D58AE /* NSAttributedString+Ext.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		5F47CD072B3AD8F500FCBFA4 /* SettingVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingVM.swift; sourceTree = "<group>"; };
+		5F47CD072B3AD8F500FCBFA4 /* MultipurposeScreenVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipurposeScreenVM.swift; sourceTree = "<group>"; };
 		5F47CD092B3AE9D800FCBFA4 /* SettingProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingProtocol.swift; sourceTree = "<group>"; };
 		5F47CD0B2B3AEC9E00FCBFA4 /* SettleMoneyRoomVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettleMoneyRoomVC.swift; sourceTree = "<group>"; };
 		5F47CD0D2B3AECA700FCBFA4 /* SettleMoneyRoomVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettleMoneyRoomVM.swift; sourceTree = "<group>"; };
 		5F47CD0F2B3AECB500FCBFA4 /* SettleMoneyRoomCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettleMoneyRoomCoordinator.swift; sourceTree = "<group>"; };
 		5F47CD112B3AECC600FCBFA4 /* SettleMoneyRoomCoordinating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettleMoneyRoomCoordinating.swift; sourceTree = "<group>"; };
 		5F47CD132B3AF01400FCBFA4 /* SettleMoneyRoomProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettleMoneyRoomProtocol.swift; sourceTree = "<group>"; };
+		5F4913DA2B3DBE5900CD76A8 /* SettlementCoordinating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettlementCoordinating.swift; sourceTree = "<group>"; };
+		5F4913DC2B3DBE7C00CD76A8 /* SettlementCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettlementCoordinator.swift; sourceTree = "<group>"; };
+		5F4913DE2B3DD97100CD76A8 /* NoDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoDataView.swift; sourceTree = "<group>"; };
 		5F56C74B2B3D84CF00266C12 /* UIDevice+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDevice+Ext.swift"; sourceTree = "<group>"; };
 		5F6C43482B3C3B6A00BBC466 /* UIStackView+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStackView+Ext.swift"; sourceTree = "<group>"; };
 		5F6C434A2B3C4C1500BBC466 /* CustomTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTableView.swift; sourceTree = "<group>"; };
@@ -89,16 +95,16 @@
 		5FE3DEB92B39CB7B008D58AE /* UILabel+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+Ext.swift"; sourceTree = "<group>"; };
 		5FE3DEBB2B39CB87008D58AE /* MainCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainCoordinator.swift; sourceTree = "<group>"; };
 		5FE3DEBD2B39CB8C008D58AE /* MainVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainVC.swift; sourceTree = "<group>"; };
-		5FE3DEBF2B39CB95008D58AE /* SettingVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingVC.swift; sourceTree = "<group>"; };
+		5FE3DEBF2B39CB95008D58AE /* MultipurposeScreenVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipurposeScreenVC.swift; sourceTree = "<group>"; };
 		5FE3DEC12B39CB9B008D58AE /* MainVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainVM.swift; sourceTree = "<group>"; };
 		5FE3DEC32B39CBA4008D58AE /* MainCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainCollectionViewCell.swift; sourceTree = "<group>"; };
 		5FE3DEC52B39CBD9008D58AE /* MainCoordinating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainCoordinating.swift; sourceTree = "<group>"; };
 		5FE3DEC72B39CC2A008D58AE /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
-		5FE3DEC92B39CC52008D58AE /* PlusBtnCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlusBtnCoordinator.swift; sourceTree = "<group>"; };
+		5FE3DEC92B39CC52008D58AE /* MultipurposeScreenCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipurposeScreenCoordinator.swift; sourceTree = "<group>"; };
 		5FE3DECB2B39CC8D008D58AE /* CollectionViewCellVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCellVM.swift; sourceTree = "<group>"; };
 		5FE3DED02B39DA9C008D58AE /* UIView+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Ext.swift"; sourceTree = "<group>"; };
 		5FE3DED32B39E8CC008D58AE /* Image_Enum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Image_Enum.swift; sourceTree = "<group>"; };
-		5FE3DED52B39F416008D58AE /* PlusBtnCoordinating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlusBtnCoordinating.swift; sourceTree = "<group>"; };
+		5FE3DED52B39F416008D58AE /* MultipurposeScreenCoordinating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipurposeScreenCoordinating.swift; sourceTree = "<group>"; };
 		5FE3DED72B39F8F3008D58AE /* InsetTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsetTextField.swift; sourceTree = "<group>"; };
 		5FE3DEDA2B39FA22008D58AE /* NSAttributedString+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSAttributedString+Ext.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -129,6 +135,7 @@
 			isa = PBXGroup;
 			children = (
 				5F6C434E2B3C712F00BBC466 /* SettlementDetailsTableView.swift */,
+				5F4913DE2B3DD97100CD76A8 /* NoDataView.swift */,
 			);
 			path = UIViews;
 			sourceTree = "<group>";
@@ -166,8 +173,8 @@
 				5FE3DEA82B39CACB008D58AE /* API */,
 				5FE3DEA72B39CAC4008D58AE /* Models */,
 				5FE3DEA62B39CABC008D58AE /* Coordinators */,
-				5FE3DEA52B39CAB7008D58AE /* ViewControllers */,
 				5FE3DEA42B39CAAF008D58AE /* ViewModel */,
+				5FE3DEA52B39CAB7008D58AE /* ViewControllers */,
 				5FE3DEA32B39CAA8008D58AE /* Views */,
 				5FE3DE972B39CA9C008D58AE /* Assets.xcassets */,
 				5FE3DE992B39CA9C008D58AE /* LaunchScreen.storyboard */,
@@ -202,7 +209,7 @@
 			children = (
 				5FE3DEC12B39CB9B008D58AE /* MainVM.swift */,
 				5FE3DECB2B39CC8D008D58AE /* CollectionViewCellVM.swift */,
-				5F47CD072B3AD8F500FCBFA4 /* SettingVM.swift */,
+				5F47CD072B3AD8F500FCBFA4 /* MultipurposeScreenVM.swift */,
 				5F47CD0D2B3AECA700FCBFA4 /* SettleMoneyRoomVM.swift */,
 			);
 			path = ViewModel;
@@ -212,10 +219,10 @@
 			isa = PBXGroup;
 			children = (
 				5FE3DEBD2B39CB8C008D58AE /* MainVC.swift */,
-				5FE3DEBF2B39CB95008D58AE /* SettingVC.swift */,
 				5F47CD0B2B3AEC9E00FCBFA4 /* SettleMoneyRoomVC.swift */,
 				5F87DF242B3C8025001D5B80 /* RoomSettingVC.swift */,
 				5FCFFFE12B3D9C69005A277C /* SettlementVC.swift */,
+				5FE3DEBF2B39CB95008D58AE /* MultipurposeScreenVC.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -225,9 +232,10 @@
 			children = (
 				5FE3DEC72B39CC2A008D58AE /* AppCoordinator.swift */,
 				5FE3DEBB2B39CB87008D58AE /* MainCoordinator.swift */,
-				5FE3DEC92B39CC52008D58AE /* PlusBtnCoordinator.swift */,
 				5F47CD0F2B3AECB500FCBFA4 /* SettleMoneyRoomCoordinator.swift */,
 				5F87DF292B3C999D001D5B80 /* RoomSettingCoordinator.swift */,
+				5F4913DC2B3DBE7C00CD76A8 /* SettlementCoordinator.swift */,
+				5FE3DEC92B39CC52008D58AE /* MultipurposeScreenCoordinator.swift */,
 			);
 			path = Coordinators;
 			sourceTree = "<group>";
@@ -275,9 +283,10 @@
 			children = (
 				5FE3DEB12B39CB5A008D58AE /* Coordinator.swift */,
 				5FE3DEC52B39CBD9008D58AE /* MainCoordinating.swift */,
-				5FE3DED52B39F416008D58AE /* PlusBtnCoordinating.swift */,
 				5F47CD112B3AECC600FCBFA4 /* SettleMoneyRoomCoordinating.swift */,
 				5F87DF2B2B3C99A3001D5B80 /* RoomSettingCoordinating.swift */,
+				5F4913DA2B3DBE5900CD76A8 /* SettlementCoordinating.swift */,
+				5FE3DED52B39F416008D58AE /* MultipurposeScreenCoordinating.swift */,
 			);
 			path = Coordinator_Protocols;
 			sourceTree = "<group>";
@@ -396,8 +405,9 @@
 				5FE3DED42B39E8CC008D58AE /* Image_Enum.swift in Sources */,
 				5F47CD122B3AECC600FCBFA4 /* SettleMoneyRoomCoordinating.swift in Sources */,
 				5F56C74C2B3D84CF00266C12 /* UIDevice+Ext.swift in Sources */,
-				5FE3DED62B39F416008D58AE /* PlusBtnCoordinating.swift in Sources */,
+				5FE3DED62B39F416008D58AE /* MultipurposeScreenCoordinating.swift in Sources */,
 				5F87DF2A2B3C999D001D5B80 /* RoomSettingCoordinator.swift in Sources */,
+				5F4913DD2B3DBE7C00CD76A8 /* SettlementCoordinator.swift in Sources */,
 				5F70069D2B3B57450028DC8B /* TopViewTableViewCell.swift in Sources */,
 				5FE3DEC82B39CC2A008D58AE /* AppCoordinator.swift in Sources */,
 				5FE3DED82B39F8F3008D58AE /* InsetTextField.swift in Sources */,
@@ -406,10 +416,12 @@
 				5FE3DEB62B39CB6F008D58AE /* UIImage+Ext.swift in Sources */,
 				5F903E672B3B412A005DE55E /* SettlementTableViewCell.swift in Sources */,
 				5FE3DE8F2B39CA9B008D58AE /* AppDelegate.swift in Sources */,
-				5FE3DECA2B39CC52008D58AE /* PlusBtnCoordinator.swift in Sources */,
+				5FE3DECA2B39CC52008D58AE /* MultipurposeScreenCoordinator.swift in Sources */,
+				5F4913DB2B3DBE5900CD76A8 /* SettlementCoordinating.swift in Sources */,
 				5FE3DED12B39DA9C008D58AE /* UIView+Ext.swift in Sources */,
 				5FE3DEB42B39CB68008D58AE /* UIButton+Ext.swift in Sources */,
 				5F47CD0C2B3AEC9E00FCBFA4 /* SettleMoneyRoomVC.swift in Sources */,
+				5F4913DF2B3DD97100CD76A8 /* NoDataView.swift in Sources */,
 				5F6C43492B3C3B6A00BBC466 /* UIStackView+Ext.swift in Sources */,
 				5FE3DEBA2B39CB7B008D58AE /* UILabel+Ext.swift in Sources */,
 				5FE3DEBC2B39CB87008D58AE /* MainCoordinator.swift in Sources */,
@@ -423,12 +435,12 @@
 				5F47CD0A2B3AE9D800FCBFA4 /* SettingProtocol.swift in Sources */,
 				5FE3DEB82B39CB75008D58AE /* UIColor+Ext.swift in Sources */,
 				5F47CD142B3AF01400FCBFA4 /* SettleMoneyRoomProtocol.swift in Sources */,
-				5FE3DEC02B39CB95008D58AE /* SettingVC.swift in Sources */,
+				5FE3DEC02B39CB95008D58AE /* MultipurposeScreenVC.swift in Sources */,
 				5FCFFFE22B3D9C69005A277C /* SettlementVC.swift in Sources */,
 				5FE3DEAA2B39CB15008D58AE /* Identifier.swift in Sources */,
 				5FE3DEB02B39CB4A008D58AE /* MainVMProtocol.swift in Sources */,
 				5F6C434F2B3C712F00BBC466 /* SettlementDetailsTableView.swift in Sources */,
-				5F47CD082B3AD8F500FCBFA4 /* SettingVM.swift in Sources */,
+				5F47CD082B3AD8F500FCBFA4 /* MultipurposeScreenVM.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

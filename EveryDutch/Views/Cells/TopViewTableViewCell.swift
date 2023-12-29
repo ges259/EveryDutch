@@ -18,11 +18,15 @@ final class TopViewTableViewCell: UITableViewCell {
     
     private var priceLbl: PaddingLabel = PaddingLabel()
     
-    private var rightImg: UIImageView = {
-        let img = UIImageView()
-        img.tintColor = .gray
-        return img
-    }()
+    private var priceTf: InsetTextField = InsetTextField(
+        backgroundColor: UIColor.medium_Blue,
+        placeholerColor: .placeholder_gray,
+        placeholderText: "가격 입력")
+
+    private lazy var rightBtn: UIButton = UIButton.btnWithImg(
+        imageEnum: .chevronRight, imageSize: 10)
+    
+    
     
     private lazy var leftStackView: UIStackView = UIStackView.configureStackView(
         arrangedSubviews: [self.profileImg,
@@ -35,11 +39,13 @@ final class TopViewTableViewCell: UITableViewCell {
     
     private lazy var rightStackView: UIStackView = UIStackView.configureStackView(
         arrangedSubviews: [self.priceLbl,
-                           self.rightImg],
+                           self.rightBtn],
         axis: .horizontal,
-        spacing: 10,
+        spacing: 17,
         alignment: .center,
         distribution: .equalCentering)
+    
+    
     
     // MARK: - 프로퍼티
     
@@ -54,6 +60,7 @@ final class TopViewTableViewCell: UITableViewCell {
         
         self.configureUI()
         self.configureAutoLayout()
+        self.configureAction()
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -72,7 +79,6 @@ extension TopViewTableViewCell {
         
         // MARK: - Fix
         self.profileImg.image = UIImage.person_Fill_Img
-        self.rightImg.image = UIImage.chevronRight
         
         let nameString = ["쁨",
                           "노주영",
@@ -91,17 +97,19 @@ extension TopViewTableViewCell {
         
         self.priceLbl.text = priceString.randomElement()
         self.profileImg.tintColor = .black
+        self.priceTf.isHidden = true
     }
     
     // MARK: - 오토레이아웃 설정
     private func configureAutoLayout() {
         self.addSubview(self.leftStackView)
-        self.addSubview(self.rightStackView)
+        self.contentView.addSubview(self.rightStackView)
+        self.contentView.addSubview(self.priceTf)
         
         self.profileImg.snp.makeConstraints { make in
             make.width.height.equalTo(21)
         }
-        self.rightImg.snp.makeConstraints { make in
+        self.rightBtn.snp.makeConstraints { make in
             make.height.equalTo(17)
             make.width.equalTo(10)
             
@@ -116,5 +124,29 @@ extension TopViewTableViewCell {
             make.trailing.equalToSuperview().offset(-20)
             make.height.equalTo(22)
         }
+        
+        // MARK: - Fix
+        self.priceTf.snp.makeConstraints { make in
+            make.trailing.equalTo(self.rightStackView).offset(-17)
+            make.width.equalTo(self.frame.width / 2 - 30)
+            make.height.equalTo(30)
+            make.centerY.equalToSuperview()
+        }
+    }
+    
+    private func configureAction() {
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.priceLblTapped))
+        self.priceLbl.isUserInteractionEnabled = true // 레이블이 사용자 인터랙션을 받도록 설정
+        self.priceLbl.addGestureRecognizer(tapGesture)
+        
+        self.rightBtn.addTarget(self, action: #selector(self.rightBtnTapped), for: .touchUpInside)
+    }
+    @objc func rightBtnTapped() {
+        self.priceTf.isHidden = true
+    }
+    @objc func priceLblTapped() {
+        // 레이블이 탭됐을 때 실행할 코드를 여기에 추가합니다.
+        print("Label was tapped")
+        self.priceTf.isHidden = false
     }
 }

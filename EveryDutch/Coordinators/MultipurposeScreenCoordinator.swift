@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class PlusBtnCoordinator: PlusBtnCoordinating {
+final class MultipurposeScreenCoordinator: MultipurposeScreenCoordinating {
     weak var parentCoordinator: Coordinator?
 
     var childCoordinators: [Coordinator] = []
@@ -20,9 +20,9 @@ final class PlusBtnCoordinator: PlusBtnCoordinating {
     }
     
     func start() {
-        let settingVM = SettingVM()
+        let settingVM = MultipurposeScreenVM()
         // PlusViewController 인스턴스 생성
-        let plusVC = SettingVC(viewModel: settingVM,
+        let plusVC = MultipurposeScreenVC(viewModel: settingVM,
                                coordinator: self)
         // 네비게이션 컨트롤러 생성 및 루트 뷰 컨트롤러 설정
         let plusNavController = UINavigationController(rootViewController: plusVC)

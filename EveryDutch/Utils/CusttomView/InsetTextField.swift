@@ -19,6 +19,26 @@ class InsetTextField: UITextField {
         }
     }
     
+    
+    init(backgroundColor: UIColor,
+         placeholerColor: UIColor,
+         placeholderText: String) {
+        super.init(frame: .zero)
+        
+        self.backgroundColor = backgroundColor
+        self.insetX = 16
+        self.attributedPlaceholder = NSAttributedString.configure(
+            text: placeholderText,
+            color: placeholerColor,
+            font: UIFont.systemFont(ofSize: 13))
+        
+        self.clipsToBounds = true
+        self.layer.cornerRadius = 12
+    }
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     // insetX와 insetY의 값에 따라서 텍스트영역을 조절하도록 바꿀 것
         // -> textRect를 오버리이드
             // textRect: textField의 텍스트 영역을 지정해주는 함수

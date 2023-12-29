@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class SettingVM: SettingProtocol {
+final class MultipurposeScreenVM: SettingProtocol {
     
     
     

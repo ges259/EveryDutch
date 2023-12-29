@@ -49,7 +49,7 @@ final class MainCoordinator: MainCoordinating {
     /// 플러스 버튼을 누르면 화면 이동
     func plusBtnScreen() {
         // Main-Coordinator 생성
-        let plusBtnCoordinator = PlusBtnCoordinator(nav: self.nav)
+        let plusBtnCoordinator = MultipurposeScreenCoordinator(nav: self.nav)
         self.childCoordinators.append(plusBtnCoordinator)
         // 부모 코디네이터가 자신이라는 것을 명시 (뒤로가기 할 때 필요)
             plusBtnCoordinator.parentCoordinator = self

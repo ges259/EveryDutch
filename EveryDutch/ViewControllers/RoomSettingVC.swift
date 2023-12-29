@@ -14,25 +14,22 @@ final class RoomSettingVC: UIViewController {
     /// 스크롤뷰
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
-//            scrollView.delegate = self
             scrollView.bounces = false
-//            scrollView.showsVerticalScrollIndicator = false
-        scrollView.alwaysBounceVertical = true
+            scrollView.showsVerticalScrollIndicator = false
+            scrollView.alwaysBounceVertical = true
         return scrollView
     }()
     /// 컨텐트뷰 ( - 스크롤뷰)
     private lazy var contentView: UIView = UIView()
     
-    private var segmentCtrl: CustomSegmentControl = CustomSegmentControl(
-        items: ["누적 금액",
-                "받아야 할 돈"])
     
     private var tableView: SettlementDetailsTableView = SettlementDetailsTableView()
     
-    
+    /// 정산하기 버튼
     private var settleMoneyBtn: UIButton = UIButton.btnWithTitle(
         font: UIFont.boldSystemFont(ofSize: 17),
         backgroundColor: UIColor.deep_Blue)
+    /// 정산 기록 버튼
     private var settlementDetailBtn: UIButton = UIButton.btnWithTitle(
         font: UIFont.boldSystemFont(ofSize: 17),
         backgroundColor: UIColor.deep_Blue)
@@ -88,7 +85,7 @@ final class RoomSettingVC: UIViewController {
 //    private lazy var btnWidth: CGFloat = (self.view.frame.width - 90 - 40) / 3
     
     // ((버튼 크기 * 버튼 개수) - (leading + trailing)) / (버튼 개수 - 1)
-    private lazy var btnWidth: CGFloat = (self.view.frame.width - 45 * 3 - 80) / 2
+    private lazy var btnWidth: CGFloat = (self.view.frame.width - 50 * 3 - 80) / 2
     
     
     
@@ -131,7 +128,7 @@ extension RoomSettingVC {
          self.inviteBtn,
          self.profileBtn].forEach { btn in
             btn.clipsToBounds = true
-            btn.layer.cornerRadius = 45 / 2
+            btn.layer.cornerRadius = 50 / 2
         }
         self.tabBarView.layer.maskedCorners = [
             .layerMinXMinYCorner,
@@ -150,11 +147,12 @@ extension RoomSettingVC {
     // MARK: - 오토레이아웃 설정
     private func configureAutoLayout() {
         self.view.addSubview(self.scrollView)
-        [self.contentView,
-         self.segmentCtrl,
-         self.tableView,
+        
+        self.scrollView.addSubview(self.contentView)
+        
+        [self.tableView,
          self.settlementStackView].forEach { view in
-            self.scrollView.addSubview(view)
+            self.contentView.addSubview(view)
         }
         
         self.view.addSubview(self.tabBarView)
@@ -172,21 +170,15 @@ extension RoomSettingVC {
             make.edges.equalTo(self.scrollView.contentLayoutGuide)
             make.width.equalTo(self.scrollView.frameLayoutGuide)
         }
-        
-        self.segmentCtrl.snp.makeConstraints { make in
+        self.tableView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(7)
             make.leading.equalToSuperview().offset(10)
             make.trailing.equalToSuperview().offset(-10)
-            make.height.equalTo(34)
-        }
-        self.tableView.snp.makeConstraints { make in
-            make.top.equalTo(self.segmentCtrl.snp.bottom).offset(7)
-            make.leading.trailing.equalTo(self.segmentCtrl)
             make.bottom.equalToSuperview().offset(-UIDevice.current.topStackViewBottom)
         }
         self.settlementStackView.snp.makeConstraints { make in
             make.top.equalTo(self.tableView.snp.bottom).offset(7)
-            make.leading.trailing.equalTo(self.segmentCtrl)
+            make.leading.trailing.equalTo(self.tableView)
             make.height.equalTo(45)
         }
         
@@ -198,14 +190,13 @@ extension RoomSettingVC {
         }
         
         self.exitBtn.snp.makeConstraints { make in
-            make.height.equalTo(45)
+            make.height.equalTo(50)
         }
         
         self.tabBarView.snp.makeConstraints { make in
             make.bottom.leading.trailing.equalToSuperview()
             make.height.equalTo(UIDevice.current.tabBarHeight)
         }
-        
     }
     
     // MARK: - 액션 설정
@@ -214,11 +205,15 @@ extension RoomSettingVC {
         let backButton = UIBarButtonItem(image: .chevronLeft, style: .done, target: self, action: #selector(self.backButtonTapped))
         // 네비게이션 바의 왼쪽 아이템으로 설정
         self.navigationItem.leftBarButtonItem = backButton
+        
+        self.settleMoneyBtn.addTarget(self, action: #selector(self.settleMoneyBtnTapped), for: .touchUpInside)
     }
+    
+    @objc private func settleMoneyBtnTapped() {
+        self.coordinator?.settlementScreen()
+    }
+    
     @objc private func backButtonTapped() {
-//        print(exitBtn.frame.width)
-//        print(exitBtn.frame.height)
-        print(self.tabBarView.frame.height)
         self.coordinator?.didFinish()
     }
 }

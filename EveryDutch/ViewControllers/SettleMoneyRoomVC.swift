@@ -24,9 +24,9 @@ final class SettleMoneyRoomVC: UIViewController {
     
     
     
-    private lazy var segmentedCtrl: CustomSegmentControl = CustomSegmentControl(
-        items: ["누적 금액",
-                "받아야 할 돈"])
+//    private lazy var segmentedCtrl: CustomSegmentControl = CustomSegmentControl(
+//        items: ["누적 금액",
+//                "받아야 할 돈"])
     
     
     private lazy var topViewTableView: SettlementDetailsTableView = SettlementDetailsTableView()
@@ -36,8 +36,7 @@ final class SettleMoneyRoomVC: UIViewController {
         backgroundColor: UIColor.normal_white)
     
     private lazy var stackView: UIStackView = UIStackView.configureStackView(
-        arrangedSubviews: [self.segmentedCtrl,
-                           self.topViewTableView,
+        arrangedSubviews: [self.topViewTableView,
                            self.topViewBtn],
         axis: .vertical,
         spacing: 5,
@@ -147,8 +146,6 @@ extension SettleMoneyRoomVC {
         self.bottomBtn.setTitle("영수증 작성", for: .normal)
         self.navigationItem.title = "대충 방 이름"
         self.topViewBtn.setTitle("버튼", for: .normal)
-        
-        
     }
     
     
@@ -192,19 +189,17 @@ extension SettleMoneyRoomVC {
             make.bottom.equalTo(self.bottomBtn.snp.top).offset(-5)
         }
         self.topViewTableView.snp.makeConstraints { make in
-            make.height.equalTo(200)
+            make.height.equalTo(200 + 5 + 34)
         }
         self.topViewBtn.snp.makeConstraints { make in
-            make.height.greaterThanOrEqualTo(45)
+            make.height.equalTo(45)
         }
         self.stackView.snp.makeConstraints { make in
             make.bottom.equalToSuperview().offset(-35)
             make.leading.equalToSuperview().offset(15)
             make.trailing.equalToSuperview().offset(-15)
             make.height.greaterThanOrEqualTo(minHeight + 5 + 35)
-        }
-        self.segmentedCtrl.snp.makeConstraints { make in
-            make.height.equalTo(34)
+//            make.height.equalTo(200 + 5 + 35)
         }
         self.arrowDownImg.snp.makeConstraints { make in
             make.bottom.equalTo(self.topViewTableView.snp.bottom).offset(-8)
@@ -224,8 +219,7 @@ extension SettleMoneyRoomVC {
         // 오른쪽 네비게이션 바 - 액션
         let rightBtn = UIBarButtonItem(image: .gear_Fill_Img, style: .done, target: self, action: #selector(self.settingBtnTapped))
         self.navigationItem.rightBarButtonItem = rightBtn
-        // 세그먼트 컨트롤 - 액션
-        self.segmentedCtrl.addTarget(self, action: #selector(self.valueChanged(segment:)), for: .valueChanged)
+        
         
         
         // 탑뷰 - 팬 재스쳐
@@ -242,17 +236,7 @@ extension SettleMoneyRoomVC {
     }
     
     
-    @objc private func valueChanged(segment: UISegmentedControl) {
-        switch segment.selectedSegmentIndex {
-        case 0:
-            print("누적 금액")
-            break
-        case 1:
-            print("받아야 할 돈")
-            break
-        default: break
-        }
-    }
+
     
     
     

@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-final class SettingVC: UIViewController {
+final class MultipurposeScreenVC: UIViewController {
     
     // MARK: - 레이아웃
     private lazy var baseView: UIView = UIView.configureView(
@@ -29,17 +29,11 @@ final class SettingVC: UIViewController {
         tintColor: .darkGray,
         backgroundColor: .normal_white)
     
-    private lazy var textField: InsetTextField = {
-        let tf = InsetTextField()
-        tf.backgroundColor = .normal_white
-        tf.insetX = 16
-        tf.attributedPlaceholder = NSAttributedString.configure(
-            text: "안녕하세요",
-            color: .lightGray,
-            font: UIFont.systemFont(ofSize: 14.5))
-        
-        return tf
-    }()
+    private lazy var textField: InsetTextField = InsetTextField(
+        backgroundColor: .normal_white,
+        placeholerColor: .lightGray,
+        placeholderText: "안녕하세요.")
+    
     
     private lazy var numOfCharLbl: UILabel = UILabel.configureLbl(
         font: UIFont.systemFont(ofSize: 13))
@@ -48,12 +42,22 @@ final class SettingVC: UIViewController {
         titleColor: UIColor.gray,
         font: UIFont.boldSystemFont(ofSize: 16),
         backgroundColor: .normal_white)
+    private lazy var previousBtn: UIButton = UIButton.btnWithTitle(
+        titleColor: UIColor.gray,
+        font: UIFont.boldSystemFont(ofSize: 16),
+        backgroundColor: .normal_white)
     
+    private lazy var btnStackView: UIStackView = UIStackView.configureStackView(
+        arrangedSubviews: [self.nextBtn],
+        axis: .horizontal,
+        spacing: 4,
+        alignment: .fill,
+        distribution: .fill)
     
     
     // MARK: - 프로퍼티
     private var viewModel: SettingProtocol?
-    private weak var coordinator: PlusBtnCoordinating?
+    private weak var coordinator: MultipurposeScreenCoordinating?
     
     
     // MARK: - 라이프사이클
@@ -64,8 +68,8 @@ final class SettingVC: UIViewController {
         self.configureAutoLayout()
         self.configureAction()
     }
-    init(viewModel: SettingVM,
-         coordinator: PlusBtnCoordinating) {
+    init(viewModel: MultipurposeScreenVM,
+         coordinator: MultipurposeScreenCoordinating) {
         self.viewModel = viewModel
         self.coordinator = coordinator
         super.init(nibName: nil, bundle: nil)
@@ -76,14 +80,14 @@ final class SettingVC: UIViewController {
 }
 
 
-extension SettingVC {
+extension MultipurposeScreenVC {
     // MARK: - UI 설정
     private func configureUI() {
         self.view.backgroundColor = UIColor.base_Blue
         
         [self.titleLbl,
-         self.textField,
-         self.nextBtn].forEach { view in
+         self.nextBtn,
+         self.previousBtn].forEach { view in
             view.clipsToBounds = true
             view.layer.cornerRadius = 12
         }
@@ -94,8 +98,10 @@ extension SettingVC {
         
         // MARK: - Fix
         self.titleLbl.text = "타이틀"
+        self.previousBtn.setTitle("이전", for: .normal)
         self.nextBtn.setTitle("버튼", for: .normal)
         self.numOfCharLbl.text = "0 / 8"
+        self.btnStackView.insertArrangedSubview(self.previousBtn, at: 0)
     }
     
     // MARK: - 오토레이아웃 설정
@@ -107,7 +113,7 @@ extension SettingVC {
          self.imgBtn,
          self.textField,
          self.numOfCharLbl,
-         self.nextBtn].forEach { view in
+         self.btnStackView].forEach { view in
              self.baseView.addSubview(view)
         }
         
@@ -138,10 +144,14 @@ extension SettingVC {
             make.centerY.equalTo(self.textField)
             make.trailing.equalTo(self.textField.snp.trailing).offset(-16)
         }
-        self.nextBtn.snp.makeConstraints { make in
+        self.btnStackView.snp.makeConstraints { make in
             make.top.equalTo(self.textField.snp.bottom).offset(7)
             make.leading.trailing.equalTo(self.textField)
             make.height.equalTo(45)
+        }
+        
+        self.previousBtn.snp.makeConstraints { make in
+            make.width.equalTo(58)
         }
     }
     

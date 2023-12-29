@@ -11,6 +11,7 @@ extension UIImage {
     
     /// 플러스 버튼 이미지
     static let plus_Img: UIImage? = UIImage(systemName: "plus")
+    static let plus_Circle_Img: UIImage? = UIImage(systemName: "plus.circle.fill")
     /// 색상이 있는 사람 표시
     static let person_Fill_Img: UIImage? = UIImage(systemName: "person.crop.circle.fill")
     /// 색상이 없는 사람 표시

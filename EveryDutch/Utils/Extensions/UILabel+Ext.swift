@@ -10,14 +10,17 @@ import UIKit
 extension UILabel {
     static func configureLbl(text: String = "",
                              textColor: UIColor = UIColor.black,
-                             font: UIFont)
+                             font: UIFont,
+                             backgroundColor: UIColor = .clear,
+                             textAlignment: NSTextAlignment = .left)
     -> UILabel {
         
         let lbl = UILabel()
         lbl.text = text
         lbl.textColor = textColor
         lbl.font = font
-        
+        lbl.textAlignment = textAlignment
+        lbl.backgroundColor = backgroundColor
         return lbl
     }
 }

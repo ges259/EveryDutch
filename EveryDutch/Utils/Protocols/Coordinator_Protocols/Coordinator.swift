@@ -20,7 +20,7 @@ protocol Coordinator: AnyObject {
     
     /// Coordinator의 시작 지점을 정의하는 메서드
     func start()
-    
+    /// 화면 나갈 때 불리는 메서드
     func didFinish()
 }
 extension Coordinator {

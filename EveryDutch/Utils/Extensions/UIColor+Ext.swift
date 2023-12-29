@@ -32,4 +32,6 @@ extension UIColor {
     static let deleted_red: UIColor = UIColor.rgb(r: 251, g: 181, b: 183)
     /// 선택되지 않은 세그먼트 컨트롤 생상
     static let unselected_gray: UIColor = UIColor.rgb(r: 198, g: 216, b: 243)
+    
+    static let placeholder_gray: UIColor = UIColor.rgb(r: 123, g: 121, b: 166)
 }

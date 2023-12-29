@@ -35,6 +35,7 @@ final class MainVC: UIViewController {
         tintColor: UIColor.white,
         backgroundColor: UIColor.deep_Blue)
     
+    private var noDataView: NoDataView = NoDataView()
     
     
     
@@ -54,7 +55,7 @@ final class MainVC: UIViewController {
     /// 컬렉션뷰 셀의 넓이
     private lazy var width = (self.view.frame.width - 10 * 2)
     /// 컬렉션뷰 셀의 높이
-    private lazy var heigh = self.width * 0.63
+    private lazy var heigh = self.width * 0.64
     
     
     
@@ -93,15 +94,22 @@ extension MainVC {
         // 코너레디어스 설정
         self.plusBtn.clipsToBounds = true
         self.plusBtn.layer.cornerRadius = 70 / 2
+        
+        self.noDataView.clipsToBounds = true
+        self.noDataView.layer.cornerRadius = 12
+        
+        // MARK: - Fix
+        self.noDataView.isHidden = true
     }
     
     // MARK: - 오토레이아웃 설정
     private func configureAutoLayout() {
         self.view.addSubview(self.collectionView)
         self.view.addSubview(self.plusBtn)
+        self.view.addSubview(self.noDataView)
         
         self.collectionView.snp.makeConstraints { make in
-            make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(8)
+            make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(2)
             make.leading.equalToSuperview().offset(10)
             make.trailing.equalToSuperview().offset(-10)
             make.bottom.equalToSuperview()
@@ -110,6 +118,10 @@ extension MainVC {
             make.trailing.equalTo(-24)
             make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom).offset(-20)
             make.height.width.equalTo(70)
+        }
+        self.noDataView.snp.makeConstraints { make in
+            make.top.leading.trailing.equalTo(self.collectionView)
+            make.height.equalTo(self.heigh)
         }
     }
     

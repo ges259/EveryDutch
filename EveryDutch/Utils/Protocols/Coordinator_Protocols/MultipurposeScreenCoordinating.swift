@@ -7,6 +7,6 @@
 
 import Foundation
 
-protocol PlusBtnCoordinating: Coordinator {
+protocol MultipurposeScreenCoordinating: Coordinator {
     
 }
