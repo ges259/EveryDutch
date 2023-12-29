@@ -10,7 +10,14 @@ import UIKit
 final class RoomSettingCoordinator: RoomSettingCoordinating {
     weak var parentCoordinator: Coordinator?
     
-    var childCoordinators: [Coordinator] = []
+    var childCoordinators: [Coordinator] = [] {
+        didSet {
+            print("********************")
+            print("RoomSettingCoordinator")
+            dump(childCoordinators)
+            print("********************")
+        }
+    }
     
     var nav: UINavigationController
     
@@ -32,6 +39,15 @@ final class RoomSettingCoordinator: RoomSettingCoordinating {
         settlementCoordinator.parentCoordinator = self
         // 코디네이터에게 화면이동을 지시
         settlementCoordinator.start()
+    }
+    func FindFriendsScreen() {
+        // Settlement-Coordinator 생성
+        let findFriendsCoordinator = FindFriendsCoordinator(nav: self.nav)
+        self.childCoordinators.append(findFriendsCoordinator)
+        // 부모 코디네이터가 자신이라는 것을 명시 (뒤로가기 할 때 필요)
+        findFriendsCoordinator.parentCoordinator = self
+        // 코디네이터에게 화면이동을 지시
+        findFriendsCoordinator.start()
     }
     
     func didFinish() {

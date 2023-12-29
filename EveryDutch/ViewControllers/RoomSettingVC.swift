@@ -207,8 +207,14 @@ extension RoomSettingVC {
         self.navigationItem.leftBarButtonItem = backButton
         
         self.settleMoneyBtn.addTarget(self, action: #selector(self.settleMoneyBtnTapped), for: .touchUpInside)
+        
+        
+        self.inviteBtn.addTarget(self, action: #selector(self.inviteBtnTapped), for: .touchUpInside)
     }
     
+    @objc private func inviteBtnTapped() {
+        self.coordinator?.FindFriendsScreen()
+    }
     @objc private func settleMoneyBtnTapped() {
         self.coordinator?.settlementScreen()
     }

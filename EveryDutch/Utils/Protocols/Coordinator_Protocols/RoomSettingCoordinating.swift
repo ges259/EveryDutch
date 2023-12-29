@@ -9,4 +9,5 @@ import Foundation
 
 protocol RoomSettingCoordinating: Coordinator {
     func settlementScreen()
+    func FindFriendsScreen()
 }

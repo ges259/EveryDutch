@@ -15,18 +15,18 @@ final class SettlementTableViewCell: UITableViewCell {
         color: .normal_white)
     
     private var contextLbl: UILabel = UILabel.configureLbl(
-        font: UIFont.systemFont(ofSize: 17))
+        font: UIFont.systemFont(ofSize: 16))
     
     private var priceLbl: UILabel = UILabel.configureLbl(
-        font: UIFont.systemFont(ofSize: 17))
+        font: UIFont.systemFont(ofSize: 14))
     
     private var timeLbl: UILabel = UILabel.configureLbl(
         textColor: .gray,
-        font: UIFont.systemFont(ofSize: 13))
+        font: UIFont.systemFont(ofSize: 12))
     
     private var allPayerLbl: UILabel = UILabel.configureLbl(
         textColor: .gray,
-        font: UIFont.systemFont(ofSize: 13))
+        font: UIFont.systemFont(ofSize: 12))
     
     
     private lazy var topStackView: UIStackView = UIStackView.configureStackView(

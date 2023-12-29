@@ -50,12 +50,12 @@ final class MainVC: UIViewController {
     
     private var coordinator: MainCoordinating?
     
-    
+//    private lazy var cardHeight = (self.view.frame.width - 20) * 1.8 / 3
     
     /// 컬렉션뷰 셀의 넓이
     private lazy var width = (self.view.frame.width - 10 * 2)
     /// 컬렉션뷰 셀의 높이
-    private lazy var heigh = self.width * 0.64
+    private lazy var heigh = (self.view.frame.width - 20) * 1.8 / 3
     
     
     

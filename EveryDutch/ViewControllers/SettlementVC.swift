@@ -87,6 +87,9 @@ extension SettlementVC {
         self.settlementNameLbl.clipsToBounds = true
         self.settlementNameLbl.layer.cornerRadius = 10
         
+        self.textField.clipsToBounds = true
+        self.textField.layer.cornerRadius = 12
+        
         self.settlementBtn.layer.maskedCorners = [
             .layerMinXMinYCorner,
             .layerMaxXMinYCorner]

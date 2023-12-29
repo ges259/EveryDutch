@@ -21,19 +21,17 @@ class InsetTextField: UITextField {
     
     
     init(backgroundColor: UIColor,
-         placeholerColor: UIColor,
+         placeholerColor: UIColor = UIColor.placeholder_gray,
          placeholderText: String) {
         super.init(frame: .zero)
         
+        self.font = UIFont.systemFont(ofSize: 13)
         self.backgroundColor = backgroundColor
         self.insetX = 16
         self.attributedPlaceholder = NSAttributedString.configure(
             text: placeholderText,
             color: placeholerColor,
             font: UIFont.systemFont(ofSize: 13))
-        
-        self.clipsToBounds = true
-        self.layer.cornerRadius = 12
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

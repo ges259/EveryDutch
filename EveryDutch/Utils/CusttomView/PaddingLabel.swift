@@ -16,15 +16,39 @@ final class PaddingLabel: UILabel {
     var rightInset: CGFloat = 12.0
 
     override func drawText(in rect: CGRect) {
-        let insets = UIEdgeInsets(top: topInset,
-                                  left: leftInset,
-                                  bottom: bottomInset,
-                                  right: rightInset)
-        self.font = UIFont.systemFont(ofSize: 14)
+        let insets = UIEdgeInsets(top: self.topInset,
+                                  left: self.leftInset,
+                                  bottom: self.bottomInset,
+                                  right: self.rightInset)
+        self.font = UIFont.systemFont(ofSize: 13)
         self.backgroundColor = .medium_Blue
         self.clipsToBounds = true
         self.layer.cornerRadius = 10
         super.drawText(in: rect.inset(by: insets))
+    }
+    init(topInset: CGFloat = 4,
+         bottomInset: CGFloat = 4,
+         leftInset: CGFloat = 12,
+         rightInset: CGFloat = 12) {
+        
+        self.topInset = topInset
+        self.bottomInset = bottomInset
+        self.leftInset = leftInset
+        self.rightInset = rightInset
+        
+        super.init(frame: .zero)
+    }
+    convenience init(alignment: NSTextAlignment) {
+        self.init(topInset: 4,
+                  bottomInset: 4,
+                  leftInset: 12,
+                  rightInset: 26)
+        self.textAlignment = NSTextAlignment.right
+        self.textColor = .darkGray
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     override var intrinsicContentSize: CGSize {

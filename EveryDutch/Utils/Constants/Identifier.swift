@@ -13,8 +13,7 @@ enum Identifier {
     static let settlementTableViewCell: String = "SettlementTableViewCell"
     
     static let topViewTableViewCell: String = "TopViewTableViewCell"
-    
-    
-    
 }
+
+
 

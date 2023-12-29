@@ -14,6 +14,7 @@ final class MainCoordinator: MainCoordinating {
     var childCoordinators: [Coordinator] = [] {
         didSet {
             print("********************")
+            print("MainCoordinator")
             dump(childCoordinators)
             print("********************")
         }

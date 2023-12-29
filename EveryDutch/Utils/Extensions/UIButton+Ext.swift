@@ -17,7 +17,7 @@ extension UIButton {
         let imageConfig = UIImage.SymbolConfiguration(
             pointSize: imageSize,
             weight: .light)
-        let image = UIImage(systemName: "plus", withConfiguration: imageConfig)
+        let image = UIImage(systemName: imageEnum.img_String, withConfiguration: imageConfig)
         btn.setImage(image, for: .normal)
             btn.tintColor = tintColor
             btn.backgroundColor = backgroundColor
