@@ -50,12 +50,10 @@ final class MainVC: UIViewController {
     
     private var coordinator: MainCoordinating?
     
-//    private lazy var cardHeight = (self.view.frame.width - 20) * 1.8 / 3
-    
     /// 컬렉션뷰 셀의 넓이
-    private lazy var width = (self.view.frame.width - 10 * 2)
+    private lazy var width = (self.view.frame.width - 20)
     /// 컬렉션뷰 셀의 높이
-    private lazy var heigh = (self.view.frame.width - 20) * 1.8 / 3
+    private lazy var cardHeight = (self.view.frame.width - 20) * 1.8 / 3
     
     
     
@@ -121,7 +119,7 @@ extension MainVC {
         }
         self.noDataView.snp.makeConstraints { make in
             make.top.leading.trailing.equalTo(self.collectionView)
-            make.height.equalTo(self.heigh)
+            make.height.equalTo(self.cardHeight)
         }
     }
     
@@ -159,7 +157,7 @@ extension MainVC: UICollectionViewDelegateFlowLayout {
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: self.width,
-                      height: self.heigh)
+                      height: self.cardHeight)
     }
     
     // 아이템 간 상하 간격 설정

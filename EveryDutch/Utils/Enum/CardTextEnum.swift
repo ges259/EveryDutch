@@ -11,7 +11,8 @@ enum CardTextMode {
     case roomFix
     case userInfoFix
     case nothingFix
-    case setting
+    case info_Setting
+    case ect_Setting
 }
 
 // roomFix

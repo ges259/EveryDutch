@@ -97,7 +97,9 @@ final class CardTextView: UIView {
     private lazy var clearView: UIView = UIView()
     
     
-    
+    private lazy var editProfileBtn: UIButton = UIButton.btnWithImg(
+        imageEnum: .note,
+        imageSize: 14)
     
     
     
@@ -157,7 +159,6 @@ extension CardTextView {
         self.secondDetailLbl.snp.makeConstraints { make in
             make.width.equalTo(110)
         }
- 
     }
     
     // MARK: - 액션 설정
@@ -204,32 +205,48 @@ extension CardTextView {
                                     third: self.thirdStackView)
             
             // MARK: - Fix
+            self.firstDetailLbl.text = "11"
+            self.secondDetailLbl.text = "22"
+            self.thirdDetailLbl.text = "세dfsa번째"
+            
             self.firstInfoLbl.text = "첫번째"
             self.secondInfoLbl.text = "첫dfsa번째"
-            self.thirdDetailLbl.text = "세dfsa번째"
+            self.thirdInfoLbl.text = "세dfsa번째"
+            break
+        case .info_Setting:
+            self.configureStackView(first: self.firstInfoLbl,
+                                    second: self.secondInfoLbl,
+                                    third: self.thirdStackView)
+            self.addEditBtnAction()
+            
+            
+            self.firstInfoLbl.text = "첫번째"
+            self.secondInfoLbl.text = "첫dfsa번째"
             self.thirdInfoLbl.text = "세dfsa번째"
             
+            self.thirdDetailLbl.text = "324fds"
             break
-        case .setting:
+            
+        case .ect_Setting:
             self.totalStackView.addArrangedSubview(self.clearView)
+            self.addStackViewGesture()
             break
         }
     }
     
+    // MARK: - 스택뷰에 추가
     private func configureStackView(first: UIView,
                                     second: UIView,
                                     third: UIView) {
-        
         // 텍스트필드가 있다면 -> cornerRadius 설정
         self.tfCornerRadius([first, second])
-        
         // 스택뷰에 뷰 추가
         self.firstStackView.addArrangedSubview(first)
         self.secondStackView.addArrangedSubview(second)
         self.totalStackView.addArrangedSubview(third)
     }
     
-    
+    // MARK: - 텍스트필드 코너레디어스
     private func tfCornerRadius(_ textFieldArray: [UIView]) {
         
         for view in textFieldArray {
@@ -245,4 +262,43 @@ extension CardTextView {
             }
         }
     }
+    
+    
+    
+    
+    // MARK: - info_Setting 버튼 액션
+    private func addEditBtnAction() {
+        self.addSubview(self.editProfileBtn)
+        self.editProfileBtn.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().offset(-26)
+            make.centerY.equalTo(self.titleLbl)
+        }
+        self.editProfileBtn.addTarget(self, action: #selector(self.editProfileBtnTapped), for: .touchUpInside)
+    }
+    @objc private func editProfileBtnTapped() {
+        print(#function)
+    }
+    
+    
+    
+    
+    // MARK: - ect_Setting 제스쳐
+    private func addStackViewGesture() {
+        let firstStackViewGesture = UITapGestureRecognizer(target: self, action: #selector(self.firstStackViewTapped))
+        self.firstStackView.addGestureRecognizer(firstStackViewGesture)
+        
+        let secondStackViewGesture = UITapGestureRecognizer(target: self, action: #selector(self.secondStackViewTapped))
+        self.secondStackView.addGestureRecognizer(secondStackViewGesture)
+    }
+    @objc private func firstStackViewTapped() {
+        print(#function)
+    }
+    @objc private func secondStackViewTapped() {
+        print(#function)
+    }
+    
+    
+    
+
+    
 }

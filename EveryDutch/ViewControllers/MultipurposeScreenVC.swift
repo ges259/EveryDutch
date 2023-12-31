@@ -24,10 +24,10 @@ final class MultipurposeScreenVC: UIViewController {
     private var cardImgView: CardImageView = CardImageView()
     
     private var roomInfoCardView: CardTextView = CardTextView(
-        mode: .roomFix)
+        mode: .info_Setting)
     
     private var userInfoCardView: CardTextView = CardTextView(
-        mode: .userInfoFix)
+        mode: .ect_Setting)
     
     private lazy var stackView: UIStackView = UIStackView.configureStackView(
         arrangedSubviews: [self.cardImgView,

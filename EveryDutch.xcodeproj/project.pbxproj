@@ -193,6 +193,8 @@
 				5FE3DEA42B39CAAF008D58AE /* ViewModel */,
 				5FE3DEA52B39CAB7008D58AE /* ViewControllers */,
 				5FE3DEA32B39CAA8008D58AE /* Views */,
+				5FFEAE6C2B3F307E00E0B2BB /* ProfileVC.swift */,
+				5FFEAE6A2B3F282000E0B2BB /* EditProfileVC.swift */,
 				5FE3DE972B39CA9C008D58AE /* Assets.xcassets */,
 				5FE3DE992B39CA9C008D58AE /* LaunchScreen.storyboard */,
 				5FE3DE9C2B39CA9C008D58AE /* Info.plist */,
@@ -240,8 +242,6 @@
 				5F87DF242B3C8025001D5B80 /* RoomSettingVC.swift */,
 				5FCFFFE12B3D9C69005A277C /* SettlementVC.swift */,
 				5FE3DEBF2B39CB95008D58AE /* MultipurposeScreenVC.swift */,
-				5FFEAE6A2B3F282000E0B2BB /* EditProfileVC.swift */,
-				5FFEAE6C2B3F307E00E0B2BB /* ProfileVC.swift */,
 				5FFEAE6E2B3F33CC00E0B2BB /* FindFriendsVC.swift */,
 			);
 			path = ViewControllers;
