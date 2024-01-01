@@ -21,6 +21,9 @@
 		5F4913DD2B3DBE7C00CD76A8 /* SettlementCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4913DC2B3DBE7C00CD76A8 /* SettlementCoordinator.swift */; };
 		5F4913DF2B3DD97100CD76A8 /* NoDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4913DE2B3DD97100CD76A8 /* NoDataView.swift */; };
 		5F56C74C2B3D84CF00266C12 /* UIDevice+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F56C74B2B3D84CF00266C12 /* UIDevice+Ext.swift */; };
+		5F66F3A52B418C44005F6C52 /* FloatingBtnView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F66F3A42B418C44005F6C52 /* FloatingBtnView.swift */; };
+		5F66F3A72B41D75B005F6C52 /* ReceiptWriteController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F66F3A62B41D75B005F6C52 /* ReceiptWriteController.swift */; };
+		5F66F3AA2B41D7FC005F6C52 /* FSCalendar in Frameworks */ = {isa = PBXBuildFile; productRef = 5F66F3A92B41D7FC005F6C52 /* FSCalendar */; };
 		5F6C43492B3C3B6A00BBC466 /* UIStackView+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6C43482B3C3B6A00BBC466 /* UIStackView+Ext.swift */; };
 		5F6C434B2B3C4C1500BBC466 /* CustomTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6C434A2B3C4C1500BBC466 /* CustomTableView.swift */; };
 		5F6C434D2B3C5BD000BBC466 /* PaddingLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6C434C2B3C5BD000BBC466 /* PaddingLabel.swift */; };
@@ -79,6 +82,8 @@
 		5F4913DC2B3DBE7C00CD76A8 /* SettlementCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettlementCoordinator.swift; sourceTree = "<group>"; };
 		5F4913DE2B3DD97100CD76A8 /* NoDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoDataView.swift; sourceTree = "<group>"; };
 		5F56C74B2B3D84CF00266C12 /* UIDevice+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDevice+Ext.swift"; sourceTree = "<group>"; };
+		5F66F3A42B418C44005F6C52 /* FloatingBtnView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingBtnView.swift; sourceTree = "<group>"; };
+		5F66F3A62B41D75B005F6C52 /* ReceiptWriteController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptWriteController.swift; sourceTree = "<group>"; };
 		5F6C43482B3C3B6A00BBC466 /* UIStackView+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStackView+Ext.swift"; sourceTree = "<group>"; };
 		5F6C434A2B3C4C1500BBC466 /* CustomTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTableView.swift; sourceTree = "<group>"; };
 		5F6C434C2B3C5BD000BBC466 /* PaddingLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaddingLabel.swift; sourceTree = "<group>"; };
@@ -129,6 +134,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5FE3DECF2B39CCAE008D58AE /* SnapKit in Frameworks */,
+				5F66F3AA2B41D7FC005F6C52 /* FSCalendar in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -152,6 +158,7 @@
 				5F4913DE2B3DD97100CD76A8 /* NoDataView.swift */,
 				5F2F7A772B3ECD91004B136F /* CardImageView.swift */,
 				5F2F7A792B3ECD98004B136F /* CardTextView.swift */,
+				5F66F3A42B418C44005F6C52 /* FloatingBtnView.swift */,
 			);
 			path = UIViews;
 			sourceTree = "<group>";
@@ -243,6 +250,7 @@
 				5FCFFFE12B3D9C69005A277C /* SettlementVC.swift */,
 				5FE3DEBF2B39CB95008D58AE /* MultipurposeScreenVC.swift */,
 				5FFEAE6E2B3F33CC00E0B2BB /* FindFriendsVC.swift */,
+				5F66F3A62B41D75B005F6C52 /* ReceiptWriteController.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -359,6 +367,7 @@
 			name = EveryDutch;
 			packageProductDependencies = (
 				5FE3DECE2B39CCAE008D58AE /* SnapKit */,
+				5F66F3A92B41D7FC005F6C52 /* FSCalendar */,
 			);
 			productName = EveryDutch;
 			productReference = 5FE3DE8B2B39CA9B008D58AE /* EveryDutch.app */;
@@ -390,6 +399,7 @@
 			mainGroup = 5FE3DE822B39CA9B008D58AE;
 			packageReferences = (
 				5FE3DECD2B39CCAE008D58AE /* XCRemoteSwiftPackageReference "SnapKit" */,
+				5F66F3A82B41D7FC005F6C52 /* XCRemoteSwiftPackageReference "FSCalendar" */,
 			);
 			productRefGroup = 5FE3DE8C2B39CA9B008D58AE /* Products */;
 			projectDirPath = "";
@@ -426,6 +436,7 @@
 				5FE3DED42B39E8CC008D58AE /* Image_Enum.swift in Sources */,
 				5F47CD122B3AECC600FCBFA4 /* SettleMoneyRoomCoordinating.swift in Sources */,
 				5F56C74C2B3D84CF00266C12 /* UIDevice+Ext.swift in Sources */,
+				5F66F3A52B418C44005F6C52 /* FloatingBtnView.swift in Sources */,
 				5FE3DED62B39F416008D58AE /* MultipurposeScreenCoordinating.swift in Sources */,
 				5F87DF2A2B3C999D001D5B80 /* RoomSettingCoordinator.swift in Sources */,
 				5F4913DD2B3DBE7C00CD76A8 /* SettlementCoordinator.swift in Sources */,
@@ -456,6 +467,7 @@
 				5FE3DEC22B39CB9B008D58AE /* MainVM.swift in Sources */,
 				5F2F7A7C2B3EEFBD004B136F /* CardTextEnum.swift in Sources */,
 				5FE3DE912B39CA9B008D58AE /* SceneDelegate.swift in Sources */,
+				5F66F3A72B41D75B005F6C52 /* ReceiptWriteController.swift in Sources */,
 				5F6C434B2B3C4C1500BBC466 /* CustomTableView.swift in Sources */,
 				5FE3DEB22B39CB5A008D58AE /* Coordinator.swift in Sources */,
 				5FE3DEC62B39CBD9008D58AE /* MainCoordinating.swift in Sources */,
@@ -678,6 +690,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		5F66F3A82B41D7FC005F6C52 /* XCRemoteSwiftPackageReference "FSCalendar" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/WenchaoD/FSCalendar";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
 		5FE3DECD2B39CCAE008D58AE /* XCRemoteSwiftPackageReference "SnapKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SnapKit/SnapKit";
@@ -689,6 +709,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		5F66F3A92B41D7FC005F6C52 /* FSCalendar */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5F66F3A82B41D7FC005F6C52 /* XCRemoteSwiftPackageReference "FSCalendar" */;
+			productName = FSCalendar;
+		};
 		5FE3DECE2B39CCAE008D58AE /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 5FE3DECD2B39CCAE008D58AE /* XCRemoteSwiftPackageReference "SnapKit" */;

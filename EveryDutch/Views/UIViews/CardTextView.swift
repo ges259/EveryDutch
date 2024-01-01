@@ -228,7 +228,12 @@ extension CardTextView {
             break
             
         case .ect_Setting:
-            self.totalStackView.addArrangedSubview(self.clearView)
+            self.configureStackView(first: self.firstInfoLbl,
+                                    second: self.secondInfoLbl,
+                                    third: self.clearView)
+            self.firstInfoLbl.alpha = 0
+            self.secondInfoLbl.alpha = 0
+//            self.totalStackView.addArrangedSubview(self.clearView)
             self.addStackViewGesture()
             break
         }

@@ -10,9 +10,10 @@ import UIKit
 extension UIColor {
     static func rgb(r: CGFloat,
                     g: CGFloat,
-                    b: CGFloat)
+                    b: CGFloat,
+                    alpha: CGFloat = 1)
     -> UIColor {
-        return UIColor(red: r/255, green: g/255, blue: b/255, alpha: 1)
+        return UIColor(red: r/255, green: g/255, blue: b/255, alpha: alpha)
     }
     
     /// 앱의 흰색 기본 생상
@@ -34,4 +35,6 @@ extension UIColor {
     static let unselected_gray: UIColor = UIColor.rgb(r: 198, g: 216, b: 243)
     
     static let placeholder_gray: UIColor = UIColor.rgb(r: 123, g: 121, b: 166)
+    
+    static let backgroundGray: UIColor = UIColor.rgb(r: 123, g: 121, b: 166, alpha: 0.5)
 }

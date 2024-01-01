@@ -30,6 +30,7 @@ enum imageEnum {
     case checkMark
     case chevronLeft
     case chevronRight
+    case menu
     
     var img_String: String {
         switch self {
@@ -54,6 +55,7 @@ enum imageEnum {
         case .checkMark: return "checkmark"
         case .chevronLeft: return "chevron.left"
         case .chevronRight: return "chevron.right"
+        case .menu: return "line.3.horizontal"
         }
     }
 }
