@@ -38,7 +38,7 @@ final class SettlementVC: UIViewController {
         font: UIFont.systemFont(ofSize: 13))
     
     
-    private var tableView: SettlementDetailsTableView = SettlementDetailsTableView()
+    private var tableView: SettlementDetailsTableView = SettlementDetailsTableView(customTableEnum: .isLbl)
     
     private var settlementBtn: UIButton = UIButton.btnWithTitle(
         font: UIFont.boldSystemFont(ofSize: 22),

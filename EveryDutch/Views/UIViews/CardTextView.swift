@@ -16,22 +16,28 @@ final class CardTextView: UIView {
         font: UIFont.boldSystemFont(ofSize: 23))
     
     // 디테이르 레이블
-    private var firstDetailLbl: PaddingLabel = PaddingLabel(leftInset: 26)
+    private lazy var firstDetailLbl: PaddingLabel = PaddingLabel(
+        leftInset: 26)
     
-    private var secondDetailLbl: PaddingLabel = PaddingLabel(leftInset: 26)
+    private lazy var secondDetailLbl: PaddingLabel = PaddingLabel(
+        leftInset: 26)
     
-    private lazy var thirdDetailLbl: PaddingLabel = PaddingLabel(leftInset: 26)
+    private lazy var thirdDetailLbl: PaddingLabel = PaddingLabel(
+        leftInset: 26)
     
     
     // 정보 레이블
-    private var firstInfoLbl: PaddingLabel = PaddingLabel(
-        alignment: .right)
+    private lazy var firstInfoLbl: PaddingLabel = PaddingLabel(
+        alignment: .right,
+        rightInset: 26)
     
-    private var secondInfoLbl: PaddingLabel = PaddingLabel(
-        alignment: .right)
+    private lazy var secondInfoLbl: PaddingLabel = PaddingLabel(
+        alignment: .right,
+        rightInset: 26)
     
     private lazy var thirdInfoLbl: PaddingLabel = PaddingLabel(
-        alignment: .right)
+        alignment: .right,
+        rightInset: 26)
     
     
     // 텍스트 필드
@@ -113,9 +119,9 @@ final class CardTextView: UIView {
     
     // MARK: - 라이프사이클
     init(mode: CardTextMode) {
-        
-        super.init(frame: .zero)
         self.mode = mode
+        super.init(frame: .zero)
+        
         self.configureUI()
         self.configureAutoLayout()
         self.configureAction()

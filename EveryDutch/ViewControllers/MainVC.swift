@@ -137,7 +137,7 @@ extension MainVC {
         
         self.floatingArray.forEach { btn in
             btn.clipsToBounds = true
-            btn.layer.cornerRadius = 65 / 2
+            btn.layer.cornerRadius = 55 / 2
 //            btn.isHidden = true
             btn.alpha = 0
         }
@@ -150,7 +150,7 @@ extension MainVC {
         
         // 코너레디어스 설정
         self.plusBtn.clipsToBounds = true
-        self.plusBtn.layer.cornerRadius = 80 / 2
+        self.plusBtn.layer.cornerRadius = 70 / 2
         
         self.noDataView.clipsToBounds = true
         self.noDataView.layer.cornerRadius = 12
@@ -186,7 +186,7 @@ extension MainVC {
         self.plusBtn.snp.makeConstraints { make in
             make.trailing.equalTo(-24)
             make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom).offset(-20)
-            make.height.width.equalTo(80)
+            make.height.width.equalTo(70)
         }
         self.noDataView.snp.makeConstraints { make in
             make.top.leading.trailing.equalTo(self.collectionView)
@@ -199,7 +199,7 @@ extension MainVC {
             
         }
         self.makeRoomScreenBtn.snp.makeConstraints { make in
-            make.width.height.equalTo(65)
+            make.width.height.equalTo(55)
         }
     }
     

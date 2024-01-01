@@ -29,7 +29,7 @@ final class SettleMoneyRoomVC: UIViewController {
 //                "받아야 할 돈"])
     
     
-    private lazy var topViewTableView: SettlementDetailsTableView = SettlementDetailsTableView()
+    private lazy var topViewTableView: SettlementDetailsTableView = SettlementDetailsTableView(customTableEnum: .isSegmentCtrl)
     
     private lazy var topViewBtn: UIButton = UIButton.btnWithTitle(
         font: UIFont.boldSystemFont(ofSize: 17),
@@ -232,9 +232,12 @@ extension SettleMoneyRoomVC {
         let navPanGesture = UIPanGestureRecognizer(target: self, action: #selector(scrollVertical))
         self.navigationController?.navigationBar.addGestureRecognizer(navPanGesture)
         
+        self.bottomBtn.addTarget(self, action: #selector(self.bottomBtnTapped), for: .touchUpInside)
 
     }
-    
+    @objc private func bottomBtnTapped() {
+        self.coordinator?.receiptWriteScreen()
+    }
     
 
     

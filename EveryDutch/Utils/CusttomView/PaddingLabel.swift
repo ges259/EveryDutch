@@ -21,22 +21,24 @@ final class PaddingLabel: UILabel {
                                   bottom: self.bottomInset,
                                   right: self.rightInset)
         self.font = UIFont.systemFont(ofSize: 13)
-        self.backgroundColor = UIColor.medium_Blue
-        self.clipsToBounds = true
-        self.layer.cornerRadius = 10
         super.drawText(in: rect.inset(by: insets))
     }
     init(leftInset: CGFloat = 12,
-         rightInset: CGFloat = 12) {
+         rightInset: CGFloat = 12,
+         backgroundColor: UIColor = .clear) {
         self.leftInset = leftInset
         self.rightInset = rightInset
         
         super.init(frame: .zero)
-        
+        self.backgroundColor = backgroundColor
     }
-    convenience init(alignment: NSTextAlignment) {
+    convenience init(alignment: NSTextAlignment,
+                     leftInset: CGFloat = 12,
+                     rightInset: CGFloat = 12,
+                     backgroundColor: UIColor = .clear) {
         self.init(leftInset: 12,
-                  rightInset: 26)
+                  rightInset: 12,
+                  backgroundColor: backgroundColor)
         self.textAlignment = alignment
         self.textColor = .darkGray
     }

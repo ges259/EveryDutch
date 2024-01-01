@@ -1,23 +1,16 @@
 //
-//  SettlementCoordinator.swift
+//  ReceiptWriteCoordinator.swift
 //  EveryDutch
 //
-//  Created by 계은성 on 2023/12/28.
+//  Created by 계은성 on 2024/01/01.
 //
 
 import UIKit
 
-final class SettlementCoordinator: SettlementCoordinating {
+final class ReceiptWriteCoordinator: ReceiptWriteCoordinating {
     weak var parentCoordinator: Coordinator?
     
-    var childCoordinators: [Coordinator] = [] {
-        didSet {
-            print("********************")
-            print("SettlementCoordinator")
-            dump(childCoordinators)
-            print("********************")
-        }
-    }
+    var childCoordinators: [Coordinator] = []
     
     var nav: UINavigationController
     
@@ -28,13 +21,13 @@ final class SettlementCoordinator: SettlementCoordinating {
     
     func start() {
         // SettlementVC 인스턴스 생성
-        let settlementVC = SettlementVC(coordinator: self)
+        let receiptWriteVC = ReceiptWriteVC(coordinator: self)
         // 네비게이션 컨트롤러 생성 및 루트 뷰 컨트롤러 설정
-        let plusNavController = UINavigationController(rootViewController: settlementVC)
+        let receiptWriteNavController = UINavigationController(rootViewController: receiptWriteVC)
         // 전체 화면 꽉 채우기
-        plusNavController.modalPresentationStyle = .fullScreen
+        receiptWriteNavController.modalPresentationStyle = .fullScreen
         // 모달로 네비게이션 컨트롤러를 표시
-        self.nav.present(plusNavController, animated: true)
+        self.nav.present(receiptWriteNavController, animated: true)
     }
     
     func didFinish() {
@@ -47,8 +40,5 @@ final class SettlementCoordinator: SettlementCoordinating {
         }
     }
     
-    deinit {
-        print("deinit ----- \(#function)-----\(self)")
-
-    }
+    
 }

@@ -22,17 +22,29 @@ class InsetTextField: UITextField {
     
     init(backgroundColor: UIColor,
          placeholerColor: UIColor = UIColor.placeholder_gray,
-         placeholderText: String) {
+         placeholderText: String,
+         insetX: CGFloat = 16) {
         super.init(frame: .zero)
         
         self.font = UIFont.systemFont(ofSize: 13)
         self.backgroundColor = backgroundColor
-        self.insetX = 16
+        self.insetX = insetX
         self.attributedPlaceholder = NSAttributedString.configure(
             text: placeholderText,
             color: placeholerColor,
             font: UIFont.systemFont(ofSize: 13))
     }
+    convenience init(placeholderText: String,
+                     keyboardType: UIKeyboardType,
+                     keyboardReturnType: UIReturnKeyType) {
+        self.init(backgroundColor: UIColor.normal_white,
+                   placeholerColor: UIColor.placeholder_gray,
+                   placeholderText: placeholderText,
+                   insetX: 16)
+        self.keyboardType = keyboardType
+        self.returnKeyType = keyboardReturnType
+    }
+    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }

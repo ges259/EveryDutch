@@ -16,7 +16,8 @@ final class TopViewTableViewCell: UITableViewCell {
     private var userName: UILabel = UILabel.configureLbl(
         font: UIFont.systemFont(ofSize: 15))
     
-    private var priceLbl: PaddingLabel = PaddingLabel()
+    private var priceLbl: PaddingLabel = PaddingLabel(
+        backgroundColor: .medium_Blue)
     
     private var priceTf: InsetTextField = InsetTextField(
         backgroundColor: UIColor.medium_Blue,
@@ -76,6 +77,8 @@ extension TopViewTableViewCell {
         self.backgroundColor = .normal_white
         self.selectionStyle = .none
         self.separatorInset = .zero
+        self.priceLbl.clipsToBounds = true
+        self.priceLbl.layer.cornerRadius = 10
         
         // MARK: - Fix
         self.profileImg.image = UIImage.person_Fill_Img

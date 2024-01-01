@@ -29,14 +29,24 @@ final class SettlementDetailsTableView: UIView {
         textAlignment: .center)
     
     
+    private lazy var stackView: UIStackView = UIStackView.configureStackView(
+        arrangedSubviews: [self.topViewTableView],
+        axis: .vertical,
+        spacing: 4,
+        alignment: .fill,
+        distribution: .fill)
+    
+    
     // MARK: - 프로퍼티
 //    weak var delegate:
-    
+    private var customTableEnum : CustomTableEnum = .isSegmentCtrl
     
     // MARK: - 라이프사이클
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    init(customTableEnum: CustomTableEnum) {
+        self.customTableEnum = customTableEnum
+        super.init(frame: .zero)
         
+        self.configureUI()
         self.configureAutoLayout()
         self.configureAction()
     }
@@ -49,30 +59,45 @@ final class SettlementDetailsTableView: UIView {
 
 extension SettlementDetailsTableView {
     
-    // MARK: - 오토레이아웃 설정
-    private func configureAutoLayout() {
-        self.addSubview(self.topViewTableView)
-//        self.addSubview(self.segmentedCtrl)
-        self.addSubview(self.topLbl)
-//        self.segmentedCtrl.snp.makeConstraints { make in
-//            make.top.equalToSuperview()
-//            make.leading.trailing.equalToSuperview()
-//            make.height.equalTo(34)
-//        }
-        self.topLbl.snp.makeConstraints { make in
-            make.top.equalToSuperview()
-            make.leading.trailing.equalToSuperview()
-            make.height.equalTo(34)
+    
+    private func configureUI() {
+        switch self.customTableEnum {
+        case .isLbl:
+            self.stackView.insertArrangedSubview(self.topLbl, at: 0)
+            
+            self.topLbl.snp.makeConstraints { make in
+                make.height.equalTo(34)
+            }
+
+        case .isReceipt:
+            self.topViewTableView.layer.maskedCorners = [
+                .layerMinXMinYCorner,
+                .layerMaxXMinYCorner]
+            fallthrough
+        case .isSegmentCtrl:
+            self.stackView.insertArrangedSubview(self.segmentedCtrl, at: 0)
+            self.segmentedCtrl.snp.makeConstraints { make in
+                make.height.equalTo(34)
+            }
         }
         
-        
-        self.topViewTableView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(38)
-            make.leading.trailing.bottom.equalToSuperview()
-        }
         
         self.topLbl.clipsToBounds = true
         self.topLbl.layer.cornerRadius = 10
+        
+        self.topViewTableView.clipsToBounds = true
+        self.topViewTableView.layer.cornerRadius = 10
+    }
+    // MARK: - 오토레이아웃 설정
+    private func configureAutoLayout() {
+        self.addSubview(self.stackView)
+        
+        self.stackView.snp.makeConstraints { make in
+            make.top.equalToSuperview()
+            make.leading.trailing.bottom.equalToSuperview()
+        }
+        
+
         
         // MARK: - Fix
         self.topLbl.text = "누적 금액"

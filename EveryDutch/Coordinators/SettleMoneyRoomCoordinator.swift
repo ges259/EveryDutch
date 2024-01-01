@@ -11,7 +11,13 @@ import UIKit
 final class SettleMoneyRoomCoordinator: SettleMoneyRoomCoordinating {
     weak var parentCoordinator: Coordinator?
     
-    var childCoordinators: [Coordinator] = []
+    var childCoordinators: [Coordinator] = [] {
+        didSet {
+            print("**********SettleMoneyRoomCoordinator**********")
+            dump(childCoordinators)
+            print("********************")
+        }
+    }
     
     var nav: UINavigationController
     
@@ -35,6 +41,12 @@ final class SettleMoneyRoomCoordinator: SettleMoneyRoomCoordinating {
         self.childCoordinators.append(roomSettingCoordinator)
             roomSettingCoordinator.parentCoordinator = self
             roomSettingCoordinator.start()
+    }
+    func receiptWriteScreen() {
+        let receiptWriteCoordinator = ReceiptWriteCoordinator(nav: self.nav)
+        self.childCoordinators.append(receiptWriteCoordinator)
+            receiptWriteCoordinator.parentCoordinator = self
+            receiptWriteCoordinator.start()
     }
     
     func didFinish() {

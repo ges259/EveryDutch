@@ -9,4 +9,5 @@ import Foundation
 
 protocol SettleMoneyRoomCoordinating: Coordinator {
     func RoomSettingScreen()
+    func receiptWriteScreen()
 }

@@ -23,7 +23,7 @@ final class RoomSettingVC: UIViewController {
     private lazy var contentView: UIView = UIView()
     
     
-    private var tableView: SettlementDetailsTableView = SettlementDetailsTableView()
+    private var tableView: SettlementDetailsTableView = SettlementDetailsTableView(customTableEnum: .isSegmentCtrl)
     
     /// 정산하기 버튼
     private var settleMoneyBtn: UIButton = UIButton.btnWithTitle(
