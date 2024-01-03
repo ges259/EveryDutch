@@ -41,6 +41,7 @@ extension UIImage {
     static let check_Square_Img: UIImage? = UIImage(systemName: "checkmark.square.fill")
     /// 생상이 있는 원
     static let empty_Circle_Img: UIImage? = UIImage(systemName: "circle")
+    static let circle_Fill_Img: UIImage? = UIImage(systemName: "circle.fill")
     /// 시계 이미지
     static let clock_Img: UIImage? = UIImage(systemName: "clock")
     /// 메모 이미지

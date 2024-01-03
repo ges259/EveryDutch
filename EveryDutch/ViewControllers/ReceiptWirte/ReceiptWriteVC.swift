@@ -375,6 +375,13 @@ extension ReceiptWriteVC {
         let backButton = UIBarButtonItem(image: .chevronLeft, style: .done, target: self, action: #selector(self.backButtonTapped))
         // 네비게이션 바의 왼쪽 아이템으로 설정
         self.navigationItem.leftBarButtonItem = backButton
+        
+        self.addPersonBtn.addTarget(self, action: #selector(self.addPersonBtnTapped), for: .touchUpInside)
+        
+        
+    }
+    @objc private func addPersonBtnTapped() {
+        self.coordinator?.peopleSelectionPanScreen()
     }
     @objc private func backButtonTapped() {
         self.coordinator?.didFinish()

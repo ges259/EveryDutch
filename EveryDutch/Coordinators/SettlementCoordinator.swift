@@ -29,11 +29,11 @@ final class SettlementCoordinator: SettlementCoordinating {
         // SettlementVC 인스턴스 생성
         let settlementVC = SettlementVC(coordinator: self)
         // 네비게이션 컨트롤러 생성 및 루트 뷰 컨트롤러 설정
-        let plusNavController = UINavigationController(rootViewController: settlementVC)
+        let settlementVCNav = UINavigationController(rootViewController: settlementVC)
         // 전체 화면 꽉 채우기
-        plusNavController.modalPresentationStyle = .fullScreen
+        settlementVCNav.modalPresentationStyle = .fullScreen
         // 모달로 네비게이션 컨트롤러를 표시
-        self.nav.present(plusNavController, animated: true)
+        self.nav.present(settlementVCNav, animated: true)
     }
     
     func didFinish() {

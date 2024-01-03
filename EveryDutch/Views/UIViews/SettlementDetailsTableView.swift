@@ -68,7 +68,10 @@ extension SettlementDetailsTableView {
             self.topLbl.snp.makeConstraints { make in
                 make.height.equalTo(34)
             }
-
+            self.topLbl.clipsToBounds = true
+            self.topLbl.layer.cornerRadius = 10
+            
+            break
         case .isReceipt:
             self.topViewTableView.layer.maskedCorners = [
                 .layerMinXMinYCorner,
@@ -79,14 +82,8 @@ extension SettlementDetailsTableView {
             self.segmentedCtrl.snp.makeConstraints { make in
                 make.height.equalTo(34)
             }
+            break
         }
-        
-        
-        self.topLbl.clipsToBounds = true
-        self.topLbl.layer.cornerRadius = 10
-        
-        self.topViewTableView.clipsToBounds = true
-        self.topViewTableView.layer.cornerRadius = 10
     }
     // MARK: - 오토레이아웃 설정
     private func configureAutoLayout() {
@@ -144,7 +141,9 @@ extension SettlementDetailsTableView: UITableViewDataSource {
     func tableView(_ tableView: UITableView,
                    numberOfRowsInSection section: Int) -> Int {
 //        return 30
-        return 10
+        return 9
+//        return 16
+//        return 4
     }
     
     func tableView(_ tableView: UITableView,

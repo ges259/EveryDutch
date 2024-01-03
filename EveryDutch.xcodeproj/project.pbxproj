@@ -20,6 +20,14 @@
 		5F4913DD2B3DBE7C00CD76A8 /* SettlementCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4913DC2B3DBE7C00CD76A8 /* SettlementCoordinator.swift */; };
 		5F4913DF2B3DD97100CD76A8 /* NoDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4913DE2B3DD97100CD76A8 /* NoDataView.swift */; };
 		5F56C74C2B3D84CF00266C12 /* UIDevice+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F56C74B2B3D84CF00266C12 /* UIDevice+Ext.swift */; };
+		5F614B352B4590C500EF35CE /* PanModal in Frameworks */ = {isa = PBXBuildFile; productRef = 5F614B342B4590C500EF35CE /* PanModal */; };
+		5F614B3B2B4592EF00EF35CE /* ReceiptWriteVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F614B3A2B4592EF00EF35CE /* ReceiptWriteVC.swift */; };
+		5F614B3E2B45938D00EF35CE /* CheckReceiptPanVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F614B3D2B45938D00EF35CE /* CheckReceiptPanVC.swift */; };
+		5F614B402B4593AE00EF35CE /* ReceiptScreenPanVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F614B3F2B4593AE00EF35CE /* ReceiptScreenPanVC.swift */; };
+		5F614B422B4593E900EF35CE /* PeopleSelectionPanVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F614B412B4593E900EF35CE /* PeopleSelectionPanVC.swift */; };
+		5F614B442B45944600EF35CE /* DeleteAccountPanVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F614B432B45944600EF35CE /* DeleteAccountPanVC.swift */; };
+		5F614B482B45A6A300EF35CE /* PeopleSelectionPanCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F614B472B45A6A300EF35CE /* PeopleSelectionPanCoordinator.swift */; };
+		5F614B4A2B45D47A00EF35CE /* SearchMethodTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F614B492B45D47A00EF35CE /* SearchMethodTableViewCell.swift */; };
 		5F66F3AA2B41D7FC005F6C52 /* FSCalendar in Frameworks */ = {isa = PBXBuildFile; productRef = 5F66F3A92B41D7FC005F6C52 /* FSCalendar */; };
 		5F6848762B4415D70015BFCC /* SignUpVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6848752B4415D70015BFCC /* SignUpVC.swift */; };
 		5F6848782B441A670015BFCC /* SelectALoginMethodCoordinating.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6848772B441A670015BFCC /* SelectALoginMethodCoordinating.swift */; };
@@ -41,7 +49,6 @@
 		5F903E672B3B412A005DE55E /* SettlementTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F903E662B3B412A005DE55E /* SettlementTableViewCell.swift */; };
 		5FB4F6F62B432528002F6CF3 /* CustomTableEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FB4F6F52B432528002F6CF3 /* CustomTableEnum.swift */; };
 		5FB4F6FE2B433DE6002F6CF3 /* FindFriendsVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FB4F6FD2B433DE6002F6CF3 /* FindFriendsVC.swift */; };
-		5FB4F7072B433DEF002F6CF3 /* ReceiptWriteVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FB4F6FF2B433DEF002F6CF3 /* ReceiptWriteVC.swift */; };
 		5FB4F7082B433DEF002F6CF3 /* MultipurposeScreenVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FB4F7002B433DEF002F6CF3 /* MultipurposeScreenVC.swift */; };
 		5FB4F7092B433DEF002F6CF3 /* SettlementVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FB4F7012B433DEF002F6CF3 /* SettlementVC.swift */; };
 		5FB4F70A2B433DEF002F6CF3 /* MainVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FB4F7022B433DEF002F6CF3 /* MainVC.swift */; };
@@ -94,6 +101,13 @@
 		5F4913DC2B3DBE7C00CD76A8 /* SettlementCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettlementCoordinator.swift; sourceTree = "<group>"; };
 		5F4913DE2B3DD97100CD76A8 /* NoDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoDataView.swift; sourceTree = "<group>"; };
 		5F56C74B2B3D84CF00266C12 /* UIDevice+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIDevice+Ext.swift"; sourceTree = "<group>"; };
+		5F614B3A2B4592EF00EF35CE /* ReceiptWriteVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceiptWriteVC.swift; sourceTree = "<group>"; };
+		5F614B3D2B45938D00EF35CE /* CheckReceiptPanVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckReceiptPanVC.swift; sourceTree = "<group>"; };
+		5F614B3F2B4593AE00EF35CE /* ReceiptScreenPanVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptScreenPanVC.swift; sourceTree = "<group>"; };
+		5F614B412B4593E900EF35CE /* PeopleSelectionPanVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleSelectionPanVC.swift; sourceTree = "<group>"; };
+		5F614B432B45944600EF35CE /* DeleteAccountPanVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteAccountPanVC.swift; sourceTree = "<group>"; };
+		5F614B472B45A6A300EF35CE /* PeopleSelectionPanCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleSelectionPanCoordinator.swift; sourceTree = "<group>"; };
+		5F614B492B45D47A00EF35CE /* SearchMethodTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchMethodTableViewCell.swift; sourceTree = "<group>"; };
 		5F6848752B4415D70015BFCC /* SignUpVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpVC.swift; sourceTree = "<group>"; };
 		5F6848772B441A670015BFCC /* SelectALoginMethodCoordinating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectALoginMethodCoordinating.swift; sourceTree = "<group>"; };
 		5F6848792B441A7E0015BFCC /* SelectALoginMethodCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectALoginMethodCoordinator.swift; sourceTree = "<group>"; };
@@ -113,14 +127,13 @@
 		5F87DF2B2B3C99A3001D5B80 /* RoomSettingCoordinating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomSettingCoordinating.swift; sourceTree = "<group>"; };
 		5F903E662B3B412A005DE55E /* SettlementTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettlementTableViewCell.swift; sourceTree = "<group>"; };
 		5FB4F6F52B432528002F6CF3 /* CustomTableEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTableEnum.swift; sourceTree = "<group>"; };
-		5FB4F6FD2B433DE6002F6CF3 /* FindFriendsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FindFriendsVC.swift; path = EveryDutch/ViewControllers/FindFriendsVC.swift; sourceTree = SOURCE_ROOT; };
-		5FB4F6FF2B433DEF002F6CF3 /* ReceiptWriteVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ReceiptWriteVC.swift; path = EveryDutch/ViewControllers/ReceiptWriteVC.swift; sourceTree = SOURCE_ROOT; };
-		5FB4F7002B433DEF002F6CF3 /* MultipurposeScreenVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MultipurposeScreenVC.swift; path = EveryDutch/ViewControllers/MultipurposeScreenVC.swift; sourceTree = SOURCE_ROOT; };
-		5FB4F7012B433DEF002F6CF3 /* SettlementVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SettlementVC.swift; path = EveryDutch/ViewControllers/SettlementVC.swift; sourceTree = SOURCE_ROOT; };
-		5FB4F7022B433DEF002F6CF3 /* MainVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainVC.swift; path = EveryDutch/ViewControllers/MainVC.swift; sourceTree = SOURCE_ROOT; };
-		5FB4F7032B433DEF002F6CF3 /* RoomSettingVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RoomSettingVC.swift; path = EveryDutch/ViewControllers/RoomSettingVC.swift; sourceTree = SOURCE_ROOT; };
+		5FB4F6FD2B433DE6002F6CF3 /* FindFriendsVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FindFriendsVC.swift; path = EveryDutch/ViewControllers/Room/FindFriendsVC.swift; sourceTree = SOURCE_ROOT; };
+		5FB4F7002B433DEF002F6CF3 /* MultipurposeScreenVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MultipurposeScreenVC.swift; path = EveryDutch/ViewControllers/Main/MultipurposeScreenVC.swift; sourceTree = SOURCE_ROOT; };
+		5FB4F7012B433DEF002F6CF3 /* SettlementVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SettlementVC.swift; path = EveryDutch/ViewControllers/Room/SettlementVC.swift; sourceTree = SOURCE_ROOT; };
+		5FB4F7022B433DEF002F6CF3 /* MainVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MainVC.swift; path = EveryDutch/ViewControllers/Main/MainVC.swift; sourceTree = SOURCE_ROOT; };
+		5FB4F7032B433DEF002F6CF3 /* RoomSettingVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = RoomSettingVC.swift; path = EveryDutch/ViewControllers/Room/RoomSettingVC.swift; sourceTree = SOURCE_ROOT; };
 		5FB4F7042B433DEF002F6CF3 /* LoginVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LoginVC.swift; path = EveryDutch/ViewControllers/Auth/LoginVC.swift; sourceTree = SOURCE_ROOT; };
-		5FB4F7052B433DEF002F6CF3 /* SettleMoneyRoomVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SettleMoneyRoomVC.swift; path = EveryDutch/ViewControllers/SettleMoneyRoomVC.swift; sourceTree = SOURCE_ROOT; };
+		5FB4F7052B433DEF002F6CF3 /* SettleMoneyRoomVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SettleMoneyRoomVC.swift; path = EveryDutch/ViewControllers/Room/SettleMoneyRoomVC.swift; sourceTree = SOURCE_ROOT; };
 		5FB4F7062B433DEF002F6CF3 /* SelectALoginMethodVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SelectALoginMethodVC.swift; path = EveryDutch/ViewControllers/Auth/SelectALoginMethodVC.swift; sourceTree = SOURCE_ROOT; };
 		5FC648442B42EB8000C451BF /* ReceiptWriteCoordinating.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptWriteCoordinating.swift; sourceTree = "<group>"; };
 		5FC648462B42EB9500C451BF /* ReceiptWriteCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptWriteCoordinator.swift; sourceTree = "<group>"; };
@@ -161,6 +174,7 @@
 			files = (
 				5FE3DECF2B39CCAE008D58AE /* SnapKit in Frameworks */,
 				5F66F3AA2B41D7FC005F6C52 /* FSCalendar in Frameworks */,
+				5F614B352B4590C500EF35CE /* PanModal in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -173,6 +187,7 @@
 				5FE3DEC32B39CBA4008D58AE /* MainCollectionViewCell.swift */,
 				5F903E662B3B412A005DE55E /* SettlementTableViewCell.swift */,
 				5F70069C2B3B57450028DC8B /* TopViewTableViewCell.swift */,
+				5F614B492B45D47A00EF35CE /* SearchMethodTableViewCell.swift */,
 			);
 			path = Cells;
 			sourceTree = "<group>";
@@ -188,12 +203,44 @@
 			path = UIViews;
 			sourceTree = "<group>";
 		};
+		5F614B382B45917A00EF35CE /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				5FB4F7022B433DEF002F6CF3 /* MainVC.swift */,
+				5FB4F7002B433DEF002F6CF3 /* MultipurposeScreenVC.swift */,
+			);
+			path = Main;
+			sourceTree = "<group>";
+		};
+		5F614B392B45920800EF35CE /* Room */ = {
+			isa = PBXGroup;
+			children = (
+				5FB4F7052B433DEF002F6CF3 /* SettleMoneyRoomVC.swift */,
+				5FB4F7032B433DEF002F6CF3 /* RoomSettingVC.swift */,
+				5FB4F6FD2B433DE6002F6CF3 /* FindFriendsVC.swift */,
+				5FB4F7012B433DEF002F6CF3 /* SettlementVC.swift */,
+			);
+			path = Room;
+			sourceTree = "<group>";
+		};
+		5F614B3C2B45930A00EF35CE /* ReceiptWirte */ = {
+			isa = PBXGroup;
+			children = (
+				5F614B3A2B4592EF00EF35CE /* ReceiptWriteVC.swift */,
+				5F614B3D2B45938D00EF35CE /* CheckReceiptPanVC.swift */,
+				5F614B3F2B4593AE00EF35CE /* ReceiptScreenPanVC.swift */,
+				5F614B412B4593E900EF35CE /* PeopleSelectionPanVC.swift */,
+			);
+			path = ReceiptWirte;
+			sourceTree = "<group>";
+		};
 		5F6848742B4415500015BFCC /* Auth */ = {
 			isa = PBXGroup;
 			children = (
 				5FB4F7062B433DEF002F6CF3 /* SelectALoginMethodVC.swift */,
 				5FB4F7042B433DEF002F6CF3 /* LoginVC.swift */,
 				5F6848752B4415D70015BFCC /* SignUpVC.swift */,
+				5F614B432B45944600EF35CE /* DeleteAccountPanVC.swift */,
 			);
 			path = Auth;
 			sourceTree = "<group>";
@@ -220,13 +267,9 @@
 		5FB4F6FC2B433CFD002F6CF3 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
-				5FB4F6FD2B433DE6002F6CF3 /* FindFriendsVC.swift */,
-				5FB4F7022B433DEF002F6CF3 /* MainVC.swift */,
-				5FB4F6FF2B433DEF002F6CF3 /* ReceiptWriteVC.swift */,
-				5FB4F7032B433DEF002F6CF3 /* RoomSettingVC.swift */,
-				5FB4F7012B433DEF002F6CF3 /* SettlementVC.swift */,
-				5FB4F7052B433DEF002F6CF3 /* SettleMoneyRoomVC.swift */,
-				5FB4F7002B433DEF002F6CF3 /* MultipurposeScreenVC.swift */,
+				5F614B382B45917A00EF35CE /* Main */,
+				5F614B392B45920800EF35CE /* Room */,
+				5F614B3C2B45930A00EF35CE /* ReceiptWirte */,
 				5F6848742B4415500015BFCC /* Auth */,
 			);
 			path = ViewControllers;
@@ -315,6 +358,7 @@
 				5F6848792B441A7E0015BFCC /* SelectALoginMethodCoordinator.swift */,
 				5F68487D2B441BCA0015BFCC /* LoginScreenCoordinator.swift */,
 				5F6848812B441C360015BFCC /* SignUpScreenCoordinator.swift */,
+				5F614B472B45A6A300EF35CE /* PeopleSelectionPanCoordinator.swift */,
 			);
 			path = Coordinators;
 			sourceTree = "<group>";
@@ -423,6 +467,7 @@
 			packageProductDependencies = (
 				5FE3DECE2B39CCAE008D58AE /* SnapKit */,
 				5F66F3A92B41D7FC005F6C52 /* FSCalendar */,
+				5F614B342B4590C500EF35CE /* PanModal */,
 			);
 			productName = EveryDutch;
 			productReference = 5FE3DE8B2B39CA9B008D58AE /* EveryDutch.app */;
@@ -455,6 +500,7 @@
 			packageReferences = (
 				5FE3DECD2B39CCAE008D58AE /* XCRemoteSwiftPackageReference "SnapKit" */,
 				5F66F3A82B41D7FC005F6C52 /* XCRemoteSwiftPackageReference "FSCalendar" */,
+				5F614B332B4590C500EF35CE /* XCRemoteSwiftPackageReference "PanModal" */,
 			);
 			productRefGroup = 5FE3DE8C2B39CA9B008D58AE /* Products */;
 			projectDirPath = "";
@@ -482,6 +528,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5F614B3E2B45938D00EF35CE /* CheckReceiptPanVC.swift in Sources */,
 				5F47CD102B3AECB500FCBFA4 /* SettleMoneyRoomCoordinator.swift in Sources */,
 				5F6C434D2B3C5BD000BBC466 /* PaddingLabel.swift in Sources */,
 				5FB4F70C2B433DEF002F6CF3 /* LoginVC.swift in Sources */,
@@ -498,7 +545,6 @@
 				5F6848822B441C360015BFCC /* SignUpScreenCoordinator.swift in Sources */,
 				5F70069D2B3B57450028DC8B /* TopViewTableViewCell.swift in Sources */,
 				5FB4F70E2B433DEF002F6CF3 /* SelectALoginMethodVC.swift in Sources */,
-				5FB4F7072B433DEF002F6CF3 /* ReceiptWriteVC.swift in Sources */,
 				5F6848802B441C260015BFCC /* SignUpScreenCoordinating.swift in Sources */,
 				5FE3DEC82B39CC2A008D58AE /* AppCoordinator.swift in Sources */,
 				5F68487E2B441BCA0015BFCC /* LoginScreenCoordinator.swift in Sources */,
@@ -506,15 +552,18 @@
 				5FB4F7082B433DEF002F6CF3 /* MultipurposeScreenVC.swift in Sources */,
 				5FE3DEDB2B39FA22008D58AE /* NSAttributedString+Ext.swift in Sources */,
 				5F47CD0E2B3AECA700FCBFA4 /* SettleMoneyRoomVM.swift in Sources */,
+				5F614B3B2B4592EF00EF35CE /* ReceiptWriteVC.swift in Sources */,
 				5FE3DEB62B39CB6F008D58AE /* UIImage+Ext.swift in Sources */,
 				5F903E672B3B412A005DE55E /* SettlementTableViewCell.swift in Sources */,
 				5F68487A2B441A7E0015BFCC /* SelectALoginMethodCoordinator.swift in Sources */,
+				5F614B482B45A6A300EF35CE /* PeopleSelectionPanCoordinator.swift in Sources */,
 				5FFEAE712B3F3AE100E0B2BB /* FindFriendsCoordinator.swift in Sources */,
 				5FE3DE8F2B39CA9B008D58AE /* AppDelegate.swift in Sources */,
 				5F2F7A782B3ECD91004B136F /* CardImageView.swift in Sources */,
 				5FB4F7092B433DEF002F6CF3 /* SettlementVC.swift in Sources */,
 				5FE3DECA2B39CC52008D58AE /* MultipurposeScreenCoordinator.swift in Sources */,
 				5FB4F70D2B433DEF002F6CF3 /* SettleMoneyRoomVC.swift in Sources */,
+				5F614B4A2B45D47A00EF35CE /* SearchMethodTableViewCell.swift in Sources */,
 				5F4913DB2B3DBE5900CD76A8 /* SettlementCoordinating.swift in Sources */,
 				5FE3DED12B39DA9C008D58AE /* UIView+Ext.swift in Sources */,
 				5F6848852B4428310015BFCC /* CardTextDelegate.swift in Sources */,
@@ -525,11 +574,13 @@
 				5FB4F70A2B433DEF002F6CF3 /* MainVC.swift in Sources */,
 				5FE3DEBA2B39CB7B008D58AE /* UILabel+Ext.swift in Sources */,
 				5FE3DEBC2B39CB87008D58AE /* MainCoordinator.swift in Sources */,
+				5F614B442B45944600EF35CE /* DeleteAccountPanVC.swift in Sources */,
 				5FFEAE6D2B3F307E00E0B2BB /* ProfileVC.swift in Sources */,
 				5FC648472B42EB9500C451BF /* ReceiptWriteCoordinator.swift in Sources */,
 				5FE3DEC42B39CBA4008D58AE /* MainCollectionViewCell.swift in Sources */,
 				5FFEAE6B2B3F282000E0B2BB /* EditProfileVC.swift in Sources */,
 				5FE3DEC22B39CB9B008D58AE /* MainVM.swift in Sources */,
+				5F614B402B4593AE00EF35CE /* ReceiptScreenPanVC.swift in Sources */,
 				5F2F7A7C2B3EEFBD004B136F /* CardTextEnum.swift in Sources */,
 				5FE3DE912B39CA9B008D58AE /* SceneDelegate.swift in Sources */,
 				5FB4F6FE2B433DE6002F6CF3 /* FindFriendsVC.swift in Sources */,
@@ -540,6 +591,7 @@
 				5F47CD0A2B3AE9D800FCBFA4 /* SettingProtocol.swift in Sources */,
 				5FE3DEB82B39CB75008D58AE /* UIColor+Ext.swift in Sources */,
 				5F47CD142B3AF01400FCBFA4 /* SettleMoneyRoomProtocol.swift in Sources */,
+				5F614B422B4593E900EF35CE /* PeopleSelectionPanVC.swift in Sources */,
 				5FB4F6F62B432528002F6CF3 /* CustomTableEnum.swift in Sources */,
 				5FE3DEAA2B39CB15008D58AE /* Identifier.swift in Sources */,
 				5FB4F70B2B433DEF002F6CF3 /* RoomSettingVC.swift in Sources */,
@@ -758,6 +810,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		5F614B332B4590C500EF35CE /* XCRemoteSwiftPackageReference "PanModal" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/slackhq/PanModal";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
 		5F66F3A82B41D7FC005F6C52 /* XCRemoteSwiftPackageReference "FSCalendar" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/WenchaoD/FSCalendar";
@@ -777,6 +837,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		5F614B342B4590C500EF35CE /* PanModal */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5F614B332B4590C500EF35CE /* XCRemoteSwiftPackageReference "PanModal" */;
+			productName = PanModal;
+		};
 		5F66F3A92B41D7FC005F6C52 /* FSCalendar */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 5F66F3A82B41D7FC005F6C52 /* XCRemoteSwiftPackageReference "FSCalendar" */;

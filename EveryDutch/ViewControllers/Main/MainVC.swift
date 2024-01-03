@@ -29,7 +29,7 @@ final class MainVC: UIViewController {
         return view
     }()
     /// 플러스 버튼
-    private lazy var plusBtn: UIButton = UIButton.btnWithImg(
+    private lazy var menuBtn: UIButton = UIButton.btnWithImg(
         imageEnum: .menu,
         imageSize: 25,
         tintColor: UIColor.white,
@@ -48,19 +48,19 @@ final class MainVC: UIViewController {
     }()
     
     private var makeRoomScreenBtn: UIButton = UIButton.btnWithImg(
-        imageEnum: .person_Fill,
+        imageEnum: .plus,
         imageSize: 20,
         tintColor: UIColor.deep_Blue,
         backgroundColor: UIColor.normal_white)
     private var profileScreenBtn: UIButton = UIButton.btnWithImg(
-        imageEnum: .plus,
+        imageEnum: .person_Fill,
         imageSize: 20,
         tintColor: UIColor.deep_Blue,
         backgroundColor: UIColor.normal_white)
     
     private lazy var floatingStackView: UIStackView = UIStackView.configureStackView(
-        arrangedSubviews: [self.makeRoomScreenBtn,
-                           self.profileScreenBtn],
+        arrangedSubviews: [self.profileScreenBtn,
+                           self.makeRoomScreenBtn],
         axis: .vertical,
         spacing: 5,
         alignment: .fill,
@@ -86,8 +86,8 @@ final class MainVC: UIViewController {
     private lazy var cardHeight = (self.view.frame.width - 20) * 1.8 / 3
     
     
-    private lazy var floatingArray: [UIButton] = [self.profileScreenBtn,
-                                                  self.makeRoomScreenBtn]
+    private lazy var floatingArray: [UIButton] = [self.makeRoomScreenBtn,
+                                                  self.profileScreenBtn]
     
     private var isFloatingShow: Bool = false
     
@@ -119,7 +119,7 @@ final class MainVC: UIViewController {
         self.navigationController?.navigationBar.isHidden = false
         
         if self.isFloatingShow {
-            self.plusBtnTapped()
+            self.menuBtnTapped()
         }
     }
 }
@@ -149,8 +149,8 @@ extension MainVC {
         
         
         // 코너레디어스 설정
-        self.plusBtn.clipsToBounds = true
-        self.plusBtn.layer.cornerRadius = 70 / 2
+        self.menuBtn.clipsToBounds = true
+        self.menuBtn.layer.cornerRadius = 70 / 2
         
         self.noDataView.clipsToBounds = true
         self.noDataView.layer.cornerRadius = 12
@@ -164,7 +164,7 @@ extension MainVC {
         self.view.addSubview(self.collectionView)
         self.view.addSubview(self.floatingDimView)
         self.view.addSubview(self.floatingStackView)
-        self.view.addSubview(self.plusBtn)
+        self.view.addSubview(self.menuBtn)
         self.view.addSubview(self.noDataView)
         
         
@@ -183,7 +183,7 @@ extension MainVC {
             make.trailing.equalToSuperview().offset(-10)
             make.bottom.equalToSuperview()
         }
-        self.plusBtn.snp.makeConstraints { make in
+        self.menuBtn.snp.makeConstraints { make in
             make.trailing.equalTo(-24)
             make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom).offset(-20)
             make.height.width.equalTo(70)
@@ -194,8 +194,8 @@ extension MainVC {
         }
         
         self.floatingStackView.snp.makeConstraints { make in
-            make.bottom.equalTo(self.plusBtn.snp.top).offset(-7)
-            make.centerX.equalTo(self.plusBtn)
+            make.bottom.equalTo(self.menuBtn.snp.top).offset(-7)
+            make.centerX.equalTo(self.menuBtn)
             
         }
         self.makeRoomScreenBtn.snp.makeConstraints { make in
@@ -205,7 +205,7 @@ extension MainVC {
     
     // MARK: - 액션 설정
     private func configureAction() {
-        self.plusBtn.addTarget(self, action: #selector(self.plusBtnTapped), for: .touchUpInside)
+        self.menuBtn.addTarget(self, action: #selector(self.menuBtnTapped), for: .touchUpInside)
         self.profileScreenBtn.addTarget(self, action: #selector(self.profileScreenBtnTapped), for: .touchUpInside)
         self.makeRoomScreenBtn.addTarget(self, action: #selector(self.makeRoomScreenBtnTapped), for: .touchUpInside)
         
@@ -217,36 +217,64 @@ extension MainVC {
 
 
 
-// MARK: - 액션 설정
-
+// MARK: - 플로팅 버튼 액션 설정
 extension MainVC {
-    @objc private func plusBtnTapped() {
-        
+    @objc private func menuBtnTapped() {
+        // 플로팅 버튼 액션
         self.isFloatingShow
         ? self.floatingBtnhidden()
         : self.floatingBtnShow()
-        
-        
+        // 상태 업데이트
         self.isFloatingShow.toggle()
+        // 메뉴버튼 이미지 돌리기
+        self.menuBtnSpin()
+    }
+    @objc private func profileScreenBtnTapped() {
         
-        let roatation = self.isFloatingShow ? CGAffineTransform(rotationAngle: .pi - (.pi / 4)) : CGAffineTransform.identity
+    }
+    
+    @objc private func makeRoomScreenBtnTapped() {
+        self.coordinator?.multiPurposeScreen()
+    }
+    
+    @objc private func floatingViewTappd() {
+        self.menuBtnTapped()
+    }
+}
 
+
+
+
+
+
+
+// MARK: - 플로팅 Spin 액션
+extension MainVC {
+    /// 메뉴버튼 이미지 돌리기 (Spin)
+    private func menuBtnSpin() {
+        // 얼마나 돌릴지 (Spin)
+        let roatation = self.isFloatingShow
+        ? CGAffineTransform(rotationAngle: .pi - (.pi / 4))
+        : CGAffineTransform.identity
+        // 돌리기(Spin)
         UIView.animate(withDuration: 0.3) {
-            self.plusBtn.transform = roatation
+            self.menuBtn.transform = roatation
         }
     }
     
+    /// 플로팅 버튼 보이게 하는 메서드
     private func floatingBtnShow() {
+        // 회색 배경 보이도록 설정
         self.floatingDimView.isHidden = false
-        self.floatingDimView.alpha = 1
-        // MARK: - Fix
-        UIView.animate(withDuration: 0.3) {
-            self.plusBtn.setImage(UIImage.plus_Img, for: .normal)
-
-        }
         
+        UIView.animate(withDuration: 0.3) {
+            // MARK: - Fix
+            self.menuBtn.setImage(UIImage.plus_Img, for: .normal)
+            // 서서히 보이도록 설정
+            self.floatingDimView.alpha = 1
+        }
+        // 버튼 순서대로 올리기
         for (index, button) in self.floatingArray.enumerated() {
-
             let delay = Double(index) * 0.1 // 각 버튼마다 0.1초의 지연
             UIView.animate(withDuration: 0.15, delay: delay) {
                 button.transform = .identity
@@ -254,40 +282,35 @@ extension MainVC {
             }
         }
     }
-    
+    /// 플로팅 버튼 숨기는 메서드
     private func floatingBtnhidden() {
-        // MARK: - Fix
+        
         UIView.animate(withDuration: 0.3) {
-            self.plusBtn.setImage(UIImage.menu_Img, for: .normal)
+            // MARK: - Fix
+            self.menuBtn.setImage(UIImage.menu_Img, for: .normal)
+            // 서서히 안 보이도록 설정
+            self.floatingDimView.alpha = 0
+        } completion: { _ in
+            self.floatingDimView.isHidden = true
         }
-
+        // 버튼 순서대로 내리기
         for (index, button) in self.floatingArray.reversed().enumerated() {
             let delay = Double(index) * 0.1 // 각 버튼마다 0.1초의 지연
             
             UIView.animate(withDuration: 0.15, delay: delay) {
                 button.alpha = 0
                 button.transform = CGAffineTransform(translationX: 0, y: 80)
-                self.floatingDimView.alpha = 0
-            } completion: { _ in
-                self.floatingDimView.isHidden = true
             }
         }
     }
-    
-    
-    @objc private func profileScreenBtnTapped() {
-    }
-    @objc private func makeRoomScreenBtnTapped() {
-        self.coordinator?.multiPurposeScreen()
-    }
-    
-    @objc private func floatingViewTappd() {
-        self.plusBtnTapped()
-    }
-    
-    
-    
 }
+
+
+
+
+
+
+
 
 
 

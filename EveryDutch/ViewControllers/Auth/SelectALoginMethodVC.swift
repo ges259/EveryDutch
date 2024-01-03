@@ -115,7 +115,7 @@ extension SelectALoginMethodVC {
         // 버튼의 높이 설정 및 코너레디어스 설정
         self.buttonArray.forEach { btn in
             btn.snp.makeConstraints { make in
-                make.height.equalTo(45)
+                make.height.equalTo(47)
             }
             // ********** UI설정 **********
             btn.clipsToBounds = true

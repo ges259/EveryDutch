@@ -21,6 +21,7 @@ enum imageEnum {
     case empty_Square
     case check_Square
     case empty_Cirle
+    case circle_Fill
     case clock
     case note
     case won
@@ -46,6 +47,7 @@ enum imageEnum {
         case .empty_Square: return "square"
         case .check_Square: return "checkmark.square.fill"
         case .empty_Cirle: return "circle"
+        case .circle_Fill: return "circle.fill"
         case .clock: return "clock"
         case .note: return "square.and.pencil"
         case .won: return "wonsign.circle"

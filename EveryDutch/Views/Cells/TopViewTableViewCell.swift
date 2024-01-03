@@ -25,9 +25,11 @@ final class TopViewTableViewCell: UITableViewCell {
         placeholderText: "가격 입력")
 
     private lazy var rightBtn: UIButton = UIButton.btnWithImg(
-        imageEnum: .chevronRight, imageSize: 10)
-    
-    
+        imageEnum: .check_Square,
+        imageSize: 13)
+    // chevronRight
+    private lazy var whiteView: UIView = UIView.configureView(
+        color: UIColor.white)
     
     private lazy var leftStackView: UIStackView = UIStackView.configureStackView(
         arrangedSubviews: [self.profileImg,
@@ -106,17 +108,17 @@ extension TopViewTableViewCell {
     // MARK: - 오토레이아웃 설정
     private func configureAutoLayout() {
         self.addSubview(self.leftStackView)
+        self.addSubview(self.whiteView)
         self.contentView.addSubview(self.rightStackView)
         self.contentView.addSubview(self.priceTf)
         
         self.profileImg.snp.makeConstraints { make in
             make.width.height.equalTo(21)
         }
-        self.rightBtn.snp.makeConstraints { make in
-            make.height.equalTo(17)
-            make.width.equalTo(10)
-            
-        }
+//        self.rightBtn.snp.makeConstraints { make in
+//            make.height.equalTo(17)
+//            make.width.equalTo(10)
+//        }
         
         self.leftStackView.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(20)
@@ -135,6 +137,16 @@ extension TopViewTableViewCell {
             make.height.equalTo(30)
             make.centerY.equalToSuperview()
         }
+        
+        
+//        self.whiteView.clipsToBounds = true
+//        self.whiteView.layer.cornerRadius = 27 / 2
+//        self.rightBtn.tintColor = UIColor.deep_Blue
+//
+//        self.whiteView.snp.makeConstraints { make in
+//            make.centerX.centerY.equalTo(self.rightBtn)
+//            make.width.height.equalTo(27)
+//        }
     }
     
     private func configureAction() {
