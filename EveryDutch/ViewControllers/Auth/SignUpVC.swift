@@ -1,22 +1,21 @@
 //
-//  LoginVC.swift
+//  SignUpVC.swift
 //  EveryDutch
 //
 //  Created by 계은성 on 2024/01/02.
 //
 
 import UIKit
-import SnapKit
 
-final class LoginVC: UIViewController {
+final class SignUpVC: UIViewController {
     
     // MARK: - 레이아웃
     private lazy var containerView: UIView = UIView.configureView(
-        color: UIColor.normal_white)
+        color: UIColor.medium_Blue)
     
     /// "로그인" 레이블
-    private lazy var loginLbl: UILabel = UILabel.configureLbl(
-        text: "이메일 로그인",
+    private lazy var signUpLbl: UILabel = UILabel.configureLbl(
+        text: "이메일 회원가입",
         font: UIFont.boldSystemFont(ofSize: 25))
     
     /// 이메일 텍스트필드
@@ -25,19 +24,31 @@ final class LoginVC: UIViewController {
         keyboardType: .emailAddress,
         keyboardReturnType: .continue)
     
+    private lazy var userNameTF: InsetTextField = InsetTextField(
+        placeholderText: "비밀번호를 입력하세요.",
+        keyboardType: .default,
+        keyboardReturnType: .continue)
+    
     /// 비밀번호 텍스트필드
     private lazy var passwordTF: InsetTextField = InsetTextField(
         placeholderText: "비밀번호를 입력하세요.",
         keyboardType: .default,
+        keyboardReturnType: .continue)
+    
+    private lazy var passwordCheckTF: InsetTextField = InsetTextField(
+        placeholderText: "비밀번호를 입력하세요.",
+        keyboardType: .default,
         keyboardReturnType: .done)
     
+
+    
     /// 로그인 버튼
-    private lazy var logInBtn: UIButton = {
+    private lazy var signUpBtn: UIButton = {
         let btn = UIButton.btnWithTitle(
             title: "로그인",
             titleColor: UIColor.white,
             font: UIFont.boldSystemFont(ofSize: 20),
-            backgroundColor: UIColor.medium_Blue)
+            backgroundColor: UIColor.disableBtn)
             btn.isEnabled = false
         return btn
     }()
@@ -45,7 +56,7 @@ final class LoginVC: UIViewController {
     /// 회원가입 화면으로 이동 버튼
     private lazy var goToSignUpViewBtn: UIButton = {
         let btn = UIButton.btnWithTitle(
-            title: "아이디가 없으신가요?",
+            title: "아이디가 이미 있으신가요?",
             font: UIFont.systemFont(ofSize: 13),
             backgroundColor: UIColor.clear)
         btn.contentHorizontalAlignment = .left
@@ -54,19 +65,21 @@ final class LoginVC: UIViewController {
     
     /// 스택뷰
     private lazy var stackView: UIStackView = UIStackView.configureStackView(
-        arrangedSubviews: [self.loginLbl,
+        arrangedSubviews: [self.signUpLbl,
                            self.emailTF,
+                           self.userNameTF,
                            self.passwordTF,
-                           self.logInBtn],
+                           self.passwordCheckTF,
+                           self.signUpBtn],
         axis: .vertical,
         spacing: 7,
         alignment: .fill,
         distribution: .fill)
     
     
-
     // MARK: - 프로퍼티
-    
+    private var coordinator: SignUpScreenCoordinating?
+
     
     
     // MARK: - 라이프사이클
@@ -77,29 +90,35 @@ final class LoginVC: UIViewController {
         self.configureAutoLayout()
         self.configureAction()
     }
+    init(coordinator: SignUpScreenCoordinating) {
+        self.coordinator =  coordinator
+        super.init(nibName: nil, bundle: nil)
+    }
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 }
 
 // MARK: - 화면 설정
 
-extension LoginVC {
+extension SignUpVC {
     
     // MARK: - UI 설정
     private func configureUI() {
         // 배경 색상 설정
-         self.view.backgroundColor = UIColor.base_Blue
-         // 네비게이션 타이틀뷰(View) 설정
-//         self.navigationItem.titleView = self.navTitle
-//         self.navTitle.text = "로그인"
-         // '아이디가 없으신가요?' 버튼 <- 스택뷰 간격 넓히기
-         self.stackView.setCustomSpacing(15, after: self.loginLbl)
-         
-         [self.containerView,
-          self.emailTF,
-          self.passwordTF,
-          self.logInBtn].forEach { view in
-             view.clipsToBounds = true
-             view.layer.cornerRadius = 10
-         }
+        self.view.backgroundColor = UIColor.base_Blue
+        
+        self.stackView.setCustomSpacing(15, after: self.signUpLbl)
+        
+        [self.containerView,
+         self.emailTF,
+         self.userNameTF,
+         self.passwordTF,
+         self.passwordCheckTF,
+         self.signUpBtn].forEach { view in
+            view.clipsToBounds = true
+            view.layer.cornerRadius = 10
+        }
     }
     
     // MARK: - 오토레이아웃 설정
@@ -107,7 +126,6 @@ extension LoginVC {
         // ********** addSubview 설정 **********
         self.view.addSubview(self.containerView)
         self.containerView.addSubview(self.stackView)
-        self.containerView.addSubview(self.goToSignUpViewBtn)
         
         // ********** 오토레이아웃 설정 **********
         // 컨테이너뷰
@@ -121,18 +139,14 @@ extension LoginVC {
             make.top.equalToSuperview().offset(20)
             make.leading.equalToSuperview().offset(10)
             make.trailing.equalToSuperview().offset(-10)
-        }
-        //
-        self.goToSignUpViewBtn.snp.makeConstraints { make in
-            make.top.equalTo(self.stackView.snp.bottom).offset(10)
-            make.leading.equalTo(self.stackView).offset(10)
-            make.trailing.equalTo(self.stackView).offset(-10)
             make.bottom.equalToSuperview().offset(-10)
         }
         // 텍스트필드 높이 설정
         [self.emailTF,
+         self.userNameTF,
          self.passwordTF,
-         self.logInBtn].forEach { view in
+         self.passwordCheckTF,
+         self.signUpBtn].forEach { view in
             view.snp.makeConstraints { make in
                 make.height.equalTo(45)
             }
@@ -141,12 +155,12 @@ extension LoginVC {
     
     // MARK: - 액션 설정
     private func configureAction() {
-//        self.logInBtn.addTarget(self, action: #selector(self.logInBtnTapped), for: .touchUpInside)
-//        self.goToSignUpViewBtn.addTarget(self, action: #selector(self.goToSignUpView), for: .touchUpInside)
-//
-//        [self.emailTF,
-//         self.passwordTF].forEach { tf in
-//            tf.addTarget(self, action: #selector(self.formValidation), for: .editingChanged)
-//        }
+        // 버튼 생성
+        let backButton = UIBarButtonItem(image: .chevronLeft, style: .done, target: self, action: #selector(self.backButtonTapped))
+        // 네비게이션 바의 왼쪽 아이템으로 설정
+        self.navigationItem.leftBarButtonItem = backButton
+    }
+    @objc private func backButtonTapped() {
+        self.coordinator?.didFinish()
     }
 }

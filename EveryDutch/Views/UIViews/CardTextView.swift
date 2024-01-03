@@ -113,6 +113,7 @@ final class CardTextView: UIView {
     // MARK: - 프로퍼티
     private var mode: CardTextMode?
     
+    weak var delegate: CardTextDelegate?
     
     
     
@@ -303,13 +304,10 @@ extension CardTextView {
     }
     @objc private func firstStackViewTapped() {
         print(#function)
+        self.delegate?.firstStackViewTapped()
     }
     @objc private func secondStackViewTapped() {
         print(#function)
+        self.delegate?.secondStackViewTapped()
     }
-    
-    
-    
-
-    
 }

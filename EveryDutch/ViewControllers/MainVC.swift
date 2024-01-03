@@ -278,7 +278,7 @@ extension MainVC {
     @objc private func profileScreenBtnTapped() {
     }
     @objc private func makeRoomScreenBtnTapped() {
-        self.coordinator?.plusBtnScreen()
+        self.coordinator?.multiPurposeScreen()
     }
     
     @objc private func floatingViewTappd() {
@@ -339,5 +339,12 @@ extension MainVC: UICollectionViewDataSource {
         cell.configureCell(with: cellViewModel)
         
         return cell
+    }
+}
+
+
+extension MainVC: MultiPurposeScreenDelegate {
+    func logout() {
+        self.coordinator?.selectALgoinMethodScreen()
     }
 }

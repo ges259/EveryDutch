@@ -12,8 +12,7 @@ final class RoomSettingCoordinator: RoomSettingCoordinating {
     
     var childCoordinators: [Coordinator] = [] {
         didSet {
-            print("********************")
-            print("RoomSettingCoordinator")
+            print("**********RoomSettingCoordinator**********")
             dump(childCoordinators)
             print("********************")
         }

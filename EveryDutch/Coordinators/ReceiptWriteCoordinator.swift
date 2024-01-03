@@ -10,7 +10,13 @@ import UIKit
 final class ReceiptWriteCoordinator: ReceiptWriteCoordinating {
     weak var parentCoordinator: Coordinator?
     
-    var childCoordinators: [Coordinator] = []
+    var childCoordinators: [Coordinator] = [] {
+        didSet {
+            print("**********ReceiptWriteCoordinator**********")
+            dump(childCoordinators)
+            print("********************")
+        }
+    }
     
     var nav: UINavigationController
     

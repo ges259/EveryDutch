@@ -13,8 +13,7 @@ final class MainCoordinator: MainCoordinating {
     
     var childCoordinators: [Coordinator] = [] {
         didSet {
-            print("********************")
-            print("MainCoordinator")
+            print("**********MainCoordinator**********")
             dump(childCoordinators)
             print("********************")
         }
@@ -40,7 +39,7 @@ final class MainCoordinator: MainCoordinating {
     
     /// 채팅방으로 이동
     func settlementRoomScreen() {
-        // Main-Coordinator 생성
+        // SettleMoneyRoomCoordinator 생성
         let settlementRoomCoordinator = SettleMoneyRoomCoordinator(nav: self.nav)
         // 부모 코디네이터가 자신이라는 것을 명시 (뒤로가기 할 때 필요)
             settlementRoomCoordinator.parentCoordinator = self
@@ -48,15 +47,26 @@ final class MainCoordinator: MainCoordinating {
             settlementRoomCoordinator.start()
     }
     /// 플러스 버튼을 누르면 화면 이동
-    func plusBtnScreen() {
+    func multiPurposeScreen() {
         // Main-Coordinator 생성
-        let plusBtnCoordinator = MultipurposeScreenCoordinator(nav: self.nav)
-        self.childCoordinators.append(plusBtnCoordinator)
+        let multipurposeScreenCoordinator = MultipurposeScreenCoordinator(nav: self.nav)
+        multipurposeScreenCoordinator.delegate = self
+        self.childCoordinators.append(multipurposeScreenCoordinator)
         // 부모 코디네이터가 자신이라는 것을 명시 (뒤로가기 할 때 필요)
-            plusBtnCoordinator.parentCoordinator = self
+            multipurposeScreenCoordinator.parentCoordinator = self
         // 코디네이터에게 화면이동을 지시
-            plusBtnCoordinator.start()
+            multipurposeScreenCoordinator.start()
     }
+    func selectALgoinMethodScreen() {
+        // SettleMoneyRoomCoordinator 생성
+        let selectALoginMethodCoordinator = SelectALoginMethodCoordinator(nav: self.nav)
+        self.childCoordinators.append(selectALoginMethodCoordinator)
+        // 부모 코디네이터가 자신이라는 것을 명시 (뒤로가기 할 때 필요)
+        selectALoginMethodCoordinator.parentCoordinator = self
+        selectALoginMethodCoordinator.start()
+    }
+    
+    
     
     func profileScreen() {
         print(#function)
@@ -66,5 +76,16 @@ final class MainCoordinator: MainCoordinating {
     
     deinit {
         print("deinit ----- \(#function)-----\(self)")
+    }
+}
+
+extension MainCoordinator: MultiPurposeScreenDelegate {
+    func logout() {
+        // SettleMoneyRoomCoordinator 생성
+        let selectALoginMethodCoordinator = SelectALoginMethodCoordinator(nav: self.nav)
+        self.childCoordinators.append(selectALoginMethodCoordinator)
+        // 부모 코디네이터가 자신이라는 것을 명시 (뒤로가기 할 때 필요)
+        selectALoginMethodCoordinator.parentCoordinator = self
+        selectALoginMethodCoordinator.start()
     }
 }

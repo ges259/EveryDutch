@@ -26,8 +26,12 @@ final class MultipurposeScreenVC: UIViewController {
     private var roomInfoCardView: CardTextView = CardTextView(
         mode: .info_Setting)
     
-    private var userInfoCardView: CardTextView = CardTextView(
-        mode: .ect_Setting)
+    private lazy var userInfoCardView: CardTextView = {
+        let view = CardTextView(
+            mode: .ect_Setting)
+        view.delegate = self
+        return view
+    }()
     
     private lazy var stackView: UIStackView = UIStackView.configureStackView(
         arrangedSubviews: [self.cardImgView,
@@ -50,6 +54,7 @@ final class MultipurposeScreenVC: UIViewController {
     private var viewModel: SettingProtocol?
     private weak var coordinator: MultipurposeScreenCoordinating?
     
+    weak var delegate: MultiPurposeScreenDelegate?
     private lazy var cardHeight = (self.view.frame.width - 20) * 1.8 / 3
     
     
@@ -134,5 +139,23 @@ extension MultipurposeScreenVC {
     
     @objc private func backButtonTapped() {
         self.coordinator?.didFinish()
+    }
+}
+
+
+
+extension MultipurposeScreenVC: CardTextDelegate {
+    func firstStackViewTapped() {
+        print(#function)
+        self.delegate?.logout()
+    }
+    
+    func secondStackViewTapped() {
+        print(#function)
+//        self.coordinator?.d
+    }
+    
+    func editBtnTapped() {
+        print(#function)
     }
 }

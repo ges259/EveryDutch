@@ -10,8 +10,15 @@ import UIKit
 final class MultipurposeScreenCoordinator: MultipurposeScreenCoordinating {
     weak var parentCoordinator: Coordinator?
 
-    var childCoordinators: [Coordinator] = []
-
+    var childCoordinators: [Coordinator] = [] {
+        didSet {
+            print("**********MultipurposeScreenCoordinator**********")
+            dump(childCoordinators)
+            print("********************")
+        }
+    }
+    weak var delegate: MultiPurposeScreenDelegate?
+    
     var nav: UINavigationController
 
     // 의존성 주입
@@ -20,18 +27,20 @@ final class MultipurposeScreenCoordinator: MultipurposeScreenCoordinating {
     }
     
     func start() {
-        let settingVM = MultipurposeScreenVM()
+        let multipurposeScreenVM = MultipurposeScreenVM()
         // PlusViewController 인스턴스 생성
-        let plusVC = MultipurposeScreenVC(viewModel: settingVM,
-                               coordinator: self)
+        let multipurposeScreenVC = MultipurposeScreenVC(viewModel: multipurposeScreenVM,
+                                          coordinator: self)
+        multipurposeScreenVC.delegate = self
         // 네비게이션 컨트롤러 생성 및 루트 뷰 컨트롤러 설정
-        let plusNavController = UINavigationController(rootViewController: plusVC)
+        let plusNavController = UINavigationController(rootViewController: multipurposeScreenVC)
         // 전체 화면 꽉 채우기
         plusNavController.modalPresentationStyle = .fullScreen
         // 모달로 네비게이션 컨트롤러를 표시
         self.nav.present(plusNavController, animated: true)
     }
     
+
     func didFinish() {
         // 현재 표시된 뷰 컨트롤러를 dismiss
         self.nav.dismiss(animated: true) {
@@ -47,3 +56,10 @@ final class MultipurposeScreenCoordinator: MultipurposeScreenCoordinating {
     }
 }
 
+
+extension MultipurposeScreenCoordinator: MultiPurposeScreenDelegate {
+    func logout() {
+        self.didFinish()
+        (self.parentCoordinator as? MainCoordinator)?.logout()
+    }
+}

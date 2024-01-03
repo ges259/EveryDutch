@@ -10,7 +10,13 @@ import UIKit
 final class FindFriendsCoordinator: Coordinator {
     weak var parentCoordinator: Coordinator?
     
-    var childCoordinators: [Coordinator] = []
+    var childCoordinators: [Coordinator] = [] {
+        didSet {
+            print("**********FindFriendsCoordinator**********")
+            dump(childCoordinators)
+            print("********************")
+        }
+    }
     
     var nav: UINavigationController
     

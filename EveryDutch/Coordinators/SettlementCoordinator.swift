@@ -12,8 +12,7 @@ final class SettlementCoordinator: SettlementCoordinating {
     
     var childCoordinators: [Coordinator] = [] {
         didSet {
-            print("********************")
-            print("SettlementCoordinator")
+            print("**********SettlementCoordinator**********")
             dump(childCoordinators)
             print("********************")
         }

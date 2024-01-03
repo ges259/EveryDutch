@@ -37,4 +37,5 @@ extension UIColor {
     static let placeholder_gray: UIColor = UIColor.rgb(r: 123, g: 121, b: 166)
     
     static let backgroundGray: UIColor = UIColor.rgb(r: 123, g: 121, b: 166, alpha: 0.5)
+    static let disableBtn: UIColor = UIColor.rgb(r: 151, g: 199, b: 246)
 }
