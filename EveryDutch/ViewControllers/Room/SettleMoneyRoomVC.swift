@@ -318,6 +318,11 @@ extension SettleMoneyRoomVC: UITableViewDelegate {
     -> CGFloat {
         return self.cellHeight
     }
+    func tableView(_ tableView: UITableView,
+                   didSelectRowAt indexPath: IndexPath) {
+        print(#function)
+        self.coordinator?.ReceiptScreen()
+    }
 }
 
 // MARK: - 테이블뷰 데이터 소스

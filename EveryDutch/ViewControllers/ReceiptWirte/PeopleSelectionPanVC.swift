@@ -98,7 +98,7 @@ extension PeopleSelectionPanVC {
             make.bottom.lessThanOrEqualToSuperview().offset(UIDevice.current.panBottomAnchor)
         }
         self.bottomBtn.snp.makeConstraints { make in
-            make.height.equalTo(50)
+            make.height.equalTo(55)
         }
         
         // MARK: - Fix
@@ -161,7 +161,7 @@ extension PeopleSelectionPanVC: PanModalPresentable {
     /// 최대 사이즈
     var longFormHeight: PanModalHeight {
         self.view.layoutIfNeeded()
-        return .contentHeight(self.stackView.frame.height + -UIDevice.current.panBottomAnchor + 10)
+        return .contentHeight(self.stackView.frame.height + -UIDevice.current.panBottomAnchor + 15)
     }
     /// 화면 밖 - 배경 색
     var panModalBackgroundColor: UIColor {
@@ -170,6 +170,9 @@ extension PeopleSelectionPanVC: PanModalPresentable {
     /// 상단 인디케이터 없애기
     var showDragIndicator: Bool {
         return false
+    }
+    var cornerRadius: CGFloat {
+        return 23
     }
 }
 

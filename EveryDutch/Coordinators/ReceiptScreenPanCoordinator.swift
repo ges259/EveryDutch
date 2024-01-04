@@ -1,14 +1,14 @@
 //
-//  PeopleSelectionPanCoordinator.swift
+//  ReceiptScreenPanCoordinator.swift
 //  EveryDutch
 //
-//  Created by 계은성 on 2024/01/03.
+//  Created by 계은성 on 2024/01/04.
 //
 
 import UIKit
 
-final class PeopleSelectionPanCoordinator: Coordinator {
-    var parentCoordinator: Coordinator?
+final class ReceiptScreenPanCoordinator: Coordinator {
+    weak var parentCoordinator: Coordinator?
     
     var childCoordinators: [Coordinator] = []
     
@@ -21,11 +21,11 @@ final class PeopleSelectionPanCoordinator: Coordinator {
     
     
     func start() {
-        let peopleSelectionPanVC = PeopleSelectionPanVC(coordinator: self)
+        let receiptScreenPanVC = ReceiptScreenPanVC(coordinator: self)
         
-        peopleSelectionPanVC.modalPresentationStyle = .overFullScreen
+        receiptScreenPanVC.modalPresentationStyle = .overFullScreen
         
-        self.nav.presentPanModal(peopleSelectionPanVC)
+        self.nav.presentPanModal(receiptScreenPanVC)
     }
     
     func didFinish() {

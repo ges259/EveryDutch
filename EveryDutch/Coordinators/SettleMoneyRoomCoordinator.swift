@@ -34,6 +34,7 @@ final class SettleMoneyRoomCoordinator: SettleMoneyRoomCoordinating {
                                                 coordinator: self)
         // push를 통해 화면 이동
         self.nav.pushViewController(settlementRoomVC, animated: true)
+        // 네비게이션 컨트롤러 참조 저장
     }
     
     func RoomSettingScreen() {
@@ -47,6 +48,15 @@ final class SettleMoneyRoomCoordinator: SettleMoneyRoomCoordinating {
         self.childCoordinators.append(receiptWriteCoordinator)
             receiptWriteCoordinator.parentCoordinator = self
             receiptWriteCoordinator.start()
+    }
+    func ReceiptScreen() {
+        // PeopleSelectionPanCoordinator 생성
+        let receiptScreenPanCoordinator = ReceiptScreenPanCoordinator(nav: self.nav)
+        self.childCoordinators.append(receiptScreenPanCoordinator)
+        // 부모 코디네이터가 자신이라는 것을 명시 (뒤로가기 할 때 필요)
+        receiptScreenPanCoordinator.parentCoordinator = self
+        // 코디네이터에게 화면이동을 지시
+        receiptScreenPanCoordinator.start()
     }
     
     func didFinish() {

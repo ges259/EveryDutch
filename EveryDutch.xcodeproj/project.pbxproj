@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5F17137E2B46A643006B3EBB /* Receipt_Enum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F17137D2B46A643006B3EBB /* Receipt_Enum.swift */; };
+		5F1713802B46A76B006B3EBB /* ReceiptStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F17137F2B46A76B006B3EBB /* ReceiptStackView.swift */; };
+		5F1713822B46D2E4006B3EBB /* ReceiptScreenPanCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F1713812B46D2E4006B3EBB /* ReceiptScreenPanCoordinator.swift */; };
 		5F2F7A782B3ECD91004B136F /* CardImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F2F7A772B3ECD91004B136F /* CardImageView.swift */; };
 		5F2F7A7A2B3ECD98004B136F /* CardTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F2F7A792B3ECD98004B136F /* CardTextView.swift */; };
 		5F2F7A7C2B3EEFBD004B136F /* CardTextEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F2F7A7B2B3EEFBD004B136F /* CardTextEnum.swift */; };
@@ -88,6 +91,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5F17137D2B46A643006B3EBB /* Receipt_Enum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Receipt_Enum.swift; sourceTree = "<group>"; };
+		5F17137F2B46A76B006B3EBB /* ReceiptStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptStackView.swift; sourceTree = "<group>"; };
+		5F1713812B46D2E4006B3EBB /* ReceiptScreenPanCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptScreenPanCoordinator.swift; sourceTree = "<group>"; };
 		5F2F7A772B3ECD91004B136F /* CardImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardImageView.swift; sourceTree = "<group>"; };
 		5F2F7A792B3ECD98004B136F /* CardTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardTextView.swift; sourceTree = "<group>"; };
 		5F2F7A7B2B3EEFBD004B136F /* CardTextEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardTextEnum.swift; sourceTree = "<group>"; };
@@ -199,6 +205,7 @@
 				5F4913DE2B3DD97100CD76A8 /* NoDataView.swift */,
 				5F2F7A772B3ECD91004B136F /* CardImageView.swift */,
 				5F2F7A792B3ECD98004B136F /* CardTextView.swift */,
+				5F17137F2B46A76B006B3EBB /* ReceiptStackView.swift */,
 			);
 			path = UIViews;
 			sourceTree = "<group>";
@@ -260,6 +267,7 @@
 				5FE3DED32B39E8CC008D58AE /* Image_Enum.swift */,
 				5F2F7A7B2B3EEFBD004B136F /* CardTextEnum.swift */,
 				5FB4F6F52B432528002F6CF3 /* CustomTableEnum.swift */,
+				5F17137D2B46A643006B3EBB /* Receipt_Enum.swift */,
 			);
 			path = Enum;
 			sourceTree = "<group>";
@@ -359,6 +367,7 @@
 				5F68487D2B441BCA0015BFCC /* LoginScreenCoordinator.swift */,
 				5F6848812B441C360015BFCC /* SignUpScreenCoordinator.swift */,
 				5F614B472B45A6A300EF35CE /* PeopleSelectionPanCoordinator.swift */,
+				5F1713812B46D2E4006B3EBB /* ReceiptScreenPanCoordinator.swift */,
 			);
 			path = Coordinators;
 			sourceTree = "<group>";
@@ -540,6 +549,8 @@
 				5F47CD122B3AECC600FCBFA4 /* SettleMoneyRoomCoordinating.swift in Sources */,
 				5F56C74C2B3D84CF00266C12 /* UIDevice+Ext.swift in Sources */,
 				5FE3DED62B39F416008D58AE /* MultipurposeScreenCoordinating.swift in Sources */,
+				5F1713802B46A76B006B3EBB /* ReceiptStackView.swift in Sources */,
+				5F1713822B46D2E4006B3EBB /* ReceiptScreenPanCoordinator.swift in Sources */,
 				5F87DF2A2B3C999D001D5B80 /* RoomSettingCoordinator.swift in Sources */,
 				5F4913DD2B3DBE7C00CD76A8 /* SettlementCoordinator.swift in Sources */,
 				5F6848822B441C360015BFCC /* SignUpScreenCoordinator.swift in Sources */,
@@ -577,6 +588,7 @@
 				5F614B442B45944600EF35CE /* DeleteAccountPanVC.swift in Sources */,
 				5FFEAE6D2B3F307E00E0B2BB /* ProfileVC.swift in Sources */,
 				5FC648472B42EB9500C451BF /* ReceiptWriteCoordinator.swift in Sources */,
+				5F17137E2B46A643006B3EBB /* Receipt_Enum.swift in Sources */,
 				5FE3DEC42B39CBA4008D58AE /* MainCollectionViewCell.swift in Sources */,
 				5FFEAE6B2B3F282000E0B2BB /* EditProfileVC.swift in Sources */,
 				5FE3DEC22B39CB9B008D58AE /* MainVM.swift in Sources */,
