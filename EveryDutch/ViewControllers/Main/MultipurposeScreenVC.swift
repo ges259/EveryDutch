@@ -45,9 +45,7 @@ final class MultipurposeScreenVC: UIViewController {
     private lazy var clearView: UIView = UIView()
     
     
-    private lazy var bottomBtn: UIButton = UIButton.btnWithTitle(
-        font: UIFont.boldSystemFont(ofSize: 22),
-        backgroundColor: UIColor.deep_Blue)
+    private lazy var bottomBtn: BottomButton = BottomButton()
     
     
     // MARK: - 프로퍼티
@@ -86,10 +84,8 @@ extension MultipurposeScreenVC {
     private func configureUI() {
         self.view.backgroundColor = UIColor.base_Blue
         
-        self.bottomBtn.layer.maskedCorners = [
-            .layerMinXMinYCorner,
-            .layerMaxXMinYCorner]
-        self.bottomBtn.layer.cornerRadius = 35
+        // MARK: - Fix
+        self.bottomBtn.setTitle("정산방 생성", for: .normal)
     }
     
     // MARK: - 오토레이아웃 설정

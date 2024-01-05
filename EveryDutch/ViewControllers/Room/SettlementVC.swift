@@ -40,9 +40,8 @@ final class SettlementVC: UIViewController {
     
     private var tableView: SettlementDetailsTableView = SettlementDetailsTableView(customTableEnum: .isLbl)
     
-    private var settlementBtn: UIButton = UIButton.btnWithTitle(
-        font: UIFont.boldSystemFont(ofSize: 22),
-        backgroundColor: .deep_Blue)
+    private var bottomBtn: BottomButton = BottomButton(
+        title: "정산하기")
     
     private lazy var stackView: UIStackView = UIStackView.configureStackView(
         arrangedSubviews: [self.settlementNameLbl,
@@ -90,14 +89,7 @@ extension SettlementVC {
         self.textField.clipsToBounds = true
         self.textField.layer.cornerRadius = 12
         
-        self.settlementBtn.layer.maskedCorners = [
-            .layerMinXMinYCorner,
-            .layerMaxXMinYCorner]
-        self.settlementBtn.layer.cornerRadius = 35
         self.tableView.topViewTableView.isScrollEnabled = false
-        
-        // MARK: - Fix
-        self.settlementBtn.setTitle("정산하기", for: .normal)
     }
     
     // MARK: - 오토레이아웃 설정
@@ -109,7 +101,7 @@ extension SettlementVC {
         self.contentView.addSubview(self.stackView)
         self.textField.addSubview(self.numOfCharLbl)
 
-        self.view.addSubview(self.settlementBtn)
+        self.view.addSubview(self.bottomBtn)
         
         // 스크롤뷰
         self.scrollView.snp.makeConstraints { make in
@@ -130,7 +122,7 @@ extension SettlementVC {
             // 아래의 bottom 제약조건은 중요합니다. 이것이 컨텐트뷰의 실제 높이를 결정합니다.
             make.bottom.equalToSuperview().offset(-UIDevice.current.bottomBtnHeight - 7)
         }
-        self.settlementBtn.snp.makeConstraints { make in
+        self.bottomBtn.snp.makeConstraints { make in
             make.bottom.leading.trailing.equalToSuperview()
             make.height.equalTo(UIDevice.current.bottomBtnHeight)
         }

@@ -133,8 +133,8 @@ extension RoomSettingVC {
         self.tabBarView.layer.maskedCorners = [
             .layerMinXMinYCorner,
             .layerMaxXMinYCorner]
-        self.tabBarView.layer.cornerRadius = 15
-        
+        self.tabBarView.layer.cornerRadius = 20
+        self.tabBarView.addShadow(top: true, bottom: false)
         
         // MARK: - Fix
         self.settlementStackView.addArrangedSubview(self.settleMoneyBtn)

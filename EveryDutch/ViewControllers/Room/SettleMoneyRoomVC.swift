@@ -24,9 +24,6 @@ final class SettleMoneyRoomVC: UIViewController {
     
     
     
-//    private lazy var segmentedCtrl: CustomSegmentControl = CustomSegmentControl(
-//        items: ["누적 금액",
-//                "받아야 할 돈"])
     
     
     private lazy var topViewTableView: SettlementDetailsTableView = SettlementDetailsTableView(customTableEnum: .isSegmentCtrl)
@@ -58,10 +55,8 @@ final class SettleMoneyRoomVC: UIViewController {
             forCellReuseIdentifier: Identifier.settlementTableViewCell)
         return view
     }()
-    private lazy var bottomBtn: UIButton = UIButton.btnWithTitle(
-        font: UIFont.boldSystemFont(ofSize: 22),
-        backgroundColor: UIColor.deep_Blue)
-    
+    private lazy var bottomBtn: BottomButton = BottomButton(
+        title: "영수증 작성")
     
     
     
@@ -76,10 +71,27 @@ final class SettleMoneyRoomVC: UIViewController {
     
     // 탑뷰와 관련된 프로퍼티
     private var topViewHeight: NSLayoutConstraint!
-    // MARK: - Fix
+    
+    
+    
+    
     // 인원 수에 따라 maxHeight 크기 바꾸기
-    // 최대 5명
-    private let maxHeight: CGFloat = 350
+    /* 스택뷰
+     바텀 앵커 : 35
+     하단 버튼 : 45
+     상단 레이아웃 : 34
+     스택뷰 간격 : 10
+     네비게이션바 간격 : 10
+     => 134
+     칸 당 40
+     // 최대 5명
+     */
+    private lazy var maxHeight: CGFloat = {
+//        return 134 + 160
+        return 134 + 200
+    }()
+    
+    
     private let minHeight: CGFloat = 35
     private var topViewIsOpen: Bool = false
     private var initialHeight: CGFloat = 100
@@ -121,6 +133,8 @@ extension SettleMoneyRoomVC {
     private func configureUI() {
         self.view.backgroundColor = UIColor.base_Blue
         
+        self.bottomBtn.addShadow(top: true, bottom: false)
+        self.topView.addShadow(top: false, bottom: true)
         
         // 모서리 설정
         self.topView.layer.maskedCorners = [
@@ -128,10 +142,6 @@ extension SettleMoneyRoomVC {
             .layerMaxXMaxYCorner]
         self.topView.layer.cornerRadius = 35
         
-        self.bottomBtn.layer.maskedCorners = [
-            .layerMinXMinYCorner,
-            .layerMaxXMinYCorner]
-        self.bottomBtn.layer.cornerRadius = 35
         // topViewIndicator
         self.topViewIndicator.clipsToBounds = true
         self.topViewIndicator.layer.cornerRadius = 3
@@ -165,50 +175,60 @@ extension SettleMoneyRoomVC {
         self.topView.addSubview(self.stackView)
         self.topView.addSubview(self.arrowDownImg)
         
+        //
         self.navView.snp.makeConstraints { make in
             make.top.leading.trailing.equalToSuperview()
             make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.top)
         }
+        
+        
+        // 상단 화면 (내리면 움직이는)
         self.topView.snp.makeConstraints { make in
             make.top.leading.trailing.equalToSuperview()
         }
         self.topViewHeight = self.topView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: self.minHeight)
         self.topViewHeight.isActive = true
         
+        // 상단 테이블뷰 - 하단 인디케이터
         self.topViewIndicator.snp.makeConstraints { make in
             make.bottom.equalTo(self.topView.snp.bottom).offset(-10)
             make.width.equalTo(100)
             make.height.equalTo(4.5)
             make.centerX.equalTo(self.topView)
         }
-        self.bottomBtn.snp.makeConstraints { make in
-            make.bottom.leading.trailing.equalToSuperview()
-            make.height.equalTo(UIDevice.current.bottomBtnHeight)
-        }
-        self.settlementTableView.snp.makeConstraints { make in
-            make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(self.minHeight + 5)
-            make.leading.equalToSuperview().offset(10)
-            make.trailing.equalToSuperview().offset(-10)
-            make.bottom.equalTo(self.bottomBtn.snp.top).offset(-5)
-        }
+        // 상단 테이블뷰
         self.topViewTableView.snp.makeConstraints { make in
-//            make.height.equalTo(200 + 5 + 34)
             make.height.lessThanOrEqualTo(200 + 5 + 34)
         }
+        // 상단 테이블뷰 - 하단 버튼
         self.topViewBtn.snp.makeConstraints { make in
             make.height.equalTo(45)
         }
+        // 상단 테이블뷰 - 스택뷰
         self.stackView.snp.makeConstraints { make in
             make.bottom.equalToSuperview().offset(-35)
             make.leading.equalToSuperview().offset(15)
             make.trailing.equalToSuperview().offset(-15)
             make.height.greaterThanOrEqualTo(minHeight + 5 + 35)
-//            make.height.equalTo(200 + 5 + 35)
         }
+        // 상단 테이블뷰 - 하단 버튼
         self.arrowDownImg.snp.makeConstraints { make in
             make.bottom.equalTo(self.topViewTableView.snp.bottom).offset(-8)
             make.width.height.equalTo(30)
             make.centerX.equalToSuperview()
+        }
+        
+        // 바텀 버튼
+        self.bottomBtn.snp.makeConstraints { make in
+            make.bottom.leading.trailing.equalToSuperview()
+            make.height.equalTo(UIDevice.current.bottomBtnHeight)
+        }
+        // 메인 테이블뷰 (영수증)
+        self.settlementTableView.snp.makeConstraints { make in
+            make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(self.minHeight + 5)
+            make.leading.equalToSuperview().offset(10)
+            make.trailing.equalToSuperview().offset(-10)
+            make.bottom.equalTo(self.bottomBtn.snp.top).offset(-5)
         }
     }
     
@@ -250,7 +270,6 @@ extension SettleMoneyRoomVC {
     
     
     
-    
     // MARK: - 탑뷰 크기 조절
     @objc private func scrollVertical(sender: UIPanGestureRecognizer) {
         let translation = sender.translation(in: view)
@@ -276,9 +295,16 @@ extension SettleMoneyRoomVC {
             // 제약 조건을 업데이트하지만 layoutIfNeeded는 호출 X
             self.topViewHeight.constant = newHeight
             
+            // 스택뷰 alpha값 설정
+            self.stackView.alpha = newHeight / self.maxHeight
             
         case .ended, .cancelled:
             self.adjustTopViewHeight()
+            
+            if self.topViewIsOpen {
+                self.stackView.alpha = 1
+            }
+            
         default: break
         }
     }

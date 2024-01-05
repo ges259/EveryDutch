@@ -39,9 +39,9 @@ extension UIDevice {
     public var bottomBtnHeight: CGFloat {
         return self.isiPhoneSE ? 90 : 115
     }
-    public var panBottomAnchor: CGFloat {
-        return self.isiPhoneSE ? -10 : -25
-    }
+//    public var panBottomAnchor: CGFloat {
+//        return self.isiPhoneSE ? -10 : -10
+//    }
     
     /// 나중에 추가
     /// topView

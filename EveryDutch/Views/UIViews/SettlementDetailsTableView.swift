@@ -143,7 +143,7 @@ extension SettlementDetailsTableView: UITableViewDataSource {
 //        return 30
 //        return 9
 //        return 16
-        return 4
+        return 5
     }
     
     func tableView(_ tableView: UITableView,

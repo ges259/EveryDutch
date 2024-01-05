@@ -136,9 +136,8 @@ final class ReceiptWriteVC: UIViewController {
         font: UIFont.systemFont(ofSize: 14),
         backgroundColor: UIColor.deep_Blue)
     
-    private lazy var bottomBtn: UIButton = UIButton.btnWithTitle(
-        font: UIFont.boldSystemFont(ofSize: 22),
-        backgroundColor: UIColor.deep_Blue)
+    private lazy var bottomBtn: BottomButton = BottomButton(
+        title: "완료")
     
     private lazy var clearView: UIView = {
         let view = UIView()
@@ -269,12 +268,6 @@ extension ReceiptWriteVC {
         self.btnStackView.layer.cornerRadius = 10
         
         
-        self.bottomBtn.clipsToBounds = true
-        self.bottomBtn.layer.maskedCorners = [
-            .layerMinXMinYCorner,
-            .layerMaxXMinYCorner]
-        self.bottomBtn.layer.cornerRadius = 35
-        
         
         
         // MARK: - Fix
@@ -285,7 +278,6 @@ extension ReceiptWriteVC {
         
         self.dutchBtn.setTitle("1명에서 1 / n 하기", for: .normal)
         self.moneyCountBtn.text = "남은 금액 : 25,000원"
-        self.bottomBtn.setTitle("완료", for: .normal)
         self.calendar.select(Date())
     }
     
