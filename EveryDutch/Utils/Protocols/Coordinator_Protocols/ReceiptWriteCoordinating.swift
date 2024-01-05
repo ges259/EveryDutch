@@ -9,4 +9,5 @@ import Foundation
 
 protocol ReceiptWriteCoordinating: Coordinator {
     func peopleSelectionPanScreen()
+    func checkReceiptPanScreen()
 }

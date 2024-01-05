@@ -23,7 +23,7 @@ final class PeopleSelectionPanVC: UIViewController {
     
     
     private var bottomBtn: UIButton = UIButton.btnWithTitle(
-        font: UIFont.boldSystemFont(ofSize: 17),
+        font: UIFont.boldSystemFont(ofSize: 16),
         backgroundColor: UIColor.normal_white)
     
     

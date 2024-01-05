@@ -17,27 +17,27 @@ final class CardTextView: UIView {
     
     // 디테이르 레이블
     private lazy var firstDetailLbl: PaddingLabel = PaddingLabel(
-        leftInset: 26)
+        leftRightInset: 26)
     
     private lazy var secondDetailLbl: PaddingLabel = PaddingLabel(
-        leftInset: 26)
+        leftRightInset: 26)
     
     private lazy var thirdDetailLbl: PaddingLabel = PaddingLabel(
-        leftInset: 26)
+        leftRightInset: 26)
     
     
     // 정보 레이블
     private lazy var firstInfoLbl: PaddingLabel = PaddingLabel(
-        alignment: .right,
-        rightInset: 26)
+        textAlignment: .right,
+        leftRightInset: 26)
     
     private lazy var secondInfoLbl: PaddingLabel = PaddingLabel(
-        alignment: .right,
-        rightInset: 26)
+        textAlignment: .right,
+        leftRightInset: 26)
     
     private lazy var thirdInfoLbl: PaddingLabel = PaddingLabel(
-        alignment: .right,
-        rightInset: 26)
+        textAlignment: .right,
+        leftRightInset: 26)
     
     
     // 텍스트 필드
@@ -161,10 +161,10 @@ extension CardTextView {
             make.bottom.equalToSuperview()
         }
         self.firstDetailLbl.snp.makeConstraints { make in
-            make.width.equalTo(110)
+            make.width.equalTo(125)
         }
         self.secondDetailLbl.snp.makeConstraints { make in
-            make.width.equalTo(110)
+            make.width.equalTo(125)
         }
     }
     

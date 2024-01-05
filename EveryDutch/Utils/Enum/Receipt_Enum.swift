@@ -17,7 +17,7 @@ enum ReceiptEnum {
     
     var img: UIImage? {
         switch self {
-        case .memo: return UIImage.menu_Img
+        case .memo: return UIImage.memo_Img
         case .date: return UIImage.calendar_Img
         case .time: return UIImage.clock_Img
         case .price: return UIImage.won_Img

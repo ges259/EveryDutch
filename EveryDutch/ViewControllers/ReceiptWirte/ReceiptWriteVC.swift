@@ -22,6 +22,7 @@ final class ReceiptWriteVC: UIViewController {
     /// 컨텐트뷰 ( - 스크롤뷰)
     private lazy var contentView: UIView = UIView()
     
+    // MARK: - 캘린더
     /// 달력
      private lazy var calendar: FSCalendar = {
          let calendar = FSCalendar()
@@ -66,22 +67,29 @@ final class ReceiptWriteVC: UIViewController {
          return calendar
      }()
     
-    private lazy var timeDetailLbl: PaddingLabel = PaddingLabel(
-        leftInset: 35,
-        backgroundColor: UIColor.medium_Blue)
-    private lazy var memoDetailLbl: PaddingLabel = PaddingLabel(
-        leftInset: 35,
-        backgroundColor: UIColor.medium_Blue)
-    private lazy var priceDetailLbl: PaddingLabel = PaddingLabel(
-        leftInset: 35,
-        backgroundColor: UIColor.medium_Blue)
-    private lazy var payerDetailLbl: PaddingLabel = PaddingLabel(
-        leftInset: 35,
-        backgroundColor: UIColor.medium_Blue)
     
+    // MARK: - Detail - 레이아웃
+    private var whiteView: UIView = UIView.configureView(
+        color: UIColor.medium_Blue)
+    
+    private lazy var timeDetailLbl: ReceiptStackView = ReceiptStackView(
+        receiptEnum: .time,
+        infoLbl_IsHidden: true)
+    private lazy var memoDetailLbl: ReceiptStackView = ReceiptStackView(
+        receiptEnum: .memo,
+        infoLbl_IsHidden: true)
+    private lazy var priceDetailLbl: ReceiptStackView = ReceiptStackView(
+        receiptEnum: .price,
+        infoLbl_IsHidden: true)
+    private lazy var payerDetailLbl: ReceiptStackView = ReceiptStackView(
+        receiptEnum: .payer,
+        infoLbl_IsHidden: true)
+    
+    
+    
+    // MARK: - Info - 레이아웃
     private var timeInfoLbl: PaddingLabel = PaddingLabel(
-        leftInset: 25,
-        backgroundColor: UIColor.normal_white)
+        backgroundColor: UIColor.normal_white, leftRightInset: 25)
     private var memoInfoTF: InsetTextField = InsetTextField(
         backgroundColor: .normal_white,
         placeholderText: "메모를 입력해 주세요.",
@@ -96,9 +104,6 @@ final class ReceiptWriteVC: UIViewController {
         insetX: 25)
     
     
-
-    
-    
     private var memoNumOfCharLbl: UILabel = UILabel.configureLbl(
         text: "0 / 8",
         font: UIFont.systemFont(ofSize: 13))
@@ -108,15 +113,10 @@ final class ReceiptWriteVC: UIViewController {
     private var tableView: SettlementDetailsTableView = SettlementDetailsTableView(customTableEnum: .isReceipt)
     
     
-//    private var moneyCountBtn: UILabel = UILabel.configureLbl(
-//        font: UIFont.systemFont(ofSize: 13),
-//        backgroundColor: UIColor.normal_white)
     
     private var moneyCountBtn: PaddingLabel = PaddingLabel(
-        alignment: .center,
-        leftInset: 0,
-        rightInset: 0,
-        backgroundColor: UIColor.normal_white)
+        backgroundColor: UIColor.normal_white,
+        textAlignment: .center)
     
     private var dutchBtn: UIButton = UIButton.btnWithTitle(
         font: UIFont.systemFont(ofSize: 13),
@@ -193,7 +193,7 @@ final class ReceiptWriteVC: UIViewController {
     
     private lazy var totalStackView: UIStackView = UIStackView.configureStackView(
         arrangedSubviews: [self.calendar,
-                           self.infoStackView,
+                           self.whiteView,
                            self.tableView,
                            self.btnStackView,
                            self.addPersonBtn,
@@ -254,28 +254,12 @@ extension ReceiptWriteVC {
         self.totalStackView.setCustomSpacing(0, after: self.tableView)
         
         
-        // cornerRadius
-        self.timeDetailLbl.layer.maskedCorners = [
-            .layerMinXMinYCorner]
-        self.timeInfoLbl.layer.maskedCorners = [
-            .layerMaxXMinYCorner]
-        self.payerDetailLbl.layer.maskedCorners = [
-            .layerMinXMaxYCorner]
-        self.payerInfoTF.layer.maskedCorners = [
-            .layerMaxXMaxYCorner]
-        
-        
         [self.calendar,
-         self.timeDetailLbl,
-         self.timeInfoLbl,
-         self.payerDetailLbl,
-         self.payerInfoTF,
+         self.whiteView,
          self.addPersonBtn].forEach { view in
             view.clipsToBounds = true
             view.layer.cornerRadius = 10
         }
-        
-        
         self.btnStackView.clipsToBounds = true
         
         self.btnStackView.layer.maskedCorners = [
@@ -294,11 +278,6 @@ extension ReceiptWriteVC {
         
         
         // MARK: - Fix
-        self.timeDetailLbl.text = "시간"
-        self.memoDetailLbl.text = "메모"
-        self.priceDetailLbl.text = "가격"
-        self.payerDetailLbl.text = "계산"
-        
         self.timeInfoLbl.text = "00:23"
         self.memoInfoTF.text = "맥도날드"
         self.priceInfoTF.text = "50,000원"
@@ -317,7 +296,8 @@ extension ReceiptWriteVC {
         self.scrollView.addSubview(self.contentView)
         self.contentView.addSubview(self.totalStackView)
         self.memoStackView.addSubview(self.memoNumOfCharLbl)
-        
+        self.whiteView.addSubview(self.infoStackView)
+
         // 스크롤뷰
         self.scrollView.snp.makeConstraints { make in
             make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
@@ -348,15 +328,6 @@ extension ReceiptWriteVC {
         self.timeStackView.snp.makeConstraints { make in
             make.height.equalTo(45)
         }
-        [self.timeDetailLbl,
-         self.memoDetailLbl,
-         self.priceDetailLbl,
-         self.payerDetailLbl].forEach { lbl in
-            lbl.snp.makeConstraints { make in
-                make.width.equalTo(90)
-            }
-        }
-        
         self.memoNumOfCharLbl.snp.makeConstraints { make in
             make.trailing.equalToSuperview().offset(-25)
             make.centerY.equalToSuperview()
@@ -366,6 +337,11 @@ extension ReceiptWriteVC {
         }
         self.addPersonBtn.snp.makeConstraints { make in
             make.height.equalTo(45)
+        }
+        self.infoStackView.snp.makeConstraints { make in
+            make.top.equalToSuperview()
+            make.leading.equalToSuperview().offset(20)
+            make.trailing.bottom.equalToSuperview()
         }
     }
     
@@ -378,7 +354,10 @@ extension ReceiptWriteVC {
         
         self.addPersonBtn.addTarget(self, action: #selector(self.addPersonBtnTapped), for: .touchUpInside)
         
-        
+        self.bottomBtn.addTarget(self, action: #selector(self.bottomBtnTapped), for: .touchUpInside)
+    }
+    @objc private func bottomBtnTapped() {
+        self.coordinator?.checkReceiptPanScreen()
     }
     @objc private func addPersonBtnTapped() {
         self.coordinator?.peopleSelectionPanScreen()

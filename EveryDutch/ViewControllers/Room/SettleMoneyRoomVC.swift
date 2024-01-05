@@ -76,6 +76,9 @@ final class SettleMoneyRoomVC: UIViewController {
     
     // 탑뷰와 관련된 프로퍼티
     private var topViewHeight: NSLayoutConstraint!
+    // MARK: - Fix
+    // 인원 수에 따라 maxHeight 크기 바꾸기
+    // 최대 5명
     private let maxHeight: CGFloat = 350
     private let minHeight: CGFloat = 35
     private var topViewIsOpen: Bool = false
@@ -189,7 +192,8 @@ extension SettleMoneyRoomVC {
             make.bottom.equalTo(self.bottomBtn.snp.top).offset(-5)
         }
         self.topViewTableView.snp.makeConstraints { make in
-            make.height.equalTo(200 + 5 + 34)
+//            make.height.equalTo(200 + 5 + 34)
+            make.height.lessThanOrEqualTo(200 + 5 + 34)
         }
         self.topViewBtn.snp.makeConstraints { make in
             make.height.equalTo(45)

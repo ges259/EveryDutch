@@ -47,6 +47,16 @@ final class ReceiptWriteCoordinator: ReceiptWriteCoordinating {
         peopleSelectionPanCoordinator.start()
     }
     
+    func checkReceiptPanScreen() {
+        // CheckReceiptCoordinator 생성
+        let checkReceiptCoordinator = CheckReceiptCoordinator(nav: self.modalNavController ?? self.nav)
+        self.childCoordinators.append(checkReceiptCoordinator)
+        // 부모 코디네이터가 자신이라는 것을 명시 (뒤로가기 할 때 필요)
+        checkReceiptCoordinator.parentCoordinator = self
+        // 코디네이터에게 화면이동을 지시
+        checkReceiptCoordinator.start()
+    }
+    
     func didFinish() {
         // 현재 표시된 뷰 컨트롤러를 dismiss
         self.nav.dismiss(animated: true) {
@@ -57,5 +67,8 @@ final class ReceiptWriteCoordinator: ReceiptWriteCoordinating {
         }
     }
     
-    
+    deinit {
+        print("deinit ----- \(#function)-----\(self)")
+
+    }
 }

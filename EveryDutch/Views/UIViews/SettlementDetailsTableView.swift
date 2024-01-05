@@ -141,9 +141,9 @@ extension SettlementDetailsTableView: UITableViewDataSource {
     func tableView(_ tableView: UITableView,
                    numberOfRowsInSection section: Int) -> Int {
 //        return 30
-        return 9
+//        return 9
 //        return 16
-//        return 4
+        return 4
     }
     
     func tableView(_ tableView: UITableView,

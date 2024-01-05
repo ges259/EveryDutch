@@ -10,40 +10,29 @@ import UIKit
 
 final class PaddingLabel: UILabel {
 
-    var topInset: CGFloat = 0.0
-    var bottomInset: CGFloat = 0.0
-    var leftInset: CGFloat = 0.0
-    var rightInset: CGFloat = 0.0
+    var topBottomInset: CGFloat = 0.0
+    var leftRightInset: CGFloat = 0.0
 
 
-    init(leftInset: CGFloat = 12,
-         rightInset: CGFloat = 12,
-         backgroundColor: UIColor = .clear) {
-        self.leftInset = leftInset
-        self.rightInset = rightInset
+    init(text: String = "",
+         textColor: UIColor = UIColor.black,
+         font: UIFont = UIFont.systemFont(ofSize: 13),
+         backgroundColor: UIColor = .clear,
+         textAlignment: NSTextAlignment = .left,
+         topBottomInset: CGFloat = 0,
+         leftRightInset: CGFloat = 0) {
+        
+        self.topBottomInset = topBottomInset
+        self.leftRightInset = leftRightInset
         
         super.init(frame: .zero)
+        self.text = text
+        self.textColor = textColor
+        self.font = font
         self.backgroundColor = backgroundColor
-    }
-    convenience init(alignment: NSTextAlignment,
-                     leftInset: CGFloat = 0,
-                     rightInset: CGFloat = 0,
-                     backgroundColor: UIColor = .clear) {
-        self.init(leftInset: 12,
-                  rightInset: 12,
-                  backgroundColor: backgroundColor)
-        self.textAlignment = alignment
-        self.textColor = .darkGray
-    }
-    convenience init(topBottomInset: CGFloat,
-                     leftInset: CGFloat = 0,
-                     rightInset: CGFloat = 0,
-                     backgroundColor: UIColor = .clear) {
-        self.init(leftInset: 12,
-                  rightInset: 12,
-                  backgroundColor: backgroundColor)
+        self.textAlignment = textAlignment
         
-        self.textColor = .darkGray
+        
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -54,22 +43,21 @@ final class PaddingLabel: UILabel {
     
     
     override func drawText(in rect: CGRect) {
-        let insets = UIEdgeInsets(top: self.topInset,
-                                  left: self.leftInset,
-                                  bottom: self.bottomInset,
-                                  right: self.rightInset)
-        self.font = UIFont.systemFont(ofSize: 13)
+        let insets = UIEdgeInsets(top: self.topBottomInset,
+                                  left: self.leftRightInset,
+                                  bottom: self.topBottomInset,
+                                  right: self.leftRightInset)
         super.drawText(in: rect.inset(by: insets))
     }
     override var intrinsicContentSize: CGSize {
         let size = super.intrinsicContentSize
-        return CGSize(width: size.width + leftInset + rightInset,
-                      height: size.height + topInset + bottomInset)
+        return CGSize(width: size.width + leftRightInset + leftRightInset,
+                      height: size.height + topBottomInset + topBottomInset)
     }
 
     override var bounds: CGRect {
         didSet {
-            self.preferredMaxLayoutWidth = bounds.width - (leftInset + rightInset)
+            self.preferredMaxLayoutWidth = bounds.width - (leftRightInset + leftRightInset)
         }
     }
 }

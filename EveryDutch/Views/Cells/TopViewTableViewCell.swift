@@ -14,10 +14,12 @@ final class TopViewTableViewCell: UITableViewCell {
     private var profileImg: UIImageView = UIImageView()
     
     private var userName: UILabel = UILabel.configureLbl(
-        font: UIFont.systemFont(ofSize: 15))
+        font: UIFont.systemFont(ofSize: 14))
     
     private var priceLbl: PaddingLabel = PaddingLabel(
-        backgroundColor: .medium_Blue)
+        backgroundColor: .medium_Blue,
+        topBottomInset: 4,
+        leftRightInset: 10)
     
     private var priceTf: InsetTextField = InsetTextField(
         backgroundColor: UIColor.medium_Blue,
@@ -35,7 +37,7 @@ final class TopViewTableViewCell: UITableViewCell {
         arrangedSubviews: [self.profileImg,
                            self.userName],
         axis: .horizontal,
-        spacing: 7,
+        spacing: 8,
         alignment: .fill,
         distribution: .fill)
     
@@ -115,11 +117,6 @@ extension TopViewTableViewCell {
         self.profileImg.snp.makeConstraints { make in
             make.width.height.equalTo(21)
         }
-//        self.rightBtn.snp.makeConstraints { make in
-//            make.height.equalTo(17)
-//            make.width.equalTo(10)
-//        }
-        
         self.leftStackView.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(20)
             make.centerY.equalToSuperview()

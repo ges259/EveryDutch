@@ -20,7 +20,7 @@ extension UIImage {
     /// 채팅방이 없을 때 나오는 이미지
     /// 정산 목록이 없을 때 나오는 이미지
     
-    
+    static let memo_Img: UIImage? = UIImage(systemName: "pencil.circle")
     
     /// 셀 삭제 이미지
     static let trash_Img: UIImage? = UIImage(systemName: "trash.circle.fill")

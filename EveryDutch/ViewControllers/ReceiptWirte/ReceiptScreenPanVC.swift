@@ -48,7 +48,7 @@ final class ReceiptScreenPanVC: UIViewController {
                            self.whiteVeiw,
                            self.tableView],
         axis: .vertical,
-        spacing: 7,
+        spacing: 4,
         alignment: .fill,
         distribution: .fill)
     
@@ -103,6 +103,9 @@ extension ReceiptScreenPanVC {
         self.topLbl.layer.cornerRadius = 10
         self.whiteVeiw.clipsToBounds = true
         self.whiteVeiw.layer.cornerRadius = 10
+        self.totalStackView.clipsToBounds = true
+        self.totalStackView.layer.cornerRadius = 10
+        
         // MARK: - Fix
         self.topLbl.text = "영수증"
         
@@ -127,14 +130,18 @@ extension ReceiptScreenPanVC {
             make.bottom.lessThanOrEqualToSuperview().offset(UIDevice.current.panBottomAnchor)
         }
         self.receiptStackView.snp.makeConstraints { make in
-            make.top.leading.equalToSuperview().offset(10)
-            make.trailing.bottom.equalToSuperview().offset(-10)
+            make.top.bottom.equalToSuperview()
+            make.leading.equalToSuperview().offset(20)
+            make.trailing.equalToSuperview().offset(-20)
         }
         self.memoStackView.snp.makeConstraints { make in
             make.height.equalTo(40)
         }
         self.topLbl.snp.makeConstraints { make in
             make.height.equalTo(34)
+        }
+        self.bottomBtn.snp.makeConstraints { make in
+            make.height.equalTo(55)
         }
     }
     
