@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class SignUpScreenCoordinator: SignUpScreenCoordinating {
+final class SignUpScreenCoordinator: SignUpScreenCoordProtocol {
     weak var parentCoordinator: Coordinator?
     
     var childCoordinators: [Coordinator] = [] {

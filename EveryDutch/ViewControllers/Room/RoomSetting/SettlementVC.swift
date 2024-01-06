@@ -1,19 +1,20 @@
 //
-//  SettingVC.swift
+//  SettlementVC.swift
 //  EveryDutch
 //
-//  Created by 계은성 on 2023/12/25.
+//  Created by 계은성 on 2023/12/28.
 //
 
 import UIKit
 import SnapKit
 
-final class MultipurposeScreenVC: UIViewController {
+final class SettlementVC: UIViewController {
     
     // MARK: - 레이아웃
     /// 스크롤뷰
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
+            scrollView.bounces = false
             scrollView.showsVerticalScrollIndicator = false
             scrollView.alwaysBounceVertical = true
         return scrollView
@@ -21,42 +22,40 @@ final class MultipurposeScreenVC: UIViewController {
     /// 컨텐트뷰 ( - 스크롤뷰)
     private lazy var contentView: UIView = UIView()
     
-    private var cardImgView: CardImageView = CardImageView()
+    private var settlementNameLbl: UILabel = UILabel.configureLbl(
+        text: "이름 설정",
+        font: UIFont.systemFont(ofSize: 15),
+        backgroundColor: .normal_white,
+        textAlignment: .center)
     
-    private var roomInfoCardView: CardTextView = CardTextView(
-        mode: .info_Setting)
+    private var textField: InsetTextField = InsetTextField(
+        backgroundColor: .normal_white,
+        placeholerColor: .lightGray,
+        placeholderText: "안녕하세요.")
     
-    private lazy var userInfoCardView: CardTextView = {
-        let view = CardTextView(
-            mode: .ect_Setting)
-        view.delegate = self
-        return view
-    }()
+    private lazy var numOfCharLbl: UILabel = UILabel.configureLbl(
+        text: "0 / 10",
+        font: UIFont.systemFont(ofSize: 13))
+    
+    
+    private var tableView: SettlementDetailsTableView = SettlementDetailsTableView(customTableEnum: .isLbl)
+    
+    private var bottomBtn: BottomButton = BottomButton(
+        title: "정산하기")
     
     private lazy var stackView: UIStackView = UIStackView.configureStackView(
-        arrangedSubviews: [self.cardImgView,
-                           self.roomInfoCardView,
-                           self.userInfoCardView],
+        arrangedSubviews: [self.settlementNameLbl,
+                           self.textField,
+                           self.tableView],
         axis: .vertical,
-        spacing: 10,
+        spacing: 4,
         alignment: .fill,
-        distribution: .fillEqually)
+        distribution: .fill)
     
-    private lazy var clearView: UIView = UIView()
-    
-    
-    private lazy var bottomBtn: BottomButton = BottomButton()
     
     
     // MARK: - 프로퍼티
-    private var viewModel: SettingProtocol?
-    private weak var coordinator: MultipurposeScreenCoordinating?
-    
-    weak var delegate: MultiPurposeScreenDelegate?
-    private lazy var cardHeight = (self.view.frame.width - 20) * 1.8 / 3
-    
-    
-    
+    var coordinator: SettlementCoordProtocol?
     
     
     // MARK: - 라이프사이클
@@ -67,9 +66,7 @@ final class MultipurposeScreenVC: UIViewController {
         self.configureAutoLayout()
         self.configureAction()
     }
-    init(viewModel: MultipurposeScreenVM,
-         coordinator: MultipurposeScreenCoordinating) {
-        self.viewModel = viewModel
+    init(coordinator: SettlementCoordProtocol) {
         self.coordinator = coordinator
         super.init(nibName: nil, bundle: nil)
     }
@@ -78,26 +75,37 @@ final class MultipurposeScreenVC: UIViewController {
     }
 }
 
+// MARK: - 화면 설정
 
-extension MultipurposeScreenVC {
+extension SettlementVC {
+    
     // MARK: - UI 설정
     private func configureUI() {
-        self.view.backgroundColor = UIColor.base_Blue
+        self.view.backgroundColor = .base_Blue
         
-        // MARK: - Fix
-        self.bottomBtn.setTitle("정산방 생성", for: .normal)
+        self.settlementNameLbl.clipsToBounds = true
+        self.settlementNameLbl.layer.cornerRadius = 10
+        
+        self.textField.clipsToBounds = true
+        self.textField.layer.cornerRadius = 12
+        
+        self.tableView.topViewTableView.isScrollEnabled = false
     }
     
     // MARK: - 오토레이아웃 설정
     private func configureAutoLayout() {
+        
         self.view.addSubview(self.scrollView)
+        
         self.scrollView.addSubview(self.contentView)
         self.contentView.addSubview(self.stackView)
+        self.textField.addSubview(self.numOfCharLbl)
+
         self.view.addSubview(self.bottomBtn)
         
         // 스크롤뷰
         self.scrollView.snp.makeConstraints { make in
-            make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
+            make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(7)
             make.leading.trailing.equalToSuperview()
             make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom)
         }
@@ -106,21 +114,27 @@ extension MultipurposeScreenVC {
             make.edges.equalTo(self.scrollView.contentLayoutGuide)
             make.width.equalTo(self.scrollView.frameLayoutGuide)
         }
-        // 카드 이미지 뷰
-        self.cardImgView.snp.makeConstraints { make in
-            make.height.equalTo(self.cardHeight)
-        }
-        // 스택뷰
+        
         self.stackView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(2)
+            make.top.equalToSuperview().offset(7)
             make.leading.equalToSuperview().offset(10)
             make.trailing.equalToSuperview().offset(-10)
-            make.bottom.equalToSuperview().offset(-UIDevice.current.bottomBtnHeight)
+            // 아래의 bottom 제약조건은 중요합니다. 이것이 컨텐트뷰의 실제 높이를 결정합니다.
+            make.bottom.equalToSuperview().offset(-UIDevice.current.bottomBtnHeight - 7)
         }
-        // 바텀뷰
         self.bottomBtn.snp.makeConstraints { make in
             make.bottom.leading.trailing.equalToSuperview()
             make.height.equalTo(UIDevice.current.bottomBtnHeight)
+        }
+        self.settlementNameLbl.snp.makeConstraints { make in
+            make.height.equalTo(34)
+        }
+        self.textField.snp.makeConstraints { make in
+            make.height.equalTo(50)
+        }
+        self.numOfCharLbl.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().offset(-7)
+            make.centerY.equalToSuperview()
         }
     }
     
@@ -131,27 +145,7 @@ extension MultipurposeScreenVC {
         // 네비게이션 바의 왼쪽 아이템으로 설정
         self.navigationItem.leftBarButtonItem = backButton
     }
-    
-    
     @objc private func backButtonTapped() {
         self.coordinator?.didFinish()
-    }
-}
-
-
-
-extension MultipurposeScreenVC: CardTextDelegate {
-    func firstStackViewTapped() {
-        print(#function)
-        self.delegate?.logout()
-    }
-    
-    func secondStackViewTapped() {
-        print(#function)
-//        self.coordinator?.d
-    }
-    
-    func editBtnTapped() {
-        print(#function)
     }
 }

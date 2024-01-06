@@ -47,7 +47,7 @@ final class SettlementTableViewCell: UITableViewCell {
     
     // MARK: - 프로퍼티
     
-    
+    weak var viewModel: SettlementTableViewCellVM?
     
     
     // MARK: - 라이프사이클
@@ -78,10 +78,10 @@ extension SettlementTableViewCell {
         self.separatorInset = .zero
         
         // MARK: - Fix
-        self.contextLbl.text = "맥도날드 맘스터치 KFC"
+//        self.contextLbl.text = "맥도날드 맘스터치 KFC"
         self.priceLbl.text = "30,000원"
         self.timeLbl.text = "00 : 23"
-        self.allPayerLbl.text = "쁨 외 1명"
+//        self.allPayerLbl.text = "쁨 외 1명"
     }
     
     // MARK: - 오토레이아웃 설정
@@ -113,4 +113,18 @@ extension SettlementTableViewCell {
     }
     
     
+}
+// MARK: - 데이터 설정
+extension SettlementTableViewCell {
+
+    func configureCell(with viewModel: SettlementTableViewCellVM?) {
+        // 뷰모델 저장
+        self.viewModel = viewModel
+        
+        // viewModel을 사용하여 셀의 뷰를 업데이트.
+        if let viewModel = viewModel {
+            self.contextLbl.text = viewModel.content
+            self.allPayerLbl.text = viewModel.payer
+        }
+    }
 }

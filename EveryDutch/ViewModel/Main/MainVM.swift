@@ -8,7 +8,7 @@
 import UIKit
 
 final class MainVM: MainVMProtocol {
-    private var cellViewModels: [CollectionViewCellVM] = []
+    private var cellViewModels: [MainCollectionViewCellVM] = []
     
     
     
@@ -28,7 +28,7 @@ final class MainVM: MainVMProtocol {
                       ("Item 7", "Detail 7")]
         // 예시 데이터 로드
         cellViewModels = items.map {
-            CollectionViewCellVM(title: $0.0,
+            MainCollectionViewCellVM(title: $0.0,
                                  time_String: $0.1,
                                  imgUrl: $0.0)
         }
@@ -39,7 +39,7 @@ final class MainVM: MainVMProtocol {
     
     
     // cellViewModels 반환
-     func cellViewModel(at index: Int) -> CollectionViewCellVM {
+     func cellViewModel(at index: Int) -> MainCollectionViewCellVM {
          return self.cellViewModels[index]
      }
 

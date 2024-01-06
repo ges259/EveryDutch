@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class SettlementCoordinator: SettlementCoordinating {
+final class SettlementCoordinator: SettlementCoordProtocol {
     weak var parentCoordinator: Coordinator?
     
     var childCoordinators: [Coordinator] = [] {

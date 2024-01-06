@@ -7,6 +7,6 @@
 
 import UIKit
 
-protocol SettlementCoordinating: Coordinator {
+protocol SettlementCoordProtocol: Coordinator {
     
 }

@@ -23,7 +23,7 @@ final class MainCollectionViewCell: UICollectionViewCell {
     
     
     // MARK: - 프로퍼티
-    weak var viewModel: CollectionViewCellVM?
+    weak var viewModel: MainCollectionViewCellVM?
     
 
     
@@ -47,8 +47,8 @@ extension MainCollectionViewCell {
     // MARK: - UI 설정
     private func configureUI() {
         self.backgroundColor = UIColor.medium_Blue
-        self.clipsToBounds = true
-        self.layer.cornerRadius = 12
+        self.layer.cornerRadius = 10
+        self.addShadow(card: true)
     }
     
     // MARK: - 오토레이아웃 설정
@@ -71,7 +71,7 @@ extension MainCollectionViewCell {
 // MARK: - 데이터 설정
 extension MainCollectionViewCell {
 
-    func configureCell(with viewModel: CollectionViewCellVM?) {
+    func configureCell(with viewModel: MainCollectionViewCellVM?) {
         // 뷰모델 저장
         self.viewModel = viewModel
         

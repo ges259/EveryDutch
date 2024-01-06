@@ -8,7 +8,7 @@
 import Foundation
 
 enum CustomTableEnum {
-    case isReceipt
+    case isReceiptWrite
     case isSegmentCtrl
     case isLbl
 }

@@ -66,7 +66,7 @@ final class LoginVC: UIViewController {
     
 
     // MARK: - 프로퍼티
-    private var coordinator: LoginScreenCoordinating?
+    private var coordinator: LoginScreenCoordProtocol?
 
     
     
@@ -78,7 +78,7 @@ final class LoginVC: UIViewController {
         self.configureAutoLayout()
         self.configureAction()
     }
-    init(coordinator: LoginScreenCoordinating) {
+    init(coordinator: LoginScreenCoordProtocol) {
         self.coordinator =  coordinator
         super.init(nibName: nil, bundle: nil)
     }

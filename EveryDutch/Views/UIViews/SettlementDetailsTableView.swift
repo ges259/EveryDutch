@@ -11,9 +11,22 @@ import SnapKit
 final class SettlementDetailsTableView: UIView {
     
     // MARK: - 레이아웃
-    private lazy var segmentedCtrl: CustomSegmentControl = CustomSegmentControl(
-        items: ["누적 금액",
-                "받아야 할 돈"])
+    private var firstBtn: UIButton = UIButton.btnWithTitle(
+        font: UIFont.systemFont(ofSize: 14),
+        backgroundColor: UIColor.normal_white)
+    
+    private var secondBtn: UIButton = UIButton.btnWithTitle(
+        font: UIFont.systemFont(ofSize: 14),
+        backgroundColor: UIColor.unselected_gray)
+    
+    private lazy var btnStackView: UIStackView = UIStackView.configureStackView(
+        arrangedSubviews: [self.firstBtn,
+                           self.secondBtn],
+        axis: .horizontal,
+        spacing: 0,
+        alignment: .fill,
+        distribution: .fillEqually)
+    
     
     lazy var topViewTableView: CustomTableView = {
         let view = CustomTableView()
@@ -61,27 +74,46 @@ extension SettlementDetailsTableView {
     
     
     private func configureUI() {
+        self.topViewTableView.clipsToBounds = true
+        
+        
+        
         switch self.customTableEnum {
         case .isLbl:
             self.stackView.insertArrangedSubview(self.topLbl, at: 0)
             
             self.topLbl.snp.makeConstraints { make in
-                make.height.equalTo(34)
+                make.height.equalTo(35)
             }
             self.topLbl.clipsToBounds = true
             self.topLbl.layer.cornerRadius = 10
             
             break
-        case .isReceipt:
+        case .isReceiptWrite:
             self.topViewTableView.layer.maskedCorners = [
                 .layerMinXMinYCorner,
                 .layerMaxXMinYCorner]
             fallthrough
         case .isSegmentCtrl:
-            self.stackView.insertArrangedSubview(self.segmentedCtrl, at: 0)
-            self.segmentedCtrl.snp.makeConstraints { make in
-                make.height.equalTo(34)
+            self.stackView.insertArrangedSubview(self.btnStackView, at: 0)
+            self.stackView.setCustomSpacing(0, after: self.btnStackView)
+            
+            self.btnStackView.snp.makeConstraints { make in
+                make.height.equalTo(35)
             }
+            // 모서리 설정 (상단)
+            self.topViewTableView.layer.maskedCorners = [
+                .layerMinXMaxYCorner,
+                .layerMaxXMaxYCorner]
+            self.firstBtn.layer.maskedCorners = [.layerMinXMinYCorner]
+            self.secondBtn.layer.maskedCorners = [.layerMaxXMinYCorner]
+            
+            
+            self.firstBtn.layer.cornerRadius = 10
+            self.secondBtn.layer.cornerRadius = 10
+            self.topViewTableView.layer.cornerRadius = 10
+            
+            
             break
         }
     }
@@ -94,27 +126,19 @@ extension SettlementDetailsTableView {
             make.leading.trailing.bottom.equalToSuperview()
         }
         
-
         
         // MARK: - Fix
         self.topLbl.text = "누적 금액"
-        self.topLbl.textAlignment = .center
+        self.firstBtn.setTitle("누적 금액", for: .normal)
+        self.secondBtn.setTitle("받아야 할 돈", for: .normal)
         self.topLbl.backgroundColor =  .normal_white
     }
     private func configureAction() {
         // 세그먼트 컨트롤 - 액션
-        self.segmentedCtrl.addTarget(self, action: #selector(self.valueChanged(segment:)), for: .valueChanged)
+        self.firstBtn.addTarget(self, action: #selector(self.valueChanged), for: .touchUpInside)
     }
-    @objc private func valueChanged(segment: UISegmentedControl) {
-        switch segment.selectedSegmentIndex {
-        case 0:
-            print("누적 금액")
-            break
-        case 1:
-            print("받아야 할 돈")
-            break
-        default: break
-        }
+    @objc private func valueChanged() {
+        
     }
 }
 // MARK: - 테이블뷰 델리게이트

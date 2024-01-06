@@ -60,11 +60,8 @@ extension CardImageView {
     
     // MARK: - UI 설정
     private func configureUI() {
-        self.clipsToBounds = true
-        self.layer.cornerRadius = 12
         
-        self.dutchImg.clipsToBounds = true
-        self.dutchImg.layer.cornerRadius = 8
+        self.addShadow(card: true)
         
         // MARK: - Fix
         self.titleLbl.text = "더치더치"
@@ -73,6 +70,12 @@ extension CardImageView {
         self.userImg.image = UIImage.person_Fill_Img
         self.arrowImg.image = UIImage.chevronLeft
         self.dutchImg.backgroundColor = .normal_white
+        
+        
+        
+        self.backgroundImg.clipsToBounds = true
+        self.backgroundImg.layer.cornerRadius = 10
+        self.layer.cornerRadius = 10
     }
     
     // MARK: - 오토레이아웃 설정

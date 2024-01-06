@@ -7,8 +7,8 @@
 
 import UIKit
 
-protocol MainCoordinating: Coordinator {
-    func multiPurposeScreen()
+protocol MainCoordProtocol: Coordinator {
+    func multiPurposeScreen(_ cardScreen_Enum: CardScreen_Enum)
     func settlementRoomScreen()
     func profileScreen()
     func selectALgoinMethodScreen()

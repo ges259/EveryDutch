@@ -21,7 +21,8 @@ final class ReceiptStackView: UIView {
     lazy var receiptInfoLbl: PaddingLabel = PaddingLabel(
         font: UIFont.boldSystemFont(ofSize: 14),
         textAlignment: .right,
-        leftRightInset: 10)
+        leftInset: 10,
+        rightInset: 10)
     
     private lazy var stackView: UIStackView = UIStackView.configureStackView(
         arrangedSubviews: [self.receiptImg,

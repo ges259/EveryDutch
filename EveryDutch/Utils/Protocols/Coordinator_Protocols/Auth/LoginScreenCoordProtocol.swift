@@ -7,6 +7,6 @@
 
 import Foundation
 
-protocol LoginScreenCoordinating: Coordinator {
+protocol LoginScreenCoordProtocol: Coordinator {
     func SignUpScreen()
 }

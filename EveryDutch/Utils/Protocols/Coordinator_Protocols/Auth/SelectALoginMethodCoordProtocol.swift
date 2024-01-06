@@ -7,6 +7,6 @@
 
 import Foundation
 
-protocol SelectALoginMethodCoordinating: Coordinator {
+protocol SelectALoginMethodCoordProtocol: Coordinator {
     func loginScreen()
 }

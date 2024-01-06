@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CollectionViewCellVM {
+class MainCollectionViewCellVM: MainCollectionViewCellVMProtocol {
     var title: String
     var time_String: String
     var img_Url: String

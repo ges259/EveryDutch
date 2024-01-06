@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol ReceiptWriteCoordinating: Coordinator {
+protocol ReceiptWriteCoordProtocol: Coordinator {
     func peopleSelectionPanScreen()
     func checkReceiptPanScreen()
 }

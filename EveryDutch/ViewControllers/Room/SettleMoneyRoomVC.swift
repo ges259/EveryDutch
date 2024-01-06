@@ -36,7 +36,7 @@ final class SettleMoneyRoomVC: UIViewController {
         arrangedSubviews: [self.topViewTableView,
                            self.topViewBtn],
         axis: .vertical,
-        spacing: 5,
+        spacing: 4,
         alignment: .fill,
         distribution: .fill)
     private lazy var arrowDownImg: UIImageView = {
@@ -63,7 +63,7 @@ final class SettleMoneyRoomVC: UIViewController {
     
     
     // MARK: - 프로퍼티
-    private weak var coordinator: SettleMoneyRoomCoordinating?
+    private weak var coordinator: SettleMoneyRoomCoordProtocol?
     private var viewModel: SettleMoneyRoomVM?
     
     
@@ -79,16 +79,16 @@ final class SettleMoneyRoomVC: UIViewController {
     /* 스택뷰
      바텀 앵커 : 35
      하단 버튼 : 45
-     상단 레이아웃 : 34
-     스택뷰 간격 : 10
-     네비게이션바 간격 : 10
+     상단 레이아웃 : 35
+     스택뷰 간격 : 10 -> 4
+     네비게이션바 간격 : 12
      => 134
      칸 당 40
      // 최대 5명
      */
     private lazy var maxHeight: CGFloat = {
 //        return 134 + 160
-        return 134 + 200
+        return 131 + 200
     }()
     
     
@@ -115,7 +115,7 @@ final class SettleMoneyRoomVC: UIViewController {
         self.configureAction()
     }
     init(viewModel: SettleMoneyRoomVM,
-         coordinator: SettleMoneyRoomCoordinating) {
+         coordinator: SettleMoneyRoomCoordProtocol) {
         self.viewModel = viewModel
         self.coordinator = coordinator
         super.init(nibName: nil, bundle: nil)
@@ -191,7 +191,7 @@ extension SettleMoneyRoomVC {
         
         // 상단 테이블뷰 - 하단 인디케이터
         self.topViewIndicator.snp.makeConstraints { make in
-            make.bottom.equalTo(self.topView.snp.bottom).offset(-10)
+            make.bottom.equalTo(self.topView.snp.bottom).offset(-12)
             make.width.equalTo(100)
             make.height.equalTo(4.5)
             make.centerX.equalTo(self.topView)
@@ -371,6 +371,9 @@ extension SettleMoneyRoomVC: UITableViewDataSource {
                    cellForRowAt indexPath: IndexPath)
     -> UITableViewCell {
         let cell = self.settlementTableView.dequeueReusableCell(withIdentifier: Identifier.settlementTableViewCell, for: indexPath) as! SettlementTableViewCell
+        
+        let cellViewModel = self.viewModel?.cellViewModel(at: indexPath.item)
+        cell.configureCell(with: cellViewModel)
         
         return cell
     }

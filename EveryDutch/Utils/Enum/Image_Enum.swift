@@ -32,6 +32,7 @@ enum imageEnum {
     case chevronLeft
     case chevronRight
     case menu
+    case copy
     
     var img_String: String {
         switch self {
@@ -58,6 +59,7 @@ enum imageEnum {
         case .chevronLeft: return "chevron.left"
         case .chevronRight: return "chevron.right"
         case .menu: return "line.3.horizontal"
+        case .copy: return "doc.on.clipboard"
         }
     }
 }

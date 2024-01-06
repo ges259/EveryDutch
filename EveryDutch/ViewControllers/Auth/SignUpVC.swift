@@ -78,7 +78,7 @@ final class SignUpVC: UIViewController {
     
     
     // MARK: - 프로퍼티
-    private var coordinator: SignUpScreenCoordinating?
+    private var coordinator: SignUpScreenCoordProtocol?
 
     
     
@@ -90,7 +90,7 @@ final class SignUpVC: UIViewController {
         self.configureAutoLayout()
         self.configureAction()
     }
-    init(coordinator: SignUpScreenCoordinating) {
+    init(coordinator: SignUpScreenCoordProtocol) {
         self.coordinator =  coordinator
         super.init(nibName: nil, bundle: nil)
     }

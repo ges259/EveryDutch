@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class SelectALoginMethodCoordinator: SelectALoginMethodCoordinating {
+final class SelectALoginMethodCoordinator: SelectALoginMethodCoordProtocol {
     weak var parentCoordinator: Coordinator?
     
     var childCoordinators: [Coordinator] = [] {

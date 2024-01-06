@@ -8,6 +8,7 @@
 import UIKit
 import SnapKit
 
+
 final class CardTextView: UIView {
     
     // MARK: - 레이아웃
@@ -17,39 +18,37 @@ final class CardTextView: UIView {
     
     // 디테이르 레이블
     private lazy var firstDetailLbl: PaddingLabel = PaddingLabel(
-        leftRightInset: 26)
+        leftInset: 26)
     
     private lazy var secondDetailLbl: PaddingLabel = PaddingLabel(
-        leftRightInset: 26)
+        leftInset: 26)
     
     private lazy var thirdDetailLbl: PaddingLabel = PaddingLabel(
-        leftRightInset: 26)
+        leftInset: 26)
     
     
     // 정보 레이블
     private lazy var firstInfoLbl: PaddingLabel = PaddingLabel(
         textAlignment: .right,
-        leftRightInset: 26)
+        rightInset: 26)
     
     private lazy var secondInfoLbl: PaddingLabel = PaddingLabel(
         textAlignment: .right,
-        leftRightInset: 26)
+        rightInset: 26)
     
     private lazy var thirdInfoLbl: PaddingLabel = PaddingLabel(
         textAlignment: .right,
-        leftRightInset: 26)
+        rightInset: 26)
     
     
     // 텍스트 필드
     private lazy var firstTF: InsetTextField = InsetTextField(
         backgroundColor: .normal_white,
-        placeholerColor: .lightGray,
-        placeholderText: "안녕하세요.")
+        placeholerColor: .lightGray)
 
     private lazy var secondTF: InsetTextField = InsetTextField(
         backgroundColor: .normal_white,
-        placeholerColor: .lightGray,
-        placeholderText: "안녕하세요.")
+        placeholerColor: .lightGray)
     
     // 글자수 레이블
     
@@ -107,11 +106,15 @@ final class CardTextView: UIView {
         imageEnum: .note,
         imageSize: 14)
     
+    private lazy var copyBtn: UIButton = UIButton.btnWithImg(
+        imageEnum: .copy,
+        imageSize: 10)
+    
     
     
     
     // MARK: - 프로퍼티
-    private var mode: CardTextMode?
+    private var mode: CardMode?
     
     weak var delegate: CardTextDelegate?
     
@@ -119,10 +122,9 @@ final class CardTextView: UIView {
     
     
     // MARK: - 라이프사이클
-    init(mode: CardTextMode) {
+    init(mode: CardMode) {
         self.mode = mode
         super.init(frame: .zero)
-        
         self.configureUI()
         self.configureAutoLayout()
         self.configureAction()
@@ -140,9 +142,15 @@ extension CardTextView {
     // MARK: - UI 설정
     private func configureUI() {
         self.backgroundColor = .medium_Blue
+        self.addShadow(card: true)
         
-        self.clipsToBounds = true
-        self.layer.cornerRadius = 12
+        self.bottomBtn.clipsToBounds = true
+        self.bottomBtn.layer.maskedCorners = [
+            .layerMinXMaxYCorner,
+            .layerMaxXMaxYCorner]
+        self.bottomBtn.layer.cornerRadius = 10
+        
+        self.layer.cornerRadius = 10
     }
     
     // MARK: - 오토레이아웃 설정
@@ -176,75 +184,71 @@ extension CardTextView {
 
 extension CardTextView {
     private func configureMode() {
+        guard let mode = self.mode else { return }
+        self.configureText(mode: mode)
         
-        self.titleLbl.text = "정산방 정보"
-        self.firstDetailLbl.text = "정산방 이름"
-        self.secondDetailLbl.text = "모임 이름"
-        
-        guard let mode = mode else { return }
         switch mode {
-        case .roomFix:
-            
+        case .makeRoom:
             self.configureStackView(first: self.firstTF,
                                     second: self.secondTF,
-                                    third: bottomBtn)
-            
-            // MARK: - Fix
-            self.firstTF.text = "대학 동기 방"
-            self.secondTF.text = "점메추좀"
-            self.bottomBtn.setTitle("배경 이미지 설정", for: .normal)
+                                    third: self.bottomBtn)
             break
              
-        case .userInfoFix:
+        case .infoFix_User:
             self.configureStackView(first: self.firstInfoLbl,
                                     second: self.secondTF,
                                     third: self.bottomBtn)
-            
-            // MARK: - Fix
-            self.firstInfoLbl.text = "첫번째"
-            self.secondTF.text = "첫dfsa번째"
-            self.bottomBtn.setTitle("배경 이미지 설정", for: .normal)
             break
             
-        case .nothingFix:
+        case .readMode:
             self.configureStackView(first: self.firstInfoLbl,
                                     second: self.secondInfoLbl,
                                     third: self.thirdStackView)
-            
-            // MARK: - Fix
-            self.firstDetailLbl.text = "11"
-            self.secondDetailLbl.text = "22"
-            self.thirdDetailLbl.text = "세dfsa번째"
-            
-            self.firstInfoLbl.text = "첫번째"
-            self.secondInfoLbl.text = "첫dfsa번째"
-            self.thirdInfoLbl.text = "세dfsa번째"
             break
-        case .info_Setting:
+        case .readMode_profile:
             self.configureStackView(first: self.firstInfoLbl,
                                     second: self.secondInfoLbl,
                                     third: self.thirdStackView)
             self.addEditBtnAction()
-            
-            
-            self.firstInfoLbl.text = "첫번째"
-            self.secondInfoLbl.text = "첫dfsa번째"
-            self.thirdInfoLbl.text = "세dfsa번째"
-            
-            self.thirdDetailLbl.text = "324fds"
-            break
-            
-        case .ect_Setting:
+        case .info_Btn:
             self.configureStackView(first: self.firstInfoLbl,
                                     second: self.secondInfoLbl,
                                     third: self.clearView)
-            self.firstInfoLbl.alpha = 0
-            self.secondInfoLbl.alpha = 0
-//            self.totalStackView.addArrangedSubview(self.clearView)
             self.addStackViewGesture()
             break
+
         }
     }
+    
+    private func configureText(mode: CardMode) {
+        let textArray: [String] = mode.configureTitle
+        
+        self.titleLbl.text = textArray[0]
+        self.firstDetailLbl.text = textArray[1]
+        self.secondDetailLbl.text = textArray[2]
+        
+        switch mode {
+        case .makeRoom:
+            self.firstTF.attributedPlaceholder = self.setAttributedText(
+                placeholderText: mode.placeholderTitle[0])
+            fallthrough
+            
+        case .infoFix_User:
+            self.bottomBtn.setTitle(mode.thirdViewTitle, for: .normal)
+            self.secondTF.attributedPlaceholder = self.setAttributedText(
+                placeholderText: mode.placeholderTitle[1])
+            break
+    
+        case .readMode, .readMode_profile:
+            self.thirdDetailLbl.text = mode.thirdViewTitle
+            break
+            
+        case .info_Btn: break
+        }
+    }
+    
+    
+    
     
     // MARK: - 스택뷰에 추가
     private func configureStackView(first: UIView,
@@ -285,7 +289,9 @@ extension CardTextView {
             make.trailing.equalToSuperview().offset(-26)
             make.centerY.equalTo(self.titleLbl)
         }
+        
         self.editProfileBtn.addTarget(self, action: #selector(self.editProfileBtnTapped), for: .touchUpInside)
+        self.thirdStackView.insertArrangedSubview(self.copyBtn, at: 1)
     }
     @objc private func editProfileBtnTapped() {
         print(#function)

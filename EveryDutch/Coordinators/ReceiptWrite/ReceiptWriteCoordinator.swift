@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class ReceiptWriteCoordinator: ReceiptWriteCoordinating {
+final class ReceiptWriteCoordinator: ReceiptWriteCoordProtocol {
     weak var parentCoordinator: Coordinator?
     
     var childCoordinators: [Coordinator] = [] {

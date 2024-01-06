@@ -89,7 +89,8 @@ final class ReceiptWriteVC: UIViewController {
     
     // MARK: - Info - 레이아웃
     private var timeInfoLbl: PaddingLabel = PaddingLabel(
-        backgroundColor: UIColor.normal_white, leftRightInset: 25)
+        backgroundColor: UIColor.normal_white,
+        leftInset: 25)
     private var memoInfoTF: InsetTextField = InsetTextField(
         backgroundColor: .normal_white,
         placeholderText: "메모를 입력해 주세요.",
@@ -110,7 +111,7 @@ final class ReceiptWriteVC: UIViewController {
     
     
     
-    private var tableView: SettlementDetailsTableView = SettlementDetailsTableView(customTableEnum: .isReceipt)
+    private var tableView: SettlementDetailsTableView = SettlementDetailsTableView(customTableEnum: .isReceiptWrite)
     
     
     
@@ -221,7 +222,7 @@ final class ReceiptWriteVC: UIViewController {
     // MARK: - 프로퍼티
     private lazy var calendarHeight: CGFloat = (self.view.frame.width - 10) * 3 / 4
     
-    private var coordinator: ReceiptWriteCoordinating?
+    private var coordinator: ReceiptWriteCoordProtocol?
     
     
     // MARK: - 라이프사이클
@@ -232,7 +233,7 @@ final class ReceiptWriteVC: UIViewController {
         self.configureAutoLayout()
         self.configureAction()
     }
-    init(coordinator: ReceiptWriteCoordinating) {
+    init(coordinator: ReceiptWriteCoordProtocol) {
         self.coordinator = coordinator
         super.init(nibName: nil, bundle: nil)
     }

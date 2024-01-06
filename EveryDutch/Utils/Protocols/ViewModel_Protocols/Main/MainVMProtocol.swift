@@ -12,5 +12,5 @@ protocol MainVMProtocol {
     var numberOfItems: Int { get }
     
     
-    func cellViewModel(at index: Int) -> CollectionViewCellVM
+    func cellViewModel(at index: Int) -> MainCollectionViewCellVM
 }

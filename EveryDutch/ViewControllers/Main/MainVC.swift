@@ -78,10 +78,10 @@ final class MainVC: UIViewController {
     // MARK: - 프로퍼티
     private var viewModel: MainVMProtocol?
     
-    private var coordinator: MainCoordinating?
+    private var coordinator: MainCoordProtocol?
     
     /// 컬렉션뷰 셀의 넓이
-    private lazy var width = (self.view.frame.width - 20)
+    private lazy var width = self.view.frame.width - 20
     /// 컬렉션뷰 셀의 높이
     private lazy var cardHeight = (self.view.frame.width - 20) * 1.8 / 3
     
@@ -102,7 +102,7 @@ final class MainVC: UIViewController {
         self.configureAction()
     }
     init(viewModel: MainVMProtocol,
-         coordinator: MainCoordinating) {
+         coordinator: MainCoordProtocol) {
         self.viewModel = viewModel
         self.coordinator = coordinator
         super.init(nibName: nil, bundle: nil)
@@ -138,7 +138,6 @@ extension MainVC {
         self.floatingArray.forEach { btn in
             btn.clipsToBounds = true
             btn.layer.cornerRadius = 55 / 2
-//            btn.isHidden = true
             btn.alpha = 0
         }
 
@@ -179,8 +178,8 @@ extension MainVC {
         
         self.collectionView.snp.makeConstraints { make in
             make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(2)
-            make.leading.equalToSuperview().offset(10)
-            make.trailing.equalToSuperview().offset(-10)
+            make.leading.equalToSuperview()
+            make.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
         }
         self.menuBtn.snp.makeConstraints { make in
@@ -230,11 +229,11 @@ extension MainVC {
         self.menuBtnSpin()
     }
     @objc private func profileScreenBtnTapped() {
-        
+        self.coordinator?.multiPurposeScreen(.profile)
     }
     
     @objc private func makeRoomScreenBtnTapped() {
-        self.coordinator?.multiPurposeScreen()
+        self.coordinator?.multiPurposeScreen(.makeRoom)
     }
     
     @objc private func floatingViewTappd() {

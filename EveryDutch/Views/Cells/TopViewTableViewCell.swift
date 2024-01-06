@@ -19,7 +19,8 @@ final class TopViewTableViewCell: UITableViewCell {
     private var priceLbl: PaddingLabel = PaddingLabel(
         backgroundColor: .medium_Blue,
         topBottomInset: 4,
-        leftRightInset: 10)
+        leftInset: 10,
+        rightInset: 10)
     
     private var priceTf: InsetTextField = InsetTextField(
         backgroundColor: UIColor.medium_Blue,

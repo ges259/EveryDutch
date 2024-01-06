@@ -8,7 +8,7 @@
 import UIKit
 
 // MARK: - MainViewController
-final class MainCoordinator: MainCoordinating {
+final class MainCoordinator: MainCoordProtocol{
     weak var parentCoordinator: Coordinator?
     
     var childCoordinators: [Coordinator] = [] {
@@ -47,9 +47,12 @@ final class MainCoordinator: MainCoordinating {
             settlementRoomCoordinator.start()
     }
     /// 플러스 버튼을 누르면 화면 이동
-    func multiPurposeScreen() {
+    func multiPurposeScreen(_ cardScreen_Enum: CardScreen_Enum) {
         // Main-Coordinator 생성
-        let multipurposeScreenCoordinator = MultipurposeScreenCoordinator(nav: self.nav)
+        let multipurposeScreenCoordinator = CardScreenCoordinator(
+            nav: self.nav,
+            cardScreen_Enum: cardScreen_Enum)
+        
         multipurposeScreenCoordinator.delegate = self
         self.childCoordinators.append(multipurposeScreenCoordinator)
         // 부모 코디네이터가 자신이라는 것을 명시 (뒤로가기 할 때 필요)

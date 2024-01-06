@@ -90,9 +90,8 @@ extension FindFriendsVC {
          self.inviteBtn].forEach { btn in
             btn.clipsToBounds = true
             btn.layer.cornerRadius = 10
+            btn.addShadow(card: true)
         }
-        
-        
     }
     
     // MARK: - 오토레이아웃 설정

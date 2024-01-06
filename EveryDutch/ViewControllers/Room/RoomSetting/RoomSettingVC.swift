@@ -79,7 +79,7 @@ final class RoomSettingVC: UIViewController {
     
     
     // MARK: - 프로퍼티
-    private var coordinator: RoomSettingCoordinating?
+    private var coordinator: RoomSettingCoordProtocol?
     
     // (spaing X 2) + (leading + trailing)
 //    private lazy var btnWidth: CGFloat = (self.view.frame.width - 90 - 40) / 3
@@ -210,8 +210,12 @@ extension RoomSettingVC {
         
         
         self.inviteBtn.addTarget(self, action: #selector(self.inviteBtnTapped), for: .touchUpInside)
+        self.profileBtn.addTarget(self, action: #selector(self.profileBtnTapped), for: .touchUpInside)
     }
     
+    @objc private func profileBtnTapped() {
+        self.coordinator?.multiPurposeScreen(.editProfile)
+    }
     @objc private func inviteBtnTapped() {
         self.coordinator?.FindFriendsScreen()
     }

@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class RoomSettingCoordinator: RoomSettingCoordinating {
+final class RoomSettingCoordinator: RoomSettingCoordProtocol{
     weak var parentCoordinator: Coordinator?
     
     var childCoordinators: [Coordinator] = [] {
@@ -48,12 +48,30 @@ final class RoomSettingCoordinator: RoomSettingCoordinating {
         // 코디네이터에게 화면이동을 지시
         findFriendsCoordinator.start()
     }
-    
+    func multiPurposeScreen(_ cardScreen_Enum: CardScreen_Enum) {
+        // MultipurposeScreenCoordinator 생성
+        let multipurposeScreenCoordinator = CardScreenCoordinator(
+            nav: self.nav,
+            cardScreen_Enum: cardScreen_Enum)
+        
+        multipurposeScreenCoordinator.delegate = self
+        self.childCoordinators.append(multipurposeScreenCoordinator)
+        // 부모 코디네이터가 자신이라는 것을 명시 (뒤로가기 할 때 필요)
+            multipurposeScreenCoordinator.parentCoordinator = self
+        // 코디네이터에게 화면이동을 지시
+            multipurposeScreenCoordinator.start()
+    }
     func didFinish() {
         self.nav.popViewController(animated: true)
         self.parentCoordinator?.removeChildCoordinator(child: self)
     }
     deinit {
         print("deinit ----- \(#function)-----\(self)")
+    }
+}
+
+extension RoomSettingCoordinator: MultiPurposeScreenDelegate {
+    func logout() {
+        print(#function)
     }
 }

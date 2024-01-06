@@ -8,7 +8,7 @@
 import UIKit
 
 
-final class SettleMoneyRoomCoordinator: SettleMoneyRoomCoordinating {
+final class SettleMoneyRoomCoordinator: SettleMoneyRoomCoordProtocol {
     weak var parentCoordinator: Coordinator?
     
     var childCoordinators: [Coordinator] = [] {

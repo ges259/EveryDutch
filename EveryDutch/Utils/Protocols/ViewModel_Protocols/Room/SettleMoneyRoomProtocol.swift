@@ -8,5 +8,7 @@
 import Foundation
 
 protocol SettleMoneyRoomProtocol {
+    func cellViewModel(at index: Int) -> SettlementTableViewCellVM
+    var numberOfItems: Int { get }
     
 }

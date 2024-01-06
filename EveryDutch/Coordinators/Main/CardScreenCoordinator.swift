@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class MultipurposeScreenCoordinator: MultipurposeScreenCoordinating {
+final class CardScreenCoordinator: CardScreenCoordProtocol {
     weak var parentCoordinator: Coordinator?
 
     var childCoordinators: [Coordinator] = [] {
@@ -20,17 +20,22 @@ final class MultipurposeScreenCoordinator: MultipurposeScreenCoordinating {
     weak var delegate: MultiPurposeScreenDelegate?
     
     var nav: UINavigationController
-
+    private var cardScreen_Enum: CardScreen_Enum = .profile
+    
     // 의존성 주입
-    init(nav: UINavigationController) {
+    init(nav: UINavigationController,
+         cardScreen_Enum: CardScreen_Enum) {
         self.nav = nav
+        self.cardScreen_Enum = cardScreen_Enum
     }
     
     func start() {
-        let multipurposeScreenVM = MultipurposeScreenVM()
+        let multipurposeScreenVM = CardScreenVM(
+            cardScreen_Enum: self.cardScreen_Enum)
         // PlusViewController 인스턴스 생성
-        let multipurposeScreenVC = MultipurposeScreenVC(viewModel: multipurposeScreenVM,
-                                          coordinator: self)
+        let multipurposeScreenVC = CardScreenVC(
+            viewModel: multipurposeScreenVM,
+            coordinator: self)
         multipurposeScreenVC.delegate = self
         // 네비게이션 컨트롤러 생성 및 루트 뷰 컨트롤러 설정
         let plusNavController = UINavigationController(rootViewController: multipurposeScreenVC)
@@ -57,7 +62,7 @@ final class MultipurposeScreenCoordinator: MultipurposeScreenCoordinating {
 }
 
 
-extension MultipurposeScreenCoordinator: MultiPurposeScreenDelegate {
+extension CardScreenCoordinator: MultiPurposeScreenDelegate {
     func logout() {
         self.didFinish()
         (self.parentCoordinator as? MainCoordinator)?.logout()

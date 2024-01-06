@@ -11,7 +11,8 @@ import UIKit
 final class PaddingLabel: UILabel {
 
     var topBottomInset: CGFloat = 0.0
-    var leftRightInset: CGFloat = 0.0
+    var leftInset: CGFloat = 0.0
+    var rightInset: CGFloat = 0.0
 
 
     init(text: String = "",
@@ -20,10 +21,12 @@ final class PaddingLabel: UILabel {
          backgroundColor: UIColor = .clear,
          textAlignment: NSTextAlignment = .left,
          topBottomInset: CGFloat = 0,
-         leftRightInset: CGFloat = 0) {
+         leftInset: CGFloat = 0,
+         rightInset: CGFloat = 0) {
         
         self.topBottomInset = topBottomInset
-        self.leftRightInset = leftRightInset
+        self.leftInset = leftInset
+        self.rightInset = rightInset
         
         super.init(frame: .zero)
         self.text = text
@@ -44,20 +47,20 @@ final class PaddingLabel: UILabel {
     
     override func drawText(in rect: CGRect) {
         let insets = UIEdgeInsets(top: self.topBottomInset,
-                                  left: self.leftRightInset,
+                                  left: self.leftInset,
                                   bottom: self.topBottomInset,
-                                  right: self.leftRightInset)
+                                  right: self.rightInset)
         super.drawText(in: rect.inset(by: insets))
     }
     override var intrinsicContentSize: CGSize {
         let size = super.intrinsicContentSize
-        return CGSize(width: size.width + leftRightInset + leftRightInset,
+        return CGSize(width: size.width + leftInset + rightInset,
                       height: size.height + topBottomInset + topBottomInset)
     }
 
     override var bounds: CGRect {
         didSet {
-            self.preferredMaxLayoutWidth = bounds.width - (leftRightInset + leftRightInset)
+            self.preferredMaxLayoutWidth = bounds.width - (leftInset + rightInset)
         }
     }
 }

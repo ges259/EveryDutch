@@ -7,6 +7,6 @@
 
 import Foundation
 
-protocol MultipurposeScreenCoordinating: Coordinator {
+protocol CardScreenCoordProtocol: Coordinator {
     
 }

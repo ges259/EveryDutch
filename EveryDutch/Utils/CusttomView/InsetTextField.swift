@@ -22,17 +22,19 @@ class InsetTextField: UITextField {
     
     init(backgroundColor: UIColor,
          placeholerColor: UIColor = UIColor.placeholder_gray,
-         placeholderText: String,
+         placeholderText: String? = nil,
          insetX: CGFloat = 16) {
         super.init(frame: .zero)
         
         self.font = UIFont.systemFont(ofSize: 13)
         self.backgroundColor = backgroundColor
         self.insetX = insetX
-        self.attributedPlaceholder = NSAttributedString.configure(
-            text: placeholderText,
-            color: placeholerColor,
-            font: UIFont.systemFont(ofSize: 13))
+        
+        if let placeholderText = placeholderText {
+            self.attributedPlaceholder = self.setAttributedText(
+                placeholderText: placeholderText,
+                placeholerColor: placeholerColor)
+        }
     }
     convenience init(placeholderText: String,
                      keyboardType: UIKeyboardType,

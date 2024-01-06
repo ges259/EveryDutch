@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class LoginScreenCoordinator: LoginScreenCoordinating {
+final class LoginScreenCoordinator: LoginScreenCoordProtocol {
     weak var parentCoordinator: Coordinator?
     
     var childCoordinators: [Coordinator] = [] {

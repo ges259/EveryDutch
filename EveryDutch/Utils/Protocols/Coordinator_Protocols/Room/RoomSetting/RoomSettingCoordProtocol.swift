@@ -7,7 +7,9 @@
 
 import Foundation
 
-protocol RoomSettingCoordinating: Coordinator {
+protocol RoomSettingCoordProtocol: Coordinator {
     func settlementScreen()
     func FindFriendsScreen()
+    func multiPurposeScreen(_ cardScreen_Enum: CardScreen_Enum)
+
 }

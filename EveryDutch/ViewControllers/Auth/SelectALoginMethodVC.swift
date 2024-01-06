@@ -55,7 +55,7 @@ final class SelectALoginMethodVC: UIViewController {
     
     
     // MARK: - 프로퍼티
-    private var coordinator: SelectALoginMethodCoordinating?
+    private var coordinator: SelectALoginMethodCoordProtocol?
     private lazy var buttonArray: [UIButton] = [self.appleLogin,
                                                 self.emailLogin]
     
@@ -69,7 +69,7 @@ final class SelectALoginMethodVC: UIViewController {
         self.configureAutoLayout()
         self.configureAction()
     }
-    init(coordinator: SelectALoginMethodCoordinating) {
+    init(coordinator: SelectALoginMethodCoordProtocol) {
         self.coordinator =  coordinator
         super.init(nibName: nil, bundle: nil)
     }
