@@ -72,23 +72,21 @@ final class ReceiptWriteVC: UIViewController {
     private var whiteView: UIView = UIView.configureView(
         color: UIColor.medium_Blue)
     
-    private lazy var timeDetailLbl: ReceiptStackView = ReceiptStackView(
-        receiptEnum: .time,
-        infoLbl_IsHidden: true)
-    private lazy var memoDetailLbl: ReceiptStackView = ReceiptStackView(
-        receiptEnum: .memo,
-        infoLbl_IsHidden: true)
-    private lazy var priceDetailLbl: ReceiptStackView = ReceiptStackView(
-        receiptEnum: .price,
-        infoLbl_IsHidden: true)
-    private lazy var payerDetailLbl: ReceiptStackView = ReceiptStackView(
-        receiptEnum: .payer,
-        infoLbl_IsHidden: true)
+    private lazy var timeDetailLbl: CustomStackView = CustomStackView(
+        receiptEnum: .time)
+    private lazy var memoDetailLbl: CustomStackView = CustomStackView(
+        receiptEnum: .memo)
+    private lazy var priceDetailLbl: CustomStackView = CustomStackView(
+        receiptEnum: .price)
+    private lazy var payerDetailLbl: CustomStackView = CustomStackView(
+        receiptEnum: .payer)
+    
+    
     
     
     
     // MARK: - Info - 레이아웃
-    private var timeInfoLbl: PaddingLabel = PaddingLabel(
+    private var timeInfoLbl: CustomLabel = CustomLabel(
         backgroundColor: UIColor.normal_white,
         leftInset: 25)
     private var memoInfoTF: InsetTextField = InsetTextField(
@@ -105,7 +103,7 @@ final class ReceiptWriteVC: UIViewController {
         insetX: 25)
     
     
-    private var memoNumOfCharLbl: UILabel = UILabel.configureLbl(
+    private var memoNumOfCharLbl: CustomLabel = CustomLabel(
         text: "0 / 8",
         font: UIFont.systemFont(ofSize: 13))
     
@@ -115,7 +113,7 @@ final class ReceiptWriteVC: UIViewController {
     
     
     
-    private var moneyCountBtn: PaddingLabel = PaddingLabel(
+    private var moneyCountBtn: CustomLabel = CustomLabel(
         backgroundColor: UIColor.normal_white,
         textAlignment: .center)
     

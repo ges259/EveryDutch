@@ -11,7 +11,7 @@ import SnapKit
 final class SearchMethodTableViewCell: UITableViewCell {
     
     // MARK: - 레이아웃
-    private var nameLbl: UILabel = UILabel.configureLbl(
+    private var nameLbl: CustomLabel = CustomLabel(
         font: UIFont.systemFont(ofSize: 15))
     
     private lazy var rightImg: UIButton = UIButton.btnWithImg(

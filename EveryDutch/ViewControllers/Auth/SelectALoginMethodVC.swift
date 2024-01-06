@@ -14,8 +14,8 @@ final class SelectALoginMethodVC: UIViewController {
         color: UIColor.medium_Blue)
     // 앱 아이콘
     private var iconImg: UIImageView = UIImageView(image: UIImage.Exit_Img)
-    private var iconLbl: UILabel = {
-        let lbl = UILabel.configureLbl(
+    private var iconLbl: CustomLabel = {
+        let lbl = CustomLabel(
             text: "더치더치 계정을 만들어보세요!",
             font: UIFont.systemFont(ofSize: 17),
             textAlignment: .center)

@@ -22,18 +22,19 @@ final class SettlementVC: UIViewController {
     /// 컨텐트뷰 ( - 스크롤뷰)
     private lazy var contentView: UIView = UIView()
     
-    private var settlementNameLbl: UILabel = UILabel.configureLbl(
+    private var settlementNameLbl: CustomLabel = CustomLabel(
         text: "이름 설정",
         font: UIFont.systemFont(ofSize: 15),
-        backgroundColor: .normal_white,
-        textAlignment: .center)
+        backgroundColor: UIColor.normal_white,
+        textAlignment: NSTextAlignment.center)
+            
     
     private var textField: InsetTextField = InsetTextField(
         backgroundColor: .normal_white,
         placeholerColor: .lightGray,
         placeholderText: "안녕하세요.")
     
-    private lazy var numOfCharLbl: UILabel = UILabel.configureLbl(
+    private lazy var numOfCharLbl: CustomLabel = CustomLabel(
         text: "0 / 10",
         font: UIFont.systemFont(ofSize: 13))
     

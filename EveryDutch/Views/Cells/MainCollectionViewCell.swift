@@ -13,14 +13,13 @@ import SnapKit
 final class MainCollectionViewCell: UICollectionViewCell {
     
     // MARK: - 레이아웃
-    private lazy var titleLbl: UILabel = UILabel.configureLbl(
+    private lazy var titleLbl: CustomLabel = CustomLabel(
         font: UIFont.boldSystemFont(ofSize: 28))
     
-    private lazy var timeLbl: UILabel = UILabel.configureLbl(
+    private lazy var timeLbl: CustomLabel = CustomLabel(
         textColor: UIColor.gray,
         font: UIFont.systemFont(ofSize: 13))
-    
-    
+        
     
     // MARK: - 프로퍼티
     weak var viewModel: MainCollectionViewCellVM?

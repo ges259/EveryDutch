@@ -37,7 +37,7 @@ final class SettlementDetailsTableView: UIView {
             forCellReuseIdentifier: Identifier.topViewTableViewCell)
         return view
     }()
-    private lazy var topLbl: UILabel = UILabel.configureLbl(
+    private lazy var topLbl: CustomLabel = CustomLabel(
         font: UIFont.systemFont(ofSize: 15),
         textAlignment: .center)
     

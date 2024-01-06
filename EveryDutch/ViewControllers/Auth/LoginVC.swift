@@ -15,7 +15,7 @@ final class LoginVC: UIViewController {
         color: UIColor.medium_Blue)
     
     /// "로그인" 레이블
-    private lazy var loginLbl: UILabel = UILabel.configureLbl(
+    private lazy var loginLbl: CustomLabel = CustomLabel(
         text: "이메일 로그인",
         font: UIFont.boldSystemFont(ofSize: 25))
     

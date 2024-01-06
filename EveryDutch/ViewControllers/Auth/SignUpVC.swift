@@ -14,7 +14,7 @@ final class SignUpVC: UIViewController {
         color: UIColor.medium_Blue)
     
     /// "로그인" 레이블
-    private lazy var signUpLbl: UILabel = UILabel.configureLbl(
+    private lazy var signUpLbl: CustomLabel = CustomLabel(
         text: "이메일 회원가입",
         font: UIFont.boldSystemFont(ofSize: 25))
     

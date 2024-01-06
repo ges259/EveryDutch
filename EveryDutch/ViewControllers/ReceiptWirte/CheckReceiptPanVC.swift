@@ -12,7 +12,7 @@ import PanModal
 final class CheckReceiptPanVC: UIViewController {
     // MARK: - 레이아웃
     
-    private var topLbl: PaddingLabel = PaddingLabel(
+    private var topLbl: CustomLabel = CustomLabel(
         text: "아직 체크되지 않은 부분이 있어요",
         font: UIFont.boldSystemFont(ofSize: 15),
         backgroundColor: UIColor.normal_white,
@@ -37,19 +37,19 @@ final class CheckReceiptPanVC: UIViewController {
     
     
     // 레이블
-    private var priceCheckLbl: PaddingLabel = PaddingLabel(
+    private var priceCheckLbl: CustomLabel = CustomLabel(
         text: "✓  가격을 설정해 주세요",
         font: UIFont.systemFont(ofSize: 14))
-    private var payerCheckLbl: PaddingLabel = PaddingLabel(
+    private var payerCheckLbl: CustomLabel = CustomLabel(
         text: "✓  계산한 사람을 설정해 주세요.",
         font: UIFont.systemFont(ofSize: 14))
-    private var leftMoneyLbl: PaddingLabel = PaddingLabel(
+    private var leftMoneyLbl: CustomLabel = CustomLabel(
         text: "✓  25,000원이 남았습니다.",
         font: UIFont.systemFont(ofSize: 14))
-    private var zeroWonLbl: PaddingLabel = PaddingLabel(
+    private var zeroWonLbl: CustomLabel = CustomLabel(
         text: "✓  0원으로 설정되어있는 사람이 있습니다.",
         font: UIFont.systemFont(ofSize: 14))
-    private var exceededMoneyLbl: PaddingLabel = PaddingLabel(
+    private var exceededMoneyLbl: CustomLabel = CustomLabel(
         text: "✓  금액이 초과되었습니다. 정확히 입력해 주세요.",
         font: UIFont.systemFont(ofSize: 14))
     

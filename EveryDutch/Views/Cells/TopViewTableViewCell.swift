@@ -13,10 +13,10 @@ final class TopViewTableViewCell: UITableViewCell {
     // MARK: - 레이아웃
     private var profileImg: UIImageView = UIImageView()
     
-    private var userName: UILabel = UILabel.configureLbl(
+    private var userName: CustomLabel = CustomLabel(
         font: UIFont.systemFont(ofSize: 14))
     
-    private var priceLbl: PaddingLabel = PaddingLabel(
+    private var priceLbl: CustomLabel = CustomLabel(
         backgroundColor: .medium_Blue,
         topBottomInset: 4,
         leftInset: 10,

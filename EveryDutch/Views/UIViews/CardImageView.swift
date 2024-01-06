@@ -16,7 +16,7 @@ final class CardImageView: UIView {
         img.backgroundColor = UIColor.medium_Blue
         return img
     }()
-    private var titleLbl: UILabel = UILabel.configureLbl(
+    private var titleLbl: CustomLabel = CustomLabel(
         font: .boldSystemFont(ofSize: 25))
     
     private var dutchImg: UIImageView = UIImageView()
@@ -26,7 +26,7 @@ final class CardImageView: UIView {
     private var lineView: UIView = UIView.configureView(
         color: UIColor.normal_white)
     
-    private var nameLbl: UILabel = UILabel.configureLbl(
+    private var nameLbl: CustomLabel = CustomLabel(
         textColor: .placeholder_gray,
         font: UIFont.systemFont(ofSize: 13))
     

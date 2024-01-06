@@ -16,7 +16,7 @@ final class FindFriendsVC: UIViewController {
         backgroundColor: UIColor.clear,
         placeholderText: "친구 개인 ID")
     
-    private var numOfCharLbl: UILabel = UILabel.configureLbl(
+    private var numOfCharLbl: CustomLabel = CustomLabel(
         text: "0 / 8",
         font: UIFont.systemFont(ofSize: 13))
     

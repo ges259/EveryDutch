@@ -13,8 +13,8 @@ final class NoDataView: UIView {
     // MARK: - 레이아웃
     private var noDataImg: UIImageView = UIImageView()
     
-    private var noDataText: UILabel = {
-        let lbl = UILabel.configureLbl(
+    private var noDataText: CustomLabel = {
+        let lbl = CustomLabel(
             font: UIFont.systemFont(ofSize: 17),
             textAlignment: .center)
         lbl.numberOfLines = 2

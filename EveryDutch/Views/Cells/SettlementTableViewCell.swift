@@ -14,30 +14,31 @@ final class SettlementTableViewCell: UITableViewCell {
     private lazy var baseView: UIView = UIView.configureView(
         color: .normal_white)
     
-    private var contextLbl: UILabel = UILabel.configureLbl(
-        font: UIFont.systemFont(ofSize: 16))
-    
-    private var priceLbl: UILabel = UILabel.configureLbl(
-        font: UIFont.systemFont(ofSize: 14))
-    
-    private var timeLbl: UILabel = UILabel.configureLbl(
+    private var contextLbl: CustomLabel = CustomLabel(
+        font: UIFont.systemFont(ofSize: 15))
+    private var priceLbl: CustomLabel = CustomLabel(
+        font: UIFont.systemFont(ofSize: 14),
+        textAlignment: .right)
+    private var timeLbl: CustomLabel = CustomLabel(
         textColor: .gray,
         font: UIFont.systemFont(ofSize: 12))
-    
-    private var allPayerLbl: UILabel = UILabel.configureLbl(
+    private var allPayerLbl: CustomLabel = CustomLabel(
         textColor: .gray,
-        font: UIFont.systemFont(ofSize: 12))
+        font: UIFont.systemFont(ofSize: 12),
+        textAlignment: .right)
     
     
     private lazy var topStackView: UIStackView = UIStackView.configureStackView(
-        arrangedSubviews: [self.contextLbl, self.priceLbl],
+        arrangedSubviews: [self.contextLbl, 
+                           self.priceLbl],
         axis: .horizontal,
         spacing: 0,
         alignment: .fill,
         distribution: .fill)
     
     private lazy var bottomStackView: UIStackView = UIStackView.configureStackView(
-        arrangedSubviews: [self.timeLbl, self.allPayerLbl],
+        arrangedSubviews: [self.timeLbl, 
+                           self.allPayerLbl],
         axis: .horizontal,
         spacing: 0,
         alignment: .fill,
@@ -79,8 +80,7 @@ extension SettlementTableViewCell {
         
         // MARK: - Fix
 //        self.contextLbl.text = "맥도날드 맘스터치 KFC"
-        self.priceLbl.text = "30,000원"
-        self.timeLbl.text = "00 : 23"
+
 //        self.allPayerLbl.text = "쁨 외 1명"
     }
     
@@ -125,6 +125,8 @@ extension SettlementTableViewCell {
         if let viewModel = viewModel {
             self.contextLbl.text = viewModel.content
             self.allPayerLbl.text = viewModel.payer
+            self.priceLbl.text = "30,000원"
+            self.timeLbl.text = "00 : 23"
         }
     }
 }

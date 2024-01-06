@@ -13,30 +13,30 @@ final class CardTextView: UIView {
     
     // MARK: - 레이아웃
     // 타이틀 레이블
-    private var titleLbl: UILabel = UILabel.configureLbl(
+    private var titleLbl: CustomLabel = CustomLabel(
         font: UIFont.boldSystemFont(ofSize: 23))
     
     // 디테이르 레이블
-    private lazy var firstDetailLbl: PaddingLabel = PaddingLabel(
+    private lazy var firstDetailLbl: CustomLabel = CustomLabel(
         leftInset: 26)
     
-    private lazy var secondDetailLbl: PaddingLabel = PaddingLabel(
+    private lazy var secondDetailLbl: CustomLabel = CustomLabel(
         leftInset: 26)
     
-    private lazy var thirdDetailLbl: PaddingLabel = PaddingLabel(
+    private lazy var thirdDetailLbl: CustomLabel = CustomLabel(
         leftInset: 26)
     
     
     // 정보 레이블
-    private lazy var firstInfoLbl: PaddingLabel = PaddingLabel(
+    private lazy var firstInfoLbl: CustomLabel = CustomLabel(
         textAlignment: .right,
         rightInset: 26)
     
-    private lazy var secondInfoLbl: PaddingLabel = PaddingLabel(
+    private lazy var secondInfoLbl: CustomLabel = CustomLabel(
         textAlignment: .right,
         rightInset: 26)
     
-    private lazy var thirdInfoLbl: PaddingLabel = PaddingLabel(
+    private lazy var thirdInfoLbl: CustomLabel = CustomLabel(
         textAlignment: .right,
         rightInset: 26)
     
@@ -53,11 +53,11 @@ final class CardTextView: UIView {
     // 글자수 레이블
     
     
-    private lazy var firstNumOfCharLbl: UILabel = UILabel.configureLbl(
+    private lazy var firstNumOfCharLbl: CustomLabel = CustomLabel(
         text: "0 / 10",
         font: UIFont.systemFont(ofSize: 13))
     
-    private lazy var secondNumOfCharLbl: UILabel = UILabel.configureLbl(
+    private lazy var secondNumOfCharLbl: CustomLabel = CustomLabel(
         text: "0 / 10",
         font: UIFont.systemFont(ofSize: 13))
     

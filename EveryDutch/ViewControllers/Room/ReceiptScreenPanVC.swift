@@ -11,7 +11,7 @@ import PanModal
 
 final class ReceiptScreenPanVC: UIViewController {
     // MARK: - 레이아웃
-    private var topLbl: UILabel = UILabel.configureLbl(
+    private var topLbl: CustomLabel = CustomLabel(
         font: UIFont.systemFont(ofSize: 15),
         backgroundColor: UIColor.normal_white,
         textAlignment: .center)
@@ -20,18 +20,24 @@ final class ReceiptScreenPanVC: UIViewController {
         color: UIColor.normal_white)
     
     // 스택뷰
-    private var memoStackView: ReceiptStackView = ReceiptStackView(
-        receiptEnum: .memo)
-    private var dateStackView: ReceiptStackView = ReceiptStackView(
-        receiptEnum: .date)
-    private var timeStackView: ReceiptStackView = ReceiptStackView(
-        receiptEnum: .time)
-    private var priceStackView: ReceiptStackView = ReceiptStackView(
-        receiptEnum: .price)
-    private var payerStackVeiw: ReceiptStackView = ReceiptStackView(
-        receiptEnum: .payer)
-    private var paymentMethodStackView: ReceiptStackView = ReceiptStackView(
-        receiptEnum: .payment_Method)
+    private var memoStackView: CustomStackView = CustomStackView(
+        receiptEnum: .memo,
+        addInfoLbl: true)
+    private var dateStackView: CustomStackView = CustomStackView(
+        receiptEnum: .date,
+        addInfoLbl: true)
+    private var timeStackView: CustomStackView = CustomStackView(
+        receiptEnum: .time,
+        addInfoLbl: true)
+    private var priceStackView: CustomStackView = CustomStackView(
+        receiptEnum: .price,
+        addInfoLbl: true)
+    private var payerStackVeiw: CustomStackView = CustomStackView(
+        receiptEnum: .payer,
+        addInfoLbl: true)
+    private var paymentMethodStackView: CustomStackView = CustomStackView(
+        receiptEnum: .payment_Method,
+        addInfoLbl: true)
     
     
     // 테이블뷰
