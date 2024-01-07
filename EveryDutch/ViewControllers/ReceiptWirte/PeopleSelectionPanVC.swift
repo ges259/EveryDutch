@@ -81,6 +81,9 @@ extension PeopleSelectionPanVC {
         self.bottomBtn.clipsToBounds = true
         self.bottomBtn.layer.cornerRadius = 10
         
+        self.searchMethodTableView.clipsToBounds = true
+        self.searchMethodTableView.layer.cornerRadius = 10
+        
         
         // MARK: - Fix
         self.bottomBtn.setTitle("선택 완료", for: .normal)

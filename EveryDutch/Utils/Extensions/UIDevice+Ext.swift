@@ -27,7 +27,7 @@ extension UIDevice {
     // MARK: - Fix
     // 나중에 ViewModel로 옮기기
     public var tabBarHeight: CGFloat {
-        return self.isiPhoneSE ? 60 : 95
+        return self.isiPhoneSE ? 62 : 97
     }
     // 이건 좀 이상하네
     public var topStackViewBottom: CGFloat {

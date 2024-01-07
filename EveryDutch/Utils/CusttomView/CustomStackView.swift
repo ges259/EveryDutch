@@ -16,7 +16,7 @@ final class CustomStackView: UIStackView {
     }()
     
     private var receiptDetailLbl: CustomLabel = CustomLabel(
-        font: UIFont.systemFont(ofSize: 13.5))
+        font: UIFont.systemFont(ofSize: 14))
     
     lazy var receiptInfoLbl: CustomLabel = CustomLabel(
         font: UIFont.boldSystemFont(ofSize: 14),
@@ -35,7 +35,7 @@ final class CustomStackView: UIStackView {
         super.init(frame: .zero)
         
         self.axis = .horizontal
-        self.spacing = 7
+        self.spacing = 8
         self.alignment = .center
         self.distribution = .fill
         self.configureCustomStackView()

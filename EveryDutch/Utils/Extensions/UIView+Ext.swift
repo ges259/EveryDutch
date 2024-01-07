@@ -13,11 +13,8 @@ extension UIView {
             view.backgroundColor = color
         return view
     }
-}
-
-
-// UIView 확장하여 그림자 추가 함수 구현
-extension UIView {
+    
+    
     // 그림자를 추가하는 함수
     func addShadow(top: Bool = false,
                    bottom: Bool = false,

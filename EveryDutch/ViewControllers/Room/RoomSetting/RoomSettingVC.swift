@@ -26,20 +26,20 @@ final class RoomSettingVC: UIViewController {
     private var tableView: SettlementDetailsTableView = SettlementDetailsTableView(customTableEnum: .isSegmentCtrl)
     
     /// 정산하기 버튼
-    private var settleMoneyBtn: UIButton = UIButton.btnWithTitle(
-        font: UIFont.boldSystemFont(ofSize: 17),
-        backgroundColor: UIColor.deep_Blue)
-    /// 정산 기록 버튼
-    private var settlementDetailBtn: UIButton = UIButton.btnWithTitle(
-        font: UIFont.boldSystemFont(ofSize: 17),
-        backgroundColor: UIColor.deep_Blue)
+//    private var settleMoneyBtn: UIButton = UIButton.btnWithTitle(
+//        font: UIFont.boldSystemFont(ofSize: 17),
+//        backgroundColor: UIColor.deep_Blue)
+//    /// 정산 기록 버튼
+//    private var settlementDetailBtn: UIButton = UIButton.btnWithTitle(
+//        font: UIFont.boldSystemFont(ofSize: 17),
+//        backgroundColor: UIColor.deep_Blue)
     
-    private lazy var settlementStackView: UIStackView = UIStackView.configureStackView(
-        arrangedSubviews: [self.settlementDetailBtn],
-        axis: .horizontal,
-        spacing: 4,
-        alignment: .fill,
-        distribution: .fillEqually)
+//    private lazy var settlementStackView: UIStackView = UIStackView.configureStackView(
+//        arrangedSubviews: [self.settlementDetailBtn],
+//        axis: .horizontal,
+//        spacing: 4,
+//        alignment: .fill,
+//        distribution: .fillEqually)
     
     
     
@@ -47,21 +47,40 @@ final class RoomSettingVC: UIViewController {
         color: UIColor.deep_Blue)
     
     // 원형 버튼들
-    private var exitBtn: UIButton = UIButton.configureCircleBtn(
-        size: 11,
-        title: "나가기",
-        image: UIImage.Exit_Img)
-    private var inviteBtn: UIButton = UIButton.configureCircleBtn(
-        title: "초대",
-        image: UIImage.Invite_Img)
+    private var exitBtn: UIButton = UIButton.btnWithImg(
+        image: .Exit_Img,
+        imageSize: 11,
+        backgroundColor: UIColor.normal_white,
+        title: "나가기")
+    private var inviteBtn: UIButton = UIButton.btnWithImg(
+        image: .Invite_Img,
+        imageSize: 15,
+        backgroundColor: UIColor.normal_white,
+        title: "초대")
     
-    private var profileBtn: UIButton = UIButton.configureCircleBtn(
-        title: "프로필",
-        image: UIImage.person_Fill_Img)
+//    private var profileBtn: UIButton = UIButton.btnWithImg(
+//        image: .person_Fill_Img,
+//        imageSize: 16,
+//        backgroundColor: UIColor.normal_white,
+//        title: "프로필")
     
-    private lazy var roomSettingBtn: UIButton = UIButton.configureCircleBtn(
-        title: "설정",
-        image: UIImage.gear_Fill_Img)
+    private lazy var roomSettingBtn: UIButton = UIButton.btnWithImg(
+        image: .gear_Fill_Img,
+        imageSize: 15,
+        backgroundColor: UIColor.normal_white,
+        title: "설정")
+    
+    private lazy var recordBtn: UIButton = UIButton.btnWithImg(
+        image: .record_Img,
+        imageSize: 15,
+        backgroundColor: UIColor.normal_white,
+        title: "기록")
+            
+    private lazy var settlementBtn: UIButton = UIButton.btnWithImg(
+        image: .settlement_Img,
+        imageSize: 15,
+        backgroundColor: UIColor.normal_white,
+        title: "정산")
     
     
     
@@ -69,7 +88,11 @@ final class RoomSettingVC: UIViewController {
     private lazy var btnStackView: UIStackView = {
         let stv = UIStackView(arrangedSubviews: [self.exitBtn,
                                                  self.inviteBtn,
-                                                 self.profileBtn])
+                                                 self.recordBtn,
+                                                 self.settlementBtn,
+                                                 self.roomSettingBtn])
+        
+        stv.spacing = self.btnStvSpacing
         stv.axis = .horizontal
         stv.alignment = .fill
         stv.distribution = .fillEqually
@@ -80,14 +103,15 @@ final class RoomSettingVC: UIViewController {
     
     // MARK: - 프로퍼티
     private var coordinator: RoomSettingCoordProtocol?
-    
-    // (spaing X 2) + (leading + trailing)
-//    private lazy var btnWidth: CGFloat = (self.view.frame.width - 90 - 40) / 3
-    
-    // ((버튼 크기 * 버튼 개수) - (leading + trailing)) / (버튼 개수 - 1)
-    private lazy var btnWidth: CGFloat = (self.view.frame.width - 50 * 3 - 80) / 2
-    
-    
+    /*
+     // 
+        (화면 넓이
+        - (버튼 크기 * 버튼 개수) -> (50 * 5)
+        - (leading + trailing)(20 + 20))
+        / (버튼 개수 - 1)(5 - 1)
+     */
+
+    private lazy var btnStvSpacing: CGFloat = (self.view.frame.width - 290) / 4
     
     
     
@@ -115,18 +139,20 @@ extension RoomSettingVC {
     // MARK: - UI 설정
     private func configureUI() {
         self.view.backgroundColor = UIColor.base_Blue
-        [self.tableView,
-         self.settleMoneyBtn,
-         self.settlementDetailBtn].forEach { view in
-            view.clipsToBounds = true
-            view.layer.cornerRadius = 10
-        }
+//        [self.tableView,
+//         self.settleMoneyBtn,
+//         self.settlementDetailBtn].forEach { view in
+//            view.clipsToBounds = true
+//            view.layer.cornerRadius = 10
+//        }
         
         self.tableView.topViewTableView.isScrollEnabled = false
         
         [self.exitBtn,
          self.inviteBtn,
-         self.profileBtn].forEach { btn in
+         self.roomSettingBtn,
+         self.recordBtn,
+         self.settlementBtn].forEach { btn in
             btn.clipsToBounds = true
             btn.layer.cornerRadius = 50 / 2
         }
@@ -136,12 +162,6 @@ extension RoomSettingVC {
         self.tabBarView.layer.cornerRadius = 20
         self.tabBarView.addShadow(top: true, bottom: false)
         
-        // MARK: - Fix
-        self.settlementStackView.addArrangedSubview(self.settleMoneyBtn)
-        // spacing
-        self.btnStackView.spacing = self.btnWidth
-        self.settleMoneyBtn.setTitle("정산하기", for: .normal)
-        self.settlementDetailBtn.setTitle("정산 기록", for: .normal)
     }
     
     // MARK: - 오토레이아웃 설정
@@ -150,8 +170,7 @@ extension RoomSettingVC {
         
         self.scrollView.addSubview(self.contentView)
         
-        [self.tableView,
-         self.settlementStackView].forEach { view in
+        [self.tableView].forEach { view in
             self.contentView.addSubview(view)
         }
         
@@ -176,16 +195,10 @@ extension RoomSettingVC {
             make.trailing.equalToSuperview().offset(-10)
             make.bottom.equalToSuperview().offset(-UIDevice.current.topStackViewBottom)
         }
-        self.settlementStackView.snp.makeConstraints { make in
-            make.top.equalTo(self.tableView.snp.bottom).offset(7)
-            make.leading.trailing.equalTo(self.tableView)
-            make.height.equalTo(45)
-        }
-        
         // For btnStackView
         self.btnStackView.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(40)
-            make.trailing.equalToSuperview().offset(-40)
+            make.leading.equalToSuperview().offset(20)
+            make.trailing.equalToSuperview().offset(-20)
             make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom).offset(-5)
         }
         
@@ -206,14 +219,14 @@ extension RoomSettingVC {
         // 네비게이션 바의 왼쪽 아이템으로 설정
         self.navigationItem.leftBarButtonItem = backButton
         
-        self.settleMoneyBtn.addTarget(self, action: #selector(self.settleMoneyBtnTapped), for: .touchUpInside)
+        self.settlementBtn.addTarget(self, action: #selector(self.settleMoneyBtnTapped), for: .touchUpInside)
         
         
         self.inviteBtn.addTarget(self, action: #selector(self.inviteBtnTapped), for: .touchUpInside)
-        self.profileBtn.addTarget(self, action: #selector(self.profileBtnTapped), for: .touchUpInside)
+        self.roomSettingBtn.addTarget(self, action: #selector(self.roomSettingBtnTapped), for: .touchUpInside)
     }
     
-    @objc private func profileBtnTapped() {
+    @objc private func roomSettingBtnTapped() {
         self.coordinator?.multiPurposeScreen(.editProfile)
     }
     @objc private func inviteBtnTapped() {

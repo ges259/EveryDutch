@@ -461,7 +461,6 @@
 		5F87DF282B3C95FD001D5B80 /* Enum */ = {
 			isa = PBXGroup;
 			children = (
-				5FE3DED32B39E8CC008D58AE /* Image_Enum.swift */,
 				5FB4F6F52B432528002F6CF3 /* CustomTableEnum.swift */,
 				5F17137D2B46A643006B3EBB /* Receipt_Enum.swift */,
 				5F9CD1732B4845D200F2CE07 /* CardScreen_Enum.swift */,
@@ -510,6 +509,7 @@
 				5FE3DEA32B39CAA8008D58AE /* Views */,
 				5FFEAE6A2B3F282000E0B2BB /* EditProfileVC.swift */,
 				5F17137F2B46A76B006B3EBB /* ReceiptStackView.swift */,
+				5FE3DED32B39E8CC008D58AE /* Image_Enum.swift */,
 				5FE3DE972B39CA9C008D58AE /* Assets.xcassets */,
 				5FE3DE992B39CA9C008D58AE /* LaunchScreen.storyboard */,
 				5FE3DE9C2B39CA9C008D58AE /* Info.plist */,

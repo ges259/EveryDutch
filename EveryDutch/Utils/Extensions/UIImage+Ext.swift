@@ -63,5 +63,9 @@ extension UIImage {
     
     // 개인_ID 복사 이미지
     static let copy_Img: UIImage? = UIImage(systemName: "doc.on.clipboard.fill")
+    static let record_Img: UIImage? = UIImage(systemName: "tray.full")
+    static let settlement_Img: UIImage? = UIImage(systemName: "doc.text.fill")
+    
+    
 }
 

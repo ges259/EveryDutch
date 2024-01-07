@@ -114,12 +114,14 @@ final class ReceiptWriteVC: UIViewController {
     
     
     private var moneyCountBtn: CustomLabel = CustomLabel(
-        backgroundColor: UIColor.normal_white,
+        text: "남은 금액 : 0원",
+        /Users/gyeeunseong/Documents/EveryDutch/EveryDutch/Views/UIViews        backgroundColor: UIColor.normal_white,
         textAlignment: .center)
     
     private var dutchBtn: UIButton = UIButton.btnWithTitle(
+        title: "1 / n",
         font: UIFont.systemFont(ofSize: 13),
-        backgroundColor: UIColor.gray)
+        backgroundColor: UIColor.normal_white)
     
     
     private lazy var btnStackView: UIStackView = UIStackView.configureStackView(
@@ -275,8 +277,8 @@ extension ReceiptWriteVC {
         self.priceInfoTF.text = "50,000원"
         self.payerInfoTF.text = "쁨"
         
-        self.dutchBtn.setTitle("1명에서 1 / n 하기", for: .normal)
-        self.moneyCountBtn.text = "남은 금액 : 25,000원"
+//        self.dutchBtn.setTitle("1명에서 1 / n 하기", for: .normal)
+//        self.moneyCountBtn.text = "남은 금액 : 25,000원"
         self.calendar.select(Date())
     }
     

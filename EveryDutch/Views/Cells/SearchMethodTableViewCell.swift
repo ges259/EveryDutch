@@ -15,7 +15,7 @@ final class SearchMethodTableViewCell: UITableViewCell {
         font: UIFont.systemFont(ofSize: 15))
     
     private lazy var rightImg: UIButton = UIButton.btnWithImg(
-        imageEnum: .circle_Fill,
+        image: .circle_Fill_Img,
         imageSize: 13,
         tintColor: UIColor.deep_Blue)
     

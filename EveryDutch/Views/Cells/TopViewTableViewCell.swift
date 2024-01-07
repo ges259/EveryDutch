@@ -28,7 +28,7 @@ final class TopViewTableViewCell: UITableViewCell {
         placeholderText: "가격 입력")
 
     private lazy var rightBtn: UIButton = UIButton.btnWithImg(
-        imageEnum: .check_Square,
+        image: .check_Square_Img,
         imageSize: 13)
     // chevronRight
     private lazy var whiteView: UIView = UIView.configureView(

@@ -114,8 +114,6 @@ extension ReceiptScreenPanVC {
         
         // MARK: - Fix
         self.topLbl.text = "영수증"
-        
-        
         self.memoStackView.receiptInfoLbl.text = "맥도날드"
         self.dateStackView.receiptInfoLbl.text = "2023.12.14"
         self.timeStackView.receiptInfoLbl.text = "00 : 23"

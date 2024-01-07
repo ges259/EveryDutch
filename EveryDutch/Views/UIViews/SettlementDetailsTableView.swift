@@ -42,7 +42,7 @@ final class SettlementDetailsTableView: UIView {
         textAlignment: .center)
     
     
-    private lazy var stackView: UIStackView = UIStackView.configureStackView(
+    private lazy var totalStackView: UIStackView = UIStackView.configureStackView(
         arrangedSubviews: [self.topViewTableView],
         axis: .vertical,
         spacing: 4,
@@ -53,6 +53,13 @@ final class SettlementDetailsTableView: UIView {
     // MARK: - 프로퍼티
 //    weak var delegate:
     private var customTableEnum : CustomTableEnum = .isSegmentCtrl
+    
+    private var isFirstBtnTapped: Bool = false {
+        didSet {
+            self.btnChanged()
+        }
+    }
+    
     
     // MARK: - 라이프사이클
     init(customTableEnum: CustomTableEnum) {
@@ -74,54 +81,29 @@ extension SettlementDetailsTableView {
     
     
     private func configureUI() {
-        self.topViewTableView.clipsToBounds = true
-        
-        
-        
         switch self.customTableEnum {
-        case .isLbl:
-            self.stackView.insertArrangedSubview(self.topLbl, at: 0)
-            
-            self.topLbl.snp.makeConstraints { make in
-                make.height.equalTo(35)
-            }
-            self.topLbl.clipsToBounds = true
-            self.topLbl.layer.cornerRadius = 10
-            
+        case .isLbl: 
+            self.isLbl()
+            self.configureLbl()
             break
-        case .isReceiptWrite:
-            self.topViewTableView.layer.maskedCorners = [
-                .layerMinXMinYCorner,
-                .layerMaxXMinYCorner]
-            fallthrough
-        case .isSegmentCtrl:
-            self.stackView.insertArrangedSubview(self.btnStackView, at: 0)
-            self.stackView.setCustomSpacing(0, after: self.btnStackView)
             
-            self.btnStackView.snp.makeConstraints { make in
-                make.height.equalTo(35)
-            }
-            // 모서리 설정 (상단)
-            self.topViewTableView.layer.maskedCorners = [
-                .layerMinXMaxYCorner,
-                .layerMaxXMaxYCorner]
-            self.firstBtn.layer.maskedCorners = [.layerMinXMinYCorner]
-            self.secondBtn.layer.maskedCorners = [.layerMaxXMinYCorner]
+        case .isSegmentCtrl: 
+            self.isSegmentCtrl()
+            self.configureSegmentCtrl()
+            break
             
-            
-            self.firstBtn.layer.cornerRadius = 10
-            self.secondBtn.layer.cornerRadius = 10
-            self.topViewTableView.layer.cornerRadius = 10
-            
-            
+        case .isReceiptWrite: 
+            self.isReceiptWrite()
+            self.configureSegmentCtrl()
             break
         }
     }
+    
     // MARK: - 오토레이아웃 설정
     private func configureAutoLayout() {
-        self.addSubview(self.stackView)
+        self.addSubview(self.totalStackView)
         
-        self.stackView.snp.makeConstraints { make in
+        self.totalStackView.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.leading.trailing.bottom.equalToSuperview()
         }
@@ -135,11 +117,83 @@ extension SettlementDetailsTableView {
     }
     private func configureAction() {
         // 세그먼트 컨트롤 - 액션
-        self.firstBtn.addTarget(self, action: #selector(self.valueChanged), for: .touchUpInside)
+        self.firstBtn.addTarget(self, action: #selector(self.firstBtnTapped), for: .touchUpInside)
+        self.secondBtn.addTarget(self, action: #selector(self.secondBtnTapped), for: .touchUpInside)
     }
-    @objc private func valueChanged() {
+    
+    
+    
+    
+    
+    
+    @objc private func firstBtnTapped() {
+        self.isFirstBtnTapped = true
         
     }
+    @objc private func secondBtnTapped() {
+        self.isFirstBtnTapped = false
+        
+    }
+    
+    private func btnChanged() {
+        // MARK: - Fix - ViewModel
+        if self.isFirstBtnTapped {
+            self.firstBtn.backgroundColor = UIColor.normal_white
+            self.secondBtn.backgroundColor = UIColor.unselected_gray
+        } else {
+            self.firstBtn.backgroundColor = UIColor.unselected_gray
+            self.secondBtn.backgroundColor = UIColor.normal_white
+        }
+    }
+    
+    
+    
+    private func isLbl() {
+        
+    }
+    private func isReceiptWrite() {
+        
+    }
+    private func isSegmentCtrl() {
+        // 모서리 설정 (상단)
+        self.topViewTableView.layer.maskedCorners = [
+            .layerMinXMaxYCorner,
+            .layerMaxXMaxYCorner]
+        self.topViewTableView.clipsToBounds = true
+        self.topViewTableView.layer.cornerRadius = 10
+        
+        
+    }
+    
+    
+    
+    private func configureLbl() {
+        self.totalStackView.insertArrangedSubview(self.topLbl, at: 0)
+        
+        self.topLbl.snp.makeConstraints { make in
+            make.height.equalTo(34)
+        }
+        self.topLbl.clipsToBounds = true
+        self.topLbl.layer.cornerRadius = 10
+        self.topViewTableView.clipsToBounds = true
+        self.topViewTableView.layer.cornerRadius = 10
+    }
+    
+    private func configureSegmentCtrl() {
+        self.totalStackView.insertArrangedSubview(self.btnStackView, at: 0)
+        self.totalStackView.setCustomSpacing(0, after: self.btnStackView)
+        self.btnStackView.snp.makeConstraints { make in
+            make.height.equalTo(34)
+        }
+        
+        self.firstBtn.layer.maskedCorners = [.layerMinXMinYCorner]
+        self.secondBtn.layer.maskedCorners = [.layerMaxXMinYCorner]
+        
+        self.firstBtn.layer.cornerRadius = 10
+        self.secondBtn.layer.cornerRadius = 10
+    }
+    
+    
 }
 // MARK: - 테이블뷰 델리게이트
 extension SettlementDetailsTableView: UITableViewDelegate {

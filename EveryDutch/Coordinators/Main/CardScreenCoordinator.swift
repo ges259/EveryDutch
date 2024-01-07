@@ -37,23 +37,13 @@ final class CardScreenCoordinator: CardScreenCoordProtocol {
             viewModel: multipurposeScreenVM,
             coordinator: self)
         multipurposeScreenVC.delegate = self
-        // 네비게이션 컨트롤러 생성 및 루트 뷰 컨트롤러 설정
-        let plusNavController = UINavigationController(rootViewController: multipurposeScreenVC)
-        // 전체 화면 꽉 채우기
-        plusNavController.modalPresentationStyle = .fullScreen
-        // 모달로 네비게이션 컨트롤러를 표시
-        self.nav.present(plusNavController, animated: true)
+        self.nav.pushViewController(multipurposeScreenVC, animated: true)
     }
     
 
     func didFinish() {
-        // 현재 표시된 뷰 컨트롤러를 dismiss
-        self.nav.dismiss(animated: true) {
-            // 필요한 경우 여기에서 추가적인 정리 작업을 수행
-            // 자식 코디네이터를 부모의 배열에서 제거
-                // 즉, PlusBtnCoordinator이 MainCoordinator의 childCoordinators 배열에서 제거
-            self.parentCoordinator?.removeChildCoordinator(child: self)
-        }
+        self.nav.popViewController(animated: true)
+        self.parentCoordinator?.removeChildCoordinator(child: self)
     }
     
     deinit {

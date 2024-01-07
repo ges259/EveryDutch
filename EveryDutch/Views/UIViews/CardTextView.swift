@@ -103,11 +103,11 @@ final class CardTextView: UIView {
     
     
     private lazy var editProfileBtn: UIButton = UIButton.btnWithImg(
-        imageEnum: .note,
+        image: .note_Img,
         imageSize: 14)
     
     private lazy var copyBtn: UIButton = UIButton.btnWithImg(
-        imageEnum: .copy,
+        image: .copy_Img,
         imageSize: 10)
     
     
