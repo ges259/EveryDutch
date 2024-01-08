@@ -26,7 +26,8 @@ final class SettleMoneyRoomVC: UIViewController {
     
     
     
-    private lazy var topViewTableView: SettlementDetailsTableView = SettlementDetailsTableView(customTableEnum: .isSegmentCtrl)
+    private lazy var topViewTableView: SettlementDetailsTableView = SettlementDetailsTableView(
+        viewModel: SettlementDetailsVM(.isSettleMoney))
     
     private lazy var topViewBtn: UIButton = UIButton.btnWithTitle(
         font: UIFont.boldSystemFont(ofSize: 17),

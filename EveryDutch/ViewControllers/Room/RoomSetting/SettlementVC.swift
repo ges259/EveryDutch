@@ -39,7 +39,7 @@ final class SettlementVC: UIViewController {
         font: UIFont.systemFont(ofSize: 13))
     
     
-    private var tableView: SettlementDetailsTableView = SettlementDetailsTableView(customTableEnum: .isLbl)
+    private var tableView: SettlementDetailsTableView = SettlementDetailsTableView(viewModel: SettlementDetailsVM(.isSettle))
     
     private var bottomBtn: BottomButton = BottomButton(
         title: "정산하기")

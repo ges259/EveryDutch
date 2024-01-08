@@ -33,7 +33,7 @@ final class SettlementDetailsTableView: UIView {
         view.delegate = self
         view.dataSource = self
         view.register(
-            TopViewTableViewCell.self,
+            SettlementDetailsTableViewCell.self,
             forCellReuseIdentifier: Identifier.topViewTableViewCell)
         return view
     }()
@@ -52,7 +52,8 @@ final class SettlementDetailsTableView: UIView {
     
     // MARK: - 프로퍼티
 //    weak var delegate:
-    private var customTableEnum : CustomTableEnum = .isSegmentCtrl
+    
+    private var viewModel: SettlementDetailsVM?
     
     private var isFirstBtnTapped: Bool = false {
         didSet {
@@ -62,8 +63,9 @@ final class SettlementDetailsTableView: UIView {
     
     
     // MARK: - 라이프사이클
-    init(customTableEnum: CustomTableEnum) {
-        self.customTableEnum = customTableEnum
+    init(viewModel: SettlementDetailsVM) {
+        self.viewModel = viewModel
+        
         super.init(frame: .zero)
         
         self.configureUI()
@@ -81,20 +83,32 @@ extension SettlementDetailsTableView {
     
     
     private func configureUI() {
-        switch self.customTableEnum {
-        case .isLbl: 
-            self.isLbl()
+        guard let viewModel = viewModel else { return }
+        
+        switch viewModel.customTableEnum {
+        case .isReceiptWrite:
+            self.isReceiptWrite()
+            self.configureSegmentCtrl(bottomCorner: false)
+            break
+        case .isSettleMoney:
+            self.isTopView()
+            self.configureSegmentCtrl()
+            break
+        case .isRoomSetting:
+            self.isRoomSetting()
+            self.configureSegmentCtrl()
+            break
+        case .isReceiptScreen:
+            self.isReceiptScreen()
             self.configureLbl()
             break
-            
-        case .isSegmentCtrl: 
-            self.isSegmentCtrl()
-            self.configureSegmentCtrl()
+        case .isSelectPerson:
+            self.isSelectPerson()
+            self.configureLbl()
             break
-            
-        case .isReceiptWrite: 
-            self.isReceiptWrite()
-            self.configureSegmentCtrl()
+        case .isSettle:
+            self.isNothing()
+            self.configureLbl()
             break
         }
     }
@@ -146,27 +160,23 @@ extension SettlementDetailsTableView {
         }
     }
     
-    
-    
-    private func isLbl() {
-        
+    private func isTopView() {
     }
     private func isReceiptWrite() {
-        
     }
-    private func isSegmentCtrl() {
-        // 모서리 설정 (상단)
-        self.topViewTableView.layer.maskedCorners = [
-            .layerMinXMaxYCorner,
-            .layerMaxXMaxYCorner]
-        self.topViewTableView.clipsToBounds = true
-        self.topViewTableView.layer.cornerRadius = 10
-        
-        
+    private func isRoomSetting() {
+    }
+    private func isReceiptScreen() {
+    }
+    private func isSelectPerson() {
+    }
+    private func isNothing() {
     }
     
     
     
+    
+
     private func configureLbl() {
         self.totalStackView.insertArrangedSubview(self.topLbl, at: 0)
         
@@ -179,7 +189,9 @@ extension SettlementDetailsTableView {
         self.topViewTableView.layer.cornerRadius = 10
     }
     
-    private func configureSegmentCtrl() {
+    private func configureSegmentCtrl(bottomCorner: Bool = true) {
+        if bottomCorner { self.setSegmentCtrlCorner() }
+        
         self.totalStackView.insertArrangedSubview(self.btnStackView, at: 0)
         self.totalStackView.setCustomSpacing(0, after: self.btnStackView)
         self.btnStackView.snp.makeConstraints { make in
@@ -192,7 +204,14 @@ extension SettlementDetailsTableView {
         self.firstBtn.layer.cornerRadius = 10
         self.secondBtn.layer.cornerRadius = 10
     }
-    
+    private func setSegmentCtrlCorner() {
+        // 모서리 설정 (상단)
+        self.topViewTableView.layer.maskedCorners = [
+            .layerMinXMaxYCorner,
+            .layerMaxXMaxYCorner]
+        self.topViewTableView.clipsToBounds = true
+        self.topViewTableView.layer.cornerRadius = 10
+    }
     
 }
 // MARK: - 테이블뷰 델리게이트
@@ -204,8 +223,9 @@ extension SettlementDetailsTableView: UITableViewDelegate {
     -> CGFloat {
         return 40
     }
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print(#function)
+    func tableView(_ tableView: UITableView, 
+                   didSelectRowAt indexPath: IndexPath) {
+        
     }
 }
 
@@ -227,8 +247,13 @@ extension SettlementDetailsTableView: UITableViewDataSource {
     func tableView(_ tableView: UITableView,
                    cellForRowAt indexPath: IndexPath)
     -> UITableViewCell {
-        let cell = self.topViewTableView.dequeueReusableCell(withIdentifier: Identifier.topViewTableViewCell, for: indexPath) as! TopViewTableViewCell
+        let cell = self.topViewTableView.dequeueReusableCell(
+            withIdentifier: Identifier.topViewTableViewCell,
+            for: indexPath) as! SettlementDetailsTableViewCell
         
+        let cellViewModel = self.viewModel?.cellViewModel(at: indexPath.item)
+        
+        cell.configureCell(with: cellViewModel)
         return cell
     }
 }

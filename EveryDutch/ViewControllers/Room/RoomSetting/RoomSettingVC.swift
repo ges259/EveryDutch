@@ -23,7 +23,8 @@ final class RoomSettingVC: UIViewController {
     private lazy var contentView: UIView = UIView()
     
     
-    private var tableView: SettlementDetailsTableView = SettlementDetailsTableView(customTableEnum: .isSegmentCtrl)
+    private var tableView: SettlementDetailsTableView = SettlementDetailsTableView(
+        viewModel: SettlementDetailsVM(.isRoomSetting))
     
     /// 정산하기 버튼
 //    private var settleMoneyBtn: UIButton = UIButton.btnWithTitle(
@@ -227,7 +228,7 @@ extension RoomSettingVC {
     }
     
     @objc private func roomSettingBtnTapped() {
-        self.coordinator?.multiPurposeScreen(.editProfile)
+        self.coordinator?.CardScreen(.editProfile)
     }
     @objc private func inviteBtnTapped() {
         self.coordinator?.FindFriendsScreen()

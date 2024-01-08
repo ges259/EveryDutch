@@ -68,7 +68,9 @@ extension SearchMethodTableViewCell {
         }
         self.rightImg.snp.makeConstraints { make in
             make.trailing.equalToSuperview().offset(-20)
+            make.width.height.equalTo(21)
             make.centerY.equalToSuperview()
+            
         }
         self.whiteView.snp.makeConstraints { make in
             make.centerX.centerY.equalTo(self.rightImg)

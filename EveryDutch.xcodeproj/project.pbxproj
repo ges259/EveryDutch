@@ -52,10 +52,12 @@
 		5F6C434B2B3C4C1500BBC466 /* CustomTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6C434A2B3C4C1500BBC466 /* CustomTableView.swift */; };
 		5F6C434D2B3C5BD000BBC466 /* CustomLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6C434C2B3C5BD000BBC466 /* CustomLabel.swift */; };
 		5F6C434F2B3C712F00BBC466 /* SettlementDetailsTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6C434E2B3C712F00BBC466 /* SettlementDetailsTableView.swift */; };
-		5F70069D2B3B57450028DC8B /* TopViewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F70069C2B3B57450028DC8B /* TopViewTableViewCell.swift */; };
+		5F70069D2B3B57450028DC8B /* SettlementDetailsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F70069C2B3B57450028DC8B /* SettlementDetailsTableViewCell.swift */; };
 		5F87DF2A2B3C999D001D5B80 /* RoomSettingCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F87DF292B3C999D001D5B80 /* RoomSettingCoordinator.swift */; };
 		5F87DF2C2B3C99A3001D5B80 /* RoomSettingCoordProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F87DF2B2B3C99A3001D5B80 /* RoomSettingCoordProtocol.swift */; };
 		5F903E672B3B412A005DE55E /* SettlementTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F903E662B3B412A005DE55E /* SettlementTableViewCell.swift */; };
+		5F9905052B4ABACC00DB9747 /* SettlementDetailsTableVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F9905042B4ABACC00DB9747 /* SettlementDetailsTableVM.swift */; };
+		5F9905072B4ABAD400DB9747 /* SettlementDetailsTableCellVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F9905062B4ABAD400DB9747 /* SettlementDetailsTableCellVM.swift */; };
 		5F9CD1742B4845D200F2CE07 /* CardScreen_Enum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F9CD1732B4845D200F2CE07 /* CardScreen_Enum.swift */; };
 		5FB278612B4716B400491C2B /* CheckReceiptCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FB278602B4716B400491C2B /* CheckReceiptCoordinator.swift */; };
 		5FB4F6F62B432528002F6CF3 /* CustomTableEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FB4F6F52B432528002F6CF3 /* CustomTableEnum.swift */; };
@@ -142,10 +144,12 @@
 		5F6C434A2B3C4C1500BBC466 /* CustomTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTableView.swift; sourceTree = "<group>"; };
 		5F6C434C2B3C5BD000BBC466 /* CustomLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLabel.swift; sourceTree = "<group>"; };
 		5F6C434E2B3C712F00BBC466 /* SettlementDetailsTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettlementDetailsTableView.swift; sourceTree = "<group>"; };
-		5F70069C2B3B57450028DC8B /* TopViewTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopViewTableViewCell.swift; sourceTree = "<group>"; };
+		5F70069C2B3B57450028DC8B /* SettlementDetailsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettlementDetailsTableViewCell.swift; sourceTree = "<group>"; };
 		5F87DF292B3C999D001D5B80 /* RoomSettingCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomSettingCoordinator.swift; sourceTree = "<group>"; };
 		5F87DF2B2B3C99A3001D5B80 /* RoomSettingCoordProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomSettingCoordProtocol.swift; sourceTree = "<group>"; };
 		5F903E662B3B412A005DE55E /* SettlementTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettlementTableViewCell.swift; sourceTree = "<group>"; };
+		5F9905042B4ABACC00DB9747 /* SettlementDetailsTableVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettlementDetailsTableVM.swift; sourceTree = "<group>"; };
+		5F9905062B4ABAD400DB9747 /* SettlementDetailsTableCellVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettlementDetailsTableCellVM.swift; sourceTree = "<group>"; };
 		5F9CD1732B4845D200F2CE07 /* CardScreen_Enum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardScreen_Enum.swift; sourceTree = "<group>"; };
 		5FB278602B4716B400491C2B /* CheckReceiptCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckReceiptCoordinator.swift; sourceTree = "<group>"; };
 		5FB4F6F52B432528002F6CF3 /* CustomTableEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTableEnum.swift; sourceTree = "<group>"; };
@@ -286,6 +290,8 @@
 				5FE3DEC12B39CB9B008D58AE /* MainVM.swift */,
 				5FE3DECB2B39CC8D008D58AE /* MainCollectionViewCellVM.swift */,
 				5F47CD072B3AD8F500FCBFA4 /* CardScreenVM.swift */,
+				5F9905042B4ABACC00DB9747 /* SettlementDetailsTableVM.swift */,
+				5F9905062B4ABAD400DB9747 /* SettlementDetailsTableCellVM.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -310,7 +316,7 @@
 			children = (
 				5F47CD0D2B3AECA700FCBFA4 /* SettleMoneyRoomVM.swift */,
 				5F5AFBD72B4947E700BBBB9D /* SettlementTableViewCellVM.swift */,
-				5F5AFBD32B4941B000BBBB9D /* RoomSettingVM.swift */,
+				5F9905032B4ABAB100DB9747 /* RoomSetting */,
 			);
 			path = Room;
 			sourceTree = "<group>";
@@ -320,7 +326,7 @@
 			children = (
 				5FE3DEC32B39CBA4008D58AE /* MainCollectionViewCell.swift */,
 				5F903E662B3B412A005DE55E /* SettlementTableViewCell.swift */,
-				5F70069C2B3B57450028DC8B /* TopViewTableViewCell.swift */,
+				5F70069C2B3B57450028DC8B /* SettlementDetailsTableViewCell.swift */,
 				5F614B492B45D47A00EF35CE /* SearchMethodTableViewCell.swift */,
 			);
 			path = Cells;
@@ -466,6 +472,14 @@
 				5F9CD1732B4845D200F2CE07 /* CardScreen_Enum.swift */,
 			);
 			path = Enum;
+			sourceTree = "<group>";
+		};
+		5F9905032B4ABAB100DB9747 /* RoomSetting */ = {
+			isa = PBXGroup;
+			children = (
+				5F5AFBD32B4941B000BBBB9D /* RoomSettingVM.swift */,
+			);
+			path = RoomSetting;
 			sourceTree = "<group>";
 		};
 		5FB4F6FC2B433CFD002F6CF3 /* ViewControllers */ = {
@@ -739,7 +753,7 @@
 				5F87DF2A2B3C999D001D5B80 /* RoomSettingCoordinator.swift in Sources */,
 				5F4913DD2B3DBE7C00CD76A8 /* SettlementCoordinator.swift in Sources */,
 				5F6848822B441C360015BFCC /* SignUpScreenCoordinator.swift in Sources */,
-				5F70069D2B3B57450028DC8B /* TopViewTableViewCell.swift in Sources */,
+				5F70069D2B3B57450028DC8B /* SettlementDetailsTableViewCell.swift in Sources */,
 				5FB4F70E2B433DEF002F6CF3 /* SelectALoginMethodVC.swift in Sources */,
 				5F5AFBD02B49403200BBBB9D /* ReceiptWirteVMProtocol.swift in Sources */,
 				5F5AFBD82B4947E700BBBB9D /* SettlementTableViewCellVM.swift in Sources */,
@@ -761,6 +775,7 @@
 				5F5AFBD22B4940DA00BBBB9D /* MainCollectionViewCellVMProtocol.swift in Sources */,
 				5FE3DE8F2B39CA9B008D58AE /* AppDelegate.swift in Sources */,
 				5F2F7A782B3ECD91004B136F /* CardImageView.swift in Sources */,
+				5F9905052B4ABACC00DB9747 /* SettlementDetailsTableVM.swift in Sources */,
 				5FB4F7092B433DEF002F6CF3 /* SettlementVC.swift in Sources */,
 				5FE3DECA2B39CC52008D58AE /* CardScreenCoordinator.swift in Sources */,
 				5FB4F70D2B433DEF002F6CF3 /* SettleMoneyRoomVC.swift in Sources */,
@@ -787,6 +802,7 @@
 				5F614B402B4593AE00EF35CE /* ReceiptScreenPanVC.swift in Sources */,
 				5FE3DE912B39CA9B008D58AE /* SceneDelegate.swift in Sources */,
 				5FB4F6FE2B433DE6002F6CF3 /* FindFriendsVC.swift in Sources */,
+				5F9905072B4ABAD400DB9747 /* SettlementDetailsTableCellVM.swift in Sources */,
 				5F6C434B2B3C4C1500BBC466 /* CustomTableView.swift in Sources */,
 				5FE3DEB22B39CB5A008D58AE /* Coordinator.swift in Sources */,
 				5F6848872B4431AF0015BFCC /* MultiPurposeScreenDelegate.swift in Sources */,

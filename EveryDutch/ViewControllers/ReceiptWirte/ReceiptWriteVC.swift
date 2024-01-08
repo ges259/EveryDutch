@@ -109,13 +109,13 @@ final class ReceiptWriteVC: UIViewController {
     
     
     
-    private var tableView: SettlementDetailsTableView = SettlementDetailsTableView(customTableEnum: .isReceiptWrite)
+    private var tableView: SettlementDetailsTableView = SettlementDetailsTableView(viewModel: SettlementDetailsVM(.isReceiptWrite))
     
     
     
     private var moneyCountBtn: CustomLabel = CustomLabel(
         text: "남은 금액 : 0원",
-        /Users/gyeeunseong/Documents/EveryDutch/EveryDutch/Views/UIViews        backgroundColor: UIColor.normal_white,
+        backgroundColor: UIColor.normal_white,
         textAlignment: .center)
     
     private var dutchBtn: UIButton = UIButton.btnWithTitle(

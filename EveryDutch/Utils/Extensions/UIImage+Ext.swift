@@ -65,6 +65,7 @@ extension UIImage {
     static let copy_Img: UIImage? = UIImage(systemName: "doc.on.clipboard.fill")
     static let record_Img: UIImage? = UIImage(systemName: "tray.full")
     static let settlement_Img: UIImage? = UIImage(systemName: "doc.text.fill")
+    static let x_Mark_Img: UIImage? = UIImage(systemName: "xmark")
     
     
 }

@@ -15,11 +15,6 @@ extension UIButton {
                            title: String? = nil)
     -> UIButton {
         var configuration = UIButton.Configuration.plain()
-        
-        // 타이틀 설정
-        var titleContainer = AttributeContainer()
-        // 폰트
-        titleContainer.font = UIFont.systemFont(ofSize: 10)
         // 이미지 설정
         configuration.image = image
         // 이미지 크기 설정

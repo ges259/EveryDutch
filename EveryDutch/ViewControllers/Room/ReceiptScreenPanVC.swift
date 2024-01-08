@@ -41,7 +41,8 @@ final class ReceiptScreenPanVC: UIViewController {
     
     
     // 테이블뷰
-    private var tableView: SettlementDetailsTableView = SettlementDetailsTableView(customTableEnum: .isLbl)
+    private var tableView: SettlementDetailsTableView = SettlementDetailsTableView(
+        viewModel: SettlementDetailsVM(.isReceiptScreen))
     
     // 하단 버튼
     private lazy var bottomBtn: UIButton = UIButton.btnWithTitle(
