@@ -170,10 +170,12 @@ extension SettlementDetailsTableViewCell {
             // 클로져 설정
             self.isReceiptScreenClosure()
             break
-        case .isSelectPerson:
+        case .isPeopleSelection:
             self.configureWhiteView()
             break
-        case .isSettleMoney, .isSettle: 
+        case .isSearch:
+            break
+        case .isSettleMoney, .isSettle:
             break
         }
     }

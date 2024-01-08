@@ -25,7 +25,7 @@ final class SettlementVC: UIViewController {
     private var settlementNameLbl: CustomLabel = CustomLabel(
         text: "이름 설정",
         font: UIFont.systemFont(ofSize: 15),
-        backgroundColor: UIColor.normal_white,
+        backgroundColor: UIColor.medium_Blue,
         textAlignment: NSTextAlignment.center)
             
     

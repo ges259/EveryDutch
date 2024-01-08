@@ -42,7 +42,7 @@ struct SettlementDetailsCellVM {
         switch self.customTableEnum {
         case .isReceiptWrite, .isRoomSetting, .isReceiptScreen:
             return true
-        case .isSelectPerson, .isSettle, .isSettleMoney:
+        case .isPeopleSelection, .isSearch, .isSettle, .isSettleMoney:
             return false
         }
     }
@@ -93,7 +93,7 @@ struct SettlementDetailsCellVM {
         case .isReceiptScreen:
             return UIImage.empty_Square_Img
         // 속이 찬 원
-        case .isSelectPerson:
+        case .isPeopleSelection, .isSearch:
             return UIImage.circle_Fill_Img
         // 없음
         case .isSettle:
@@ -102,7 +102,7 @@ struct SettlementDetailsCellVM {
     }
     
     var rightBtnTintColor: UIColor {
-        return self.customTableEnum == .isSelectPerson
+        return self.customTableEnum == .isPeopleSelection
         ? UIColor.deep_Blue
         : UIColor.black
     }

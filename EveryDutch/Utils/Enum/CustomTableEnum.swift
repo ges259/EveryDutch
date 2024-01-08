@@ -27,7 +27,9 @@ enum CustomTableEnum {
     case isReceiptScreen
     // O
     // lbl
-    case isSelectPerson
+    case isPeopleSelection
+    
+    case isSearch
     // 아무것도 없음
     // lbl
     case isSettle
