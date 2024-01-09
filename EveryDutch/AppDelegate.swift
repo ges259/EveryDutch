@@ -6,14 +6,20 @@
 //
 
 import UIKit
+import FirebaseCore
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
 
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+    func application(_ application: UIApplication, 
+                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?)
+    -> Bool {
+        // 파이어베이스 설정
+        FirebaseApp.configure()
         
+        // 네빙게이션바 설정
         let navBar = UINavigationBar.appearance()
         // 네비게이션 이미지의 색상을 검정색으로 변경
         navBar.tintColor = UIColor.black
