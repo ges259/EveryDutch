@@ -22,7 +22,7 @@ final class MainCollectionViewCell: UICollectionViewCell {
         
     
     // MARK: - 프로퍼티
-    weak var viewModel: MainCollectionViewCellVM?
+    var viewModel: MainCollectionViewCellVM?
     
 
     

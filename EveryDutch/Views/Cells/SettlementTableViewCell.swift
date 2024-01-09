@@ -48,7 +48,7 @@ final class SettlementTableViewCell: UITableViewCell {
     
     // MARK: - 프로퍼티
     
-    weak var viewModel: SettlementTableViewCellVM?
+    var viewModel: SettlementTableViewCellVM?
     
     
     // MARK: - 라이프사이클

@@ -7,7 +7,7 @@
 
 import Foundation
 
-final class SettlementTableViewCellVM: SettlementTableViewCellVMProtocol {
+struct SettlementTableViewCellVM: SettlementTableViewCellVMProtocol {
     let content: String
     let price: Double
     let date: Date
