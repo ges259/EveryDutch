@@ -38,16 +38,19 @@ final class MainCoordinator: MainCoordProtocol{
     }
     
     /// 채팅방으로 이동
-    func settlementRoomScreen() {
+    func settlementMoneyRoomScreen(room: Rooms) {
         // SettleMoneyRoomCoordinator 생성
-        let settlementRoomCoordinator = SettleMoneyRoomCoordinator(nav: self.nav)
+        let settlementRoomCoordinator = SettleMoneyRoomCoordinator(
+            nav: self.nav,
+            room: room)
         // 부모 코디네이터가 자신이라는 것을 명시 (뒤로가기 할 때 필요)
             settlementRoomCoordinator.parentCoordinator = self
         self.childCoordinators.append(settlementRoomCoordinator)
             settlementRoomCoordinator.start()
     }
+    
     /// 플러스 버튼을 누르면 화면 이동
-    func multiPurposeScreen(_ cardScreen_Enum: CardScreen_Enum) {
+    func cardScreen(_ cardScreen_Enum: CardScreen_Enum) {
         // Main-Coordinator 생성
         let multipurposeScreenCoordinator = CardScreenCoordinator(
             nav: self.nav,
@@ -60,6 +63,7 @@ final class MainCoordinator: MainCoordProtocol{
         // 코디네이터에게 화면이동을 지시
             multipurposeScreenCoordinator.start()
     }
+    
     func selectALgoinMethodScreen() {
         // SettleMoneyRoomCoordinator 생성
         let selectALoginMethodCoordinator = SelectALoginMethodCoordinator(nav: self.nav)

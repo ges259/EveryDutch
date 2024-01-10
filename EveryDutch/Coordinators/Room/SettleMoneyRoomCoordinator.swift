@@ -21,17 +21,22 @@ final class SettleMoneyRoomCoordinator: SettleMoneyRoomCoordProtocol {
     
     var nav: UINavigationController
     
+    var room: Rooms
+    
     // 의존성 주입
-    init(nav: UINavigationController) {
+    init(nav: UINavigationController,
+         room: Rooms) {
         self.nav = nav
+        self.room = room
     }
     
     func start() {
         // SettlementRoomVM 뷰모델 생성
-        let settlementRoomVM = SettleMoneyRoomVM()
+        let settlementRoomVM = SettleMoneyRoomVM(roomData: self.room)
         // PlusViewController 인스턴스 생성
-        let settlementRoomVC = SettleMoneyRoomVC(viewModel: settlementRoomVM,
-                                                coordinator: self)
+        let settlementRoomVC = SettleMoneyRoomVC(
+            viewModel: settlementRoomVM,
+            coordinator: self)
         // push를 통해 화면 이동
         self.nav.pushViewController(settlementRoomVC, animated: true)
         // 네비게이션 컨트롤러 참조 저장

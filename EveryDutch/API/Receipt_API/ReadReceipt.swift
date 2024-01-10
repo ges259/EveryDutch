@@ -6,6 +6,36 @@
 //
 
 import Foundation
+import FirebaseDatabaseInternal
 
 
 
+extension ReceiptAPI {
+    
+
+    // version_ID: String,
+    func readReceipt(completion: @escaping ReceiptCompletion) {
+        // MARK: - Fix
+        RECEIPT_REF
+            .child("version_ID_1")
+            .queryOrdered(byChild: DatabaseEnum.date)
+            .queryLimited(toLast: 3)
+            .observeSingleEvent(of: .value) { snapshot in
+                
+                guard let allObjects = snapshot.children.allObjects as? [DataSnapshot] else { return }
+                
+                var receipts = [Receipt]()
+                
+                allObjects.forEach { snapshot in
+                    if let dict = snapshot.value as? [String: Any] {
+                        let receipt = Receipt(dictionary: dict)
+                        receipts.append(receipt)
+                    }
+                }
+                
+                print(receipts)
+                completion(.success(receipts))
+            }
+    }
+}
+                

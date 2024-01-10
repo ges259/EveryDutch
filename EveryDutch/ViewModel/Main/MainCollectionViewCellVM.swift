@@ -9,15 +9,15 @@ import UIKit
 
 struct MainCollectionViewCellVM: MainCollectionViewCellVMProtocol {
     var title: String
-    var time_String: String
+//    var time_String: String
     var img_Url: String
 
     init(title: String,
-         time_String: String,
+//         time_String: String,
          imgUrl: String) {
         
         self.title = title
-        self.time_String = time_String
+//        self.time_String = time_String
         self.img_Url = imgUrl
     }
     

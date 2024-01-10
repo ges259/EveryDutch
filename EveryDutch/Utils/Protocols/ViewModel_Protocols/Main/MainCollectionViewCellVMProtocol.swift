@@ -9,6 +9,6 @@ import Foundation
 
 protocol MainCollectionViewCellVMProtocol {
     var title: String { get }
-    var time_String: String { get }
+//    var time_String: String { get }
     var img_Url: String { get }
 }

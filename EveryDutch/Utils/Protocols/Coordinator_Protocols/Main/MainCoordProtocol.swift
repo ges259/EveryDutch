@@ -8,8 +8,8 @@
 import UIKit
 
 protocol MainCoordProtocol: Coordinator {
-    func multiPurposeScreen(_ cardScreen_Enum: CardScreen_Enum)
-    func settlementRoomScreen()
+    func cardScreen(_ cardScreen_Enum: CardScreen_Enum)
+    func settlementMoneyRoomScreen(room: Rooms)
     func profileScreen()
     func selectALgoinMethodScreen()
 }

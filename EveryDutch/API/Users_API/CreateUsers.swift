@@ -6,3 +6,16 @@
 //
 
 import Foundation
+
+struct UserAPI {
+    static let shared: UserAPI = UserAPI()
+    init() {}
+    
+    // typealias
+    typealias UserCompletion = (Result<User, ErrorEnum>) -> Void
+    
+    
+    
+    
+    
+}

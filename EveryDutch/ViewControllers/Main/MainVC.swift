@@ -76,9 +76,9 @@ final class MainVC: UIViewController {
     
     
     // MARK: - 프로퍼티
-    private var viewModel: MainVMProtocol?
+    private var viewModel: MainVMProtocol
     
-    private var coordinator: MainCoordProtocol?
+    private var coordinator: MainCoordProtocol
     
     /// 컬렉션뷰 셀의 넓이
     private lazy var width = self.view.frame.width - 20
@@ -156,6 +156,10 @@ extension MainVC {
         
         // MARK: - Fix
         self.noDataView.isHidden = true
+        
+        self.viewModel.collectionVeiwReloadClousure = {
+            self.collectionView.reloadData()
+        }
     }
     
     // MARK: - 오토레이아웃 설정
@@ -229,11 +233,11 @@ extension MainVC {
         self.menuBtnSpin()
     }
     @objc private func profileScreenBtnTapped() {
-        self.coordinator?.multiPurposeScreen(.profile)
+        self.coordinator.cardScreen(.profile)
     }
     
     @objc private func makeRoomScreenBtnTapped() {
-        self.coordinator?.multiPurposeScreen(.makeRoom)
+        self.coordinator.cardScreen(.makeRoom)
     }
     
     @objc private func floatingViewTappd() {
@@ -319,7 +323,8 @@ extension MainVC: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
                         didSelectItemAt indexPath: IndexPath) {
         print(#function)
-        self.coordinator?.settlementRoomScreen()
+        let room = self.viewModel.rooms[indexPath.row]
+        self.coordinator.settlementMoneyRoomScreen(room: room)
     }
     
     /// 아이템의 크기 설정
@@ -345,7 +350,7 @@ extension MainVC: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView,
                         numberOfItemsInSection section: Int)
     -> Int {
-        return 6
+        return self.viewModel.numberOfItems
     }
     
     /// 아이템 설정
@@ -356,7 +361,7 @@ extension MainVC: UICollectionViewDataSource {
             withReuseIdentifier: Identifier.mainCollectionViewCell,
             for: indexPath) as! MainCollectionViewCell
         
-        let cellViewModel = self.viewModel?.cellViewModel(at: indexPath.item)
+        let cellViewModel = self.viewModel.cellViewModel(at: indexPath.item)
         
         cell.configureCell(with: cellViewModel)
         
@@ -367,6 +372,6 @@ extension MainVC: UICollectionViewDataSource {
 
 extension MainVC: MultiPurposeScreenDelegate {
     func logout() {
-        self.coordinator?.selectALgoinMethodScreen()
+        self.coordinator.selectALgoinMethodScreen()
     }
 }

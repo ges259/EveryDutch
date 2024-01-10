@@ -7,16 +7,16 @@
 
 import Foundation
 
-// 정산방 생성시 Rooms에 생성
-    // 버전까지
+
+struct RoomsAPI {
+    static let shared: RoomsAPI = RoomsAPI()
+    init() {}
+}
 
 
-// 초대 시 Room_ID에 업데이트
-
-
-
-
-
+extension RoomsAPI {
+    
+}
 
 
 // Create

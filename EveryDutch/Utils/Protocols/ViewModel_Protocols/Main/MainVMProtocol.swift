@@ -8,9 +8,9 @@
 import UIKit
 
 protocol MainVMProtocol {
-    
+    var rooms: [Rooms] { get }
     var numberOfItems: Int { get }
-    
+    var collectionVeiwReloadClousure: (() -> Void)? { get set }
     
     func cellViewModel(at index: Int) -> MainCollectionViewCellVM
 }
