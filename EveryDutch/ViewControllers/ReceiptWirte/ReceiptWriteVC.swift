@@ -72,13 +72,13 @@ final class ReceiptWriteVC: UIViewController {
     private var whiteView: UIView = UIView.configureView(
         color: UIColor.medium_Blue)
     
-    private lazy var timeDetailLbl: CustomStackView = CustomStackView(
+    private lazy var timeDetailLbl: ReceiptLblStackView = ReceiptLblStackView(
         receiptEnum: .time)
-    private lazy var memoDetailLbl: CustomStackView = CustomStackView(
+    private lazy var memoDetailLbl: ReceiptLblStackView = ReceiptLblStackView(
         receiptEnum: .memo)
-    private lazy var priceDetailLbl: CustomStackView = CustomStackView(
+    private lazy var priceDetailLbl: ReceiptLblStackView = ReceiptLblStackView(
         receiptEnum: .price)
-    private lazy var payerDetailLbl: CustomStackView = CustomStackView(
+    private lazy var payerDetailLbl: ReceiptLblStackView = ReceiptLblStackView(
         receiptEnum: .payer)
     
     

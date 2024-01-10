@@ -52,7 +52,7 @@ final class SettlementDetailsTableView: UIView {
     
     // MARK: - 프로퍼티
 //    weak var delegate:
-    private var viewModel: SettlementDetailsVM?
+    var viewModel: SettlementDetailsVM
     
     
     // MARK: - 라이프사이클
@@ -75,18 +75,17 @@ extension SettlementDetailsTableView {
     
     // MARK: - 기본 설정
     private func configureUI() {
-        guard let viewModel = self.viewModel else { return }
         
-        if let lblText = viewModel.topLblText {
+        if let lblText = self.viewModel.topLblText {
             self.topLbl.text = lblText
         }
-        else if let btnTextArray = viewModel.btnTextArray {
+        else if let btnTextArray = self.viewModel.btnTextArray {
             self.firstBtn.setTitle(btnTextArray[0], for: .normal)
             self.secondBtn.setTitle(btnTextArray[1], for: .normal)
         }
         
-        self.topLbl.backgroundColor = self.viewModel?.topLblBackgroundColor
-        self.configureEnum(viewModel.customTableEnum)
+        self.topLbl.backgroundColor = self.viewModel.topLblBackgroundColor
+        self.configureEnum(self.viewModel.customTableEnum)
     }
     private func configureEnum(_ customTableEnum: CustomTableEnum) {
         switch customTableEnum {
@@ -207,14 +206,14 @@ extension SettlementDetailsTableView {
     }
     // MARK: - 상단 버튼 액션
     @objc private func firstBtnTapped() {
-        self.viewModel?.isFirstBtnTapped = true
+        self.viewModel.isFirstBtnTapped = true
     }
     @objc private func secondBtnTapped() {
-        self.viewModel?.isFirstBtnTapped = false
+        self.viewModel.isFirstBtnTapped = false
     }
     // MARK: - 상단 버튼 클로저
     private func btnChangedClosure() {
-        self.viewModel?.segmentBtnClosure = { colorArray in
+        self.viewModel.segmentBtnClosure = { colorArray in
             self.firstBtn.backgroundColor = colorArray[0]
             self.secondBtn.backgroundColor = colorArray[1]
         }
@@ -255,7 +254,7 @@ extension SettlementDetailsTableView: UITableViewDataSource {
 //        return 30
 //        return 9
 //        return 16
-        return 5
+        return self.viewModel.numbersOfUsers
     }
     
     func tableView(_ tableView: UITableView,
@@ -265,7 +264,7 @@ extension SettlementDetailsTableView: UITableViewDataSource {
             withIdentifier: Identifier.topViewTableViewCell,
             for: indexPath) as! SettlementDetailsTableViewCell
         
-        let cellViewModel = self.viewModel?.cellViewModel(at: indexPath.item)
+        let cellViewModel = self.viewModel.cellViewModel(at: indexPath.item)
         
         cell.configureCell(with: cellViewModel)
         return cell

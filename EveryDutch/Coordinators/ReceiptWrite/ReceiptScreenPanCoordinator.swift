@@ -14,14 +14,27 @@ final class ReceiptScreenPanCoordinator: Coordinator {
     
     var nav: UINavigationController
     
+    var receipt: Receipt
+    
+    var roomUsers: [RoomUsers]
+    
     // 의존성 주입
-    init(nav: UINavigationController) {
+    init(nav: UINavigationController,
+         receipt: Receipt,
+         users: [RoomUsers]) {
         self.nav = nav
+        self.receipt = receipt
+        self.roomUsers = users
     }
     
     
     func start() {
-        let receiptScreenPanVC = ReceiptScreenPanVC(coordinator: self)
+        let receiptScreenPanVM = ReceiptScreenPanVM(
+            receipt: self.receipt, 
+            users: self.roomUsers)
+        let receiptScreenPanVC = ReceiptScreenPanVC(
+            coordinator: self,
+            viewModel: receiptScreenPanVM)
         
         receiptScreenPanVC.modalPresentationStyle = .overFullScreen
         

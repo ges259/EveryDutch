@@ -28,7 +28,7 @@ struct Receipt {
     init(dictionary: [String: Any]) {
         self.type = dictionary[DatabaseEnum.type] as? Int ?? 0
         self.context = dictionary[DatabaseEnum.context] as? String ?? ""
-        let date = dictionary[DatabaseEnum.date] as? String ?? ""
+        let date = dictionary[DatabaseEnum.date] as? Int ?? 0
 //        self.date = dictionary[DatabaseEnum.date] as? String ?? ""
         self.date = String(date)
 //        self.time = dictionary[DatabaseEnum.time] as? String ?? ""
@@ -38,7 +38,7 @@ struct Receipt {
         self.paymentMethod = dictionary[DatabaseEnum.payment_method] as? Int ?? 0
         
         
-        print(dictionary[DatabaseEnum.paymenet_details])
+        
         if let detailsDict = dictionary[DatabaseEnum.paymenet_details] as? [String: [String: Any]] {
             var detailsArray = [PaymentDetail]()
             

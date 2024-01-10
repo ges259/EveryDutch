@@ -64,8 +64,8 @@ final class SettleMoneyRoomVC: UIViewController {
     
     
     // MARK: - 프로퍼티
-    private weak var coordinator: SettleMoneyRoomCoordProtocol?
-    private var viewModel: SettleMoneyRoomVM?
+    private var coordinator: SettleMoneyRoomCoordProtocol
+    private var viewModel: SettleMoneyRoomVM
     
     
     private lazy var cellHeight: CGFloat = self.settlementTableView.frame.width / 7 * 2
@@ -114,6 +114,7 @@ final class SettleMoneyRoomVC: UIViewController {
         self.configureUI()
         self.configureAutoLayout()
         self.configureAction()
+        self.configureClosure()
     }
     init(viewModel: SettleMoneyRoomVM,
          coordinator: SettleMoneyRoomCoordProtocol) {
@@ -136,7 +137,7 @@ extension SettleMoneyRoomVC {
         
         self.bottomBtn.addShadow(top: true, bottom: false)
         self.topView.addShadow(top: false, bottom: true)
-        
+        self.settlementTableView.transform = CGAffineTransform(rotationAngle: -.pi)
         // 모서리 설정
         self.topView.layer.maskedCorners = [
             .layerMinXMaxYCorner,
@@ -261,8 +262,34 @@ extension SettleMoneyRoomVC {
 
     }
     @objc private func bottomBtnTapped() {
-        self.coordinator?.receiptWriteScreen()
+        self.coordinator.receiptWriteScreen()
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    // MARK: - 클로저 설정
+    private func configureClosure() {
+        self.viewModel.receiptChangedClosure = {
+            print(#function)
+            DispatchQueue.main.async {
+                self.settlementTableView.reloadData()
+            }
+        }
+        
+        self.viewModel.userChangedClosure = { users in
+            self.topViewTableView.viewModel.makeCellVM(users: users)
+            self.topViewTableView.topViewTableView.reloadData()
+        }
+    }
+    
+    
     
 
     
@@ -330,10 +357,10 @@ extension SettleMoneyRoomVC {
     
     @objc private func settingBtnTapped() {
         print(#function)
-        self.coordinator?.RoomSettingScreen()
+        self.coordinator.RoomSettingScreen()
     }
     @objc private func backBtnTapped() {
-        self.coordinator?.didFinish()
+        self.coordinator.didFinish()
     }
 }
 
@@ -351,8 +378,12 @@ extension SettleMoneyRoomVC: UITableViewDelegate {
     }
     func tableView(_ tableView: UITableView,
                    didSelectRowAt indexPath: IndexPath) {
-        print(#function)
-        self.coordinator?.ReceiptScreen()
+        let receipt = self.viewModel.receipts[indexPath.row]
+        let users = self.viewModel.roomUser
+        
+        self.coordinator.ReceiptScreen(
+            receipt: receipt, 
+            users: users)
     }
 }
 
@@ -365,7 +396,7 @@ extension SettleMoneyRoomVC: UITableViewDataSource {
     /// 셀의 개수
     func tableView(_ tableView: UITableView,
                    numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return self.viewModel.numberOfReceipt
     }
     
     func tableView(_ tableView: UITableView,
@@ -373,9 +404,9 @@ extension SettleMoneyRoomVC: UITableViewDataSource {
     -> UITableViewCell {
         let cell = self.settlementTableView.dequeueReusableCell(withIdentifier: Identifier.settlementTableViewCell, for: indexPath) as! SettlementTableViewCell
         
-        let cellViewModel = self.viewModel?.cellViewModel(at: indexPath.item)
+        let cellViewModel = self.viewModel.cellViewModel(at: indexPath.item)
         cell.configureCell(with: cellViewModel)
-        
+        cell.transform = CGAffineTransform(rotationAngle: -.pi)
         return cell
     }
 }

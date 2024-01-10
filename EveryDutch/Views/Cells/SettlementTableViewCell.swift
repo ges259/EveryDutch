@@ -77,11 +77,6 @@ extension SettlementTableViewCell {
         self.backgroundColor = .clear
         self.selectionStyle = .none
         self.separatorInset = .zero
-        
-        // MARK: - Fix
-//        self.contextLbl.text = "맥도날드 맘스터치 KFC"
-
-//        self.allPayerLbl.text = "쁨 외 1명"
     }
     
     // MARK: - 오토레이아웃 설정
@@ -123,10 +118,10 @@ extension SettlementTableViewCell {
         
         // viewModel을 사용하여 셀의 뷰를 업데이트.
         if let viewModel = viewModel {
-            self.contextLbl.text = viewModel.content
+            self.contextLbl.text = viewModel.context
             self.allPayerLbl.text = viewModel.payer
-            self.priceLbl.text = "30,000원"
-            self.timeLbl.text = "00 : 23"
+            self.priceLbl.text = "\(viewModel.price)"
+            self.timeLbl.text = viewModel.time
         }
     }
 }

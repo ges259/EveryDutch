@@ -136,7 +136,7 @@ extension SettlementDetailsTableViewCell {
         // 뷰모델 저장
         self.viewModel = viewModel
         // viewModel을 사용하여 셀의 뷰를 업데이트.
-        guard var viewModel = viewModel else { return }
+        guard let viewModel = viewModel else { return }
         self.userName.text = viewModel.userName
         self.priceLbl.text = viewModel.price
         self.profileImg.image = viewModel.profileImg

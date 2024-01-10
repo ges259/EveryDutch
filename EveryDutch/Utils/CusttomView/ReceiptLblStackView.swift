@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-final class CustomStackView: UIStackView {
+final class ReceiptLblStackView: UIStackView {
     private var receiptImg: UIImageView = {
         let img = UIImageView()
         img.tintColor = UIColor.black
@@ -34,15 +34,19 @@ final class CustomStackView: UIStackView {
         self.addInfoLbl = addInfoLbl
         super.init(frame: .zero)
         
-        self.axis = .horizontal
-        self.spacing = 8
-        self.alignment = .center
-        self.distribution = .fill
+        self.configureUI()
         self.configureCustomStackView()
         self.configureData()
     }
     required init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func configureUI() {
+        self.axis = .horizontal
+        self.spacing = 8
+        self.alignment = .center
+        self.distribution = .fill
     }
     
     
@@ -65,15 +69,4 @@ final class CustomStackView: UIStackView {
         self.receiptImg.image = self.receiptEnum?.img
         self.receiptDetailLbl.text = self.receiptEnum?.text
     }
-    
-//    func addViews(_ views: [UIView]) {
-//        for view in views {
-//            self.addArrangedSubview(view)
-//        }
-//    }
-//    
-//    func insertView(_ views: UIView,
-//                    at: Int) {
-//        
-//    }
 }

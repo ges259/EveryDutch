@@ -20,22 +20,22 @@ final class ReceiptScreenPanVC: UIViewController {
         color: UIColor.normal_white)
     
     // 스택뷰
-    private var memoStackView: CustomStackView = CustomStackView(
+    private var memoStackView: ReceiptLblStackView = ReceiptLblStackView(
         receiptEnum: .memo,
         addInfoLbl: true)
-    private var dateStackView: CustomStackView = CustomStackView(
+    private var dateStackView: ReceiptLblStackView = ReceiptLblStackView(
         receiptEnum: .date,
         addInfoLbl: true)
-    private var timeStackView: CustomStackView = CustomStackView(
+    private var timeStackView: ReceiptLblStackView = ReceiptLblStackView(
         receiptEnum: .time,
         addInfoLbl: true)
-    private var priceStackView: CustomStackView = CustomStackView(
+    private var priceStackView: ReceiptLblStackView = ReceiptLblStackView(
         receiptEnum: .price,
         addInfoLbl: true)
-    private var payerStackVeiw: CustomStackView = CustomStackView(
+    private var payerStackVeiw: ReceiptLblStackView = ReceiptLblStackView(
         receiptEnum: .payer,
         addInfoLbl: true)
-    private var paymentMethodStackView: CustomStackView = CustomStackView(
+    private var paymentMethodStackView: ReceiptLblStackView = ReceiptLblStackView(
         receiptEnum: .payment_Method,
         addInfoLbl: true)
     
@@ -74,7 +74,8 @@ final class ReceiptScreenPanVC: UIViewController {
     
     
     // MARK: - 프로퍼티
-    var coordinator: Coordinator?
+    var coordinator: Coordinator
+    var viewModel: ReceiptScreenPanVM
     
     
     // MARK: - 라이프사이클
@@ -85,13 +86,15 @@ final class ReceiptScreenPanVC: UIViewController {
         self.configureAutoLayout()
         self.configureAction()
     }
-    init(coordinator: Coordinator) {
+    init(coordinator: Coordinator,
+         viewModel: ReceiptScreenPanVM) {
         self.coordinator = coordinator
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        self.coordinator?.didFinish()
+        self.coordinator.didFinish()
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -115,12 +118,15 @@ extension ReceiptScreenPanVC {
         
         // MARK: - Fix
         self.topLbl.text = "영수증"
-        self.memoStackView.receiptInfoLbl.text = "맥도날드"
-        self.dateStackView.receiptInfoLbl.text = "2023.12.14"
-        self.timeStackView.receiptInfoLbl.text = "00 : 23"
-        self.priceStackView.receiptInfoLbl.text = "12,000원"
-        self.payerStackVeiw.receiptInfoLbl.text = "노주영"
-        self.paymentMethodStackView.receiptInfoLbl.text = "1 / N"
+        self.memoStackView.receiptInfoLbl.text = self.viewModel.receipt.context
+        self.dateStackView.receiptInfoLbl.text = self.viewModel.receipt.date
+        self.timeStackView.receiptInfoLbl.text = self.viewModel.receipt.time
+        self.priceStackView.receiptInfoLbl.text = "\(self.viewModel.receipt.price)"
+        self.payerStackVeiw.receiptInfoLbl.text = self.viewModel.receipt.payer
+        self.paymentMethodStackView.receiptInfoLbl.text = "\(self.viewModel.receipt.paymentMethod)"
+        
+        
+        
     }
     
     // MARK: - 오토레이아웃 설정

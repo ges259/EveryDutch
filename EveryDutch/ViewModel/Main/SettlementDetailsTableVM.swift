@@ -7,15 +7,37 @@
 
 import UIKit
 
-class SettlementDetailsVM {
+protocol SettlementDetailsVMProtocol {
+    var users: [RoomUsers] { get }
+    var numbersOfUsers: Int { get }
+    
+    var cellViewModels: [SettlementDetailsCellVM] { get }
+    
+    func makeCellVM(users: [RoomUsers])
+    
+    
+}
+
+
+
+
+class SettlementDetailsVM: SettlementDetailsVMProtocol {
     // 셀 데이터를 저장하는 배열
     var cellViewModels: [SettlementDetailsCellVM] = []
     
-    
+
     var customTableEnum: CustomTableEnum
     
-    private let btnColorArray: [UIColor] = [UIColor.normal_white,
-                                            UIColor.unselected_gray]
+    var users: [RoomUsers]  = []
+    
+    var numbersOfUsers: Int {
+        return self.cellViewModels.count
+    }
+    
+    private let btnColorArray: [UIColor] = [
+        UIColor.normal_white,
+        UIColor.unselected_gray
+    ]
     
     
     var isFirstBtnTapped: Bool = false {
@@ -33,6 +55,7 @@ class SettlementDetailsVM {
     var isPayer: Bool = false
     
     
+    
     // MARK: - 클로저
     var segmentBtnClosure: (([UIColor]) -> Void)?
     
@@ -43,53 +66,6 @@ class SettlementDetailsVM {
     var items: [(String, String)] = []
     init(_ customTableEnum: CustomTableEnum) {
         self.customTableEnum = customTableEnum
-        
-        self.items = [("김게성", "30,000"),
-                      ("소주안먹는근육몬", "30,001"),
-                      ("걔", "30,002"),
-                      ("맥형", "30,003"),
-                      ("지후", "30,004"),
-                      ("노주영", "30,005"),
-                      ("김게성", "30,000"),
-                                    ("소주안먹는근육몬", "30,001"),
-                                    ("걔", "30,002"),
-                                    ("맥형", "30,003"),
-                                    ("지후", "30,004"),
-                                    ("노주영", "30,005"),
-                      ("김게성", "30,000"),
-                                    ("소주안먹는근육몬", "30,001"),
-                                    ("걔", "30,002"),
-                                    ("맥형", "30,003"),
-                                    ("지후", "30,004"),
-                                    ("노주영", "30,005"),
-                      ("김게성", "30,000"),
-                                    ("소주안먹는근육몬", "30,001"),
-                                    ("걔", "30,002"),
-                                    ("맥형", "30,003"),
-                                    ("지후", "30,004"),
-                                    ("노주영", "30,005"),
-                      ("김게성", "30,000"),
-                                    ("소주안먹는근육몬", "30,001"),
-                                    ("걔", "30,002"),
-                                    ("맥형", "30,003"),
-                                    ("지후", "30,004"),
-                                    ("노주영", "30,005"),
-                      ("김게성", "30,000"),
-                                    ("소주안먹는근육몬", "30,001"),
-                                    ("걔", "30,002"),
-                                    ("맥형", "30,003"),
-                                    ("지후", "30,004"),
-                                    ("노주영", "30,005"),
-        ]
-        
-        
-        // 예시 데이터 로드
-        cellViewModels = items.map {
-            SettlementDetailsCellVM(profileImageURL: "",
-                                    userName: $0.0,
-                                    price: $0.1,
-                                    customTableEnum: self.customTableEnum)
-        }
     }
     
     // MARK: - 레이블 텍스트
@@ -136,6 +112,17 @@ class SettlementDetailsVM {
 //        ? UIColor.medium_Blue
 //        : UIColor.normal_white
 //    }
+    
+    
+    // 셀 가져와서 표시
+    func makeCellVM(users: [RoomUsers]) {
+        self.cellViewModels = users.map { user in
+            SettlementDetailsCellVM(
+                roomUsers: user,
+                customTableEnum: self.customTableEnum)
+        }
+    }
+    
     
     
     

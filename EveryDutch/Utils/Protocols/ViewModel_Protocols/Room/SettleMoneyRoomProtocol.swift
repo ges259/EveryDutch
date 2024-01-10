@@ -12,4 +12,6 @@ protocol SettleMoneyRoomProtocol {
     var numberOfReceipt: Int { get }
     var roomData: Rooms { get }
     var receipts: [Receipt] { get }
+    var receiptChangedClosure: (() -> Void)? { get }
+    var userChangedClosure: (([RoomUsers]) -> Void)? { get }
 }

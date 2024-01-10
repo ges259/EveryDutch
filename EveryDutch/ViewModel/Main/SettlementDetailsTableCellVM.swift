@@ -13,13 +13,11 @@ struct SettlementDetailsCellVM {
     var price: String
     var customTableEnum: CustomTableEnum
 
-    init(profileImageURL: String, 
-         userName: String,
-         price: String,
+    init(roomUsers: RoomUsers,
          customTableEnum: CustomTableEnum) {
-        self.profileImageURL = profileImageURL
-        self.userName = userName
-        self.price = price
+        self.profileImageURL = roomUsers.roomImg
+        self.userName = roomUsers.roomName
+        self.price = roomUsers.personalID
         self.customTableEnum = customTableEnum
     }
     
