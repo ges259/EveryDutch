@@ -9,18 +9,14 @@ import UIKit
 
 struct ReceiptScreenPanVM {
     
-    
+    // 정산내역 셀의 뷰모델
+    private var cellViewModels: [SettlementTableViewCellVM] = []
     
     var receipt: Receipt
-    var roomUsers: [RoomUsers]
     
-    init(receipt: Receipt,
-         users: [RoomUsers]) {
+//    var users
+    
+    init(receipt: Receipt) {
         self.receipt = receipt
-        self.roomUsers = users
     }
-    
-    
-    
-     
 }

@@ -41,8 +41,8 @@ final class ReceiptScreenPanVC: UIViewController {
     
     
     // 테이블뷰
-    private var tableView: SettlementDetailsTableView = SettlementDetailsTableView(
-        viewModel: SettlementDetailsVM(.isReceiptScreen))
+    private var usersTableView: UsersTableView = UsersTableView(
+        viewModel: UsersTableViewVM(.isReceiptScreen))
     
     // 하단 버튼
     private lazy var bottomBtn: UIButton = UIButton.btnWithTitle(
@@ -53,7 +53,7 @@ final class ReceiptScreenPanVC: UIViewController {
     private lazy var totalStackView: UIStackView = UIStackView.configureStackView(
         arrangedSubviews: [self.topLbl,
                            self.whiteVeiw,
-                           self.tableView],
+                           self.usersTableView],
         axis: .vertical,
         spacing: 4,
         alignment: .fill,
@@ -85,12 +85,15 @@ final class ReceiptScreenPanVC: UIViewController {
         self.configureUI()
         self.configureAutoLayout()
         self.configureAction()
+        self.configureClosure()
     }
     init(coordinator: Coordinator,
          viewModel: ReceiptScreenPanVM) {
         self.coordinator = coordinator
         self.viewModel = viewModel
+        print("init")
         super.init(nibName: nil, bundle: nil)
+
     }
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
@@ -124,9 +127,6 @@ extension ReceiptScreenPanVC {
         self.priceStackView.receiptInfoLbl.text = "\(self.viewModel.receipt.price)"
         self.payerStackVeiw.receiptInfoLbl.text = self.viewModel.receipt.payer
         self.paymentMethodStackView.receiptInfoLbl.text = "\(self.viewModel.receipt.paymentMethod)"
-        
-        
-        
     }
     
     // MARK: - 오토레이아웃 설정
@@ -159,6 +159,13 @@ extension ReceiptScreenPanVC {
     // MARK: - 액션 설정
     private func configureAction() {
         
+    }
+    // MARK: - 클로저 설정
+    private func configureClosure() {
+        // 데이터를 처음 가져왔을 때
+//        self.usersTableView.viewModel.makeCellVM(users: self.viewModel.roomUsers)
+//        self.usersTableView.reloadData()
+//        self.view.layoutIfNeeded()
     }
 }
 

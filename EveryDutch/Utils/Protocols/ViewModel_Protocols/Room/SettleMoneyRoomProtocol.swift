@@ -14,4 +14,8 @@ protocol SettleMoneyRoomProtocol {
     var receipts: [Receipt] { get }
     var receiptChangedClosure: (() -> Void)? { get }
     var userChangedClosure: (([RoomUsers]) -> Void)? { get }
+    var fetchUserClosure: (([RoomUsers]) -> Void)? { get }
+    var minHeight: CGFloat { get }
+    var maxHeight: CGFloat { get }
+    var topViewIsOpen: Bool { get }
 }

@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-final class SettlementDetailsTableViewCell: UITableViewCell {
+final class UsersTableViewCell: UITableViewCell {
     
     // MARK: - 레이아웃
     private var profileImg: UIImageView = {
@@ -26,6 +26,12 @@ final class SettlementDetailsTableViewCell: UITableViewCell {
         leftInset: 10,
         rightInset: 10)
     
+    
+    
+    private lazy var rightBtn: UIButton = UIButton.btnWithImg(
+        image: .check_Square_Img,
+        imageSize: 13)
+    
     lazy var priceTf: InsetTextField = {
         let tf =  InsetTextField(
             backgroundColor: UIColor.medium_Blue,
@@ -35,9 +41,7 @@ final class SettlementDetailsTableViewCell: UITableViewCell {
         return tf
     }()
 
-    private lazy var rightBtn: UIButton = UIButton.btnWithImg(
-        image: .check_Square_Img,
-        imageSize: 13)
+
     // chevronRight
     private lazy var whiteView: UIView = UIView.configureView(
         color: UIColor.white)
@@ -61,7 +65,7 @@ final class SettlementDetailsTableViewCell: UITableViewCell {
     
     
     // MARK: - 프로퍼티
-    private var viewModel: SettlementDetailsCellVM?
+    private var viewModel: UsersTableViewCellVM?
     
     
     
@@ -80,10 +84,11 @@ final class SettlementDetailsTableViewCell: UITableViewCell {
         self.userName.text = ""
         self.profileImg.image = nil
     }
-    override func setSelected(_ selected: Bool, animated: Bool) {
+    override func setSelected(_ selected: Bool, 
+                              animated: Bool) {
         super.setSelected(selected, animated: animated)
         
-        if selected 
+        if selected
             && self.viewModel?.customTableEnum == .isReceiptWrite {
             self.priceTf.isHidden = false
             
@@ -108,7 +113,7 @@ final class SettlementDetailsTableViewCell: UITableViewCell {
 
 // MARK: - 화면 설정
 
-extension SettlementDetailsTableViewCell {
+extension UsersTableViewCell {
     
     // MARK: - UI 설정
     private func configureUI() {
@@ -132,7 +137,7 @@ extension SettlementDetailsTableViewCell {
         }
     }
     // MARK: - 뷰모델을 통한 셀 설정
-    func configureCell(with viewModel: SettlementDetailsCellVM?) {
+    func configureCell(with viewModel: UsersTableViewCellVM?) {
         // 뷰모델 저장
         self.viewModel = viewModel
         // viewModel을 사용하여 셀의 뷰를 업데이트.
@@ -153,14 +158,26 @@ extension SettlementDetailsTableViewCell {
         
 
     }
+}
     
+
+
+
+
+
+
+
+    
+
+// MARK: - 상황에 따른 뷰 설정
+
+extension UsersTableViewCell {
+
     // MARK: - Enum에 따른 설정
     private func configureClosure(_ customTableEnum: CustomTableEnum) {
         switch customTableEnum {
         case .isReceiptWrite:
             self.configureTextField()
-            // 클로져 설정
-//            self.isReceiptWriteClosure()
             break
         case .isRoomSetting:
             // 클로져 설정
@@ -179,21 +196,7 @@ extension SettlementDetailsTableViewCell {
             break
         }
     }
-}
     
-
-
-
-
-
-
-
-    
-
-// MARK: - 상황에 따른 뷰 설정
-
-extension SettlementDetailsTableViewCell {
-
     // MARK: - 스택뷰 설정
     private func configureStackView(_ onContentView: Bool) {
         if onContentView {
@@ -213,7 +216,7 @@ extension SettlementDetailsTableViewCell {
     }
     
     // MARK: - 오른쪽 버튼 설정
-    private func configureRightBtn(_ viewModel: SettlementDetailsCellVM) {
+    private func configureRightBtn(_ viewModel: UsersTableViewCellVM) {
         self.rightStackView.addArrangedSubview(self.rightBtn)
         self.rightBtn.snp.makeConstraints { make in
             make.width.height.equalTo(21)
@@ -262,7 +265,7 @@ extension SettlementDetailsTableViewCell {
 
 
 
-extension SettlementDetailsTableViewCell {
+extension UsersTableViewCell {
     // MARK: - 클로져 설정
     private func isRoomSettingClosure() {
         
@@ -288,7 +291,7 @@ extension SettlementDetailsTableViewCell {
 
 
 
-extension SettlementDetailsTableViewCell {
+extension UsersTableViewCell {
     // MARK: - 액션 설정
     private func configureAction() {
         self.rightBtn.addTarget(self, action: #selector(self.rightBtnTapped), for: .touchUpInside)

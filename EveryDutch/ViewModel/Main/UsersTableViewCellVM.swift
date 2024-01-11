@@ -7,7 +7,7 @@
 
 import UIKit
 
-struct SettlementDetailsCellVM {
+struct UsersTableViewCellVM {
     var profileImageURL: String
     var userName: String
     var price: String

@@ -109,7 +109,7 @@ final class ReceiptWriteVC: UIViewController {
     
     
     
-    private var tableView: SettlementDetailsTableView = SettlementDetailsTableView(viewModel: SettlementDetailsVM(.isReceiptWrite))
+    private var tableView: UsersTableView = UsersTableView(viewModel: UsersTableViewVM(.isReceiptWrite))
     
     
     

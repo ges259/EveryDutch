@@ -11,8 +11,8 @@ import PanModal
 
 final class PeopleSelectionPanVC: UIViewController {
     // MARK: - 레이아웃
-    private var peopleTableView: SettlementDetailsTableView = SettlementDetailsTableView(
-        viewModel: SettlementDetailsVM(.isPeopleSelection))
+    private var peopleTableView: UsersTableView = UsersTableView(
+        viewModel: UsersTableViewVM(.isPeopleSelection))
     
     private lazy var searchMethodTableView: CustomTableView = {
         let view = CustomTableView()

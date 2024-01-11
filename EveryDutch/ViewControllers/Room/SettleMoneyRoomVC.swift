@@ -12,52 +12,71 @@ import SnapKit
 
 final class SettleMoneyRoomVC: UIViewController {
     
-    // MARK: - 레이아웃
+    // MARK: - 탑뷰 레이아웃
+    /// 네비게이션바를 가리는 뷰
     private lazy var navView: UIView = UIView.configureView(
         color: UIColor.deep_Blue)
     
+    /// 밑으로 내릴 수 있느 탑뷰
     private lazy var topView: UIView = UIView.configureView(
         color: UIColor.deep_Blue)
     
-    private lazy var topViewIndicator: UIView = UIView.configureView(
-        color: UIColor.black)
     
-    
-    
-    
-    
-    private lazy var topViewTableView: SettlementDetailsTableView = SettlementDetailsTableView(
-        viewModel: SettlementDetailsVM(.isSettleMoney))
-    
-    private lazy var topViewBtn: UIButton = UIButton.btnWithTitle(
+
+    // 탑뷰 내부 레이아웃
+    /// (정산 내역 / 받아야 할 돈)을 선택할 수 있는 버튼 스택뷰
+    private var usersBtnStackView: UsersBtnStackView = UsersBtnStackView()
+    /// 유저를 보여주는 테이블뷰
+    private lazy var usersTableView: UsersTableView = UsersTableView(
+        viewModel: UsersTableViewVM(.isSettleMoney))
+    /// 검색 버튼
+    private lazy var topViewBottomBtn: UIButton = UIButton.btnWithTitle(
         font: UIFont.boldSystemFont(ofSize: 17),
         backgroundColor: UIColor.normal_white)
-    
-    private lazy var stackView: UIStackView = UIStackView.configureStackView(
-        arrangedSubviews: [self.topViewTableView,
-                           self.topViewBtn],
-        axis: .vertical,
-        spacing: 4,
-        alignment: .fill,
-        distribution: .fill)
+    /// 탑뷰 스택뷰
+    private lazy var topViewStackView: UIStackView = {
+        let stv = UIStackView.configureStackView(
+            arrangedSubviews: [self.usersBtnStackView,
+                               self.usersTableView,
+                               self.topViewBottomBtn],
+            axis: .vertical,
+            spacing: 0,
+            alignment: .fill,
+            distribution: .fill)
+        stv.setCustomSpacing(4, after: self.usersTableView)
+        return stv
+    }()
     private lazy var arrowDownImg: UIImageView = {
         let img = UIImageView(image: UIImage.arrow_down)
         img.tintColor = .deep_Blue
         return img
     }()
+    private lazy var topViewIndicator: UIView = UIView.configureView(
+        color: UIColor.black)
     
     
-    private lazy var settlementTableView: CustomTableView = {
+    
+    // MARK: - 메인 레이아웃
+    /// 정산내역 테이블뷰
+    private lazy var receiptTableView: CustomTableView = {
         let view = CustomTableView()
         view.delegate = self
         view.dataSource = self
         view.register(
             SettlementTableViewCell.self,
             forCellReuseIdentifier: Identifier.settlementTableViewCell)
+        // 테이블뷰 셀이 아래->위로 보이도록 설정
+        view.transform = CGAffineTransform(rotationAngle: -.pi)
+        view.bounces = true
         return view
     }()
-    private lazy var bottomBtn: BottomButton = BottomButton(
-        title: "영수증 작성")
+    /// 하단 '영수증 작성' 버튼
+    private lazy var bottomBtn: BottomButton = BottomButton()
+    
+    
+    
+    
+    
     
     
     
@@ -68,7 +87,7 @@ final class SettleMoneyRoomVC: UIViewController {
     private var viewModel: SettleMoneyRoomVM
     
     
-    private lazy var cellHeight: CGFloat = self.settlementTableView.frame.width / 7 * 2
+    private lazy var cellHeight: CGFloat = self.receiptTableView.frame.width / 7 * 2
     
     // 탑뷰와 관련된 프로퍼티
     private var topViewHeight: NSLayoutConstraint!
@@ -76,25 +95,11 @@ final class SettleMoneyRoomVC: UIViewController {
     
     
     
-    // 인원 수에 따라 maxHeight 크기 바꾸기
-    /* 스택뷰
-     바텀 앵커 : 35
-     하단 버튼 : 45
-     상단 레이아웃 : 35
-     스택뷰 간격 : 10 -> 4
-     네비게이션바 간격 : 12
-     => 134
-     칸 당 40
-     // 최대 5명
-     */
-    private lazy var maxHeight: CGFloat = {
-//        return 134 + 160
-        return 131 + 200
-    }()
+
     
     
-    private let minHeight: CGFloat = 35
-    private var topViewIsOpen: Bool = false
+    
+//    private var topViewIsOpen: Bool = false
     private var initialHeight: CGFloat = 100
     private var currentTranslation: CGPoint = .zero
     private var currentVelocity: CGPoint = .zero
@@ -133,101 +138,96 @@ extension SettleMoneyRoomVC {
     
     // MARK: - UI 설정
     private func configureUI() {
+        // 배경화면 설정
         self.view.backgroundColor = UIColor.base_Blue
-        
-        self.bottomBtn.addShadow(top: true, bottom: false)
-        self.topView.addShadow(top: false, bottom: true)
-        self.settlementTableView.transform = CGAffineTransform(rotationAngle: -.pi)
+        // 바텀 버튼에 그림자 추가
+        self.bottomBtn.addShadow(top: true)
+        // 탑뷰에 그림자 추가
+        self.topView.addShadow(bottom: true)
         // 모서리 설정
+        // 탑뷰
         self.topView.layer.maskedCorners = [
             .layerMinXMaxYCorner,
             .layerMaxXMaxYCorner]
         self.topView.layer.cornerRadius = 35
-        
-        // topViewIndicator
+        // 탑뷰 하단 '인디케이터'
         self.topViewIndicator.clipsToBounds = true
         self.topViewIndicator.layer.cornerRadius = 3
-        
-        self.topViewTableView.clipsToBounds = true
-        self.topViewTableView.layer.cornerRadius = 10
-        self.topViewBtn.clipsToBounds = true
-        self.topViewBtn.layer.cornerRadius = 10
-        
-        self.settlementTableView.clipsToBounds = true
-        self.settlementTableView.layer.cornerRadius = 10
-        
+        // 탑뷰 하단 버튼
+        // 영수증 테이블뷰
+        [self.topViewBottomBtn,
+         self.receiptTableView].forEach { view in
+            view.clipsToBounds = true
+            view.layer.cornerRadius = 10
+        }
         
         // MARK: - Fix
         self.bottomBtn.setTitle("영수증 작성", for: .normal)
         self.navigationItem.title = "대충 방 이름"
-        self.topViewBtn.setTitle("버튼", for: .normal)
+        self.topViewBottomBtn.setTitle("버튼", for: .normal)
     }
     
     
     // MARK: - 오토레이아웃 설정
     private func configureAutoLayout() {
-        [self.settlementTableView,
+        [self.receiptTableView,
          self.topView,
          self.topViewIndicator,
          self.bottomBtn,
          self.navView].forEach { view in
             self.view.addSubview(view)
         }
-        
-        self.topView.addSubview(self.stackView)
+        self.topView.addSubview(self.topViewStackView)
         self.topView.addSubview(self.arrowDownImg)
         
-        //
+        // 네비게이션 가리기 위한 뷰
         self.navView.snp.makeConstraints { make in
             make.top.leading.trailing.equalToSuperview()
             make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.top)
         }
-        
-        
-        // 상단 화면 (내리면 움직이는)
+        // 탑뷰 (내리면 움직이는)
         self.topView.snp.makeConstraints { make in
             make.top.leading.trailing.equalToSuperview()
         }
-        self.topViewHeight = self.topView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: self.minHeight)
+        self.topViewHeight = self.topView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: self.viewModel.minHeight)
         self.topViewHeight.isActive = true
         
-        // 상단 테이블뷰 - 하단 인디케이터
+        // 탑뷰 - 하단 인디케이터
         self.topViewIndicator.snp.makeConstraints { make in
             make.bottom.equalTo(self.topView.snp.bottom).offset(-12)
             make.width.equalTo(100)
             make.height.equalTo(4.5)
             make.centerX.equalTo(self.topView)
         }
-        // 상단 테이블뷰
-        self.topViewTableView.snp.makeConstraints { make in
+        // 유저 테이블뷰
+        self.usersTableView.snp.makeConstraints { make in
             make.height.lessThanOrEqualTo(200 + 5 + 34)
         }
-        // 상단 테이블뷰 - 하단 버튼
-        self.topViewBtn.snp.makeConstraints { make in
+        // 탑뷰 하단 버튼
+        self.topViewBottomBtn.snp.makeConstraints { make in
             make.height.equalTo(45)
         }
-        // 상단 테이블뷰 - 스택뷰
-        self.stackView.snp.makeConstraints { make in
+        // 탑뷰 스택뷰
+        self.topViewStackView.snp.makeConstraints { make in
             make.bottom.equalToSuperview().offset(-35)
             make.leading.equalToSuperview().offset(15)
             make.trailing.equalToSuperview().offset(-15)
-            make.height.greaterThanOrEqualTo(minHeight + 5 + 35)
+            make.height.greaterThanOrEqualTo(self.viewModel.minHeight + 5 + 35)
         }
-        // 상단 테이블뷰 - 하단 버튼
+        // 유저 테이블뷰 아래로 스크롤 버튼
         self.arrowDownImg.snp.makeConstraints { make in
-            make.bottom.equalTo(self.topViewTableView.snp.bottom).offset(-8)
+            make.bottom.equalTo(self.usersTableView.snp.bottom).offset(-8)
             make.width.height.equalTo(30)
             make.centerX.equalToSuperview()
         }
-        
-        // 바텀 버튼
+        // 메인 화면 바텀 버튼
         self.bottomBtn.snp.makeConstraints { make in
             make.bottom.leading.trailing.equalToSuperview()
             make.height.equalTo(UIDevice.current.bottomBtnHeight)
         }
-        // 메인 테이블뷰 (영수증)
-        self.settlementTableView.snp.makeConstraints { make in
-            make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(self.minHeight + 5)
+        // 영수증 테이블뷰 (영수증)
+        self.receiptTableView.snp.makeConstraints { make in
+            make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(self.viewModel.minHeight + 5)
             make.leading.equalToSuperview().offset(10)
             make.trailing.equalToSuperview().offset(-10)
             make.bottom.equalTo(self.bottomBtn.snp.top).offset(-5)
@@ -236,58 +236,91 @@ extension SettleMoneyRoomVC {
     
 
     
-    // MARK: - 액션 설정
+    // MARK: - 액션 및 제스쳐 설정
     private func configureAction() {
+        // ********** 액션 **********
         // 왼쪽 네비게이션 바 - 액션
-        let leftBtn = UIBarButtonItem(image: .chevronLeft, style: .done, target: self, action: #selector(backBtnTapped))
+        let leftBtn = UIBarButtonItem(
+            image: .chevronLeft, 
+            style: .done,
+            target: self, 
+            action: #selector(self.backBtnTapped))
         self.navigationItem.leftBarButtonItem = leftBtn
-        
         // 오른쪽 네비게이션 바 - 액션
-        let rightBtn = UIBarButtonItem(image: .gear_Fill_Img, style: .done, target: self, action: #selector(self.settingBtnTapped))
+        let rightBtn = UIBarButtonItem(
+            image: .gear_Fill_Img, 
+            style: .done,
+            target: self, 
+            action: #selector(self.settingBtnTapped))
         self.navigationItem.rightBarButtonItem = rightBtn
+        // 바텀 버튼 액션
+        self.bottomBtn.addTarget(
+            self,
+            action: #selector(self.bottomBtnTapped),
+            for: .touchUpInside)
         
-        
-        
+        // ********** 제스쳐 **********
         // 탑뷰 - 팬 재스쳐
-        let topViewPanGesture = UIPanGestureRecognizer(target: self, action: #selector(scrollVertical))
+        let topViewPanGesture = UIPanGestureRecognizer(
+            target: self,
+            action: #selector(self.scrollVertical))
         self.topView.addGestureRecognizer(topViewPanGesture)
         // 탑뷰 - 팬 재스쳐
-        let indicatorPanGesture = UIPanGestureRecognizer(target: self, action: #selector(scrollVertical))
+        let indicatorPanGesture = UIPanGestureRecognizer(
+            target: self,
+            action: #selector(self.scrollVertical))
         self.topViewIndicator.addGestureRecognizer(indicatorPanGesture)
         // 네비게이션바 - 팬 재스쳐
-        let navPanGesture = UIPanGestureRecognizer(target: self, action: #selector(scrollVertical))
+        let navPanGesture = UIPanGestureRecognizer(
+            target: self,
+            action: #selector(self.scrollVertical))
         self.navigationController?.navigationBar.addGestureRecognizer(navPanGesture)
-        
-        self.bottomBtn.addTarget(self, action: #selector(self.bottomBtnTapped), for: .touchUpInside)
-
     }
-    @objc private func bottomBtnTapped() {
-        self.coordinator.receiptWriteScreen()
-    }
-    
-    
-    
-    
-    
-    
-    
     
     
     
     // MARK: - 클로저 설정
     private func configureClosure() {
+        // 레시피를 가져왔을 때
         self.viewModel.receiptChangedClosure = {
-            print(#function)
             DispatchQueue.main.async {
-                self.settlementTableView.reloadData()
+                self.receiptTableView.reloadData()
             }
         }
-        
-        self.viewModel.userChangedClosure = { users in
-            self.topViewTableView.viewModel.makeCellVM(users: users)
-            self.topViewTableView.topViewTableView.reloadData()
+        // 데이터를 처음 가져왔을 때
+        self.viewModel.fetchUserClosure = { users in
+            self.usersTableView.viewModel.makeCellVM(users: users)
+            self.usersTableView.reloadData()
         }
+//        self.viewModel.userChangedClosure = { users in
+//
+//        }
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    // MARK: - 액션 함수
+    @objc private func bottomBtnTapped() {
+        self.coordinator.receiptWriteScreen()
+    }
+    @objc private func settingBtnTapped() {
+        self.coordinator.RoomSettingScreen()
+    }
+    @objc private func backBtnTapped() {
+        self.coordinator.didFinish()
+    }
+    
+    
+    
+    
+    // MARK: - 액션
     
     
     
@@ -307,7 +340,7 @@ extension SettleMoneyRoomVC {
         case .began:
             // 제스처가 시작될 때 초기 높이를 저장
             self.initialHeight = self.topViewHeight.constant
-            
+            break
             
         case .changed:
             self.currentTranslation = translation
@@ -316,51 +349,58 @@ extension SettleMoneyRoomVC {
             var newHeight = self.initialHeight + translation.y
             
             // 새 높이가 최대 높이를 넘지 않도록 설정
-            newHeight = min(self.maxHeight, newHeight)
+            newHeight = min(self.viewModel.maxHeight, newHeight)
             // 새 높이가 최소 높이보다 작아지지 않도록 설정
-            newHeight = max(self.minHeight, newHeight)
+            newHeight = max(self.viewModel.minHeight, newHeight)
             
             // 제약 조건을 업데이트하지만 layoutIfNeeded는 호출 X
             self.topViewHeight.constant = newHeight
-            
-            // 스택뷰 alpha값 설정
-            self.stackView.alpha = newHeight / self.maxHeight
+            break
             
         case .ended, .cancelled:
+            // 최종 높이 조절
             self.adjustTopViewHeight()
-            
-            if self.topViewIsOpen {
-                self.stackView.alpha = 1
-            }
-            
         default: break
         }
     }
     // MARK: - 탑뷰 최대 / 최소 크기 설정
     private func adjustTopViewHeight() {
-        if !self.topViewIsOpen
+        // 탑뷰가 닫혀 있고, 
+        // 스와이프 방향이 아래로,
+        // 스와이프 속도가 기준치 이하일 때,
+        if !self.viewModel.topViewIsOpen
             && self.currentTranslation.y > 0
             && self.currentVelocity.y < 15000
         {
-            self.topViewHeight.constant = self.maxHeight
-            self.topViewIsOpen = true
+            // 최대 높이로 설정하고 탑뷰를 열기
+            self.openTopView()
+            // 스와이프 방향이 위로일 때
         } else if self.currentTranslation.y < 0 {
-            self.topViewHeight.constant = self.minHeight
-            self.topViewIsOpen = false
+            // 최소 높이로 설정하고 탑뷰를 닫기
+            self.closeTopView()
         }
-        
+    }
+    
+    private func openTopView() {
+        // 상단 뷰의 높이를 최대 높이로 설정
+        self.topViewHeight.constant = self.viewModel.maxHeight
+        // 뷰모델 상태 true(open)으로 업데이트
+        self.viewModel.topViewIsOpen = true
+        // 뷰의 레이아웃을 애니메이션과 함께 업데이트
         UIView.animate(withDuration: 0.4) {
             self.view.layoutIfNeeded()
         }
     }
     
-    
-    @objc private func settingBtnTapped() {
-        print(#function)
-        self.coordinator.RoomSettingScreen()
-    }
-    @objc private func backBtnTapped() {
-        self.coordinator.didFinish()
+    private func closeTopView() {
+        // 상단 뷰의 높이를 최소 높이로 설정
+        self.topViewHeight.constant = self.viewModel.minHeight
+        // 뷰모델 상태 false(close)으로 업데이트
+        self.viewModel.topViewIsOpen = false
+        // 뷰의 레이아웃을 애니메이션과 함께 업데이트
+        UIView.animate(withDuration: 0.4) {
+            self.view.layoutIfNeeded()
+        }
     }
 }
 
@@ -378,9 +418,11 @@ extension SettleMoneyRoomVC: UITableViewDelegate {
     }
     func tableView(_ tableView: UITableView,
                    didSelectRowAt indexPath: IndexPath) {
+        // 셀의 영수증 가져오기
         let receipt = self.viewModel.receipts[indexPath.row]
+        // 유저 정보 가져오기
         let users = self.viewModel.roomUser
-        
+        // '영수증 화면'으로 화면 이동
         self.coordinator.ReceiptScreen(
             receipt: receipt, 
             users: users)
@@ -402,10 +444,13 @@ extension SettleMoneyRoomVC: UITableViewDataSource {
     func tableView(_ tableView: UITableView,
                    cellForRowAt indexPath: IndexPath)
     -> UITableViewCell {
-        let cell = self.settlementTableView.dequeueReusableCell(withIdentifier: Identifier.settlementTableViewCell, for: indexPath) as! SettlementTableViewCell
+        let cell = self.receiptTableView.dequeueReusableCell(withIdentifier: Identifier.settlementTableViewCell, for: indexPath) as! SettlementTableViewCell
         
+        // 셀 뷰모델 만들기
         let cellViewModel = self.viewModel.cellViewModel(at: indexPath.item)
+        // 셀의 뷰모델을 셀에 넣기
         cell.configureCell(with: cellViewModel)
+        // 테이블을 뒤집었?으므로, 셀도 뒤집어준다.
         cell.transform = CGAffineTransform(rotationAngle: -.pi)
         return cell
     }
@@ -418,10 +463,9 @@ extension SettleMoneyRoomVC {
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         // 메인 테이블뷰일 때만,
         // topView가 열려있다면
-            // -> topView 닫기
-        if scrollView == self.settlementTableView
-            && self.topViewIsOpen {
-            self.adjustTopViewHeight()
+        if scrollView == self.receiptTableView && self.viewModel.topViewIsOpen {
+            // topView 닫기
+            self.closeTopView()
         }
     }
 }

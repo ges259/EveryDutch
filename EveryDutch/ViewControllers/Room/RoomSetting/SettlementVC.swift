@@ -39,7 +39,7 @@ final class SettlementVC: UIViewController {
         font: UIFont.systemFont(ofSize: 13))
     
     
-    private var tableView: SettlementDetailsTableView = SettlementDetailsTableView(viewModel: SettlementDetailsVM(.isSettle))
+    private var tableView: UsersTableView = UsersTableView(viewModel: UsersTableViewVM(.isSettle))
     
     private var bottomBtn: BottomButton = BottomButton(
         title: "정산하기")
@@ -90,7 +90,7 @@ extension SettlementVC {
         self.textField.clipsToBounds = true
         self.textField.layer.cornerRadius = 12
         
-        self.tableView.topViewTableView.isScrollEnabled = false
+        self.tableView.isScrollEnabled = false
     }
     
     // MARK: - 오토레이아웃 설정

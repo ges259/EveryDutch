@@ -23,8 +23,8 @@ final class RoomSettingVC: UIViewController {
     private lazy var contentView: UIView = UIView()
     
     
-    private var tableView: SettlementDetailsTableView = SettlementDetailsTableView(
-        viewModel: SettlementDetailsVM(.isRoomSetting))
+    private var tableView: UsersTableView = UsersTableView(
+        viewModel: UsersTableViewVM(.isRoomSetting))
     
     /// 정산하기 버튼
 //    private var settleMoneyBtn: UIButton = UIButton.btnWithTitle(
@@ -147,7 +147,7 @@ extension RoomSettingVC {
 //            view.layer.cornerRadius = 10
 //        }
         
-        self.tableView.topViewTableView.isScrollEnabled = false
+        self.tableView.isScrollEnabled = false
         
         [self.exitBtn,
          self.inviteBtn,
