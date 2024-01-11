@@ -31,8 +31,7 @@ final class ReceiptScreenPanCoordinator: Coordinator {
     func start() {
         // 뷰모델 만들기
         let receiptScreenPanVM = ReceiptScreenPanVM(
-            receipt: self.receipt,
-            roomUsers: self.roomUsers)
+            receipt: self.receipt)
         // 뷰컨트롤러 만들기
         let receiptScreenPanVC = ReceiptScreenPanVC(
             coordinator: self,

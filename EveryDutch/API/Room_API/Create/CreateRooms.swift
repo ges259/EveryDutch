@@ -10,7 +10,7 @@ import Foundation
 
 struct RoomsAPI {
     static let shared: RoomsAPI = RoomsAPI()
-    init() {}
+    private init() {}
 }
 
 

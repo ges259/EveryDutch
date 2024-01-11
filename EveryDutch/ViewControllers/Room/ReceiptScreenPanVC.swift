@@ -40,9 +40,24 @@ final class ReceiptScreenPanVC: UIViewController {
         addInfoLbl: true)
     
     
-    // 테이블뷰
-    private var usersTableView: UsersTableView = UsersTableView(
-        viewModel: UsersTableViewVM(.isReceiptScreen))
+    /// 정산내역 레이블
+    private var usersLabel: CustomLabel = CustomLabel(
+        text: "정산 내역",
+        font: UIFont.systemFont(ofSize: 15),
+        backgroundColor: UIColor.normal_white,
+        textAlignment: .center)
+    /// 테이블뷰
+    private lazy var usersTableView: CustomTableView = {
+        let view = CustomTableView()
+        view.delegate = self
+        view.dataSource = self
+        
+        view.register(
+            ReceiptScreenTableViewCell.self,
+            forCellReuseIdentifier: Identifier.receiptScreenTableViewCell)
+        
+        return view
+    }()
     
     // 하단 버튼
     private lazy var bottomBtn: UIButton = UIButton.btnWithTitle(
@@ -166,6 +181,35 @@ extension ReceiptScreenPanVC {
 //        self.usersTableView.viewModel.makeCellVM(users: self.viewModel.roomUsers)
 //        self.usersTableView.reloadData()
 //        self.view.layoutIfNeeded()
+    }
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - 테이블뷰 델리게이트
+extension ReceiptScreenPanVC: UITableViewDelegate {
+    
+}
+// MARK: - 테이블뷰 데이터소스
+extension ReceiptScreenPanVC: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(
+            withIdentifier: Identifier.receiptScreenTableViewCell,
+            for: indexPath) as! ReceiptScreenTableViewCell
+        
+        
+        return cell
     }
 }
 

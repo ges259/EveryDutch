@@ -9,7 +9,7 @@ import Foundation
 
 struct UserAPI {
     static let shared: UserAPI = UserAPI()
-    init() {}
+    private init() {}
     
     // typealias
     typealias UserCompletion = (Result<User, ErrorEnum>) -> Void

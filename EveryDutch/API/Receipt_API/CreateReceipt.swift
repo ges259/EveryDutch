@@ -24,7 +24,7 @@ import Foundation
         // Receipt에서 삭제
 struct ReceiptAPI {
     static let shared: ReceiptAPI = ReceiptAPI()
-    init() {}
+    private init() {}
     
     typealias ReceiptCompletion = (Result<[Receipt], ErrorEnum>) -> Void
     

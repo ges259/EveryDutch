@@ -29,7 +29,6 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
     var receipts: [Receipt] = [] {
         didSet {
             self.receiptChangedClosure?()
-            let dd = self.receipts[0].paymentDetails
         }
     }
     /// 방의 유저 데이터
@@ -67,51 +66,48 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
     var numberOfReceipt: Int {
         return self.cellViewModels.count
     }
-    
+    var roomDataManager: RoomDataManager
     
     
     // MARK: - 라이프 사이클
-    init(roomData: Rooms) {
+    init(roomData: Rooms,
+         roomDataManager: RoomDataManager) {
         self.roomData = roomData
+        self.roomDataManager = roomDataManager
         // api호출
         // 영수증 가져오기
         self.fetchReceipt()
-        // 정산방의 유저 가져오기
-        self.fetchRoomUsers()
+        self.fetchUsers()
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     // MARK: - API
     private func fetchReceipt() {
         ReceiptAPI.shared.readReceipt { result in
             switch result {
             case .success(let receipts):
-                
-                
                 self.cellViewModels = receipts.map({ receipt in
                     SettlementTableViewCellVM(receiptData: receipt)
                 })
                 self.receipts = receipts
-                
-                
                 break
                 // MARK: - Fix
             case .failure(_): break
             }
         }
-        
-
     }
-    private func fetchRoomUsers() {
-        RoomsAPI.shared.readRoomUsers(
-            roomID: roomData.roomID) { result in
-                switch result {
-                case .success(let users):
-                    self.roomUser = users
-                    break
-                    // MARK: - Fix
-                case .failure(_): break
-                }
-            }
+    private func fetchUsers() {
+        self.roomDataManager.loadRoomUsers(roomData: roomData) { roomusers in
+            self.roomUser = roomusers
+        }
     }
     
     

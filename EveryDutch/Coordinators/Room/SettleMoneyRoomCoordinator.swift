@@ -32,7 +32,9 @@ final class SettleMoneyRoomCoordinator: SettleMoneyRoomCoordProtocol {
     
     func start() {
         // SettlementRoomVM 뷰모델 생성
-        let settlementRoomVM = SettleMoneyRoomVM(roomData: self.room)
+        let settlementRoomVM = SettleMoneyRoomVM(
+            roomData: self.room,
+            roomDataManager: RoomDataManager.shared)
         // PlusViewController 인스턴스 생성
         let settlementRoomVC = SettleMoneyRoomVC(
             viewModel: settlementRoomVM,
@@ -43,13 +45,15 @@ final class SettleMoneyRoomCoordinator: SettleMoneyRoomCoordProtocol {
     }
     
     func RoomSettingScreen() {
-        let roomSettingCoordinator = RoomSettingCoordinator(nav: self.nav)
+        let roomSettingCoordinator = RoomSettingCoordinator(
+            nav: self.nav)
         self.childCoordinators.append(roomSettingCoordinator)
             roomSettingCoordinator.parentCoordinator = self
             roomSettingCoordinator.start()
     }
     func receiptWriteScreen() {
-        let receiptWriteCoordinator = ReceiptWriteCoordinator(nav: self.nav)
+        let receiptWriteCoordinator = ReceiptWriteCoordinator(
+            nav: self.nav)
         self.childCoordinators.append(receiptWriteCoordinator)
             receiptWriteCoordinator.parentCoordinator = self
             receiptWriteCoordinator.start()

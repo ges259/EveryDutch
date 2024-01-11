@@ -86,6 +86,4 @@ extension UsersTableView: UITableViewDataSource {
         cell.configureCell(with: cellViewModel)
         return cell
     }
-    
-    
 }
