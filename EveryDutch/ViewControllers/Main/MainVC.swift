@@ -58,7 +58,7 @@ final class MainVC: UIViewController {
         tintColor: UIColor.deep_Blue,
         backgroundColor: UIColor.normal_white)
     
-    private lazy var floatingStackView: UIStackView = UIStackView.configureStackView(
+    private lazy var floatingStackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.profileScreenBtn,
                            self.makeRoomScreenBtn],
         axis: .vertical,

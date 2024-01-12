@@ -26,7 +26,7 @@ final class CheckReceiptPanVC: UIViewController {
         font: UIFont.boldSystemFont(ofSize: 16),
         backgroundColor: UIColor.normal_white)
     
-    private lazy var totalStackView: UIStackView = UIStackView.configureStackView(
+    private lazy var totalStackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.topLbl,
                            self.whiteView,
                            self.bottomBtn],
@@ -54,7 +54,7 @@ final class CheckReceiptPanVC: UIViewController {
         font: UIFont.systemFont(ofSize: 14))
     
     
-    private lazy var labelStackView: UIStackView = UIStackView.configureStackView(
+    private lazy var labelStackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.priceCheckLbl,
                            self.payerCheckLbl,
                            self.leftMoneyLbl,

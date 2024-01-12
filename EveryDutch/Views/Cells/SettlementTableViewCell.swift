@@ -28,7 +28,7 @@ final class SettlementTableViewCell: UITableViewCell {
         textAlignment: .right)
     
     
-    private lazy var topStackView: UIStackView = UIStackView.configureStackView(
+    private lazy var topStackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.contextLbl, 
                            self.priceLbl],
         axis: .horizontal,
@@ -36,7 +36,7 @@ final class SettlementTableViewCell: UITableViewCell {
         alignment: .fill,
         distribution: .fill)
     
-    private lazy var bottomStackView: UIStackView = UIStackView.configureStackView(
+    private lazy var bottomStackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.timeLbl, 
                            self.allPayerLbl],
         axis: .horizontal,

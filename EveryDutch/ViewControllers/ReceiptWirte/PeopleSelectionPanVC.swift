@@ -31,7 +31,7 @@ final class PeopleSelectionPanVC: UIViewController {
     
     
     
-    private lazy var stackView: UIStackView = UIStackView.configureStackView(
+    private lazy var stackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.peopleTableView,
                            self.bottomBtn],
         axis: .vertical,

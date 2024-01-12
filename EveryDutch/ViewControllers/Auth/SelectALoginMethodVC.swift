@@ -23,7 +23,7 @@ final class SelectALoginMethodVC: UIViewController {
         return lbl
     }()
     
-    private lazy var iconStackView: UIStackView = UIStackView.configureStackView(
+    private lazy var iconStackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.iconImg,
                            self.iconLbl],
         axis: .vertical,
@@ -46,7 +46,7 @@ final class SelectALoginMethodVC: UIViewController {
         backgroundColor: UIColor.deep_Blue)
     
     /// 스택뷰
-    private lazy var stackView: UIStackView = UIStackView.configureStackView(
+    private lazy var stackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: self.buttonArray,
         axis: .vertical,
         spacing: 7,

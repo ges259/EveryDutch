@@ -48,23 +48,22 @@ final class SettleMoneyRoomCoordinator: SettleMoneyRoomCoordProtocol {
         let roomSettingCoordinator = RoomSettingCoordinator(
             nav: self.nav)
         self.childCoordinators.append(roomSettingCoordinator)
-            roomSettingCoordinator.parentCoordinator = self
-            roomSettingCoordinator.start()
+        roomSettingCoordinator.parentCoordinator = self
+        roomSettingCoordinator.start()
     }
     func receiptWriteScreen() {
         let receiptWriteCoordinator = ReceiptWriteCoordinator(
             nav: self.nav)
         self.childCoordinators.append(receiptWriteCoordinator)
-            receiptWriteCoordinator.parentCoordinator = self
-            receiptWriteCoordinator.start()
+        receiptWriteCoordinator.parentCoordinator = self
+        receiptWriteCoordinator.start()
     }
     func ReceiptScreen(receipt: Receipt,
                        users: [RoomUsers]) {
         // PeopleSelectionPanCoordinator 생성
         let receiptScreenPanCoordinator = ReceiptScreenPanCoordinator(
             nav: self.nav, 
-            receipt: receipt,
-            users: users)
+            receipt: receipt)
         self.childCoordinators.append(receiptScreenPanCoordinator)
         // 부모 코디네이터가 자신이라는 것을 명시 (뒤로가기 할 때 필요)
         receiptScreenPanCoordinator.parentCoordinator = self

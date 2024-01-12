@@ -20,7 +20,7 @@ final class NoDataView: UIView {
         lbl.numberOfLines = 2
         return lbl
     }()
-    private lazy var stackView: UIStackView = UIStackView.configureStackView(
+    private lazy var stackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.noDataImg,
                            self.noDataText],
         axis: .vertical,

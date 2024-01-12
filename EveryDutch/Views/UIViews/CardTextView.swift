@@ -69,21 +69,21 @@ final class CardTextView: UIView {
     
     
     // 스택뷰
-    private lazy var firstStackView: UIStackView = UIStackView.configureStackView(
+    private lazy var firstStackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.firstDetailLbl],
         axis: .horizontal,
         spacing: 10,
         alignment: .fill,
         distribution: .fill)
     
-    private lazy var secondStackView: UIStackView = UIStackView.configureStackView(
+    private lazy var secondStackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.secondDetailLbl],
         axis: .horizontal,
         spacing: 10,
         alignment: .fill,
         distribution: .fill)
     
-    private lazy var thirdStackView: UIStackView = UIStackView.configureStackView(
+    private lazy var thirdStackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.thirdDetailLbl,
                            self.thirdInfoLbl],
         axis: .horizontal,
@@ -91,7 +91,7 @@ final class CardTextView: UIView {
         alignment: .fill,
         distribution: .fill)
     
-    private lazy var totalStackView: UIStackView = UIStackView.configureStackView(
+    private lazy var totalStackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.firstStackView,
                            self.secondStackView],
         axis: .vertical,

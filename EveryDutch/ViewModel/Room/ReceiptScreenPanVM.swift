@@ -13,20 +13,41 @@ struct ReceiptScreenPanVM {
     private var cellViewModels: [ReceiptScreenPanCellVM] = []
     
     var receipt: Receipt
+    var roomDataManager: RoomDataManager
     
-    lazy var dd = receipt.paymentDetails
+    var currentNumOfUsers: Int = 0
     
-    init(receipt: Receipt) {
+    // MARK: - 라이프사이클
+    init(receipt: Receipt,
+         roomDataManager: RoomDataManager) {
         self.receipt = receipt
+        self.roomDataManager = roomDataManager
+        
         self.makeCells()
     }
     
     
+    // MARK: - 셀 생성
     mutating func makeCells() {
-        let details = self.receipt.paymentDetails
+        // Receipt에서 PaymentDetails 가져오기
+        let paymentDetails = receipt.paymentDetails
         
-        self.cellViewModels = details.map { detail in
+        // RoomDataManager의 인스턴스를 사용하여 PaymentDetail 업데이트
+        let updated = self.roomDataManager.updatePaymentDetails(
+            paymentDetails: paymentDetails)
+        
+        // usersTableView 셀의 개수 저장
+        self.currentNumOfUsers = updated.count
+        
+        // 셀 만들기
+        self.cellViewModels = updated.map { detail in
             ReceiptScreenPanCellVM(paymentDetail: detail)
         }
+    }
+    
+    // MARK: - 셀 뷰모델 반환
+    // cellViewModels 반환
+    func cellViewModel(at index: Int) -> ReceiptScreenPanCellVM {
+        return self.cellViewModels[index]
     }
 }

@@ -26,8 +26,13 @@ final class ReceiptWriteCoordinator: ReceiptWriteCoordProtocol {
     }
     
     func start() {
+        let receiptWriteVM = ReceiptWriteVM(
+            roomDataManager: RoomDataManager.shared)
+        
         // SettlementVC 인스턴스 생성
-        let receiptWriteVC = ReceiptWriteVC(coordinator: self)
+        let receiptWriteVC = ReceiptWriteVC(
+            viewModel: receiptWriteVM,
+            coordinator: self)
         // 네비게이션 컨트롤러 생성 및 루트 뷰 컨트롤러 설정
         let receiptWriteNavController = UINavigationController(rootViewController: receiptWriteVC)
         // 전체 화면 꽉 채우기

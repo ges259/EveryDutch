@@ -16,22 +16,21 @@ final class ReceiptScreenPanCoordinator: Coordinator {
     
     var receipt: Receipt
     
-    var roomUsers: [RoomUsers]
+    
     
     // 의존성 주입
     init(nav: UINavigationController,
-         receipt: Receipt,
-         users: [RoomUsers]) {
+         receipt: Receipt) {
         self.nav = nav
         self.receipt = receipt
-        self.roomUsers = users
     }
     
     
     func start() {
         // 뷰모델 만들기
         let receiptScreenPanVM = ReceiptScreenPanVM(
-            receipt: self.receipt)
+            receipt: self.receipt, 
+            roomDataManager: RoomDataManager.shared)
         // 뷰컨트롤러 만들기
         let receiptScreenPanVC = ReceiptScreenPanVC(
             coordinator: self,

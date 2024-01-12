@@ -35,7 +35,7 @@ final class FindFriendsVC: UIViewController {
         font: UIFont.boldSystemFont(ofSize: 16),
         backgroundColor: UIColor.deep_Blue)
     
-    private lazy var topStackView: UIStackView = UIStackView.configureStackView(
+    private lazy var topStackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.textField,
                            self.numOfCharLbl,
                            self.searchBtn],
@@ -44,7 +44,7 @@ final class FindFriendsVC: UIViewController {
         alignment: .fill,
         distribution: .fill)
     
-    private lazy var bottomStackView: UIStackView = UIStackView.configureStackView(
+    private lazy var bottomStackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.cardImgView,
                            self.inviteBtn],
         axis: .vertical,

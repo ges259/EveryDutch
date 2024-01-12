@@ -33,7 +33,7 @@ final class CardScreenVC: UIViewController {
         return view
     }()
     
-    private lazy var stackView: UIStackView = UIStackView.configureStackView(
+    private lazy var stackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.cardImgView,
                            self.roomInfoCardView],
         axis: .vertical,

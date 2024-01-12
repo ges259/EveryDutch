@@ -17,7 +17,7 @@ struct UsersTableViewCellVM {
          customTableEnum: CustomTableEnum) {
         self.profileImageURL = roomUsers.roomImg
         self.userName = roomUsers.roomName
-        self.price = roomUsers.personalID
+        self.price = roomUsers.userID
         self.customTableEnum = customTableEnum
     }
     

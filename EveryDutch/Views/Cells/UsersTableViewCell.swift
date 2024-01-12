@@ -46,7 +46,7 @@ final class UsersTableViewCell: UITableViewCell {
     private lazy var whiteView: UIView = UIView.configureView(
         color: UIColor.white)
     
-    private lazy var leftStackView: UIStackView = UIStackView.configureStackView(
+    private lazy var leftStackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.profileImg,
                            self.userName],
         axis: .horizontal,
@@ -55,7 +55,7 @@ final class UsersTableViewCell: UITableViewCell {
         distribution: .fill)
     
     
-    private lazy var rightStackView: UIStackView = UIStackView.configureStackView(
+    private lazy var rightStackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.priceLbl],
         axis: .horizontal,
         spacing: 17,

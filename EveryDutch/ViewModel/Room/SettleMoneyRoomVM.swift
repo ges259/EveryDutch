@@ -90,6 +90,7 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
     
     
     // MARK: - API
+    /// 영수증 데이터 가져오기
     private func fetchReceipt() {
         ReceiptAPI.shared.readReceipt { result in
             switch result {
@@ -104,6 +105,7 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
             }
         }
     }
+    /// RoomDataManager에서 RoomUsers데이터 가져오기
     private func fetchUsers() {
         self.roomDataManager.loadRoomUsers(roomData: roomData) { roomusers in
             self.roomUser = roomusers

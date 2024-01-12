@@ -22,7 +22,7 @@ extension DatabaseEnum {
     static let room_user_image: String = "room_user_image"
 }
 extension DatabaseEnum {
-    
+    static let userID: String = "userID"
 }
 
 // Receipt

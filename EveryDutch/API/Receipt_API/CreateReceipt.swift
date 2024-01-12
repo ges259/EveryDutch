@@ -35,8 +35,9 @@ extension ReceiptAPI {
     
     func createReceipt() {
         
-        
+        // 현재 시간 설정
         let creationDate = Int(NSDate().timeIntervalSince1970)
+        
         let dictionary: [String: Any] = [
             "receiptID": "receiptID",
             "type": 0,
@@ -48,10 +49,6 @@ extension ReceiptAPI {
             "paymentMethod": 1,
             "paymentDetails": self.toDictionary()
         ]
-        
-        
-        
-        
         
         
         RECEIPT_REF

@@ -9,4 +9,7 @@ import Foundation
 
 protocol ReceiptWirteVMProtocol {
     
+    
+    var numOfUsers: Int { get }
+    
 }

@@ -30,8 +30,9 @@ extension RoomsAPI {
                 }
                 for (key, value) in value {
                     // RoomUsers 객체 만들기
-                    let roomUser = RoomUsers(personalID: key,
-                                             dictionary: value)
+                    let roomUser = RoomUsers(
+                        userID: key,
+                        dictionary: value)
                     // 배열에 추가
                     roomUsers.append(roomUser)
                 }

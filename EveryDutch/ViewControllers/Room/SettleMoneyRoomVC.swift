@@ -35,7 +35,7 @@ final class SettleMoneyRoomVC: UIViewController {
         backgroundColor: UIColor.normal_white)
     /// 탑뷰 스택뷰
     private lazy var topViewStackView: UIStackView = {
-        let stv = UIStackView.configureStackView(
+        let stv = UIStackView.configureStv(
             arrangedSubviews: [self.usersBtnStackView,
                                self.usersTableView,
                                self.topViewBottomBtn],

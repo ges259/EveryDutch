@@ -24,50 +24,9 @@ final class ReceiptWriteVC: UIViewController {
     
     // MARK: - 캘린더
     /// 달력
-     private lazy var calendar: FSCalendar = {
-         let calendar = FSCalendar()
-         calendar.delegate = self
-         // 배경 색상 설정
-         calendar.backgroundColor = UIColor.normal_white
-         
-         // ----- 주(월/화/수/~~) -----
-         // 한글로 표시
-         calendar.locale = Locale(identifier: "ko_KR")
-         // 폰트 크기 설정
-         calendar.appearance.weekdayFont = UIFont.systemFont(ofSize: 12)
-         // 색상
-         calendar.appearance.weekdayTextColor = .black.withAlphaComponent(0.7)
-         // 헤더(10월) 없애기
-//         calendar.headerHeight = 0
-         // 헤더 양 옆 날짜(월) 없애기
-         calendar.appearance.headerMinimumDissolvedAlpha = 0.0
-         
-         // MARK: - Fix
-         // 올해 - 1월
-         // 작년 or 내년 - 2023년 12월
-         calendar.appearance.headerDateFormat = "YYYY년 M월"
-         calendar.appearance.headerTitleFont = UIFont.boldSystemFont(ofSize: 18)
-         calendar.appearance.headerTitleColor = UIColor(named: "FFFFFF")?.withAlphaComponent(0.9)
-         calendar.appearance.headerTitleAlignment = .center
-         
-         
-         // 주(월,화,수)와 상단의 간격 넓히기
-         calendar.weekdayHeight = 35
-         
-         // 찾았다?
-//         calendar.appearance.borderRadius = .zero
-         
-         
-         // 선택된 날짜의 색상
-         calendar.appearance.selectionColor = UIColor.point_Blue
-         // 오늘 날짜 생상
-         calendar.appearance.todayColor = UIColor.base_Blue
-         // 오늘 날짜 타이틀 생상
-         calendar.appearance.titleTodayColor = UIColor.black
-         return calendar
-     }()
+     private lazy var calendar: CustomCalendar = CustomCalendar()
     
-    
+  
     // MARK: - Detail - 레이아웃
     private var whiteView: UIView = UIView.configureView(
         color: UIColor.medium_Blue)
@@ -109,11 +68,16 @@ final class ReceiptWriteVC: UIViewController {
     
     
     
-    private var tableView: UsersTableView = UsersTableView(viewModel: UsersTableViewVM(.isReceiptWrite))
+    // MARK: - 테이블 부분
+    private var tableView: UsersTableView = UsersTableView(
+        viewModel: UsersTableViewVM(.isReceiptWrite))
     
     
     
-    private var moneyCountBtn: CustomLabel = CustomLabel(
+    // MARK: - 테이블 상단 및 하단 스택뷰
+    private var usersHeaderStv: UsersBtnStackView = UsersBtnStackView()
+    
+    private var moneyCountLbl: CustomLabel = CustomLabel(
         text: "남은 금액 : 0원",
         backgroundColor: UIColor.normal_white,
         textAlignment: .center)
@@ -124,8 +88,8 @@ final class ReceiptWriteVC: UIViewController {
         backgroundColor: UIColor.normal_white)
     
     
-    private lazy var btnStackView: UIStackView = UIStackView.configureStackView(
-        arrangedSubviews: [self.moneyCountBtn,
+    private lazy var tableFooterStv: UIStackView = UIStackView.configureStv(
+        arrangedSubviews: [self.moneyCountLbl,
                            self.dutchBtn],
         axis: .horizontal,
         spacing: 0,
@@ -140,6 +104,7 @@ final class ReceiptWriteVC: UIViewController {
     private lazy var bottomBtn: BottomButton = BottomButton(
         title: "완료")
     
+    /// 키보드 사용할 때 totalStackView에 추가하여 사용하는 뷰
     private lazy var clearView: UIView = {
         let view = UIView()
             view.isHidden = true
@@ -151,36 +116,35 @@ final class ReceiptWriteVC: UIViewController {
     
     
     // MARK: - 스택뷰
-    private lazy var timeStackView: UIStackView = UIStackView.configureStackView(
+    private lazy var timeStackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.timeDetailLbl,
                            self.timeInfoLbl],
         axis: .horizontal,
         spacing: 0,
         alignment: .fill,
         distribution: .fill)
-    private lazy var memoStackView: UIStackView = UIStackView.configureStackView(
+    private lazy var memoStackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.memoDetailLbl,
                            self.memoInfoTF],
         axis: .horizontal,
         spacing: 0,
         alignment: .fill,
         distribution: .fill)
-    private lazy var priceStackView: UIStackView = UIStackView.configureStackView(
+    private lazy var priceStackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.priceDetailLbl,
                            self.priceInfoTF],
         axis: .horizontal,
         spacing: 0,
         alignment: .fill,
         distribution: .fill)
-    private lazy var payerStackView: UIStackView = UIStackView.configureStackView(
+    private lazy var payerStackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.payerDetailLbl,
                            self.payerInfoTF],
         axis: .horizontal,
         spacing: 0,
         alignment: .fill,
         distribution: .fill)
-    
-    private lazy var infoStackView: UIStackView = UIStackView.configureStackView(
+    private lazy var infoStackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.timeStackView,
                            self.memoStackView,
                            self.priceStackView,
@@ -189,22 +153,26 @@ final class ReceiptWriteVC: UIViewController {
         spacing: 0,
         alignment: .fill,
         distribution: .fillEqually)
+    private lazy var totalStackView: UIStackView = {
+        let stv = UIStackView.configureStv(
+            arrangedSubviews: [self.calendar,
+                               self.whiteView,
+                               self.usersHeaderStv,
+                               self.tableView,
+                               self.tableFooterStv,
+                               self.addPersonBtn,
+                               self.clearView],
+            axis: .vertical,
+            spacing: 7,
+            alignment: .fill,
+            distribution: .fill)
+        
+        stv.setCustomSpacing(0, after: self.usersHeaderStv)
+        stv.setCustomSpacing(0, after: self.tableView)
+        return stv
+    }()
     
-    
-    private lazy var totalStackView: UIStackView = UIStackView.configureStackView(
-        arrangedSubviews: [self.calendar,
-                           self.whiteView,
-                           self.tableView,
-                           self.btnStackView,
-                           self.addPersonBtn,
-                           self.clearView],
-        axis: .vertical,
-        spacing: 7,
-        alignment: .fill,
-        distribution: .fill)
-    
-    
-
+    // MARK: - 데이트 피커
     // UIDatePicker 정의
     private let datePicker: UIDatePicker = {
         let picker = UIDatePicker()
@@ -219,10 +187,26 @@ final class ReceiptWriteVC: UIViewController {
     
     
     
+    
+    
+    
+    
+    
+    
+    
     // MARK: - 프로퍼티
     private lazy var calendarHeight: CGFloat = (self.view.frame.width - 10) * 3 / 4
     
-    private var coordinator: ReceiptWriteCoordProtocol?
+    private var coordinator: ReceiptWriteCoordProtocol
+    private var viewModel: ReceiptWirteVMProtocol
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     // MARK: - 라이프사이클
@@ -233,15 +217,25 @@ final class ReceiptWriteVC: UIViewController {
         self.configureAutoLayout()
         self.configureAction()
     }
-    init(coordinator: ReceiptWriteCoordProtocol) {
+    init(viewModel: ReceiptWirteVMProtocol,
+         coordinator: ReceiptWriteCoordProtocol) {
+        self.viewModel = viewModel
         self.coordinator = coordinator
         super.init(nibName: nil, bundle: nil)
     }
-    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
+
+
+
+
+
+
+
+
+
 
 // MARK: - 화면 설정
 
@@ -251,8 +245,6 @@ extension ReceiptWriteVC {
     private func configureUI() {
         self.view.backgroundColor = UIColor.base_Blue
         
-        self.totalStackView.setCustomSpacing(0, after: self.tableView)
-        
         
         [self.calendar,
          self.whiteView,
@@ -260,26 +252,27 @@ extension ReceiptWriteVC {
             view.clipsToBounds = true
             view.layer.cornerRadius = 10
         }
-        self.btnStackView.clipsToBounds = true
-        
-        self.btnStackView.layer.maskedCorners = [
+        self.tableFooterStv.clipsToBounds = true
+        self.tableFooterStv.layer.maskedCorners = [
             .layerMinXMaxYCorner,
             .layerMaxXMaxYCorner]
-        
-        self.btnStackView.layer.cornerRadius = 10
+        self.tableFooterStv.layer.cornerRadius = 10
         
         
         
         
         // MARK: - Fix
+        
+//        self.moneyCountBtn.text = "남은 금액 : 25,000원"
+        
+    }
+    private func configureViewWithViewModel() {
         self.timeInfoLbl.text = "00:23"
         self.memoInfoTF.text = "맥도날드"
         self.priceInfoTF.text = "50,000원"
         self.payerInfoTF.text = "쁨"
         
-//        self.dutchBtn.setTitle("1명에서 1 / n 하기", for: .normal)
-//        self.moneyCountBtn.text = "남은 금액 : 25,000원"
-        self.calendar.select(Date())
+        
     }
     
     // MARK: - 오토레이아웃 설정
@@ -302,7 +295,7 @@ extension ReceiptWriteVC {
             make.edges.equalTo(self.scrollView.contentLayoutGuide)
             make.width.equalTo(self.scrollView.frameLayoutGuide)
         }
-        // 스택뷰
+        // 토탈 스택뷰
         self.totalStackView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(2)
             make.leading.equalToSuperview().offset(10)
@@ -314,23 +307,28 @@ extension ReceiptWriteVC {
             make.bottom.leading.trailing.equalToSuperview()
             make.height.equalTo(UIDevice.current.bottomBtnHeight)
         }
-        
+        /// 캘린더 설정
         self.calendar.snp.makeConstraints { make in
             make.height.equalTo(self.calendarHeight)
         }
+        /// 시간 스택뷰 (.fillEqually)
         self.timeStackView.snp.makeConstraints { make in
             make.height.equalTo(45)
         }
+        // 글자 수 세는 레이블
         self.memoNumOfCharLbl.snp.makeConstraints { make in
             make.trailing.equalToSuperview().offset(-25)
             make.centerY.equalToSuperview()
         }
-        self.btnStackView.snp.makeConstraints { make in
+        // 테이블 밑 스택뷰
+        self.tableFooterStv.snp.makeConstraints { make in
             make.height.equalTo(45)
         }
+        // 사람 추가 버튼
         self.addPersonBtn.snp.makeConstraints { make in
             make.height.equalTo(45)
         }
+        // 시간, 메모, 금액, 계산 등 스택뷰
         self.infoStackView.snp.makeConstraints { make in
             make.top.equalToSuperview()
             make.leading.equalToSuperview().offset(20)
@@ -341,33 +339,41 @@ extension ReceiptWriteVC {
     // MARK: - 액션 설정
     private func configureAction() {
         // 버튼 생성
-        let backButton = UIBarButtonItem(image: .chevronLeft, style: .done, target: self, action: #selector(self.backButtonTapped))
+        let backButton = UIBarButtonItem(
+            image: .chevronLeft, 
+            style: .done,
+            target: self,
+            action: #selector(self.backButtonTapped))
         // 네비게이션 바의 왼쪽 아이템으로 설정
         self.navigationItem.leftBarButtonItem = backButton
-        
-        self.addPersonBtn.addTarget(self, action: #selector(self.addPersonBtnTapped), for: .touchUpInside)
-        
-        self.bottomBtn.addTarget(self, action: #selector(self.bottomBtnTapped), for: .touchUpInside)
+        // 버튼 액션
+        self.addPersonBtn.addTarget(
+            self,
+            action: #selector(self.addPersonBtnTapped),
+            for: .touchUpInside)
+        self.bottomBtn.addTarget(
+            self,
+            action: #selector(self.bottomBtnTapped),
+            for: .touchUpInside)
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    // MARK: - 버튼 액션 ( 화면 이동 )
     @objc private func bottomBtnTapped() {
-        self.coordinator?.checkReceiptPanScreen()
+        self.coordinator.checkReceiptPanScreen()
     }
     @objc private func addPersonBtnTapped() {
-        self.coordinator?.peopleSelectionPanScreen()
+        self.coordinator.peopleSelectionPanScreen()
     }
     @objc private func backButtonTapped() {
-        self.coordinator?.didFinish()
-    }
-}
-
-
-
-
-extension ReceiptWriteVC: FSCalendarDelegate {
-    /// 날짜를 선택했을 때
-    func calendar(_ calendar: FSCalendar,
-                  didSelect date: Date,
-                  at monthPosition: FSCalendarMonthPosition) {
-        
+        self.coordinator.didFinish()
     }
 }

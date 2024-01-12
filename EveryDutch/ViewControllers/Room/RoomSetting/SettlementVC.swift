@@ -44,7 +44,7 @@ final class SettlementVC: UIViewController {
     private var bottomBtn: BottomButton = BottomButton(
         title: "정산하기")
     
-    private lazy var stackView: UIStackView = UIStackView.configureStackView(
+    private lazy var stackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.settlementNameLbl,
                            self.textField,
                            self.tableView],

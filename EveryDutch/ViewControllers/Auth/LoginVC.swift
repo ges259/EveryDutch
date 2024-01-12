@@ -53,7 +53,7 @@ final class LoginVC: UIViewController {
     }()
     
     /// 스택뷰
-    private lazy var stackView: UIStackView = UIStackView.configureStackView(
+    private lazy var stackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.loginLbl,
                            self.emailTF,
                            self.passwordTF,

@@ -8,7 +8,7 @@
 import UIKit
 
 extension UIStackView {
-    static func configureStackView(
+    static func configureStv(
         arrangedSubviews: [UIView],
         axis: NSLayoutConstraint.Axis,
         spacing: CGFloat,

@@ -8,6 +8,7 @@
 import UIKit
 
 struct MoneyData {
+    var userID: String
     var cumulativeAmount: String
     var payback: [String: String]
     
