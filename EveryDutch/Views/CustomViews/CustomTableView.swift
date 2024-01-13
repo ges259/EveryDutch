@@ -12,10 +12,8 @@ class CustomTableView: UITableView {
         super.init(frame: frame, style: style)
         
         self.separatorStyle = .none
-        self.backgroundColor = .clear
+        self.backgroundColor = .normal_white
         self.showsVerticalScrollIndicator = false
-//        self.layer.cornerRadius = 10
-//        self.clipsToBounds = true
         self.bounces = false
     }
     required init?(coder: NSCoder) {

@@ -25,7 +25,7 @@ final class ReceiptLblStackView: UIStackView {
         rightInset: 10)
     
     
-    private var receiptEnum: ReceiptEnum?
+    private var receiptEnum: ReceiptEnum
     private var addInfoLbl: Bool = false
     
     init(receiptEnum: ReceiptEnum,
@@ -66,7 +66,7 @@ final class ReceiptLblStackView: UIStackView {
     }
     
     private func configureData() {
-        self.receiptImg.image = self.receiptEnum?.img
-        self.receiptDetailLbl.text = self.receiptEnum?.text
+        self.receiptImg.image = self.receiptEnum.img
+        self.receiptDetailLbl.text = self.receiptEnum.text
     }
 }

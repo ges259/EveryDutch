@@ -11,14 +11,19 @@ import PanModal
 
 final class PeopleSelectionPanVC: UIViewController {
     // MARK: - 레이아웃
-    private var peopleTableView: UsersTableView = UsersTableView(
-        viewModel: UsersTableViewVM(.isPeopleSelection))
+    private var topLbl: CustomLabel = CustomLabel(
+        font: UIFont.boldSystemFont(ofSize: 15),
+        backgroundColor: UIColor.normal_white,
+        textAlignment: .center)
     
-    private lazy var searchMethodTableView: CustomTableView = {
+    
+    private lazy var peopleSelectionTableView: CustomTableView = {
         let view = CustomTableView()
         view.delegate = self
         view.dataSource = self
-        view.register(SearchMethodTableViewCell.self, forCellReuseIdentifier: Identifier.searchMethodTableViewCell)
+        view.register(
+            PeopleSelectionPanCell.self,
+            forCellReuseIdentifier: Identifier.peopleSelectionPanCell)
         return view
     }()
     
@@ -32,7 +37,8 @@ final class PeopleSelectionPanVC: UIViewController {
     
     
     private lazy var stackView: UIStackView = UIStackView.configureStv(
-        arrangedSubviews: [self.peopleTableView,
+        arrangedSubviews: [self.topLbl,
+                           self.peopleSelectionTableView,
                            self.bottomBtn],
         axis: .vertical,
         spacing: 4,
@@ -44,8 +50,8 @@ final class PeopleSelectionPanVC: UIViewController {
     
     
     // MARK: - 프로퍼티
-    var coordinator: Coordinator?
-    
+    var coordinator: Coordinator
+    var viewModel: PeopleSelectionPanVM
     
     
     
@@ -58,13 +64,15 @@ final class PeopleSelectionPanVC: UIViewController {
         self.configureAutoLayout()
         self.configureAction()
     }
-    init(coordinator: Coordinator) {
+    init(coordinator: Coordinator,
+         viewModel: PeopleSelectionPanVM) {
         self.coordinator = coordinator
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        self.coordinator?.didFinish()
+        self.coordinator.didFinish()
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -79,20 +87,21 @@ extension PeopleSelectionPanVC {
     private func configureUI() {
         self.view.backgroundColor = UIColor.deep_Blue
         
-        self.bottomBtn.clipsToBounds = true
-        self.bottomBtn.layer.cornerRadius = 10
-        
-        self.searchMethodTableView.clipsToBounds = true
-        self.searchMethodTableView.layer.cornerRadius = 10
+        [self.topLbl,
+         self.bottomBtn,
+         self.peopleSelectionTableView].forEach { view in
+            view.clipsToBounds = true
+            view.layer.cornerRadius = 10
+        }
         
         
         // MARK: - Fix
+        self.topLbl.text = "계산할 사람을 선택해 주세요."
         self.bottomBtn.setTitle("선택 완료", for: .normal)
     }
     
     // MARK: - 오토레이아웃 설정
     private func configureAutoLayout() {
-
         self.view.addSubview(self.stackView)
         // 스택뷰
         self.stackView.snp.makeConstraints { make in
@@ -101,58 +110,84 @@ extension PeopleSelectionPanVC {
             make.trailing.equalToSuperview().offset(-12)
             make.bottom.lessThanOrEqualToSuperview().offset(-10)
         }
+        self.topLbl.snp.makeConstraints { make in
+            make.height.equalTo(40)
+        }
         self.bottomBtn.snp.makeConstraints { make in
             make.height.equalTo(55)
-        }
-        
-        // MARK: - Fix
-        self.stackView.insertArrangedSubview(self.searchMethodTableView, at: 1)
-        self.searchMethodTableView.snp.makeConstraints { make in
-            make.height.equalTo(80)
         }
     }
     
     // MARK: - 액션 설정
     private func configureAction() {
-        self.bottomBtn.addTarget(self, action: #selector(self.bottomBtnTapped), for: .touchUpInside)
+        self.bottomBtn.addTarget(
+            self, 
+            action: #selector(self.bottomBtnTapped),
+            for: .touchUpInside)
     }
+    // MARK: - 클로저 설정
+    private func configureClosure() {
+    }
+    
+    
+    
+    
     @objc private func bottomBtnTapped() {
-        self.view.layoutIfNeeded()
+        print(#function)
     }
 }
 
 
 
-// MARK: - 검색 방법 텍스트필드 델리게이트
+
+
+
+
+
+
+// MARK: - 텍스트필드 델리게이트
 extension PeopleSelectionPanVC: UITableViewDelegate {
     func tableView(_ tableView: UITableView,
                    heightForRowAt indexPath: IndexPath)
     -> CGFloat {
         return 40
     }
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print(#function)
+    func tableView(_ tableView: UITableView, 
+                   didSelectRowAt indexPath: IndexPath) {
+        self.viewModel.selectedUser(index: indexPath.row)
+        
+        // 해당 셀의 뷰를 업데이트
+        guard let cell = tableView.cellForRow(at: indexPath) as? PeopleSelectionPanCell else { return }
+        cell.cellIsSelected.toggle()
     }
 }
 
-// MARK: - 검색 방법 텍스트필드 데이터소스
+// MARK: - 텍스트필드 데이터소스
 extension PeopleSelectionPanVC: UITableViewDataSource {
     func tableView(_ tableView: UITableView,
                    numberOfRowsInSection section: Int)
     -> Int {
-        return 1
+        return self.viewModel.numOfUsers
     }
     
     func tableView(_ tableView: UITableView,
                    cellForRowAt indexPath: IndexPath)
     -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(
-            withIdentifier: Identifier.searchMethodTableViewCell,
-            for: indexPath) as! SearchMethodTableViewCell
+            withIdentifier: Identifier.peopleSelectionPanCell,
+            for: indexPath) as! PeopleSelectionPanCell
         
+        let user = self.viewModel.users[indexPath.row]
+        cell.configureCellData(user: user)
         return cell
     }
 }
+
+
+
+
+
+
 
 
 
@@ -165,6 +200,7 @@ extension PeopleSelectionPanVC: PanModalPresentable {
     /// 최대 사이즈
     var longFormHeight: PanModalHeight {
         self.view.layoutIfNeeded()
+        
         return .contentHeight(self.stackView.frame.height + 10 + 15)
     }
     /// 화면 밖 - 배경 색

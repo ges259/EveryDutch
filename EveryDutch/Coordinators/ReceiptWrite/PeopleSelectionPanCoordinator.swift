@@ -14,6 +14,9 @@ final class PeopleSelectionPanCoordinator: Coordinator {
     
     var nav: UINavigationController
     
+    
+    
+    
     // 의존성 주입
     init(nav: UINavigationController) {
         self.nav = nav
@@ -21,7 +24,12 @@ final class PeopleSelectionPanCoordinator: Coordinator {
     
     
     func start() {
-        let peopleSelectionPanVC = PeopleSelectionPanVC(coordinator: self)
+        let peopleSelectionPanVM = PeopleSelectionPanVM(
+            roomDataManager: RoomDataManager.shared)
+        
+        let peopleSelectionPanVC = PeopleSelectionPanVC(
+            coordinator: self, 
+            viewModel: peopleSelectionPanVM)
         
         peopleSelectionPanVC.modalPresentationStyle = .overFullScreen
         
@@ -31,6 +39,4 @@ final class PeopleSelectionPanCoordinator: Coordinator {
     func didFinish() {
         self.parentCoordinator?.removeChildCoordinator(child: self)
     }
-    
-    
 }

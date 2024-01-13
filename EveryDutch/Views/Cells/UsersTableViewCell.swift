@@ -32,14 +32,6 @@ final class UsersTableViewCell: UITableViewCell {
         image: .check_Square_Img,
         imageSize: 13)
     
-    lazy var priceTf: InsetTextField = {
-        let tf =  InsetTextField(
-            backgroundColor: UIColor.medium_Blue,
-            placeholerColor: .placeholder_gray,
-            placeholderText: "가격 입력")
-//        tf.isHidden = true
-        return tf
-    }()
 
 
     // chevronRight
@@ -79,24 +71,11 @@ final class UsersTableViewCell: UITableViewCell {
     }
     override func prepareForReuse() {
         super.prepareForReuse()
-        self.priceTf.text = ""
         self.priceLbl.text = ""
         self.userName.text = ""
         self.profileImg.image = nil
     }
-    override func setSelected(_ selected: Bool, 
-                              animated: Bool) {
-        super.setSelected(selected, animated: animated)
-        
-        if selected
-            && self.viewModel?.customTableEnum == .isReceiptWrite {
-            self.priceTf.isHidden = false
-            
-        } else {
-            self.priceTf.isHidden = true
-        }
-        
-    }
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -177,13 +156,14 @@ extension UsersTableViewCell {
     private func configureClosure(_ customTableEnum: CustomTableEnum) {
         switch customTableEnum {
         case .isReceiptWrite:
-            self.configureTextField()
+            // MARK: - isReceiptWrite 삭제
             break
         case .isRoomSetting:
             // 클로져 설정
             self.isRoomSettingClosure()
             break
         case .isReceiptScreen:
+            // MARK: - isReceiptScreen 삭제
             // 클로져 설정
             self.isReceiptScreenClosure()
             break
@@ -226,20 +206,6 @@ extension UsersTableViewCell {
         self.rightBtn.tintColor = viewModel.rightBtnTintColor
     }
     
-    // MARK: - 텍스트필드 설정
-    private func configureTextField() {
-        self.contentView.addSubview(self.priceTf)
-        // 오토레이아웃 설정
-        self.priceTf.snp.makeConstraints { make in
-            make.trailing.equalTo(self.rightStackView).offset(-40)
-            make.width.equalTo(self.frame.width / 2 - 40)
-            make.height.equalTo(30)
-            make.centerY.equalToSuperview()
-        }
-        self.priceTf.clipsToBounds = true
-        self.priceTf.layer.cornerRadius = 10
-        self.priceTf.isHidden = true
-    }
     
     // MARK: - 흰색 뷰 설정
     private func configureWhiteView() {

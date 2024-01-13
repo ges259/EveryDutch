@@ -68,15 +68,20 @@ final class ReceiptWriteVC: UIViewController {
     
     
     
-    // MARK: - 테이블 부분
-    private var tableView: UsersTableView = UsersTableView(
-        viewModel: UsersTableViewVM(.isReceiptWrite))
+    // MARK: - 테이블뷰
+    private lazy var tableView: CustomTableView = {
+        let view = CustomTableView()
+        view.delegate = self
+        view.dataSource = self
+        view.register(
+            ReceiptWriteTableViewCell.self,
+            forCellReuseIdentifier: Identifier.receiptWriteTableViewCell)
+        return view
+    }()
     
     
     
-    // MARK: - 테이블 상단 및 하단 스택뷰
-    private var usersHeaderStv: UsersBtnStackView = UsersBtnStackView()
-    
+    // MARK: - 테이블 하단 스택뷰
     private var moneyCountLbl: CustomLabel = CustomLabel(
         text: "남은 금액 : 0원",
         backgroundColor: UIColor.normal_white,
@@ -157,7 +162,6 @@ final class ReceiptWriteVC: UIViewController {
         let stv = UIStackView.configureStv(
             arrangedSubviews: [self.calendar,
                                self.whiteView,
-                               self.usersHeaderStv,
                                self.tableView,
                                self.tableFooterStv,
                                self.addPersonBtn,
@@ -167,7 +171,6 @@ final class ReceiptWriteVC: UIViewController {
             alignment: .fill,
             distribution: .fill)
         
-        stv.setCustomSpacing(0, after: self.usersHeaderStv)
         stv.setCustomSpacing(0, after: self.tableView)
         return stv
     }()
@@ -246,24 +249,28 @@ extension ReceiptWriteVC {
         self.view.backgroundColor = UIColor.base_Blue
         
         
-        [self.calendar,
-         self.whiteView,
-         self.addPersonBtn].forEach { view in
-            view.clipsToBounds = true
-            view.layer.cornerRadius = 10
-        }
-        self.tableFooterStv.clipsToBounds = true
+        
+        self.tableView.layer.maskedCorners = [
+            .layerMinXMinYCorner,
+            .layerMaxXMinYCorner]
+        
         self.tableFooterStv.layer.maskedCorners = [
             .layerMinXMaxYCorner,
             .layerMaxXMaxYCorner]
-        self.tableFooterStv.layer.cornerRadius = 10
         
-        
+        [self.calendar,
+         self.whiteView,
+         self.addPersonBtn,
+         self.tableFooterStv,
+         self.tableView].forEach { view in
+            view.clipsToBounds = true
+            view.layer.cornerRadius = 10
+        }
         
         
         // MARK: - Fix
         
-//        self.moneyCountBtn.text = "남은 금액 : 25,000원"
+        //        self.moneyCountBtn.text = "남은 금액 : 25,000원"
         
     }
     private func configureViewWithViewModel() {
@@ -283,7 +290,7 @@ extension ReceiptWriteVC {
         self.contentView.addSubview(self.totalStackView)
         self.memoStackView.addSubview(self.memoNumOfCharLbl)
         self.whiteView.addSubview(self.infoStackView)
-
+        
         // 스크롤뷰
         self.scrollView.snp.makeConstraints { make in
             make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top)
@@ -340,7 +347,7 @@ extension ReceiptWriteVC {
     private func configureAction() {
         // 버튼 생성
         let backButton = UIBarButtonItem(
-            image: .chevronLeft, 
+            image: .chevronLeft,
             style: .done,
             target: self,
             action: #selector(self.backButtonTapped))
@@ -356,6 +363,7 @@ extension ReceiptWriteVC {
             action: #selector(self.bottomBtnTapped),
             for: .touchUpInside)
     }
+}
     
     
     
@@ -363,10 +371,14 @@ extension ReceiptWriteVC {
     
     
     
+
+
+
+// MARK: - 버튼 액션 ( 화면 이동 )
+
+extension ReceiptWriteVC {
     
     
-    
-    // MARK: - 버튼 액션 ( 화면 이동 )
     @objc private func bottomBtnTapped() {
         self.coordinator.checkReceiptPanScreen()
     }
@@ -375,5 +387,46 @@ extension ReceiptWriteVC {
     }
     @objc private func backButtonTapped() {
         self.coordinator.didFinish()
+    }
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - 테이블뷰 델리게이트
+extension ReceiptWriteVC: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, 
+                   heightForRowAt indexPath: IndexPath)
+    -> CGFloat {
+        return 40
+    }
+}
+// MARK: - 테이블뷰 데이터소스
+extension ReceiptWriteVC: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, 
+                   numberOfRowsInSection section: Int)
+    -> Int {
+        return self.viewModel.numOfUsers
+    }
+    
+    func tableView(_ tableView: UITableView, 
+                   cellForRowAt indexPath: IndexPath)
+    -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(
+            withIdentifier: Identifier.receiptWriteTableViewCell,
+            for: indexPath) as! ReceiptWriteTableViewCell
+        
+        // 셀 뷰모델 만들기
+        let cellViewModel = self.viewModel.cellViewModel(at: indexPath.item)
+        // 셀의 뷰모델을 셀에 넣기
+        cell.configureCell(with: cellViewModel)
+        
+        return cell
     }
 }

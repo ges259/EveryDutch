@@ -67,7 +67,6 @@ final class SettleMoneyRoomVC: UIViewController {
             forCellReuseIdentifier: Identifier.settlementTableViewCell)
         // 테이블뷰 셀이 아래->위로 보이도록 설정
         view.transform = CGAffineTransform(rotationAngle: -.pi)
-        view.bounces = true
         return view
     }()
     /// 하단 '영수증 작성' 버튼
@@ -227,7 +226,7 @@ extension SettleMoneyRoomVC {
         }
         // 영수증 테이블뷰 (영수증)
         self.receiptTableView.snp.makeConstraints { make in
-            make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(self.viewModel.minHeight + 5)
+            make.top.greaterThanOrEqualTo(self.view.safeAreaLayoutGuide.snp.top).offset(self.viewModel.minHeight + 5)
             make.leading.equalToSuperview().offset(10)
             make.trailing.equalToSuperview().offset(-10)
             make.bottom.equalTo(self.bottomBtn.snp.top).offset(-5)
