@@ -26,13 +26,18 @@ final class RoomSettingCoordinator: RoomSettingCoordProtocol{
     }
     
     func start() {
-        let roomSettingVC = RoomSettingVC(coordinator: self)
+        let roomSettingVM = RoomSettingVM(
+            roomDataManager: RoomDataManager.shared)
+        let roomSettingVC = RoomSettingVC(
+            viewModel: roomSettingVM,
+            coordinator: self)
         self.nav.pushViewController(roomSettingVC, animated: true)
     }
     
     func settlementScreen() {
         // Settlement-Coordinator 생성
-        let settlementCoordinator = SettlementCoordinator(nav: self.nav)
+        let settlementCoordinator = SettlementCoordinator(
+            nav: self.nav)
         self.childCoordinators.append(settlementCoordinator)
         // 부모 코디네이터가 자신이라는 것을 명시 (뒤로가기 할 때 필요)
         settlementCoordinator.parentCoordinator = self
@@ -41,7 +46,8 @@ final class RoomSettingCoordinator: RoomSettingCoordProtocol{
     }
     func FindFriendsScreen() {
         // Settlement-Coordinator 생성
-        let findFriendsCoordinator = FindFriendsCoordinator(nav: self.nav)
+        let findFriendsCoordinator = FindFriendsCoordinator(
+            nav: self.nav)
         self.childCoordinators.append(findFriendsCoordinator)
         // 부모 코디네이터가 자신이라는 것을 명시 (뒤로가기 할 때 필요)
         findFriendsCoordinator.parentCoordinator = self
@@ -63,7 +69,8 @@ final class RoomSettingCoordinator: RoomSettingCoordProtocol{
     }
     func didFinish() {
         self.nav.popViewController(animated: true)
-        self.parentCoordinator?.removeChildCoordinator(child: self)
+        self.parentCoordinator?.removeChildCoordinator(
+            child: self)
     }
     deinit {
         print("deinit ----- \(#function)-----\(self)")

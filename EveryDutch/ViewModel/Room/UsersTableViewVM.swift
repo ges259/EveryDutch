@@ -7,13 +7,6 @@
 
 import UIKit
 
-protocol UsersTableViewVMProtocol {
-    
-}
-
-
-
-
 class UsersTableViewVM: UsersTableViewVMProtocol {
     // 셀 데이터를 저장하는 배열
     var cellViewModels: [UsersTableViewCellVM] = []

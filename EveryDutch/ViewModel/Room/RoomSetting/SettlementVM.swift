@@ -1,19 +1,24 @@
 //
-//  RoomSettingVM.swift
+//  SettlementVM.swift
 //  EveryDutch
 //
-//  Created by 계은성 on 2024/01/06.
+//  Created by 계은성 on 1/14/24.
 //
 
 import Foundation
 
-final class RoomSettingVM: RoomSettingVMProtocol {
+protocol SettlementVMProtocol {
+    func getUserData() -> [RoomUsers]
+}
+
+final class SettlementVM: SettlementVMProtocol {
     var roomDataManager: RoomDataManager
     
     var users: [RoomUsers] = []
     
     init(roomDataManager: RoomDataManager) {
         self.roomDataManager = roomDataManager
+         
     }
     
     func getUserData() -> [RoomUsers] {

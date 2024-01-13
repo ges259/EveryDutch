@@ -22,10 +22,10 @@ final class SettleMoneyRoomVC: UIViewController {
         color: UIColor.deep_Blue)
     
     
-
+    
     // 탑뷰 내부 레이아웃
     /// (정산 내역 / 받아야 할 돈)을 선택할 수 있는 버튼 스택뷰
-    private var usersBtnStackView: UsersBtnStackView = UsersBtnStackView()
+    private var segmentBtnStackView: SegmentBtnStackView = SegmentBtnStackView()
     /// 유저를 보여주는 테이블뷰
     private lazy var usersTableView: UsersTableView = UsersTableView(
         viewModel: UsersTableViewVM(.isSettleMoney))
@@ -36,7 +36,7 @@ final class SettleMoneyRoomVC: UIViewController {
     /// 탑뷰 스택뷰
     private lazy var topViewStackView: UIStackView = {
         let stv = UIStackView.configureStv(
-            arrangedSubviews: [self.usersBtnStackView,
+            arrangedSubviews: [self.segmentBtnStackView,
                                self.usersTableView,
                                self.topViewBottomBtn],
             axis: .vertical,
@@ -443,7 +443,9 @@ extension SettleMoneyRoomVC: UITableViewDataSource {
     func tableView(_ tableView: UITableView,
                    cellForRowAt indexPath: IndexPath)
     -> UITableViewCell {
-        let cell = self.receiptTableView.dequeueReusableCell(withIdentifier: Identifier.settlementTableViewCell, for: indexPath) as! SettlementTableViewCell
+        let cell = self.receiptTableView.dequeueReusableCell(
+            withIdentifier: Identifier.settlementTableViewCell,
+            for: indexPath) as! SettlementTableViewCell
         
         // 셀 뷰모델 만들기
         let cellViewModel = self.viewModel.cellViewModel(at: indexPath.item)

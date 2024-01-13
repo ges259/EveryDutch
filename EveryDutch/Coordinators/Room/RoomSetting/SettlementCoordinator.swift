@@ -26,8 +26,12 @@ final class SettlementCoordinator: SettlementCoordProtocol {
     }
     
     func start() {
+        let settlementVM = SettlementVM(
+            roomDataManager: RoomDataManager.shared)
         // SettlementVC 인스턴스 생성
-        let settlementVC = SettlementVC(coordinator: self)
+        let settlementVC = SettlementVC(
+            viewModel: settlementVM,
+            coordinator: self)
         self.nav.pushViewController(settlementVC, animated: true)
     }
     

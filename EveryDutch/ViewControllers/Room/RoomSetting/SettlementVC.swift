@@ -39,7 +39,7 @@ final class SettlementVC: UIViewController {
         font: UIFont.systemFont(ofSize: 13))
     
     
-    private var tableView: UsersTableView = UsersTableView(viewModel: UsersTableViewVM(.isSettle))
+    private var usersTableView: UsersTableView = UsersTableView(viewModel: UsersTableViewVM(.isSettle))
     
     private var bottomBtn: BottomButton = BottomButton(
         title: "정산하기")
@@ -47,7 +47,7 @@ final class SettlementVC: UIViewController {
     private lazy var stackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.settlementNameLbl,
                            self.textField,
-                           self.tableView],
+                           self.usersTableView],
         axis: .vertical,
         spacing: 4,
         alignment: .fill,
@@ -56,7 +56,8 @@ final class SettlementVC: UIViewController {
     
     
     // MARK: - 프로퍼티
-    var coordinator: SettlementCoordProtocol?
+    var viewModel: SettlementVMProtocol
+    var coordinator: SettlementCoordProtocol
     
     
     // MARK: - 라이프사이클
@@ -66,8 +67,11 @@ final class SettlementVC: UIViewController {
         self.configureUI()
         self.configureAutoLayout()
         self.configureAction()
+        self.configureUserTableView()
     }
-    init(coordinator: SettlementCoordProtocol) {
+    init(viewModel: SettlementVMProtocol,
+         coordinator: SettlementCoordProtocol) {
+        self.viewModel = viewModel
         self.coordinator = coordinator
         super.init(nibName: nil, bundle: nil)
     }
@@ -90,7 +94,7 @@ extension SettlementVC {
         self.textField.clipsToBounds = true
         self.textField.layer.cornerRadius = 12
         
-        self.tableView.isScrollEnabled = false
+        self.usersTableView.isScrollEnabled = false
     }
     
     // MARK: - 오토레이아웃 설정
@@ -146,7 +150,19 @@ extension SettlementVC {
         // 네비게이션 바의 왼쪽 아이템으로 설정
         self.navigationItem.leftBarButtonItem = backButton
     }
+    
+    
+    // MARK: - 테이블뷰 데이터 설정
+    private func configureUserTableView() {
+        let users = self.viewModel.getUserData()
+        self.usersTableView.viewModel.makeCellVM(users: users)
+        self.usersTableView.reloadData()
+    }
+    
+    
+    
+    
     @objc private func backButtonTapped() {
-        self.coordinator?.didFinish()
+        self.coordinator.didFinish()
     }
 }

@@ -46,6 +46,8 @@ final class TableCellStackView: UIStackView {
     private var priceLblInStackView: Bool = true
     private var rightImgInStackView: Bool = false
     
+    
+    
     // MARK: - 라이프사이클
     init(priceLblInStackView: Bool = true,
          rightImgInStackView: Bool) {
@@ -55,7 +57,6 @@ final class TableCellStackView: UIStackView {
         
         self.configureUI()
         self.configureAutoLayout()
-        self.configurePriceLabel()
     }
     required init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -91,6 +92,11 @@ extension TableCellStackView {
             self.configureRightImage()
         }
     }
+    
+    
+    
+    
+    
     
     private func configureRightImage() {
         self.addArrangedSubview(self.rightImg)

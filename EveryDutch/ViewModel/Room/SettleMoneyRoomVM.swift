@@ -10,7 +10,7 @@ import UIKit
 final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
     
     // 정산내역 셀의 뷰모델
-    private var cellViewModels: [SettlementTableViewCellVM] = []
+    private var cellViewModels: [SettleMoneyTableViewCellVM] = []
 
     
     
@@ -96,7 +96,7 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
             switch result {
             case .success(let receipts):
                 self.cellViewModels = receipts.map({ receipt in
-                    SettlementTableViewCellVM(receiptData: receipt)
+                    SettleMoneyTableViewCellVM(receiptData: receipt)
                 })
                 self.receipts = receipts
                 break
@@ -117,7 +117,7 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
     
     // MARK: - 셀 뷰모델 설정
     // cellViewModels 반환
-    func cellViewModel(at index: Int) -> SettlementTableViewCellVM {
+    func cellViewModel(at index: Int) -> SettleMoneyTableViewCellVM {
         return self.cellViewModels[index]
     }
     

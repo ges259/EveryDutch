@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-final class UsersBtnStackView: UIStackView {
+final class SegmentBtnStackView: UIStackView {
     
     // MARK: - 레이아웃
     private var firstBtn: UIButton = UIButton.btnWithTitle(

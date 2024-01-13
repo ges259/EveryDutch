@@ -32,13 +32,7 @@ final class PeopleSelectionPanCell: UITableViewCell {
         didSet {
             print("cellIsSelected ----- \(!self.cellIsSelected)")
             
-//            self.tableCellStv.rightImg.isHidden = !self.cellIsSelected
-            self.tableCellStv.rightImg.alpha = self.cellIsSelected
-            ? 0
-            : 1
-            print(self.tableCellStv.rightImg)
-            print(self.cellIsSelected)
-            print(self.tableCellStv.rightImg.alpha)
+            self.tableCellStv.rightImg.isHidden = !self.cellIsSelected
         }
     }
     
@@ -83,7 +77,7 @@ extension PeopleSelectionPanCell {
         }
         
         self.whiteView.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().offset(-16.7)
+            make.trailing.equalToSuperview().offset(-17)
             make.width.height.equalTo(27)
             make.centerY.equalTo(self.tableCellStv)
         }
@@ -97,7 +91,9 @@ extension PeopleSelectionPanCell {
         self.self.tableCellStv.rightImg.isHidden = true
         self.tableCellStv.profileImg.image = UIImage.person_Fill_Img
         self.tableCellStv.userNameLbl.text = user.roomName
+        
+        self.tableCellStv.rightImg.tintColor = UIColor.medium_Blue
+        self.tableCellStv.rightImg.isHidden = true
+        self.tableCellStv.rightImg.image = UIImage.circle_Fill_Img
     }
-    
-    
 }

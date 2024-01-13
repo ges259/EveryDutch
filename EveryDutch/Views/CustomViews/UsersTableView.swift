@@ -11,11 +11,11 @@ final class UsersTableView: CustomTableView {
     
     
     // MARK: - 프로퍼티
-    var viewModel: UsersTableViewVM
+    var viewModel: UsersTableViewVMProtocol
     
     
     // MARK: - 라이프사이클
-    init(viewModel: UsersTableViewVM) {
+    init(viewModel: UsersTableViewVMProtocol) {
         self.viewModel = viewModel
         super.init(frame: .zero, style: .plain)
         
