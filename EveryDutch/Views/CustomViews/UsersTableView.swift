@@ -44,16 +44,13 @@ final class UsersTableView: CustomTableView {
     
     private func configureEnum(_ customTableEnum: CustomTableEnum) {
         switch customTableEnum {
-            // 상단 + 하단 버튼
-        case .isReceiptWrite: break
-            
             // 상단 버튼
-        case .isRoomSetting, .isSettle, .isSettleMoney:
+        case .isRoomSetting, .isSettleMoney:
             self.layer.maskedCorners = [.layerMinXMaxYCorner,
                 .layerMaxXMaxYCorner]
             fallthrough
             // 레이블
-        case .isReceiptScreen, .isPeopleSelection, .isSearch:
+        case .isSettle:
             self.layer.cornerRadius = 10
             self.clipsToBounds = true
             break
@@ -68,7 +65,7 @@ extension UsersTableView: UITableViewDelegate {
     }
     func tableView(_ tableView: UITableView,
                    didSelectRowAt indexPath: IndexPath) {
-        
+        print(#function)
     }
 }
 extension UsersTableView: UITableViewDataSource {

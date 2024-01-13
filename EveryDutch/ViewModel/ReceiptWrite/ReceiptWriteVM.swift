@@ -9,7 +9,6 @@ import UIKit
 
 final class ReceiptWriteVM: ReceiptWirteVMProtocol { 
     
-    
     private var cellViewModels: [ReceiptWriteCellVM] = []
     
     

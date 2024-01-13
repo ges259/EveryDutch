@@ -7,10 +7,6 @@
 
 import Foundation
 
-protocol SettlementVMProtocol {
-    func getUserData() -> [RoomUsers]
-}
-
 final class SettlementVM: SettlementVMProtocol {
     var roomDataManager: RoomDataManager
     

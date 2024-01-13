@@ -7,7 +7,7 @@
 
 import UIKit
 
-struct ReceiptScreenPanVM {
+struct ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
     
     // 정산내역 셀의 뷰모델
     private var cellViewModels: [ReceiptScreenPanCellVM] = []

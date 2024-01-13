@@ -18,7 +18,6 @@ final class PeopleSelectionPanVM: PeopleSelectionPanVMProtocol  {
         }
     }
     
-//    var cellSelectedClosure: ((Bool) -> Void)?
     
     
     

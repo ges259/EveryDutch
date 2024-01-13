@@ -27,7 +27,12 @@ final class SettlementVC: UIViewController {
         font: UIFont.systemFont(ofSize: 15),
         backgroundColor: UIColor.medium_Blue,
         textAlignment: NSTextAlignment.center)
-            
+    
+    private var topLbl: CustomLabel = CustomLabel(
+        text: "누적 금액",
+        font: UIFont.boldSystemFont(ofSize: 15),
+        backgroundColor: UIColor.normal_white,
+        textAlignment: .center)
     
     private var textField: InsetTextField = InsetTextField(
         backgroundColor: .normal_white,
@@ -39,7 +44,8 @@ final class SettlementVC: UIViewController {
         font: UIFont.systemFont(ofSize: 13))
     
     
-    private var usersTableView: UsersTableView = UsersTableView(viewModel: UsersTableViewVM(.isSettle))
+    private var usersTableView: UsersTableView = UsersTableView(
+        viewModel: UsersTableViewVM(.isSettle))
     
     private var bottomBtn: BottomButton = BottomButton(
         title: "정산하기")
@@ -47,6 +53,7 @@ final class SettlementVC: UIViewController {
     private lazy var stackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.settlementNameLbl,
                            self.textField,
+                           self.topLbl,
                            self.usersTableView],
         axis: .vertical,
         spacing: 4,
@@ -88,11 +95,12 @@ extension SettlementVC {
     private func configureUI() {
         self.view.backgroundColor = .base_Blue
         
-        self.settlementNameLbl.clipsToBounds = true
-        self.settlementNameLbl.layer.cornerRadius = 10
-        
-        self.textField.clipsToBounds = true
-        self.textField.layer.cornerRadius = 12
+        [self.settlementNameLbl,
+         self.textField,
+         self.topLbl].forEach { view in
+            view.clipsToBounds = true
+            view.layer.cornerRadius = 10
+        }
         
         self.usersTableView.isScrollEnabled = false
     }

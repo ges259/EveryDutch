@@ -48,8 +48,8 @@ final class CardScreenVC: UIViewController {
     
     
     // MARK: - 프로퍼티
-    private var viewModel: CardScreenVMProtocol!
-    private weak var coordinator: Coordinator!
+    private var viewModel: CardScreenVMProtocol
+    private var coordinator: CardScreenCoordProtocol
     
     weak var delegate: MultiPurposeScreenDelegate?
     private lazy var cardHeight = (self.view.frame.width - 20) * 1.8 / 3
@@ -66,8 +66,8 @@ final class CardScreenVC: UIViewController {
         self.configureAutoLayout()
         self.configureAction()
     }
-    init(viewModel: CardScreenVM,
-         coordinator: Coordinator) {
+    init(viewModel: CardScreenVMProtocol,
+         coordinator: CardScreenCoordProtocol) {
         self.viewModel = viewModel
         self.coordinator = coordinator
         super.init(nibName: nil, bundle: nil)
@@ -148,7 +148,7 @@ extension CardScreenVC {
     
     
     @objc private func backButtonTapped() {
-        self.coordinator?.didFinish()
+        self.coordinator.didFinish()
     }
 }
 

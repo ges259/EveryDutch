@@ -55,7 +55,7 @@ final class FindFriendsVC: UIViewController {
     
     
     // MARK: - 프로퍼티
-    var coordinator: FindFriendsCoordinator?
+    var coordinator: Coordinator
     
     private lazy var cardHeight = (self.view.frame.width - 20) * 1.8 / 3
     
@@ -69,7 +69,7 @@ final class FindFriendsVC: UIViewController {
         self.configureAutoLayout()
         self.configureAction()
     }
-    init(coordinator: FindFriendsCoordinator) {
+    init(coordinator: Coordinator) {
         self.coordinator = coordinator
         super.init(nibName: nil, bundle: nil)
     }
@@ -143,6 +143,6 @@ extension FindFriendsVC {
         self.navigationItem.leftBarButtonItem = backButton
     }
     @objc private func backButtonTapped() {
-        self.coordinator?.didFinish()
+        self.coordinator.didFinish()
     }
 }

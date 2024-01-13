@@ -98,7 +98,7 @@ final class RoomSettingVC: UIViewController {
         self.configureUserTableView()
     }
     init(viewModel:RoomSettingVMProtocol,
-         coordinator: RoomSettingCoordinator) {
+         coordinator: RoomSettingCoordProtocol) {
         self.viewModel = viewModel
         self.coordinator = coordinator
         super.init(nibName: nil, bundle: nil)

@@ -51,7 +51,7 @@ final class PeopleSelectionPanVC: UIViewController {
     
     // MARK: - 프로퍼티
     var coordinator: Coordinator
-    var viewModel: PeopleSelectionPanVM
+    var viewModel: PeopleSelectionPanVMProtocol
     
     
     
@@ -64,8 +64,8 @@ final class PeopleSelectionPanVC: UIViewController {
         self.configureAutoLayout()
         self.configureAction()
     }
-    init(coordinator: Coordinator,
-         viewModel: PeopleSelectionPanVM) {
+    init(viewModel: PeopleSelectionPanVMProtocol,
+         coordinator: Coordinator) {
         self.coordinator = coordinator
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)

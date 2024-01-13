@@ -44,7 +44,8 @@ final class ReceiptWriteCoordinator: ReceiptWriteCoordProtocol {
     }
     func peopleSelectionPanScreen() {
         // PeopleSelectionPanCoordinator 생성
-        let peopleSelectionPanCoordinator = PeopleSelectionPanCoordinator(nav: self.modalNavController ?? self.nav)
+        let peopleSelectionPanCoordinator = PeopleSelectionPanCoordinator(
+            nav: self.modalNavController ?? self.nav)
         self.childCoordinators.append(peopleSelectionPanCoordinator)
         // 부모 코디네이터가 자신이라는 것을 명시 (뒤로가기 할 때 필요)
         peopleSelectionPanCoordinator.parentCoordinator = self
@@ -54,7 +55,8 @@ final class ReceiptWriteCoordinator: ReceiptWriteCoordProtocol {
     
     func checkReceiptPanScreen() {
         // CheckReceiptCoordinator 생성
-        let checkReceiptCoordinator = CheckReceiptCoordinator(nav: self.modalNavController ?? self.nav)
+        let checkReceiptCoordinator = CheckReceiptCoordinator(
+            nav: self.modalNavController ?? self.nav)
         self.childCoordinators.append(checkReceiptCoordinator)
         // 부모 코디네이터가 자신이라는 것을 명시 (뒤로가기 할 때 필요)
         checkReceiptCoordinator.parentCoordinator = self

@@ -28,8 +28,8 @@ final class PeopleSelectionPanCoordinator: Coordinator {
             roomDataManager: RoomDataManager.shared)
         
         let peopleSelectionPanVC = PeopleSelectionPanVC(
-            coordinator: self, 
-            viewModel: peopleSelectionPanVM)
+            viewModel: peopleSelectionPanVM,
+            coordinator: self)
         
         peopleSelectionPanVC.modalPresentationStyle = .overFullScreen
         

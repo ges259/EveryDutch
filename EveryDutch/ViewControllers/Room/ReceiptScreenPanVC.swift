@@ -104,7 +104,7 @@ final class ReceiptScreenPanVC: UIViewController {
     
     // MARK: - 프로퍼티
     var coordinator: Coordinator
-    var viewModel: ReceiptScreenPanVM
+    var viewModel: ReceiptScreenPanVMProtocol
     
     
     // MARK: - 라이프사이클
@@ -118,7 +118,7 @@ final class ReceiptScreenPanVC: UIViewController {
         self.configureClosure()
     }
     init(coordinator: Coordinator,
-         viewModel: ReceiptScreenPanVM) {
+         viewModel: ReceiptScreenPanVMProtocol) {
         self.coordinator = coordinator
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)

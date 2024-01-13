@@ -83,7 +83,7 @@ final class SettleMoneyRoomVC: UIViewController {
     
     // MARK: - 프로퍼티
     private var coordinator: SettleMoneyRoomCoordProtocol
-    private var viewModel: SettleMoneyRoomVM
+    private var viewModel: SettleMoneyRoomProtocol
     
     
     private lazy var cellHeight: CGFloat = self.receiptTableView.frame.width / 7 * 2
@@ -120,7 +120,7 @@ final class SettleMoneyRoomVC: UIViewController {
         self.configureAction()
         self.configureClosure()
     }
-    init(viewModel: SettleMoneyRoomVM,
+    init(viewModel: SettleMoneyRoomProtocol,
          coordinator: SettleMoneyRoomCoordProtocol) {
         self.viewModel = viewModel
         self.coordinator = coordinator

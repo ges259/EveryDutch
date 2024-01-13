@@ -66,7 +66,7 @@ final class CheckReceiptPanVC: UIViewController {
         distribution: .fillEqually)
     
     // MARK: - 프로퍼티
-    var coordinator: Coordinator?
+    var coordinator: Coordinator
     
     
     // MARK: - 라이프사이클
@@ -83,7 +83,7 @@ final class CheckReceiptPanVC: UIViewController {
     }
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        self.coordinator?.didFinish()
+        self.coordinator.didFinish()
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
