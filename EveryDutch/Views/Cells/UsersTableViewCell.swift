@@ -65,7 +65,7 @@ extension UsersTableViewCell {
         // viewModel을 사용하여 셀의 뷰를 업데이트.
         guard let viewModel = viewModel else { return }
         self.tableCellStv.userNameLbl.text = viewModel.userName
-        self.tableCellStv.priceLbl.text = viewModel.price
+        self.tableCellStv.priceLbl.text = "\(viewModel.cumulativeAmount)"
         self.tableCellStv.profileImg.image = viewModel.profileImg
         
         self.rightBtn.setImage(viewModel.rightBtnImg, for: .normal)

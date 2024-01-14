@@ -39,7 +39,8 @@ struct ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
         // 셀 만들기
         
         self.cellViewModels = paymentDetails.map { detail in
-            let user = self.roomDataManager.getIdToroomUser(usersID: detail.userID)
+            let user = self.roomDataManager.getIdToroomUser(
+                usersID: detail.userID)
             
             return ReceiptScreenPanCellVM(
                 roomUser: user,

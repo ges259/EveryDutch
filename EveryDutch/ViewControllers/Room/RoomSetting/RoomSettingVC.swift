@@ -26,7 +26,8 @@ final class RoomSettingVC: UIViewController {
     /// (정산 내역 / 받아야 할 돈)을 선택할 수 있는 버튼 스택뷰
     private var segmentBtnStackView: SegmentBtnStackView = SegmentBtnStackView()
     private var usersTableView: UsersTableView = UsersTableView(
-        viewModel: UsersTableViewVM(.isRoomSetting))
+        viewModel: UsersTableViewVM(
+            roomDataManager: RoomDataManager.shared, .isRoomSetting))
     
     
     
@@ -218,9 +219,9 @@ extension RoomSettingVC {
     
     // MARK: - 테이블뷰 데이터 설정
     private func configureUserTableView() {
-        let users = self.viewModel.getUserData()
+        let moneyData = self.viewModel.getRoomMoneyData
         
-        self.usersTableView.viewModel.makeCellVM(users: users)
+        self.usersTableView.viewModel.makeCellVM(moneyData: moneyData)
         self.usersTableView.reloadData()
     }
     

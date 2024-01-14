@@ -10,5 +10,6 @@ import Foundation
 protocol RoomSettingVMProtocol {
 //    var makeCellClosure: (([RoomUsers]) -> Void)? { get set }
     
-    func getUserData() -> [RoomUsers]
+    func getUserData() -> RoomUserDataDictionary
+    var getRoomMoneyData: [MoneyData] { get }
 }

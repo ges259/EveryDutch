@@ -45,7 +45,8 @@ final class SettlementVC: UIViewController {
     
     
     private var usersTableView: UsersTableView = UsersTableView(
-        viewModel: UsersTableViewVM(.isSettle))
+        viewModel: UsersTableViewVM(
+            roomDataManager: RoomDataManager.shared, .isSettle))
     
     private var bottomBtn: BottomButton = BottomButton(
         title: "정산하기")
@@ -165,8 +166,8 @@ extension SettlementVC {
     
     // MARK: - 테이블뷰 데이터 설정
     private func configureUserTableView() {
-        let users = self.viewModel.getUserData()
-        self.usersTableView.viewModel.makeCellVM(users: users)
+        let moneyData = self.viewModel.getRoomMoneyData
+        self.usersTableView.viewModel.makeCellVM(moneyData: moneyData)
         self.usersTableView.reloadData()
     }
     

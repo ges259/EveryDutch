@@ -10,15 +10,21 @@ import Foundation
 final class SettlementVM: SettlementVMProtocol {
     var roomDataManager: RoomDataManager
     
-    var users: [RoomUsers] = []
+    var users: RoomUserDataDictionary = [:]
     
     init(roomDataManager: RoomDataManager) {
         self.roomDataManager = roomDataManager
          
     }
     
-    func getUserData() -> [RoomUsers] {
-        self.users = self.roomDataManager.getRoomUsers
+    func getUserData() -> RoomUserDataDictionary {
+        self.users = self.roomDataManager.getRoomUsersDict
         return self.users
     }
+    
+    var getRoomMoneyData: [MoneyData] {
+        return self.roomDataManager.getRoomMoneyData
+    }
+    
+    
 }

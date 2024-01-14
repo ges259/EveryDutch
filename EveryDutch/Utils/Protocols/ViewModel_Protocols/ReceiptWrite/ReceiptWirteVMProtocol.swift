@@ -11,7 +11,7 @@ protocol ReceiptWirteVMProtocol {
     
     
     var numOfUsers: Int { get }
-    var roomUsers: [RoomUsers] { get }
+    var roomUsers: RoomUserDataDictionary { get }
     
     func cellViewModel(at index: Int) -> ReceiptWriteCellVM
     

@@ -59,7 +59,7 @@ final class SettleMoneyRoomCoordinator: SettleMoneyRoomCoordProtocol {
         receiptWriteCoordinator.start()
     }
     func ReceiptScreen(receipt: Receipt,
-                       users: [RoomUsers]) {
+                       users: RoomUserDataDictionary) {
         // PeopleSelectionPanCoordinator 생성
         let receiptScreenPanCoordinator = ReceiptScreenPanCoordinator(
             nav: self.nav, 

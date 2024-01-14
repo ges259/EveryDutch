@@ -12,11 +12,14 @@ protocol SettleMoneyRoomProtocol {
     var numberOfReceipt: Int { get }
     var roomData: Rooms { get }
     var receipts: [Receipt] { get }
-    var roomUser: [RoomUsers] { get }
+    var roomUser: RoomUserDataDictionary { get }
     
     var receiptChangedClosure: (() -> Void)? { get set }
-    var userChangedClosure: (([RoomUsers]) -> Void)? { get set }
-    var fetchUserClosure: (([RoomUsers]) -> Void)? { get set }
+    var userChangedClosure: ((RoomUserDataDictionary) -> Void)? { get set }
+    
+    
+//    var fetchUserClosure: ((RoomUserDataDictionary) -> Void)? { get set }
+    var fetchMoneyDataClosure: (([MoneyData]) -> Void)? { get set }
     
     
     var minHeight: CGFloat { get }

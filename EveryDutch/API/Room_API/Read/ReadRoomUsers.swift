@@ -33,7 +33,6 @@ extension RoomsAPI {
                 for (key, value) in value {
                     // RoomUsers 객체 만들기
                     let roomUser = RoomUsers(
-                        userID: key,
                         dictionary: value)
                     // 배열에 추가
                     roomUsers[key] = roomUser
@@ -41,7 +40,5 @@ extension RoomsAPI {
                 // 반환
                 completion(.success(roomUsers))
             }
-        
     }
-    
 }

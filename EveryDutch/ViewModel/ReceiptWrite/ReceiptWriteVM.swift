@@ -16,7 +16,7 @@ final class ReceiptWriteVM: ReceiptWirteVMProtocol {
     
     var roomDataManager: RoomDataManager
     
-    var roomUsers: [RoomUsers] = []
+    var roomUsers: RoomUserDataDictionary = [:]
     
     var numOfUsers: Int {
         return self.roomUsers.count
@@ -36,11 +36,13 @@ final class ReceiptWriteVM: ReceiptWirteVMProtocol {
     
     func makeCellVM() {
         // 방의 유저들 정보 가져오기
-        self.roomUsers = self.roomDataManager.getRoomUsers
+        self.roomUsers = self.roomDataManager.getRoomUsersDict
         
         // 유저 정보 보내기
-        self.cellViewModels = self.roomUsers.map { user in
-            ReceiptWriteCellVM(roomUsers: user)
+        self.cellViewModels = self.roomUsers.map { (userID, roomUser) in
+            ReceiptWriteCellVM(
+                userID: userID,
+                roomUsers: roomUser)
         }
     }
     

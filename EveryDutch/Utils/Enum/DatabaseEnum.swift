@@ -6,6 +6,12 @@
 //
 
 import Foundation
+
+extension DatabaseEnum {
+    static let userID: String = "userID"
+}
+
+
 // Users
 enum DatabaseEnum {
     static let email: String = "email"
@@ -21,9 +27,7 @@ extension DatabaseEnum {
     static let room_user_name: String = "room_user_name"
     static let room_user_image: String = "room_user_image"
 }
-extension DatabaseEnum {
-    static let userID: String = "userID"
-}
+
 
 // Receipt
 extension DatabaseEnum {
@@ -40,7 +44,8 @@ extension DatabaseEnum {
     static let done: String = "done"
 }
 
-
+// Money_Data
 extension DatabaseEnum {
-    
+    static let cumulative_Amount: String = "cumulative_Amount"
+    static let payback: String = "payback"
 }

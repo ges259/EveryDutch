@@ -87,13 +87,16 @@ extension PeopleSelectionPanCell {
     private func configureAction() {
         
     }
-    func configureCellData(user: RoomUsers) {
+    func configureCellData(userID: String, 
+                           user: RoomUsers) {
         self.self.tableCellStv.rightImg.isHidden = true
         self.tableCellStv.profileImg.image = UIImage.person_Fill_Img
-        self.tableCellStv.userNameLbl.text = user.roomUserName
         
         self.tableCellStv.rightImg.tintColor = UIColor.medium_Blue
         self.tableCellStv.rightImg.isHidden = true
         self.tableCellStv.rightImg.image = UIImage.circle_Fill_Img
+        
+        
+        self.tableCellStv.userNameLbl.text = user.roomUserName
     }
 }

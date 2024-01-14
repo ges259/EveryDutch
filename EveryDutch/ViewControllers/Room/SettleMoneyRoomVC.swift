@@ -28,7 +28,8 @@ final class SettleMoneyRoomVC: UIViewController {
     private var segmentBtnStackView: SegmentBtnStackView = SegmentBtnStackView()
     /// 유저를 보여주는 테이블뷰
     private lazy var usersTableView: UsersTableView = UsersTableView(
-        viewModel: UsersTableViewVM(.isSettleMoney))
+        viewModel: UsersTableViewVM(
+            roomDataManager: RoomDataManager.shared, .isSettleMoney))
     /// 검색 버튼
     private lazy var topViewBottomBtn: UIButton = UIButton.btnWithTitle(
         font: UIFont.boldSystemFont(ofSize: 17),
@@ -289,8 +290,8 @@ extension SettleMoneyRoomVC {
 //            }
         }
         // 데이터를 처음 가져왔을 때
-        self.viewModel.fetchUserClosure = { users in
-            self.usersTableView.viewModel.makeCellVM(users: users)
+        self.viewModel.fetchMoneyDataClosure = { users in
+            self.usersTableView.viewModel.makeCellVM(moneyData: users)
             self.usersTableView.reloadData()
         }
 //        self.viewModel.userChangedClosure = { users in

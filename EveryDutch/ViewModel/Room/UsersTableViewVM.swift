@@ -14,7 +14,7 @@ class UsersTableViewVM: UsersTableViewVMProtocol {
 
     var customTableEnum: CustomTableEnum
     
-    var users: [RoomUsers]  = []
+    var users: RoomUserDataDictionary = [:]
     
     var numbersOfUsers: Int {
         return self.cellViewModels.count
@@ -23,9 +23,11 @@ class UsersTableViewVM: UsersTableViewVMProtocol {
     var isPayer: Bool = false
     
     
-    
+    var roomDataManager: RoomDataManager
     // MARK: - Fix
-    init(_ customTableEnum: CustomTableEnum) {
+    init(roomDataManager: RoomDataManager,
+         _ customTableEnum: CustomTableEnum) {
+        self.roomDataManager = roomDataManager
         self.customTableEnum = customTableEnum
     }
     
@@ -34,10 +36,14 @@ class UsersTableViewVM: UsersTableViewVMProtocol {
     
     
     // 셀 가져와서 표시
-    func makeCellVM(users: [RoomUsers]) {
-        self.cellViewModels = users.map { user in
-            UsersTableViewCellVM(
-                roomUsers: user,
+    func makeCellVM(moneyData: [MoneyData]) {
+        self.cellViewModels = moneyData.map { moneyData in
+            let roomUsers = self.roomDataManager.getIdToroomUser(
+                usersID: moneyData.userID)
+            
+            return UsersTableViewCellVM(
+                moneyData: moneyData,
+                roomUsers: roomUsers,
                 customTableEnum: self.customTableEnum)
         }
     }
@@ -45,9 +51,9 @@ class UsersTableViewVM: UsersTableViewVMProtocol {
     // MARK: - 셀 업데이트
     // 사용자 입력 처리
     func updatePrice(forCellAt index: Int,
-                     withPrice price: String) {
+                     withPrice price: Int) {
         guard index < cellViewModels.count else { return }
-        cellViewModels[index].price = price
+        cellViewModels[index].cumulativeAmount = price
     }
     
     // MARK: - 셀 삭제

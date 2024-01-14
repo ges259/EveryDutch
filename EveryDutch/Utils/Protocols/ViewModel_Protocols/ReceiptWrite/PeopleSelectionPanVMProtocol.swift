@@ -10,8 +10,10 @@ import Foundation
 
 protocol PeopleSelectionPanVMProtocol {
     var roomDataManager: RoomDataManager { get }
-    var users: [RoomUsers] { get }
+    var users: RoomUserDataDictionary { get }
     var numOfUsers: Int { get }
     func selectedUser(index: Int)
 //    var cellSelectedClosure: ((Bool) -> Void)? { get }
+    
+    var usersKeyValueArray: [(key: String, value: RoomUsers)] { get }
 }

@@ -176,9 +176,13 @@ extension PeopleSelectionPanVC: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(
             withIdentifier: Identifier.peopleSelectionPanCell,
             for: indexPath) as! PeopleSelectionPanCell
+        // 뷰모델에서 userID와 해당 RoomUsers 객체를 가져옴
+        let userEntry = viewModel.usersKeyValueArray[indexPath.row]
         
-        let user = self.viewModel.users[indexPath.row]
-        cell.configureCellData(user: user)
+
+        // 셀에 userID와 user 데이터 설정
+        cell.configureCellData(userID: userEntry.key,
+                               user: userEntry.value)
         return cell
     }
 }

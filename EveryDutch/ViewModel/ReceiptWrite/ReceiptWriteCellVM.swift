@@ -22,8 +22,9 @@ struct ReceiptWriteCellVM: ReceiptWriteCellVMProtocol {
     }
     
     
-    init(roomUsers: RoomUsers) {
-        self.userID = roomUsers.userID
+    init(userID: String,
+         roomUsers: RoomUsers) {
+        self.userID = userID
         self.profileImageURL = roomUsers.roomUserImg
         self.userName = roomUsers.roomUserName
     }

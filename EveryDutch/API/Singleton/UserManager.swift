@@ -18,30 +18,42 @@ final class RoomDataManager {
     /// roomID / versionID / roomNam / roomImg
     private var roomData: Rooms?
     
-    var userIDs: [String: RoomUsers] = [:]
+    private var roomUserDataDict: RoomUserDataDictionary = [:]
+    private var roomMoneyData: [MoneyData] = []
+    
+    
+    
     
     
     var numOfRoomUsers: Int {
-        return Array(self.userIDs.values).count
+        return Array(self.roomUserDataDict.values).count
     }
     
+    var getRoomUsersDict: RoomUserDataDictionary {
+        return self.roomUserDataDict
+    }
+    
+    var getRoomMoneyData: [MoneyData] {
+        return self.roomMoneyData
+    }
     
     func getIdToroomUser(usersID: String) -> RoomUsers {
-        return self.userIDs[usersID] ?? RoomUsers(userID: "",
-                                                  dictionary: [:])
+        return self.roomUserDataDict[usersID]
+        ?? RoomUsers(dictionary: [:])
     }
     
-    var getRoomUsers: [RoomUsers] {
-        return Array(self.userIDs.values)
-    }
+    
+    
+    
+    
+    
     
     // MARK: - 유저 데이터 가져오기
     // 콜백 함수 만들기(completion)
     // SettlementMoneyRoomVM에서 호출 됨
-    
     func loadRoomUsers(
         roomData: Rooms,
-        completion: @escaping ([RoomUsers]) -> Void) 
+        completion: @escaping (RoomUserDataDictionary) -> Void)
     {
         // roomData 저장
         self.roomData = roomData
@@ -51,11 +63,9 @@ final class RoomDataManager {
             roomID: roomData.roomID) { result in
                 switch result {
                 case .success(let users):
-                    // [roomUsers] 배열 저장
-//                    self.roomUsers = Array(users.values)
                     // [String : RoomUsers] 딕셔너리 저장
-                    self.userIDs = users
-                    completion(Array(users.values))
+                    self.roomUserDataDict = users
+                    completion(users)
                     break
                     // MARK: - Fix
                 case .failure(_): break
@@ -64,6 +74,18 @@ final class RoomDataManager {
     }
     
     
+    func loadRoomMoneyData(
+        completion: @escaping ([MoneyData]) -> Void) {
+        RoomsAPI.shared.readRoomMoneyData { data in
+            switch data {
+            case .success(let moneyData):
+                self.roomMoneyData = moneyData
+                completion(moneyData)
+            // MARK: - Fix
+            case .failure(_): break
+            }
+        }
+    }
     
     
     

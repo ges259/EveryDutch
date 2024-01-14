@@ -8,5 +8,6 @@
 import Foundation
 
 protocol SettlementVMProtocol {
-    func getUserData() -> [RoomUsers]
+    func getUserData() -> RoomUserDataDictionary
+    var getRoomMoneyData: [MoneyData] { get }
 }

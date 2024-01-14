@@ -16,8 +16,11 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
     
     // MARK: - 클로저
     var receiptChangedClosure: (() -> Void)?
-    var userChangedClosure: (([RoomUsers]) -> Void)?
-    var fetchUserClosure: (([RoomUsers]) -> Void)?
+    var userChangedClosure: ((RoomUserDataDictionary) -> Void)?
+    var fetchMoneyDataClosure: (([MoneyData]) -> Void)?
+    
+    
+    
     
     // MARK: - 모델
     /// 방의 데이터
@@ -32,17 +35,24 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
         }
     }
     /// 방의 유저 데이터
-    var roomUser: [RoomUsers] = [] {
+    var roomUser: RoomUserDataDictionary = [:]
+    
+    var roomMoneyData: [MoneyData] = [] {
         didSet {
-            self.fetchUserClosure?(self.roomUser)
+            self.fetchMoneyDataClosure?(self.roomMoneyData)
         }
     }
+    
+    
     var topViewIsOpen: Bool = false
+    
+    
+    
+    
     
     // MARK: - 탑뷰 높이
     let minHeight: CGFloat = 35
-    //
-    /* 
+    /**
      인원 수에 따라 스택뷰의 maxHeight 크기 바꾸기
      - 바텀 앵커 : 35
      - 하단 버튼 : 45
@@ -50,8 +60,9 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
      - 스택뷰 간격 : 10 -> 4
      - 네비게이션바 간격 : 12
      => 134
-     - 인원 수 마다 크기: 40
-     // 최대 5명
+     - 인원 수 마다 크기: 40 - 최대 5명 (200)
+     
+     결론 :  최대 크기 : 134 + 200
      */
     lazy var maxHeight: CGFloat = {
         let tableHeight: Int = (self.roomUser.count * 40)
@@ -78,11 +89,12 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
         // 영수증 가져오기
         self.fetchReceipt()
         self.fetchUsers()
+        self.fetchRoomMoneyData()
     }
     
     
     
-    
+
     
     
     
@@ -103,6 +115,12 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
                 // MARK: - Fix
             case .failure(_): break
             }
+        }
+    }
+    /// 누적 금액 가져오기
+    private func fetchRoomMoneyData() {
+        self.roomDataManager.loadRoomMoneyData { moneyData in
+            self.roomMoneyData = moneyData
         }
     }
     /// RoomDataManager에서 RoomUsers데이터 가져오기

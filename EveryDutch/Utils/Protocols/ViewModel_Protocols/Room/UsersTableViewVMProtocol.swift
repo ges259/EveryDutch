@@ -14,5 +14,5 @@ protocol UsersTableViewVMProtocol {
     
     
     func cellViewModel(at index: Int) -> UsersTableViewCellVM
-    func makeCellVM(users: [RoomUsers])
+    func makeCellVM(moneyData: [MoneyData])
 }

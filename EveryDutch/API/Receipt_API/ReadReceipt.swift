@@ -35,7 +35,7 @@ extension ReceiptAPI {
                 
                 print(receipts)
                 
-                    completion(.success(receipts))
+                completion(.success(receipts))
                 
             }
     }

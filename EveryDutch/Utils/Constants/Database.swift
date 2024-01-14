@@ -7,6 +7,7 @@
 
 import Foundation
 import Firebase
+import FirebaseDatabaseInternal
 
 let ref = Database.database().reference()
 

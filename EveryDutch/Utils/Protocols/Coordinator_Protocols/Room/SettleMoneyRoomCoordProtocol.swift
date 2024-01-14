@@ -10,5 +10,5 @@ import Foundation
 protocol SettleMoneyRoomCoordProtocol: Coordinator {
     func RoomSettingScreen()
     func receiptWriteScreen()
-    func ReceiptScreen(receipt: Receipt, users: [RoomUsers])
+    func ReceiptScreen(receipt: Receipt, users: RoomUserDataDictionary)
 }

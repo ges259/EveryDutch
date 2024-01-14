@@ -11,8 +11,16 @@ final class PeopleSelectionPanVM: PeopleSelectionPanVMProtocol  {
     
     var roomDataManager: RoomDataManager
     
-    var users: [RoomUsers]
-    var selectedUsers: [RoomUsers] = [] {
+    var users: RoomUserDataDictionary
+    
+    // 딕셔너리의 key-value 쌍을 배열로 변환
+    var usersKeyValueArray: [(key: String, value: RoomUsers)] {
+        return Array(users)
+    }
+    
+    
+    
+    var selectedUsers: RoomUserDataDictionary = [:] {
         didSet {
             dump(selectedUsers)
         }
@@ -27,25 +35,26 @@ final class PeopleSelectionPanVM: PeopleSelectionPanVMProtocol  {
     
     init(roomDataManager: RoomDataManager) {
         self.roomDataManager = roomDataManager
-        self.users = roomDataManager.getRoomUsers
+        self.users = roomDataManager.getRoomUsersDict
     }
     
     // 셀이 선택되었을 때
     func selectedUser(index: Int) {
-        let user = self.users[index]
+//        let user = self.users[index]
         
-        // 이미 선택된 유저인지 확인
-        if let selectedIndex = self.selectedUsers.firstIndex(
-            where: { $0.userID == user.userID }) {
-            
-            // 이미 선택된 유저라면, selectedUsers 배열에서 삭제
-            self.selectedUsers.remove(at: selectedIndex)
-            
-        } else {
-            // 새로운 유저라면, selectedUsers 배열에 추가
-            self.selectedUsers.append(user)
-            
-        }
+        // MARK: - 픽스
+//        // 이미 선택된 유저인지 확인
+//        if let selectedIndex = self.selectedUsers.firstIndex(
+//            where: { $0.userID == user.userID }) {
+//            
+//            // 이미 선택된 유저라면, selectedUsers 배열에서 삭제
+//            self.selectedUsers.remove(at: selectedIndex)
+//            
+//        } else {
+//            // 새로운 유저라면, selectedUsers 배열에 추가
+//            self.selectedUsers.append(user)
+//            
+//        }
     }
     
     

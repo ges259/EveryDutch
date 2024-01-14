@@ -31,6 +31,7 @@ extension RoomsAPI {
         // user - 방 데이터 가져오기 ----- (Rooms_Thumbnail)
     // 방에 들어섰을 때
         // 방 유저 데이터 가져오기 ----- (Room_Users)
+    // 누적 금액 가져오기
 
 // Update
     // 방에 초대 ----- (Rooms_ID)

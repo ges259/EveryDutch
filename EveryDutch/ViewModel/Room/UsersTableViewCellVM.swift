@@ -8,16 +8,27 @@
 import UIKit
 
 struct UsersTableViewCellVM: UsersTableViewCellVMProtocol {
-    var profileImageURL: String
-    var userName: String
-    var price: String
+    var profileImageURL: String = ""
+    var userName: String = ""
+    var cumulativeAmount: Int
+    
+    var userID: String
+    
+    
     var customTableEnum: CustomTableEnum
 
-    init(roomUsers: RoomUsers,
+    
+    
+    
+    init(moneyData : MoneyData,
+         roomUsers: RoomUsers,
          customTableEnum: CustomTableEnum) {
+        self.userID = moneyData.userID
+        self.cumulativeAmount = moneyData.cumulativeAmount
+        
         self.profileImageURL = roomUsers.roomUserImg
         self.userName = roomUsers.roomUserName
-        self.price = roomUsers.userID
+        
         self.customTableEnum = customTableEnum
     }
     

@@ -10,7 +10,7 @@ import UIKit
 protocol UsersTableViewCellVMProtocol {
     var profileImageURL: String { get }
     var userName: String { get }
-    var price: String { get }
+    var cumulativeAmount: Int { get }
     var customTableEnum: CustomTableEnum { get }
     
     var profileImg: UIImage? { get }

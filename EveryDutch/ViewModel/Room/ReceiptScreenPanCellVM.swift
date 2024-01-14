@@ -11,28 +11,37 @@ struct ReceiptScreenPanCellVM: ReceiptScreenPanCellVMProtocol {
     
     var pay: Int
     var userID: String
-    
-    var image: String
+    var done: Bool
     
     var userName: String
+    var image: String
     
-    var done: Bool {
-        didSet {
-            self.doneStatusChange_API()
-            self.doneStatusChanged?(self.doneImg)
-        }
+    
+    init(roomUser: RoomUsers,
+         paymentDetail: PaymentDetail) {
+        self.done = paymentDetail.done
+        self.pay = paymentDetail.pay
+        self.userID = paymentDetail.userID
+        
+        
+        self.userName = roomUser.roomUserName
+        self.image = paymentDetail.userImg
+        
+        
+        // MARK: - Fix
+        // 클로저가 굳이 필요할까?
+        self.doneStatusChanged?(self.doneImg)
     }
+    
+    
+    
+
     
     var doneImg: UIImage? {
         return self.done
         ? .check_Square_Img
         : .empty_Square_Img
     }
-    
-    func doneStatusChange_API() {
-        // MARK: - API
-    }
-    
     var profileImg: UIImage? {
         return self.image == ""
         ? .person_Fill_Img
@@ -47,15 +56,7 @@ struct ReceiptScreenPanCellVM: ReceiptScreenPanCellVMProtocol {
     
     
     
-    init(roomUser: RoomUsers,
-        paymentDetail: PaymentDetail) {
-        self.done = paymentDetail.done
-        self.pay = paymentDetail.pay
-        self.userID = paymentDetail.userID
-        self.userName = paymentDetail.userName
-        self.image = paymentDetail.userImg
-        
-    }
+
     
     
     
