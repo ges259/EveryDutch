@@ -90,7 +90,7 @@ extension PeopleSelectionPanCell {
     func configureCellData(user: RoomUsers) {
         self.self.tableCellStv.rightImg.isHidden = true
         self.tableCellStv.profileImg.image = UIImage.person_Fill_Img
-        self.tableCellStv.userNameLbl.text = user.roomName
+        self.tableCellStv.userNameLbl.text = user.roomUserName
         
         self.tableCellStv.rightImg.tintColor = UIColor.medium_Blue
         self.tableCellStv.rightImg.isHidden = true

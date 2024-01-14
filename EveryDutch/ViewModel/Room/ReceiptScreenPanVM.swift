@@ -32,16 +32,18 @@ struct ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
         // Receipt에서 PaymentDetails 가져오기
         let paymentDetails = receipt.paymentDetails
         
-        // RoomDataManager의 인스턴스를 사용하여 PaymentDetail 업데이트
-        let updated = self.roomDataManager.updatePaymentDetails(
-            paymentDetails: paymentDetails)
-        
         // usersTableView 셀의 개수 저장
-        self.currentNumOfUsers = updated.count
-        
+        self.currentNumOfUsers = paymentDetails.count
+
+                    
         // 셀 만들기
-        self.cellViewModels = updated.map { detail in
-            ReceiptScreenPanCellVM(paymentDetail: detail)
+        
+        self.cellViewModels = paymentDetails.map { detail in
+            let user = self.roomDataManager.getIdToroomUser(usersID: detail.userID)
+            
+            return ReceiptScreenPanCellVM(
+                roomUser: user,
+                paymentDetail: detail)
         }
     }
     

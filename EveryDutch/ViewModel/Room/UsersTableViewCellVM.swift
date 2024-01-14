@@ -15,8 +15,8 @@ struct UsersTableViewCellVM: UsersTableViewCellVMProtocol {
 
     init(roomUsers: RoomUsers,
          customTableEnum: CustomTableEnum) {
-        self.profileImageURL = roomUsers.roomImg
-        self.userName = roomUsers.roomName
+        self.profileImageURL = roomUsers.roomUserImg
+        self.userName = roomUsers.roomUserName
         self.price = roomUsers.userID
         self.customTableEnum = customTableEnum
     }

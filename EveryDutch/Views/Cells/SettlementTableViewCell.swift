@@ -12,7 +12,7 @@ final class SettlementTableViewCell: UITableViewCell {
     
     // MARK: - 레이아웃
     private lazy var baseView: UIView = UIView.configureView(
-        color: .normal_white)
+        color: UIColor.normal_white)
     
     private var contextLbl: CustomLabel = CustomLabel(
         font: UIFont.systemFont(ofSize: 15))
@@ -81,11 +81,13 @@ extension SettlementTableViewCell {
         self.separatorInset = .zero
     }
     
+    
+    
     // MARK: - 오토레이아웃 설정
     private func configureAutoLayout() {
         self.addSubview(self.baseView)
-        self.addSubview(self.topStackView)
-        self.addSubview(self.bottomStackView)
+        self.baseView.addSubview(self.topStackView)
+        self.baseView.addSubview(self.bottomStackView)
         
         self.baseView.snp.makeConstraints { make in
             make.leading.top.trailing.equalToSuperview()
@@ -104,13 +106,16 @@ extension SettlementTableViewCell {
         
     }
     
+    
+    
     // MARK: - 액션 설정
     private func configureAction() {
         
     }
-    
-    
 }
+
+
+
 // MARK: - 데이터 설정
 extension SettlementTableViewCell {
 

@@ -26,34 +26,9 @@ extension UserAPI {
     func readUser(completion: @escaping UserCompletion) {
 //        guard let uid = Auth.auth().currentUser else { return }
         
-//        USER_REF
-//            .child("qqqqqq")
-//            .observe(.value) { snapshot  in
-//                
-//                guard let value = snapshot.value as? [String: Any] else {
-//                    completion(.failure(.readError))
-//                    print("Error")
-//                    return
-//                }
-//                let data: [String: Any?] = [
-//                    "email": value[DatabaseEnum.email],
-//                    "inviteID": value[DatabaseEnum.invite_ID],
-//                    "userName": value[DatabaseEnum.user_name],
-//                    "userProfile": value[DatabaseEnum.user_img],
-//                ]
-//
-//                completion(.success(data))
-//
-//            }
-    }
-    
-
-    func readUser2(completion: @escaping UserCompletion) {
-//        guard let uid = Auth.auth().currentUser else { return }
-        
         USER_REF
             .child("qqqqqq")
-            .observe(.value) { snapshot  in
+            .observe(DataEventType.value) { snapshot  in
                 
                 guard let value = snapshot.value as? [String: Any] else {
                     completion(.failure(.readError))
@@ -63,7 +38,4 @@ extension UserAPI {
                 completion(.success(user))
             }
     }
-    
-    
-    
 }

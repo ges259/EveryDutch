@@ -9,12 +9,13 @@ import UIKit
 
 struct RoomUsers {
     var userID: String
-    var roomName: String
-    var roomImg: String
+    var roomUserName: String
+    var roomUserImg: String
     
-    init(userID: String, dictionary: [String: Any]) {
+    init(userID: String, 
+         dictionary: [String: Any]) {
         self.userID = userID
-        self.roomName = dictionary[DatabaseEnum.room_user_name] as? String ?? ""
-        self.roomImg = dictionary[DatabaseEnum.room_user_image] as? String ?? ""
+        self.roomUserName = dictionary[DatabaseEnum.room_user_name] as? String ?? ""
+        self.roomUserImg = dictionary[DatabaseEnum.room_user_image] as? String ?? ""
     }
 }

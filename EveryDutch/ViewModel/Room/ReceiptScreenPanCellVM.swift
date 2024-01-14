@@ -11,8 +11,11 @@ struct ReceiptScreenPanCellVM: ReceiptScreenPanCellVMProtocol {
     
     var pay: Int
     var userID: String
+    
     var image: String
+    
     var userName: String
+    
     var done: Bool {
         didSet {
             self.doneStatusChange_API()
@@ -44,7 +47,8 @@ struct ReceiptScreenPanCellVM: ReceiptScreenPanCellVMProtocol {
     
     
     
-    init(paymentDetail: PaymentDetail) {
+    init(roomUser: RoomUsers,
+        paymentDetail: PaymentDetail) {
         self.done = paymentDetail.done
         self.pay = paymentDetail.pay
         self.userID = paymentDetail.userID

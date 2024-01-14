@@ -31,7 +31,7 @@ final class SettlementVC: UIViewController {
     private var topLbl: CustomLabel = CustomLabel(
         text: "누적 금액",
         font: UIFont.boldSystemFont(ofSize: 15),
-        backgroundColor: UIColor.normal_white,
+        backgroundColor: UIColor.medium_Blue,
         textAlignment: .center)
     
     private var textField: InsetTextField = InsetTextField(
@@ -138,6 +138,9 @@ extension SettlementVC {
         self.bottomBtn.snp.makeConstraints { make in
             make.bottom.leading.trailing.equalToSuperview()
             make.height.equalTo(UIDevice.current.bottomBtnHeight)
+        }
+        self.topLbl.snp.makeConstraints { make in
+            make.height.equalTo(34)
         }
         self.settlementNameLbl.snp.makeConstraints { make in
             make.height.equalTo(34)

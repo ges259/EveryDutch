@@ -6,12 +6,14 @@
 //
 
 import Foundation
+import FirebaseDatabase
+
 // 방에 들어섰을 때
     // 방 유저 데이터 가져오기 ----- (Room_Users)
 
 extension RoomsAPI {
     
-    typealias RoomUsersCompletion = (Result<[RoomUsers], ErrorEnum>) -> Void
+    typealias RoomUsersCompletion = (Result<[String: RoomUsers], ErrorEnum>) -> Void
     
     
     func readRoomUsers(
@@ -19,11 +21,11 @@ extension RoomsAPI {
         completion: @escaping RoomUsersCompletion)
     {
         // 최종적으로 반환될 RoomUsers 배열
-        var roomUsers = [RoomUsers]()
+        var roomUsers = [String : RoomUsers]()
         
         ROOM_USERS_REF
             .child(roomID)
-            .observeSingleEvent(of: .value) { snapshot in
+            .observeSingleEvent(of: DataEventType.value) { snapshot in
                 guard let value = snapshot.value as? [String: [String: Any]] else {
                     completion(.failure(.readError))
                     return
@@ -34,7 +36,7 @@ extension RoomsAPI {
                         userID: key,
                         dictionary: value)
                     // 배열에 추가
-                    roomUsers.append(roomUser)
+                    roomUsers[key] = roomUser
                 }
                 // 반환
                 completion(.success(roomUsers))
