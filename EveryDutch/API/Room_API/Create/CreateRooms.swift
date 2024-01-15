@@ -8,7 +8,10 @@
 import Foundation
 
 
-struct RoomsAPI {
+
+
+
+struct RoomsAPI: RoomsAPIProtocol {
     static let shared: RoomsAPI = RoomsAPI()
     private init() {}
 }

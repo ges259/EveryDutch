@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct UserAPI {
+struct UserAPI: UserAPIProtocol {
     static let shared: UserAPI = UserAPI()
     private init() {}
     

@@ -23,9 +23,9 @@ class UsersTableViewVM: UsersTableViewVMProtocol {
     var isPayer: Bool = false
     
     
-    var roomDataManager: RoomDataManager
+    private var roomDataManager: RoomDataManagerProtocol
     // MARK: - Fix
-    init(roomDataManager: RoomDataManager,
+    init(roomDataManager: RoomDataManagerProtocol,
          _ customTableEnum: CustomTableEnum) {
         self.roomDataManager = roomDataManager
         self.customTableEnum = customTableEnum

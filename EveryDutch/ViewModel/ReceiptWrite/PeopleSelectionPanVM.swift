@@ -9,7 +9,7 @@ import Foundation
 
 final class PeopleSelectionPanVM: PeopleSelectionPanVMProtocol  {
     
-    var roomDataManager: RoomDataManager
+    private var roomDataManager: RoomDataManagerProtocol
     
     var users: RoomUserDataDictionary
     
@@ -33,7 +33,7 @@ final class PeopleSelectionPanVM: PeopleSelectionPanVMProtocol  {
         return self.users.count
     }
     
-    init(roomDataManager: RoomDataManager) {
+    init(roomDataManager: RoomDataManagerProtocol) {
         self.roomDataManager = roomDataManager
         self.users = roomDataManager.getRoomUsersDict
     }

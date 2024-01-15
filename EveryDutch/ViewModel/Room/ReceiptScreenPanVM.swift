@@ -13,13 +13,13 @@ struct ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
     private var cellViewModels: [ReceiptScreenPanCellVM] = []
     
     var receipt: Receipt
-    var roomDataManager: RoomDataManager
+    private var roomDataManager: RoomDataManagerProtocol
     
     var currentNumOfUsers: Int = 0
     
     // MARK: - 라이프사이클
     init(receipt: Receipt,
-         roomDataManager: RoomDataManager) {
+         roomDataManager: RoomDataManagerProtocol) {
         self.receipt = receipt
         self.roomDataManager = roomDataManager
         

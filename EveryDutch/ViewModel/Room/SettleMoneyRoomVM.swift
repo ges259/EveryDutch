@@ -22,9 +22,7 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
     
     
     
-    // MARK: - 모델
-    /// 방의 데이터
-    var roomData: Rooms
+
     
     
     
@@ -77,12 +75,18 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
     var numberOfReceipt: Int {
         return self.cellViewModels.count
     }
-    var roomDataManager: RoomDataManager
     
+    // MARK: - 모델
+    /// 방의 데이터
+    private var roomData: Rooms
+    private var roomDataManager: RoomDataManagerProtocol
+    private var receiptAPI: ReceiptAPIProtocol
     
     // MARK: - 라이프 사이클
     init(roomData: Rooms,
-         roomDataManager: RoomDataManager) {
+         receiptAPI: ReceiptAPIProtocol,
+         roomDataManager: RoomDataManagerProtocol) {
+        self.receiptAPI = receiptAPI
         self.roomData = roomData
         self.roomDataManager = roomDataManager
         // api호출
@@ -104,7 +108,7 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
     // MARK: - API
     /// 영수증 데이터 가져오기
     private func fetchReceipt() {
-        ReceiptAPI.shared.readReceipt { result in
+        self.receiptAPI.readReceipt { result in
             switch result {
             case .success(let receipts):
                 self.cellViewModels = receipts.map({ receipt in
@@ -125,7 +129,7 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
     }
     /// RoomDataManager에서 RoomUsers데이터 가져오기
     private func fetchUsers() {
-        self.roomDataManager.loadRoomUsers(roomData: roomData) { roomusers in
+        self.roomDataManager.loadRoomUsers(roomData: self.roomData) { roomusers in
             self.roomUser = roomusers
         }
     }

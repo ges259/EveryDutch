@@ -8,11 +8,11 @@
 import Foundation
 
 final class RoomSettingVM: RoomSettingVMProtocol {
-    var roomDataManager: RoomDataManager
+    private var roomDataManager: RoomDataManagerProtocol
     
     var users: RoomUserDataDictionary = [:]
     
-    init(roomDataManager: RoomDataManager) {
+    init(roomDataManager: RoomDataManagerProtocol) {
         self.roomDataManager = roomDataManager
     }
     

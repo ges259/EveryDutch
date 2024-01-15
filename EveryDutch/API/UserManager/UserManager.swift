@@ -9,7 +9,7 @@ import UIKit
 
 typealias RoomUserDataDictionary = [String : RoomUsers]
 
-final class RoomDataManager {
+final class RoomDataManager: RoomDataManagerProtocol {
     static let shared: RoomDataManager = RoomDataManager()
     private init() {}
     
@@ -75,7 +75,8 @@ final class RoomDataManager {
     
     
     func loadRoomMoneyData(
-        completion: @escaping ([MoneyData]) -> Void) {
+        completion: @escaping ([MoneyData]) -> Void)
+    {
         RoomsAPI.shared.readRoomMoneyData { data in
             switch data {
             case .success(let moneyData):

@@ -29,7 +29,8 @@ final class MainCoordinator: MainCoordProtocol{
     // MainViewController 띄우기
     func start() {
         // 뷰모델 인스턴스 생성 (이 부분이 추가됨)
-        let mainViewModel = MainVM()
+        let mainViewModel = MainVM(
+            roomsAPI: RoomsAPI.shared)
         // 뷰컨트롤러 인스턴스 생성 및 뷰모델 주입
         let mainVC = MainVC(viewModel: mainViewModel,
                             coordinator: self)

@@ -33,10 +33,13 @@ final class MainVM: MainVMProtocol {
             self.collectionVeiwReloadClousure?()
         }
     }
+    var roomsAPI: RoomsAPIProtocol
     
-    
-    init() {
-        RoomsAPI.shared.readRooms { result in
+    init(roomsAPI: RoomsAPIProtocol) {
+        self.roomsAPI = roomsAPI
+        
+        
+        self.roomsAPI.readRooms { result in
             switch result {
             case .success(let rooms):
                 self.rooms = rooms

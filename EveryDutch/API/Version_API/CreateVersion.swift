@@ -23,3 +23,8 @@ import Foundation
     // 정산 시 데이터 저장
         // - 버전 이름
         // - 종료 날짜
+
+
+struct VersionAPI: VersionAPIProtocol {
+    
+}

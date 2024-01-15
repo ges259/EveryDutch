@@ -10,7 +10,6 @@ import Foundation
 protocol SettleMoneyRoomProtocol {
     func cellViewModel(at index: Int) -> SettleMoneyTableViewCellVM
     var numberOfReceipt: Int { get }
-    var roomData: Rooms { get }
     var receipts: [Receipt] { get }
     var roomUser: RoomUserDataDictionary { get }
     

@@ -9,7 +9,6 @@ import Foundation
 
 
 protocol PeopleSelectionPanVMProtocol {
-    var roomDataManager: RoomDataManager { get }
     var users: RoomUserDataDictionary { get }
     var numOfUsers: Int { get }
     func selectedUser(index: Int)

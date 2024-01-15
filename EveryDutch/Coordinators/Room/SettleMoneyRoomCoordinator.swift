@@ -33,7 +33,8 @@ final class SettleMoneyRoomCoordinator: SettleMoneyRoomCoordProtocol {
     func start() {
         // SettlementRoomVM 뷰모델 생성
         let settlementRoomVM = SettleMoneyRoomVM(
-            roomData: self.room,
+            roomData: self.room, 
+            receiptAPI: ReceiptAPI.shared,
             roomDataManager: RoomDataManager.shared)
         // PlusViewController 인스턴스 생성
         let settlementRoomVC = SettleMoneyRoomVC(

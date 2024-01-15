@@ -22,7 +22,7 @@ import Foundation
     // 영수증 삭제
         // User_Receipt에서 삭제
         // Receipt에서 삭제
-struct ReceiptAPI {
+struct ReceiptAPI: ReceiptAPIProtocol {
     static let shared: ReceiptAPI = ReceiptAPI()
     private init() {}
     
@@ -68,7 +68,7 @@ extension ReceiptAPI {
     }
     
     
-    func toDictionary() -> [String: [String: Any]] {
+    private func toDictionary() -> [String: [String: Any]] {
         return ["qqqqqq" : [
             "pay": "25000",
             "done": true]

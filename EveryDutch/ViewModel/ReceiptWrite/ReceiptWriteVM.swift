@@ -14,7 +14,7 @@ final class ReceiptWriteVM: ReceiptWirteVMProtocol {
     
     
     
-    var roomDataManager: RoomDataManager
+    var roomDataManager: RoomDataManagerProtocol
     
     var roomUsers: RoomUserDataDictionary = [:]
     
@@ -27,7 +27,7 @@ final class ReceiptWriteVM: ReceiptWirteVMProtocol {
     
     
     // MARK: - 라이프사이클
-    init(roomDataManager: RoomDataManager) {
+    init(roomDataManager: RoomDataManagerProtocol) {
         self.roomDataManager = roomDataManager
         
         self.makeCellVM()
