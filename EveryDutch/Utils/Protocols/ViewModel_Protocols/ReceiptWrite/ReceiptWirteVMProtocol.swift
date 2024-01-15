@@ -5,7 +5,7 @@
 //  Created by 계은성 on 2024/01/06.
 //
 
-import Foundation
+import UIKit
 
 protocol ReceiptWirteVMProtocol {
     
@@ -15,4 +15,5 @@ protocol ReceiptWirteVMProtocol {
     
     func cellViewModel(at index: Int) -> ReceiptWriteCellVM
     
+    var dutchBtnColor: UIColor { get }
 }

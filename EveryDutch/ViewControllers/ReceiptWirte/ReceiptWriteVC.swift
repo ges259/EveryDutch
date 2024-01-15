@@ -83,7 +83,6 @@ final class ReceiptWriteVC: UIViewController {
     
     // MARK: - 테이블 하단 스택뷰
     private var moneyCountLbl: CustomLabel = CustomLabel(
-        text: "남은 금액 : 0원",
         backgroundColor: UIColor.normal_white,
         textAlignment: .center)
     
@@ -162,8 +161,8 @@ final class ReceiptWriteVC: UIViewController {
         let stv = UIStackView.configureStv(
             arrangedSubviews: [self.calendar,
                                self.whiteView,
-                               self.tableView,
                                self.tableFooterStv,
+                               self.tableView,
                                self.addPersonBtn,
                                self.clearView],
             axis: .vertical,
@@ -171,7 +170,7 @@ final class ReceiptWriteVC: UIViewController {
             alignment: .fill,
             distribution: .fill)
         
-        stv.setCustomSpacing(0, after: self.tableView)
+        stv.setCustomSpacing(0, after: self.tableFooterStv)
         return stv
     }()
     
@@ -219,6 +218,7 @@ final class ReceiptWriteVC: UIViewController {
         self.configureUI()
         self.configureAutoLayout()
         self.configureAction()
+        self.configureViewWithViewModel()
     }
     init(viewModel: ReceiptWirteVMProtocol,
          coordinator: ReceiptWriteCoordProtocol) {
@@ -248,13 +248,11 @@ extension ReceiptWriteVC {
     private func configureUI() {
         self.view.backgroundColor = UIColor.base_Blue
         
-        
-        
-        self.tableView.layer.maskedCorners = [
+        self.tableFooterStv.layer.maskedCorners = [
             .layerMinXMinYCorner,
             .layerMaxXMinYCorner]
         
-        self.tableFooterStv.layer.maskedCorners = [
+        self.tableView.layer.maskedCorners = [
             .layerMinXMaxYCorner,
             .layerMaxXMaxYCorner]
         
@@ -266,20 +264,6 @@ extension ReceiptWriteVC {
             view.clipsToBounds = true
             view.layer.cornerRadius = 10
         }
-        
-        
-        // MARK: - Fix
-        
-        //        self.moneyCountBtn.text = "남은 금액 : 25,000원"
-        
-    }
-    private func configureViewWithViewModel() {
-        self.timeInfoLbl.text = "00:23"
-        self.memoInfoTF.text = "맥도날드"
-        self.priceInfoTF.text = "50,000원"
-        self.payerInfoTF.text = "쁨"
-        
-        
     }
     
     // MARK: - 오토레이아웃 설정
@@ -362,6 +346,19 @@ extension ReceiptWriteVC {
             self,
             action: #selector(self.bottomBtnTapped),
             for: .touchUpInside)
+    }
+    
+    private func configureViewWithViewModel() {
+//        self.timeInfoLbl.text = "00:23"
+//        self.memoInfoTF.text = "맥도날드"
+//        self.priceInfoTF.text = "50,000원"
+//        self.payerInfoTF.text = "쁨"
+        
+        
+        // MARK: - Fix
+        self.moneyCountLbl.text = "남은 금액 : 25,000원"
+        
+        self.dutchBtn.backgroundColor = self.viewModel.dutchBtnColor
     }
 }
     

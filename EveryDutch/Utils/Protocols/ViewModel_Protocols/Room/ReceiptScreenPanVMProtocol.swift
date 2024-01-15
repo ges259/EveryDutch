@@ -10,9 +10,11 @@ import Foundation
 protocol ReceiptScreenPanVMProtocol {
     
     
-    var receipt: Receipt { get }
-    
+    var getReceipt: Receipt { get }
+    var getPayerName: String { get }
     var currentNumOfUsers: Int { get }
+    var getPayMethod: String { get }
+    
     
     func cellViewModel(at index: Int) -> ReceiptScreenPanCellVM
     

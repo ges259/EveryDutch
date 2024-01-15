@@ -23,6 +23,13 @@ final class ReceiptWriteVM: ReceiptWirteVMProtocol {
     }
     
     
+    var dutchBtnColor: UIColor {
+        return self.numOfUsers == 0
+        ? .normal_white
+        : .deep_Blue
+    }
+    
+    
     
     
     

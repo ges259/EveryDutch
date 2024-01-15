@@ -10,14 +10,19 @@ import UIKit
 struct UsersTableViewCellVM: UsersTableViewCellVMProtocol {
     var profileImageURL: String = ""
     var userName: String = ""
+    
+    
     var cumulativeAmount: Int
     
     var userID: String
     
     
     var customTableEnum: CustomTableEnum
-
     
+    var payback: [Payback]?
+    func dafsds() {
+        
+    }
     
     
     init(moneyData : MoneyData,

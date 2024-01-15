@@ -12,10 +12,28 @@ struct ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
     // 정산내역 셀의 뷰모델
     private var cellViewModels: [ReceiptScreenPanCellVM] = []
     
-    var receipt: Receipt
+    private var receipt: Receipt
     private var roomDataManager: RoomDataManagerProtocol
     
     var currentNumOfUsers: Int = 0
+    
+    var getReceipt: Receipt {
+        return self.receipt
+    }
+    var getPayerName: String {
+        let payer = self.receipt.payer
+        let payerName = self.roomDataManager.getIdToroomUser(
+            usersID: payer)
+        return payerName.roomUserName
+    }
+    
+    var getPayMethod: String {
+        return self.receipt.paymentMethod == 1
+        ? "1 / N"
+        : "사용자 지정"
+    }
+    
+    
     
     // MARK: - 라이프사이클
     init(receipt: Receipt,
@@ -34,7 +52,6 @@ struct ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
         
         // usersTableView 셀의 개수 저장
         self.currentNumOfUsers = paymentDetails.count
-
                     
         // 셀 만들기
         

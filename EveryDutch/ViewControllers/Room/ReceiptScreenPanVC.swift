@@ -25,6 +25,7 @@ final class ReceiptScreenPanVC: UIViewController {
     
     
     private var topLbl: CustomLabel = CustomLabel(
+        text: "영수증",
         font: UIFont.systemFont(ofSize: 15),
         backgroundColor: UIColor.normal_white,
         textAlignment: .center)
@@ -154,17 +155,16 @@ extension ReceiptScreenPanVC {
     }
     
     private func configureViewWithViewModel() {
-        let receipt = self.viewModel.receipt
         
+        
+        self.payerStackVeiw.receiptInfoLbl.text = self.viewModel.getPayerName
+        self.paymentMethodStackView.receiptInfoLbl.text = self.viewModel.getPayMethod
+        
+        let receipt = self.viewModel.getReceipt
         self.memoStackView.receiptInfoLbl.text = receipt.context
         self.dateStackView.receiptInfoLbl.text = receipt.date
         self.timeStackView.receiptInfoLbl.text = receipt.time
         self.priceStackView.receiptInfoLbl.text = "\(receipt.price)"
-        self.payerStackVeiw.receiptInfoLbl.text = receipt.payer
-        self.paymentMethodStackView.receiptInfoLbl.text = "\(receipt.paymentMethod)"
-        
-        // MARK: - Fix
-        self.topLbl.text = "영수증"
     }
     
     // MARK: - 오토레이아웃 설정
