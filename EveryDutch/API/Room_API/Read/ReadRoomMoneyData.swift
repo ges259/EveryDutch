@@ -13,34 +13,63 @@ import FirebaseDatabaseInternal
 
 extension RoomsAPI {
     
-    typealias RoomMoneyDataCompletion = (Result<[MoneyData], ErrorEnum>) -> Void
+    typealias RoomMoneyDataCompletion = (Result<[CumulativeAmount], ErrorEnum>) -> Void
     
 
     
-    func readRoomMoneyData(
+    func readCumulativeAmount(
         completion: @escaping RoomMoneyDataCompletion)
     {
         
-        ROOM_MONEY_DATA_REF
+        Cumulative_AMOUNT_REF
             .child("version_ID_1")
             .observeSingleEvent(of: .value) { snapshot in
-                guard let value = snapshot.value as? [String: [String: Any]] else {
+                
+                guard let value = snapshot.value as? [String: Int] else {
+                    // 데이터를 가져오는데 실패한 경우, 에러와 함께 완료 핸들러를 호출
+                    completion(.failure(.readError))
+                    return
+                }
+                var cumulativeAmounts: [CumulativeAmount] = []
+                
+                
+                for (userID, amount) in value {
+                        
+                    let moneyData = CumulativeAmount(
+                        userID: userID,
+                        amount: amount)
+                    
+                    cumulativeAmounts.append(moneyData)
+                }
+                
+                // 결과적으로 생성된 CumulativeAmount 배열
+                completion(.success(cumulativeAmounts))
+            }
+    }
+    
+    
+    typealias PaybackCompletion = (Result<Payback, ErrorEnum>) -> Void
+    
+    func readPayback(completion: @escaping PaybackCompletion) {
+        
+        
+        PAYBACK_REF
+            .child("version_ID_1")
+            .child("qqqqqq")
+            .observeSingleEvent(of: .value, with: { snapshot in
+                
+                guard let value = snapshot.value as? [String: Int] else {
+                    // 데이터를 가져오는데 실패한 경우, 에러와 함께 완료 핸들러를 호출
                     completion(.failure(.readError))
                     return
                 }
                 
-                var moneyDataDict = [MoneyData]()
-                for (key, dict) in value {
-                    // MoneyData 객체 만들기
-                    let moneyData = MoneyData(
-                        userID: key,
-                        dictionary: dict)
-                    // 딕셔너리에 추가
-                    moneyDataDict.append(moneyData)
-                }
-                dump(moneyDataDict)
-                // 반환
-                completion(.success(moneyDataDict))
-            }
+                let payback = Payback(
+                    userID: "qqqqqq",
+                    payback: value)
+                
+                // 완료 핸들러에 성공 결과 전달
+                completion(.success(payback))
+            })
     }
 }

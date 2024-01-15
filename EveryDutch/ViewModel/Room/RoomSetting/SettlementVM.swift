@@ -22,8 +22,8 @@ final class SettlementVM: SettlementVMProtocol {
         return self.users
     }
     
-    var getRoomMoneyData: [MoneyData] {
-        return self.roomDataManager.getRoomMoneyData
+    var getRoomMoneyData: [CumulativeAmount] {
+        return self.roomDataManager.getCumulativeAmountArray
     }
     
     

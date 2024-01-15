@@ -11,20 +11,21 @@ import Foundation
 protocol RoomDataManagerProtocol {
     static var shared: RoomDataManager { get }
     
-    var numOfRoomUsers: Int { get }
+    var getNumOfRoomUsers: Int { get }
     
     var getRoomUsersDict: RoomUserDataDictionary { get }
     
-    var getRoomMoneyData: [MoneyData] { get }
+    var getCumulativeAmountArray: [CumulativeAmount] { get }
     
-    func getIdToroomUser(usersID: String) -> RoomUsers
-    
+    func getIdToRoomUser(usersID: String) -> RoomUsers
+    func getIDToPayback(userID: String) -> Int
     
     
     func loadRoomUsers(
         roomData: Rooms,
         completion: @escaping (RoomUserDataDictionary) -> Void)
     
-    func loadRoomMoneyData(
-        completion: @escaping ([MoneyData]) -> Void) 
+    func loadCumulativeAmountData(
+        completion: @escaping () -> Void) 
+    func loadPaybackData(completion: @escaping () -> Void)
 }

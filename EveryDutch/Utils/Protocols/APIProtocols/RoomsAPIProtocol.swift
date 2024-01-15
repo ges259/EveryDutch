@@ -12,10 +12,10 @@ protocol RoomsAPIProtocol {
     
     typealias RoomsIDCompletion = (Result<[Rooms], ErrorEnum>) -> Void
     typealias RoomUsersCompletion = (Result<[String: RoomUsers], ErrorEnum>) -> Void
-    typealias RoomMoneyDataCompletion = (Result<[MoneyData], ErrorEnum>) -> Void
+    typealias RoomMoneyDataCompletion = (Result<[CumulativeAmount], ErrorEnum>) -> Void
     
     
     func readRooms(completion: @escaping RoomsIDCompletion)
     func readRoomUsers(roomID: String, completion: @escaping RoomUsersCompletion)
-    func readRoomMoneyData(completion: @escaping RoomMoneyDataCompletion)
+    func readCumulativeAmount(completion: @escaping RoomMoneyDataCompletion)
 }

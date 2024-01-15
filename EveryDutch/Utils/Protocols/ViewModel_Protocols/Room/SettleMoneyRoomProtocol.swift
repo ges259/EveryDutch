@@ -11,14 +11,13 @@ protocol SettleMoneyRoomProtocol {
     func cellViewModel(at index: Int) -> SettleMoneyTableViewCellVM
     var numberOfReceipt: Int { get }
     var receipts: [Receipt] { get }
-    var roomUser: RoomUserDataDictionary { get }
     
     var receiptChangedClosure: (() -> Void)? { get set }
     var userChangedClosure: ((RoomUserDataDictionary) -> Void)? { get set }
     
     
 //    var fetchUserClosure: ((RoomUserDataDictionary) -> Void)? { get set }
-    var fetchMoneyDataClosure: (([MoneyData]) -> Void)? { get set }
+    var fetchMoneyDataClosure: (() -> Void)? { get set }
     
     
     var minHeight: CGFloat { get }

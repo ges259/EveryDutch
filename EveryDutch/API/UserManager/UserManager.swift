@@ -13,19 +13,19 @@ final class RoomDataManager: RoomDataManagerProtocol {
     static let shared: RoomDataManager = RoomDataManager()
     private init() {}
     
-    /// personalID / roomName / roomImg
-//    private var roomUsers: [RoomUsers] = []
     /// roomID / versionID / roomNam / roomImg
     private var roomData: Rooms?
     
     private var roomUserDataDict: RoomUserDataDictionary = [:]
-    private var roomMoneyData: [MoneyData] = []
+    private var cumulativeAmount: [CumulativeAmount] = []
+    
+    private var paybackData: Payback?
     
     
     
     
     
-    var numOfRoomUsers: Int {
+    var getNumOfRoomUsers: Int {
         return Array(self.roomUserDataDict.values).count
     }
     
@@ -33,14 +33,20 @@ final class RoomDataManager: RoomDataManagerProtocol {
         return self.roomUserDataDict
     }
     
-    var getRoomMoneyData: [MoneyData] {
-        return self.roomMoneyData
+    var getCumulativeAmountArray: [CumulativeAmount] {
+        return self.cumulativeAmount
     }
     
-    func getIdToroomUser(usersID: String) -> RoomUsers {
+    
+    func getIdToRoomUser(usersID: String) -> RoomUsers {
         return self.roomUserDataDict[usersID]
         ?? RoomUsers(dictionary: [:])
     }
+    
+    func getIDToPayback(userID: String) -> Int {
+        return self.paybackData?.payback[userID] ?? 0
+    }
+    
     
     
     
@@ -74,24 +80,32 @@ final class RoomDataManager: RoomDataManagerProtocol {
     }
     
     
-    func loadRoomMoneyData(
-        completion: @escaping ([MoneyData]) -> Void)
+    func loadCumulativeAmountData(
+        completion: @escaping () -> Void)
     {
-        RoomsAPI.shared.readRoomMoneyData { data in
+        RoomsAPI.shared.readCumulativeAmount { data in
             switch data {
             case .success(let moneyData):
-                self.roomMoneyData = moneyData
-                completion(moneyData)
+                self.cumulativeAmount = moneyData
+                completion()
             // MARK: - Fix
             case .failure(_): break
             }
         }
     }
     
-    
-    
-    
-    
-    
-    
+    func loadPaybackData(completion: @escaping () -> Void) {
+        RoomsAPI.shared.readPayback { paybackData in
+            switch paybackData {
+            case .success(let data):
+                self.paybackData = data
+                self.loadCumulativeAmountData {
+                    completion()
+                }
+                break
+                // MARK: - Fix
+            case .failure(_): break
+            }
+        }
+    }
 }

@@ -33,12 +33,12 @@ extension RoomsAPI {
                 }
                 
                 // 가져온 데이터를 순회하며 각 방의 ID와 버전 ID에 대한 정보를 처리
-                for (key, versionID) in value {
+                for (roomID, versionID) in value {
                     // DispatchGroup에 작업 시작을 알림
                     dispatchGroup.enter()
                     // 각 방의 썸네일 정보를 가져오기 위한 쿼리
                     ROOMS_THUMBNAIL_REF
-                        .child(key)
+                        .child(roomID)
                         .observeSingleEvent(of: DataEventType.value) { snapshot in
                         // 작업이 끝나면 DispatchGroup에 작업 완료를 알림
                         defer { dispatchGroup.leave() }
@@ -48,7 +48,7 @@ extension RoomsAPI {
                             completion(.failure(.readError))
                             return
                         }
-                        let room = Rooms(roomID: key,
+                        let room = Rooms(roomID: roomID,
                                          versionID: versionID,
                                          dictionary: roomInfo)
                         rooms.append(room)

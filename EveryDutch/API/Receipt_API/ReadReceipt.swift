@@ -33,8 +33,6 @@ extension ReceiptAPI {
                     }
                 }
                 
-                print(receipts)
-                
                 completion(.success(receipts))
                 
             }

@@ -34,15 +34,28 @@ class UsersTableViewVM: UsersTableViewVMProtocol {
     
     
     
-    
+    // moneyData: [CumulativeAmount]
     // 셀 가져와서 표시
-    func makeCellVM(moneyData: [MoneyData]) {
+    func makeCellVM() {
+        // MARK: - Fix
+        /*
+         유저를 가져옮
+         -> 유저 아이디를 통해
+            - 누적 금액 및 payback을 가져옮
+         */
+        
+        let moneyData = self.roomDataManager.getCumulativeAmountArray
+        
         self.cellViewModels = moneyData.map { moneyData in
-            let roomUsers = self.roomDataManager.getIdToroomUser(
-                usersID: moneyData.userID)
-            
+            let userID = moneyData.userID
+            let roomUsers = self.roomDataManager.getIdToRoomUser(
+                usersID: userID)
+            // payback데이터 가져오기
+            let paybackPrice = self.roomDataManager.getIDToPayback(
+                userID: userID)
             return UsersTableViewCellVM(
                 moneyData: moneyData,
+                paybackPrice: paybackPrice,
                 roomUsers: roomUsers,
                 customTableEnum: self.customTableEnum)
         }

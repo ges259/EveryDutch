@@ -166,8 +166,7 @@ extension SettlementVC {
     
     // MARK: - 테이블뷰 데이터 설정
     private func configureUserTableView() {
-        let moneyData = self.viewModel.getRoomMoneyData
-        self.usersTableView.viewModel.makeCellVM(moneyData: moneyData)
+        self.usersTableView.viewModel.makeCellVM()
         self.usersTableView.reloadData()
     }
     

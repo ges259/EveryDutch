@@ -9,24 +9,6 @@ import UIKit
 
 final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
     
-    /// 영수증 배열
-    var receipts: [Receipt] = [] {
-        didSet { self.receiptChangedClosure?() }
-    }
-    /// 방의 유저 데이터
-    var roomUser: RoomUserDataDictionary = [:]
-    
-    var roomMoneyData: [MoneyData] = [] {
-        didSet { self.fetchMoneyDataClosure?(self.roomMoneyData) }
-    }
-    
-    
-    var topViewIsOpen: Bool = false
-    
-    
-    
-    
-    
     // MARK: - 탑뷰의 높이
     /*
      인원 수에 따라 스택뷰의 maxHeight 크기 바꾸기
@@ -41,8 +23,9 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
      */
     /// 탑뷰의 최대 크기
     lazy var maxHeight: CGFloat = {
+        let usersCount = self.roomDataManager.getNumOfRoomUsers
         // 셀당 40
-        let tableHeight: Int = (self.roomUser.count * 40)
+        let tableHeight: Int = (usersCount * 40)
         // 테이블뷰의 최대 크기(200) + 나머지 크기(134)
         let totalHeight: Int = 134 + min(tableHeight, 200)
         return CGFloat(totalHeight)
@@ -50,6 +33,9 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
     /// 탑뷰의 최소 크기
     let minHeight: CGFloat = 35
     
+    
+    // MARK: - 탑뷰 토글
+    var topViewIsOpen: Bool = false
     
     
     // MARK: - 레시피 개수
@@ -59,11 +45,18 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
     
     
     
+    
+    
+    
+    
+    
+    
     // MARK: - 클로저
     var receiptChangedClosure: (() -> Void)?
     var userChangedClosure: ((RoomUserDataDictionary) -> Void)?
-    var fetchMoneyDataClosure: (([MoneyData]) -> Void)?
+    var fetchMoneyDataClosure: (() -> Void)?
     
+
     
     
     // MARK: - 셀의 뷰모델
@@ -71,22 +64,26 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
     private var cellViewModels: [SettleMoneyTableViewCellVM] = []
     
     // MARK: - 모델
-    /// 방의 데이터
-    private var roomData: Rooms
     private var roomDataManager: RoomDataManagerProtocol
     private var receiptAPI: ReceiptAPIProtocol
-
+    /// 영수증 배열
+    var receipts: [Receipt] = [] {
+        didSet { self.receiptChangedClosure?() }
+    }
+    
+    
+    
     
     // MARK: - 라이프 사이클
     init(roomData: Rooms,
          receiptAPI: ReceiptAPIProtocol,
          roomDataManager: RoomDataManagerProtocol) {
         self.receiptAPI = receiptAPI
-        self.roomData = roomData
+        
         self.roomDataManager = roomDataManager
         // api호출
         // 영수증 가져오기
-        self.fetchUsers()
+        self.fetchUsers(roomData: roomData)
         self.fetchRoomMoneyData()
     }
     deinit {
@@ -99,6 +96,7 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
     
     
     
+
     
     
     
@@ -106,23 +104,22 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
 
 extension SettleMoneyRoomVM {
     
-    // MARK: - 누적 금액 가져오기
-    /// 누적 금액 가져오기
+    // MARK: - 누적 금액 및 페이백 데이터 API
     private func fetchRoomMoneyData() {
-        self.roomDataManager.loadRoomMoneyData { moneyData in
-            self.roomMoneyData = moneyData
+        self.roomDataManager.loadPaybackData {
+            self.fetchMoneyDataClosure?()
         }
     }
+    
     // MARK: - 유져 + 레시피 가져오기
     /// RoomDataManager에서 RoomUsers데이터 가져오기
-    private func fetchUsers() {
-        self.roomDataManager.loadRoomUsers(roomData: self.roomData) { roomusers in
-            self.roomUser = roomusers
-            
+    private func fetchUsers(roomData: Rooms) {
+        self.roomDataManager.loadRoomUsers(roomData: roomData) { roomusers in
             // 영수증 가져오기
             self.fetchReceipt()
         }
     }
+    
     // MARK: - 영수증 데이터 가져오기
     private func fetchReceipt() {
         self.receiptAPI.readReceipt { result in
@@ -155,7 +152,7 @@ extension SettleMoneyRoomVM {
         self.cellViewModels = receipts.map({ receipt in
             
             let payer = receipt.payer
-            let payerData = self.roomDataManager.getIdToroomUser(usersID: payer)
+            let payerData = self.roomDataManager.getIdToRoomUser(usersID: payer)
             
             return SettleMoneyTableViewCellVM(
                 payer: payerData.roomUserName,

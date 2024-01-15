@@ -290,8 +290,8 @@ extension SettleMoneyRoomVC {
 //            }
         }
         // 데이터를 처음 가져왔을 때
-        self.viewModel.fetchMoneyDataClosure = { users in
-            self.usersTableView.viewModel.makeCellVM(moneyData: users)
+        self.viewModel.fetchMoneyDataClosure = {
+            self.usersTableView.viewModel.makeCellVM()
             self.usersTableView.reloadData()
         }
 //        self.viewModel.userChangedClosure = { users in
@@ -422,12 +422,9 @@ extension SettleMoneyRoomVC: UITableViewDelegate {
                    didSelectRowAt indexPath: IndexPath) {
         // 셀의 영수증 가져오기
         let receipt = self.viewModel.receipts[indexPath.row]
-        // 유저 정보 가져오기
-        let users = self.viewModel.roomUser
         // '영수증 화면'으로 화면 이동
         self.coordinator.ReceiptScreen(
-            receipt: receipt, 
-            users: users)
+            receipt: receipt)
     }
 }
 

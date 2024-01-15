@@ -22,7 +22,7 @@ struct ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
     }
     var getPayerName: String {
         let payer = self.receipt.payer
-        let payerName = self.roomDataManager.getIdToroomUser(
+        let payerName = self.roomDataManager.getIdToRoomUser(
             usersID: payer)
         return payerName.roomUserName
     }
@@ -56,7 +56,7 @@ struct ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
         // 셀 만들기
         
         self.cellViewModels = paymentDetails.map { detail in
-            let user = self.roomDataManager.getIdToroomUser(
+            let user = self.roomDataManager.getIdToRoomUser(
                 usersID: detail.userID)
             
             return ReceiptScreenPanCellVM(

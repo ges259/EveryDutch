@@ -13,23 +13,22 @@ struct UsersTableViewCellVM: UsersTableViewCellVMProtocol {
     
     
     var cumulativeAmount: Int
+    var paybackPrice: Int
     
     var userID: String
     
     
     var customTableEnum: CustomTableEnum
     
-    var payback: [Payback]?
-    func dafsds() {
-        
-    }
     
-    
-    init(moneyData : MoneyData,
+    init(moneyData : CumulativeAmount,
+         paybackPrice: Int,
          roomUsers: RoomUsers,
          customTableEnum: CustomTableEnum) {
         self.userID = moneyData.userID
         self.cumulativeAmount = moneyData.cumulativeAmount
+        
+        self.paybackPrice = paybackPrice
         
         self.profileImageURL = roomUsers.roomUserImg
         self.userName = roomUsers.roomUserName
