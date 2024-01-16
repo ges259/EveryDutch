@@ -24,12 +24,6 @@ final class SettleMoneyRoomVC: UIViewController {
     
     
     // 탑뷰 내부 레이아웃
-    /// (정산 내역 / 받아야 할 돈)을 선택할 수 있는 버튼 스택뷰
-    private lazy var segmentBtnStackView: SegmentBtnStackView = {
-        let btn = SegmentBtnStackView()
-        btn.delegate = self
-        return btn
-    }()
     /// 유저를 보여주는 테이블뷰
     private lazy var usersTableView: UsersTableView = UsersTableView(
         viewModel: UsersTableViewVM(
@@ -41,8 +35,7 @@ final class SettleMoneyRoomVC: UIViewController {
     /// 탑뷰 스택뷰
     private lazy var topViewStackView: UIStackView = {
         let stv = UIStackView.configureStv(
-            arrangedSubviews: [self.segmentBtnStackView,
-                               self.usersTableView,
+            arrangedSubviews: [self.usersTableView,
                                self.topViewBottomBtn],
             axis: .vertical,
             spacing: 0,
@@ -467,15 +460,5 @@ extension SettleMoneyRoomVC {
             // topView 닫기
             self.closeTopView()
         }
-    }
-}
-
-
-
-// MARK: - 탑뷰 버튼 색상 변경
-extension SettleMoneyRoomVC: ReceiptBtnStvDelegate {
-    func firstBtnTapped(_ Bool: Bool) {
-        self.usersTableView.firstBtnTapped = Bool
-        self.usersTableView.reloadData()
     }
 }

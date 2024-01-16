@@ -23,6 +23,24 @@ class UsersTableViewVM: UsersTableViewVMProtocol {
     var isPayer: Bool = false
     
     
+    var firstBtnTapped: Bool = true
+    
+    
+    private let btnColorArray: [UIColor] = [
+        .normal_white,
+        .unselected_gray]
+    
+    var getBtnColor: [UIColor] {
+        let btnColor = self.firstBtnTapped
+        ? self.btnColorArray
+        : self.btnColorArray.reversed()
+        return btnColor
+    }
+    
+    
+    
+    
+    
     private var roomDataManager: RoomDataManagerProtocol
     // MARK: - Fix
     init(roomDataManager: RoomDataManagerProtocol,

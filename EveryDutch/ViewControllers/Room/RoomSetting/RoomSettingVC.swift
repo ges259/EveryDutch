@@ -23,8 +23,6 @@ final class RoomSettingVC: UIViewController {
     private lazy var contentView: UIView = UIView()
     
     // 탑뷰 내부 레이아웃
-    /// (정산 내역 / 받아야 할 돈)을 선택할 수 있는 버튼 스택뷰
-    private var segmentBtnStackView: SegmentBtnStackView = SegmentBtnStackView()
     private var usersTableView: UsersTableView = UsersTableView(
         viewModel: UsersTableViewVM(
             roomDataManager: RoomDataManager.shared, .isRoomSetting))
@@ -141,10 +139,8 @@ extension RoomSettingVC {
         
         self.scrollView.addSubview(self.contentView)
         
-        [self.segmentBtnStackView,
-         self.usersTableView].forEach { view in
-            self.contentView.addSubview(view)
-        }
+        self.contentView.addSubview(self.usersTableView)
+        
         
         self.view.addSubview(self.tabBarView)
         self.tabBarView.addSubview(self.btnStackView)
@@ -161,15 +157,11 @@ extension RoomSettingVC {
             make.edges.equalTo(self.scrollView.contentLayoutGuide)
             make.width.equalTo(self.scrollView.frameLayoutGuide)
         }
-        self.segmentBtnStackView.snp.makeConstraints { make in
+        // 테이블뷰
+        self.usersTableView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(7)
             make.leading.equalToSuperview().offset(10)
             make.trailing.equalToSuperview().offset(-10)
-        }
-        
-        self.usersTableView.snp.makeConstraints { make in
-            make.top.equalTo(self.segmentBtnStackView.snp.bottom)
-            make.leading.trailing.equalTo(self.segmentBtnStackView)
             make.bottom.equalToSuperview().offset(-UIDevice.current.topStackViewBottom)
         }
         // For btnStackView
