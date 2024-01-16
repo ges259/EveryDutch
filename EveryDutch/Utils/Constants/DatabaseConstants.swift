@@ -7,20 +7,20 @@
 
 import Foundation
 
-extension DatabaseEnum {
+extension DatabaseConstants {
     static let userID: String = "userID"
 }
 
 
 // Users
-enum DatabaseEnum {
+enum DatabaseConstants {
     static let email: String = "email"
     static let personal_ID: String = "personal_ID"
     static let user_image: String = "user_image"
     static let user_name: String = "user_name"
 }
 // Rooms_Thumbnails
-extension DatabaseEnum {
+extension DatabaseConstants {
     static let room_name: String = "room_name"
     static let room_image: String = "roomimage"
     
@@ -30,7 +30,7 @@ extension DatabaseEnum {
 
 
 // Receipt
-extension DatabaseEnum {
+extension DatabaseConstants {
     static let type: String = "type"
     static let context: String = "context"
     static let date: String = "date"
@@ -42,10 +42,4 @@ extension DatabaseEnum {
     
     static let pay: String = "pay"
     static let done: String = "done"
-}
-
-// Money_Data
-extension DatabaseEnum {
-    static let cumulative_Amount: String = "cumulative_Amount"
-    static let payback: String = "payback"
 }

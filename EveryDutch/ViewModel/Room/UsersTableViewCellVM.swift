@@ -21,12 +21,13 @@ struct UsersTableViewCellVM: UsersTableViewCellVMProtocol {
     var customTableEnum: CustomTableEnum
     
     
-    init(moneyData : CumulativeAmount,
+    init(userID: String,
+         moneyData : Int,
          paybackPrice: Int,
          roomUsers: RoomUsers,
          customTableEnum: CustomTableEnum) {
-        self.userID = moneyData.userID
-        self.cumulativeAmount = moneyData.cumulativeAmount
+        self.userID = userID
+        self.cumulativeAmount = moneyData
         
         self.paybackPrice = paybackPrice
         
@@ -35,6 +36,11 @@ struct UsersTableViewCellVM: UsersTableViewCellVMProtocol {
         
         self.customTableEnum = customTableEnum
     }
+    
+    
+    
+    
+    
     
     // MARK: - 이미지 설정
     var profileImg: UIImage? {

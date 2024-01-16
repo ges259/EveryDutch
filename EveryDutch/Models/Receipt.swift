@@ -18,11 +18,11 @@ struct Receipt {
     var paymentDetails: [PaymentDetail]
 
     init(dictionary: [String: Any]) {
-        self.type = dictionary[DatabaseEnum.type] as? Int ?? 0
-        self.context = dictionary[DatabaseEnum.context] as? String ?? ""
-        self.price = dictionary[DatabaseEnum.price] as? Int ?? 0
-        self.payer = dictionary[DatabaseEnum.payer] as? String ?? ""
-        self.paymentMethod = dictionary[DatabaseEnum.payment_method] as? Int ?? 0
+        self.type = dictionary[DatabaseConstants.type] as? Int ?? 0
+        self.context = dictionary[DatabaseConstants.context] as? String ?? ""
+        self.price = dictionary[DatabaseConstants.price] as? Int ?? 0
+        self.payer = dictionary[DatabaseConstants.payer] as? String ?? ""
+        self.paymentMethod = dictionary[DatabaseConstants.payment_method] as? Int ?? 0
         
         // 날짜 및 시간 설정을 별도의 함수로 추출
         let dateArray = Receipt.unpackDateAndTime(from: dictionary)
@@ -37,7 +37,7 @@ struct Receipt {
     private static func unpackDateAndTime(
         from dictionary: [String: Any])
     -> [String] {
-        if let timestamp = dictionary[DatabaseEnum.date] as? Int {
+        if let timestamp = dictionary[DatabaseConstants.date] as? Int {
             let dateComponents = Date.IntegerToString(timestamp)
             
             return dateComponents
@@ -49,13 +49,13 @@ struct Receipt {
     private static func unpackPaymentDetails(
         from dictionary: [String: Any])
     -> [PaymentDetail] {
-        guard let detailsDict = dictionary[DatabaseEnum.paymenet_details] as? [String: [String: Any]] else {
+        guard let detailsDict = dictionary[DatabaseConstants.paymenet_details] as? [String: [String: Any]] else {
             return []
         }
         
         return detailsDict.map { userID, detail in
-            let pay = detail[DatabaseEnum.pay] as? Int ?? 0
-            let done = detail[DatabaseEnum.done] as? Bool ?? false
+            let pay = detail[DatabaseConstants.pay] as? Int ?? 0
+            let done = detail[DatabaseConstants.done] as? Bool ?? false
             return PaymentDetail(userID: userID, pay: pay, done: done)
         }
     }

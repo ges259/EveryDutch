@@ -13,6 +13,8 @@ final class UsersTableView: CustomTableView {
     // MARK: - 프로퍼티
     var viewModel: UsersTableViewVMProtocol
     
+    var firstBtnTapped: Bool = true
+    
     
     // MARK: - 라이프사이클
     init(viewModel: UsersTableViewVMProtocol) {
@@ -80,7 +82,8 @@ extension UsersTableView: UITableViewDataSource {
         
         let cellViewModel = self.viewModel.cellViewModel(at: indexPath.item)
         
-        cell.configureCell(with: cellViewModel)
+        cell.configureCell(with: cellViewModel, 
+                           firstBtnTapped: self.firstBtnTapped)
         return cell
     }
 }

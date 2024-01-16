@@ -8,7 +8,7 @@
 import Foundation
 
 protocol ReceiptBtnStvDelegate: AnyObject {
-    func firstBtnTapped()
-    func secondBtnTapped()
+    func firstBtnTapped(_ Bool: Bool)
+//    func secondBtnTapped()
 }
 

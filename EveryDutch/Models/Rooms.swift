@@ -16,7 +16,7 @@ struct Rooms {
     init(roomID: String, versionID: String, dictionary: [String: String]) {
         self.roomID = roomID
         self.versionID = versionID
-        self.roomName = dictionary[DatabaseEnum.room_name] ?? ""
-        self.roomImg = dictionary[DatabaseEnum.room_image] ?? ""
+        self.roomName = dictionary[DatabaseConstants.room_name] ?? ""
+        self.roomImg = dictionary[DatabaseConstants.room_image] ?? ""
     }
 }

@@ -50,7 +50,6 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
     
     
     
-    
     // MARK: - 클로저
     var receiptChangedClosure: (() -> Void)?
     var userChangedClosure: ((RoomUserDataDictionary) -> Void)?

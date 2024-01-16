@@ -8,12 +8,9 @@
 import UIKit
 
 struct CumulativeAmount {
-    var userID: String
     var cumulativeAmount: Int
     
-    init(userID: String,
-         amount: Int) {
-        self.userID = userID
+    init(amount: Int) {
         self.cumulativeAmount = amount
     }
 }

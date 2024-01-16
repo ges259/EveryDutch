@@ -12,10 +12,12 @@ final class SegmentBtnStackView: UIStackView {
     
     // MARK: - 레이아웃
     private var firstBtn: UIButton = UIButton.btnWithTitle(
+        title: "누적 금액",
         font: UIFont.systemFont(ofSize: 14),
         backgroundColor: UIColor.normal_white)
 
     private var secondBtn: UIButton = UIButton.btnWithTitle(
+        title: "받아야 할 돈",
         font: UIFont.systemFont(ofSize: 14),
         backgroundColor: UIColor.unselected_gray)
     
@@ -77,11 +79,11 @@ final class SegmentBtnStackView: UIStackView {
     }
     
     @objc private func firstBtnTapped() {
-        self.delegate?.firstBtnTapped()
+        self.delegate?.firstBtnTapped(true)
         self.btnColorChange(isFirst: true)
     }
     @objc private func secondBtnTapped() {
-        self.delegate?.secondBtnTapped()
+        self.delegate?.firstBtnTapped(false)
         self.btnColorChange(isFirst: false)
     }
     

@@ -21,8 +21,4 @@ final class RoomSettingVM: RoomSettingVMProtocol {
         return self.users
     }
     
-    var getRoomMoneyData: [CumulativeAmount] {
-        return self.roomDataManager.getCumulativeAmountArray
-    }
-    
 }

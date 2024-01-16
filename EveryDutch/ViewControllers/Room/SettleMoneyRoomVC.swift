@@ -25,7 +25,11 @@ final class SettleMoneyRoomVC: UIViewController {
     
     // 탑뷰 내부 레이아웃
     /// (정산 내역 / 받아야 할 돈)을 선택할 수 있는 버튼 스택뷰
-    private var segmentBtnStackView: SegmentBtnStackView = SegmentBtnStackView()
+    private lazy var segmentBtnStackView: SegmentBtnStackView = {
+        let btn = SegmentBtnStackView()
+        btn.delegate = self
+        return btn
+    }()
     /// 유저를 보여주는 테이블뷰
     private lazy var usersTableView: UsersTableView = UsersTableView(
         viewModel: UsersTableViewVM(
@@ -285,18 +289,13 @@ extension SettleMoneyRoomVC {
     private func configureClosure() {
         // 레시피를 가져왔을 때
         self.viewModel.receiptChangedClosure = {
-//            DispatchQueue.main.async {
-                self.receiptTableView.reloadData()
-//            }
+            self.receiptTableView.reloadData()
         }
         // 데이터를 처음 가져왔을 때
         self.viewModel.fetchMoneyDataClosure = {
             self.usersTableView.viewModel.makeCellVM()
             self.usersTableView.reloadData()
         }
-//        self.viewModel.userChangedClosure = { users in
-//
-//        }
     }
     
     
@@ -468,5 +467,15 @@ extension SettleMoneyRoomVC {
             // topView 닫기
             self.closeTopView()
         }
+    }
+}
+
+
+
+// MARK: - 탑뷰 버튼 색상 변경
+extension SettleMoneyRoomVC: ReceiptBtnStvDelegate {
+    func firstBtnTapped(_ Bool: Bool) {
+        self.usersTableView.firstBtnTapped = Bool
+        self.usersTableView.reloadData()
     }
 }

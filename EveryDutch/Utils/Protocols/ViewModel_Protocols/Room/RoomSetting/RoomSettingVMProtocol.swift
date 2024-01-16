@@ -11,5 +11,4 @@ protocol RoomSettingVMProtocol {
 //    var makeCellClosure: (([RoomUsers]) -> Void)? { get set }
     
     func getUserData() -> RoomUserDataDictionary
-    var getRoomMoneyData: [CumulativeAmount] { get }
 }

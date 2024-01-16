@@ -13,7 +13,7 @@ import FirebaseDatabaseInternal
 
 extension RoomsAPI {
     
-    typealias RoomMoneyDataCompletion = (Result<[CumulativeAmount], ErrorEnum>) -> Void
+    typealias RoomMoneyDataCompletion = (Result<CumulativeAmountDictionary, ErrorEnum>) -> Void
     
 
     
@@ -30,16 +30,15 @@ extension RoomsAPI {
                     completion(.failure(.readError))
                     return
                 }
-                var cumulativeAmounts: [CumulativeAmount] = []
+                var cumulativeAmounts: CumulativeAmountDictionary = [:]
                 
                 
                 for (userID, amount) in value {
                         
                     let moneyData = CumulativeAmount(
-                        userID: userID,
                         amount: amount)
                     
-                    cumulativeAmounts.append(moneyData)
+                    cumulativeAmounts[userID] = moneyData
                 }
                 
                 // 결과적으로 생성된 CumulativeAmount 배열

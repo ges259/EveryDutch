@@ -11,14 +11,6 @@ enum CardScreen_Enum {
     case makeRoom
     case editProfile
     case profile
-    
-//    var cardMode: [CardMode] {
-//        switch self {
-//        case .makeRoom: return [.makeRoom, .userInfoFix]
-//        case .editProfile: return [.userInfoFix, .userInfoFix]
-//        case .profile: return [.readMode_profile, .info_Btn]
-//        }
-//    }
 }
 enum CardMode {
     case makeRoom

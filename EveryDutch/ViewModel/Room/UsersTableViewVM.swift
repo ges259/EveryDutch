@@ -37,28 +37,26 @@ class UsersTableViewVM: UsersTableViewVMProtocol {
     // moneyData: [CumulativeAmount]
     // 셀 가져와서 표시
     func makeCellVM() {
-        // MARK: - Fix
-        /*
-         유저를 가져옮
-         -> 유저 아이디를 통해
-            - 누적 금액 및 payback을 가져옮
-         */
+        // 유저를 가져옮
+        let users = self.roomDataManager.getRoomUsersDict
         
-        let moneyData = self.roomDataManager.getCumulativeAmountArray
-        
-        self.cellViewModels = moneyData.map { moneyData in
-            let userID = moneyData.userID
-            let roomUsers = self.roomDataManager.getIdToRoomUser(
-                usersID: userID)
-            // payback데이터 가져오기
+        // 셀 만들기 시작
+        self.cellViewModels = users.map({ (userID, roomUser) in
+            // -> 유저 아이디를 통해
+               // - 누적 금액을 가져옮
+            let cumulativeAmount = self.roomDataManager.getIDToCumulativeAmount(
+                userID: userID)
+            // - payback을 가져옮
             let paybackPrice = self.roomDataManager.getIDToPayback(
                 userID: userID)
+            // 셀 만들기
             return UsersTableViewCellVM(
-                moneyData: moneyData,
+                userID: userID,
+                moneyData: cumulativeAmount,
                 paybackPrice: paybackPrice,
-                roomUsers: roomUsers,
+                roomUsers: roomUser,
                 customTableEnum: self.customTableEnum)
-        }
+        })
     }
     
     // MARK: - 셀 업데이트

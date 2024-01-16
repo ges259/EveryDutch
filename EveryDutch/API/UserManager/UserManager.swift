@@ -8,6 +8,9 @@
 import UIKit
 
 typealias RoomUserDataDictionary = [String : RoomUsers]
+typealias CumulativeAmountDictionary = [String : CumulativeAmount]
+
+
 
 final class RoomDataManager: RoomDataManagerProtocol {
     static let shared: RoomDataManager = RoomDataManager()
@@ -17,7 +20,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
     private var roomData: Rooms?
     
     private var roomUserDataDict: RoomUserDataDictionary = [:]
-    private var cumulativeAmount: [CumulativeAmount] = []
+    private var cumulativeAmount: CumulativeAmountDictionary = [:]
     
     private var paybackData: Payback?
     
@@ -33,10 +36,15 @@ final class RoomDataManager: RoomDataManagerProtocol {
         return self.roomUserDataDict
     }
     
-    var getCumulativeAmountArray: [CumulativeAmount] {
-        return self.cumulativeAmount
-    }
+//    var getCumulativeAmountArray: CumulativeAmountDictionary {
+//        return self.cumulativeAmount
+//    }
     
+    
+    
+    func getIDToCumulativeAmount(userID: String) -> Int {
+        return self.cumulativeAmount[userID]?.cumulativeAmount ?? 0
+    }
     
     func getIdToRoomUser(usersID: String) -> RoomUsers {
         return self.roomUserDataDict[usersID]

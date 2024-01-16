@@ -12,7 +12,7 @@ protocol RoomsAPIProtocol {
     
     typealias RoomsIDCompletion = (Result<[Rooms], ErrorEnum>) -> Void
     typealias RoomUsersCompletion = (Result<[String: RoomUsers], ErrorEnum>) -> Void
-    typealias RoomMoneyDataCompletion = (Result<[CumulativeAmount], ErrorEnum>) -> Void
+    typealias RoomMoneyDataCompletion = (Result<CumulativeAmountDictionary, ErrorEnum>) -> Void
     
     
     func readRooms(completion: @escaping RoomsIDCompletion)

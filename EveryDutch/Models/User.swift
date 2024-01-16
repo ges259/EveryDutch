@@ -14,9 +14,9 @@ struct User {
     var userProfile: String
     
     init(dictionary: [String: Any]) {
-        self.email = dictionary[DatabaseEnum.email] as? String ?? ""
-        self.personalID = dictionary[DatabaseEnum.personal_ID] as? String ?? ""
-        self.userName = dictionary[DatabaseEnum.user_name] as? String ?? ""
-        self.userProfile = dictionary[DatabaseEnum.user_image] as? String ?? ""
+        self.email = dictionary[DatabaseConstants.email] as? String ?? ""
+        self.personalID = dictionary[DatabaseConstants.personal_ID] as? String ?? ""
+        self.userName = dictionary[DatabaseConstants.user_name] as? String ?? ""
+        self.userProfile = dictionary[DatabaseConstants.user_image] as? String ?? ""
     }
 }

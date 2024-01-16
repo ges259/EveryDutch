@@ -59,18 +59,22 @@ extension UsersTableViewCell {
     }
 
     // MARK: - 뷰모델을 통한 셀 설정
-    func configureCell(with viewModel: UsersTableViewCellVM?) {
+    func configureCell(with viewModel: UsersTableViewCellVM?,
+                       firstBtnTapped: Bool) {
         // 뷰모델 저장
         self.viewModel = viewModel
+        
         // viewModel을 사용하여 셀의 뷰를 업데이트.
         guard let viewModel = viewModel else { return }
-        self.tableCellStv.userNameLbl.text = viewModel.userName
-        self.tableCellStv.priceLbl.text = "\(viewModel.cumulativeAmount)"
-        self.tableCellStv.profileImg.image = viewModel.profileImg
+        self.configureAutoLayout(viewModel: viewModel)
         
         self.rightBtn.setImage(viewModel.rightBtnImg, for: .normal)
         
-        self.configureAutoLayout(viewModel: viewModel)
+        self.tableCellStv.userNameLbl.text = viewModel.userName
+        self.tableCellStv.profileImg.image = viewModel.profileImg
+        self.tableCellStv.priceLbl.text = firstBtnTapped
+        ? "\(viewModel.cumulativeAmount)"
+        : "\(viewModel.paybackPrice)"
     }
     
     // MARK: - 오토레이아웃 설정
@@ -85,7 +89,7 @@ extension UsersTableViewCell {
         case .isSettle:
             self.configureSettleVC()
         }
-        
+         
     }
     
     

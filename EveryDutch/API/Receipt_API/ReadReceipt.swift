@@ -18,7 +18,7 @@ extension ReceiptAPI {
         // MARK: - Fix
         RECEIPT_REF
             .child("version_ID_1")
-            .queryOrdered(byChild: DatabaseEnum.date)
+            .queryOrdered(byChild: DatabaseConstants.date)
             .queryLimited(toLast: 3)
             .observeSingleEvent(of: .value) { snapshot in
                 

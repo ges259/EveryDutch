@@ -15,10 +15,12 @@ protocol RoomDataManagerProtocol {
     
     var getRoomUsersDict: RoomUserDataDictionary { get }
     
-    var getCumulativeAmountArray: [CumulativeAmount] { get }
+//    var getCumulativeAmountArray: CumulativeAmountDictionary { get }
     
     func getIdToRoomUser(usersID: String) -> RoomUsers
     func getIDToPayback(userID: String) -> Int
+
+    func getIDToCumulativeAmount(userID: String) -> Int
     
     
     func loadRoomUsers(
