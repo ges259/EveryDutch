@@ -17,6 +17,7 @@ final class ReceiptWriteVC: UIViewController {
         let scrollView = UIScrollView()
             scrollView.showsVerticalScrollIndicator = false
             scrollView.alwaysBounceVertical = true
+        scrollView.delegate = self
         return scrollView
     }()
     /// 컨텐트뷰 ( - 스크롤뷰)
@@ -56,10 +57,10 @@ final class ReceiptWriteVC: UIViewController {
         backgroundColor: .normal_white,
         placeholderText: "가격을 입력해 주세요.",
         insetX: 25)
-    private var payerInfoTF: InsetTextField = InsetTextField(
-        backgroundColor: .normal_white,
-        placeholderText: "계산한 사람을 선택해 주세요.",
-        insetX: 25)
+    private var payerInfoLbl: CustomLabel = CustomLabel(
+        text: "계산한 사람을 선택해 주세요.",
+        backgroundColor: UIColor.normal_white,
+        leftInset: 25)
     
     
     private var memoNumOfCharLbl: CustomLabel = CustomLabel(
@@ -143,7 +144,7 @@ final class ReceiptWriteVC: UIViewController {
         distribution: .fill)
     private lazy var payerStackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.payerDetailLbl,
-                           self.payerInfoTF],
+                           self.payerInfoLbl],
         axis: .horizontal,
         spacing: 0,
         alignment: .fill,
@@ -174,21 +175,16 @@ final class ReceiptWriteVC: UIViewController {
         return stv
     }()
     
-    // MARK: - 데이트 피커
-    // UIDatePicker 정의
-    private let datePicker: UIDatePicker = {
-        let picker = UIDatePicker()
-        // 시간 선택 모드로 설정
-        picker.datePickerMode = .time
-        // iOS 14 이상에서 사용할 수 있는 스타일
-        picker.preferredDatePickerStyle = .wheels
-        // 초기 상태는 숨김으로 설정
+    // MARK: - 타임 피커
+    // UIPickerView 인스턴스 생성
+    private lazy var timePicker: UIPickerView = {
+        let picker = UIPickerView()
+        picker.dataSource = self
+        picker.delegate = self
+        picker.backgroundColor = UIColor.white
         picker.isHidden = true
         return picker
     }()
-    
-    
-    
     
     
     
@@ -260,7 +256,8 @@ extension ReceiptWriteVC {
          self.whiteView,
          self.addPersonBtn,
          self.tableFooterStv,
-         self.tableView].forEach { view in
+         self.tableView,
+         self.timePicker].forEach { view in
             view.clipsToBounds = true
             view.layer.cornerRadius = 10
         }
@@ -274,6 +271,9 @@ extension ReceiptWriteVC {
         self.contentView.addSubview(self.totalStackView)
         self.memoStackView.addSubview(self.memoNumOfCharLbl)
         self.whiteView.addSubview(self.infoStackView)
+        // 데이트 피커를 뷰의 서브뷰로 추가
+        self.scrollView.addSubview(timePicker)
+        
         
         // 스크롤뷰
         self.scrollView.snp.makeConstraints { make in
@@ -325,6 +325,14 @@ extension ReceiptWriteVC {
             make.leading.equalToSuperview().offset(20)
             make.trailing.bottom.equalToSuperview()
         }
+        // 데이트 피커 설정
+        self.timePicker.snp.makeConstraints { make in
+            // 데이트 피커를 상위 뷰의 중앙에 위치시킵니다.
+            make.centerX.equalToSuperview()
+            make.bottom.equalTo(self.timeStackView.snp.bottom)
+            // 데이트 피커의 너비와 높이를 100으로 설정합니다.
+            make.height.width.equalTo(150)
+        }
     }
     
     // MARK: - 액션 설정
@@ -346,13 +354,34 @@ extension ReceiptWriteVC {
             self,
             action: #selector(self.bottomBtnTapped),
             for: .touchUpInside)
+        
+        let timeGesture = UITapGestureRecognizer(
+            target: self,
+            action: #selector(self.timeInfoLblTapped))
+        self.timeInfoLbl.isUserInteractionEnabled = true
+        self.timeInfoLbl.addGestureRecognizer(timeGesture)
+        
+        let payerGesture = UITapGestureRecognizer(
+            target: self,
+            action: #selector(self.payerInfoLblTapped))
+        self.payerInfoLbl.isUserInteractionEnabled = true
+        self.payerInfoLbl.addGestureRecognizer(payerGesture)
+        
+        // 배경 탭 감지를 위한 제스처 인식기를 추가합니다.
+        let tapGesture = UITapGestureRecognizer(
+            target: self,
+            action: #selector(self.dismissPicker))
+        // 피커 뷰가 제스처 이벤트를 가로채지 못하게 합니다.
+        tapGesture.cancelsTouchesInView = false
+        // 뷰에 제스처 인식기를 추가합니다.
+        self.view.addGestureRecognizer(tapGesture)
+        
+        
+        
     }
     
     // MARK: - 뷰모델을 통한 설정
     private func configureViewWithViewModel() {
-        // MARK: - Fix
-        self.moneyCountLbl.text = "남은 금액 : 25,000원"
-        
         self.dutchBtn.backgroundColor = self.viewModel.dutchBtnColor
     }
 }
@@ -379,6 +408,24 @@ extension ReceiptWriteVC {
     }
     @objc private func backButtonTapped() {
         self.coordinator.didFinish()
+    }
+    
+    
+    
+    
+    // MARK: - 데이트 피커 액션
+    // 제스처 인식기가 탭을 감지하면 호출되는 메소드
+    @objc func dismissPicker(_ gestureRecognizer: UITapGestureRecognizer) {
+        if !self.timePicker.isHidden {
+            self.timePicker.isHidden = true
+        }
+    }
+    @objc private func timeInfoLblTapped() {
+        self.timePicker.isHidden = false
+    }
+    
+    
+    @objc private func payerInfoLblTapped() {
     }
 }
 
@@ -421,4 +468,94 @@ extension ReceiptWriteVC: UITableViewDataSource {
         
         return cell
     }
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - 스크롤뷰 델리게이트
+extension ReceiptWriteVC: UIScrollViewDelegate {
+    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        if !self.timePicker.isHidden  {
+            self.timePicker.isHidden = true
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - 타임피커 데이터소스
+extension ReceiptWriteVC: UIPickerViewDataSource {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 2 // 시간과 분을 위한 두 개의 컴포넌트
+    }
+
+    func pickerView(_ pickerView: UIPickerView, 
+                    numberOfRowsInComponent component: Int)
+    -> Int {
+        if component == 0 {
+            return 24 // 시간은 0부터 23까지
+        } else {
+            return 60 // 분은 0부터 59까지
+        }
+    }
+}
+
+// MARK: - 타임피커 델리게이트
+extension ReceiptWriteVC: UIPickerViewDelegate {
+    func pickerView(_ pickerView: UIPickerView, 
+                    titleForRow row: Int, 
+                    forComponent component: Int)
+    -> String? {
+        return String(format: "%02d", row) // 두 자리 숫자 형식으로 반환
+    }
+
+    func pickerView(_ pickerView: UIPickerView, 
+                    didSelectRow row: Int,
+                    inComponent component: Int)
+    {
+        // 사용자가 선택한 시간과 분을 처리
+        let selectedHour = pickerView.selectedRow(inComponent: 0)
+        let selectedMinute = pickerView.selectedRow(inComponent: 1)
+        // 선택한 시간과 분을 이용하여 필요한 작업 수행
+        let hour = String(format: "%02d", selectedHour)
+        let minute = String(format: "%02d", selectedMinute)
+        
+        self.timeInfoLbl.text = "\(hour) : \(minute)"
+        
+    }
+    func pickerView(_ pickerView: UIPickerView, 
+                    viewForRow row: Int, 
+                    forComponent component: Int,
+                    reusing view: UIView?) 
+    -> UIView {
+        // 재사용 가능한 뷰가 있으면 사용하고, 없으면 새로운 라벨을 생성
+        var label: UILabel
+        if let view = view as? UILabel {
+            label = view
+        } else {
+            label = UILabel()
+        }
+
+        label.textColor = .black
+        label.textAlignment = .center
+        label.font = UIFont.systemFont(ofSize: 18) // 폰트 크기를 24로 설정
+        label.text = String(format: "%02d", row)
+        
+        return label
+    }
+
 }
