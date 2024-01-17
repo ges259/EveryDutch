@@ -17,7 +17,8 @@ final class CardScreenCoordinator: CardScreenCoordProtocol {
             print("********************")
         }
     }
-    weak var delegate: MultiPurposeScreenDelegate?
+    // MainCoordinator에서 설정
+    weak var delegate: CardScreenDelegate?
     
     var nav: UINavigationController
     private var cardScreen_Enum: CardScreen_Enum = .profile
@@ -30,14 +31,14 @@ final class CardScreenCoordinator: CardScreenCoordProtocol {
     }
     
     func start() {
-        let multipurposeScreenVM = CardScreenVM(
+        let cardScreenVM = CardScreenVM(
             cardScreen_Enum: self.cardScreen_Enum)
         // PlusViewController 인스턴스 생성
-        let multipurposeScreenVC = CardScreenVC(
-            viewModel: multipurposeScreenVM,
+        let cardScreenVC = CardScreenVC(
+            viewModel: cardScreenVM,
             coordinator: self)
-        multipurposeScreenVC.delegate = self
-        self.nav.pushViewController(multipurposeScreenVC, animated: true)
+        cardScreenVC.delegate = self
+        self.nav.pushViewController(cardScreenVC, animated: true)
     }
     
 
@@ -52,7 +53,8 @@ final class CardScreenCoordinator: CardScreenCoordProtocol {
 }
 
 
-extension CardScreenCoordinator: MultiPurposeScreenDelegate {
+extension CardScreenCoordinator: CardScreenDelegate {
+    /// CardScreenVC에서 delegate.logout()을 호출 시 실행 됨.
     func logout() {
         self.didFinish()
         (self.parentCoordinator as? MainCoordinator)?.logout()

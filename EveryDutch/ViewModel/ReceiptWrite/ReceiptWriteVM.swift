@@ -10,17 +10,34 @@ import UIKit
 final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     
     // MARK: - 모델
-    private var cellViewModels: [ReceiptWriteCellVM] = []
+    private var cellViewModels: [ReceiptWriteCellVM] = [] {
+        didSet {
+            print("*************************")
+            print("*************************")
+            print("*************************")
+            print(self.cellViewModels.count)
+            print("__________________________")
+            print("__________________________")
+            print("__________________________")
+        }
+    }
     private var roomDataManager: RoomDataManagerProtocol
-    private var roomUsers: RoomUserDataDictionary = [:]
     
+    
+    
+    
+    var selectedUsers: RoomUserDataDictionary = [:] {
+        didSet {
+            dump(selectedUsers)
+        }
+    }
     
     
     
     
     
     var numOfUsers: Int {
-        return self.roomUsers.count
+        return self.selectedUsers.count
     }
     
     var dutchBtnColor: UIColor {
@@ -37,7 +54,7 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     init(roomDataManager: RoomDataManagerProtocol) {
         self.roomDataManager = roomDataManager
         
-        self.makeCellVM()
+        
     }
 }
     
@@ -55,12 +72,13 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
 extension ReceiptWriteVM {
     
     // MARK: - 셀의 뷰모델 만들기
-    func makeCellVM() {
+    func makeCellVM(selectedUsers: RoomUserDataDictionary) {
         // 방의 유저들 정보 가져오기
-        self.roomUsers = self.roomDataManager.getRoomUsersDict
+        self.selectedUsers = selectedUsers
         
+        self.cellViewModels.removeAll()
         // 유저 정보 보내기
-        self.cellViewModels = self.roomUsers.map { (userID, roomUser) in
+        self.cellViewModels = self.selectedUsers.map { (userID, roomUser) in
             ReceiptWriteCellVM(
                 userID: userID,
                 roomUsers: roomUser)

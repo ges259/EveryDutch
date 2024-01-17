@@ -20,11 +20,16 @@ final class ReceiptWriteCoordinator: ReceiptWriteCoordProtocol {
     
     var nav: UINavigationController
     var modalNavController: UINavigationController?
+    
+    
+    
+    
     // 의존성 주입
     init(nav: UINavigationController) {
         self.nav = nav
     }
     
+    // MARK: - Start - ReceiptWriteVC
     func start() {
         let receiptWriteVM = ReceiptWriteVM(
             roomDataManager: RoomDataManager.shared)
@@ -42,17 +47,28 @@ final class ReceiptWriteCoordinator: ReceiptWriteCoordProtocol {
         // 네비게이션 컨트롤러 참조 저장
         self.modalNavController = receiptWriteNavController
     }
-    func peopleSelectionPanScreen() {
+    
+    
+    
+    // MARK: - PeopleSelectionPanScreen
+    func peopleSelectionPanScreen(users: RoomUserDataDictionary?) {
         // PeopleSelectionPanCoordinator 생성
         let peopleSelectionPanCoordinator = PeopleSelectionPanCoordinator(
             nav: self.modalNavController ?? self.nav)
         self.childCoordinators.append(peopleSelectionPanCoordinator)
         // 부모 코디네이터가 자신이라는 것을 명시 (뒤로가기 할 때 필요)
         peopleSelectionPanCoordinator.parentCoordinator = self
+        // ***** 델리게이트 설정 *****
+        peopleSelectionPanCoordinator.delegate = self
+        // 데이터 전달
+        peopleSelectionPanCoordinator.selectedUsers = users
+        
         // 코디네이터에게 화면이동을 지시
         peopleSelectionPanCoordinator.start()
     }
     
+    
+    // MARK: - CheckReceiptPanScreen
     func checkReceiptPanScreen() {
         // CheckReceiptCoordinator 생성
         let checkReceiptCoordinator = CheckReceiptCoordinator(
@@ -64,6 +80,8 @@ final class ReceiptWriteCoordinator: ReceiptWriteCoordProtocol {
         checkReceiptCoordinator.start()
     }
     
+    
+    // MARK: - didFinish
     func didFinish() {
         // 현재 표시된 뷰 컨트롤러를 dismiss
         self.nav.dismiss(animated: true) {
@@ -77,5 +95,19 @@ final class ReceiptWriteCoordinator: ReceiptWriteCoordProtocol {
     deinit {
         print("deinit ----- \(#function)-----\(self)")
 
+    }
+}
+
+
+// MARK: - PeopleSelection 델리게이트
+extension ReceiptWriteCoordinator: PeopleSelectionDelegate {
+    func selectedUsers(users: RoomUserDataDictionary) {
+        // ReceiptWirteVC 찾기
+        if let receiptWriteVC = self.modalNavController?
+            .viewControllers
+            .first(where: { $0 is ReceiptWriteVC }) as? ReceiptWriteVC {
+            // ReceiptWirteVC의 메서드 실행
+            receiptWriteVC.changeUsersData(users)
+        }
     }
 }

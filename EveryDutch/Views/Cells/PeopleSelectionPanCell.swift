@@ -98,5 +98,6 @@ extension PeopleSelectionPanCell {
         
         
         self.tableCellStv.userNameLbl.text = user.roomUserName
+        self.tableCellStv.rightImg.isHidden = !self.cellIsSelected
     }
 }

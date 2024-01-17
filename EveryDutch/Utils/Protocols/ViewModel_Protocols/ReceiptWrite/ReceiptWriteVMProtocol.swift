@@ -8,11 +8,11 @@
 import UIKit
 
 protocol ReceiptWriteVMProtocol {
-    
+    var selectedUsers: RoomUserDataDictionary { get set }
     
     var numOfUsers: Int { get }
     
-    
+    func makeCellVM(selectedUsers: RoomUserDataDictionary)
     func cellViewModel(at index: Int) -> ReceiptWriteCellVM
     
     var dutchBtnColor: UIColor { get }

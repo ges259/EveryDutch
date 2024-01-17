@@ -404,7 +404,8 @@ extension ReceiptWriteVC {
         self.coordinator.checkReceiptPanScreen()
     }
     @objc private func addPersonBtnTapped() {
-        self.coordinator.peopleSelectionPanScreen()
+        self.coordinator.peopleSelectionPanScreen(
+            users: self.viewModel.selectedUsers)
     }
     @objc private func backButtonTapped() {
         self.coordinator.didFinish()
@@ -426,6 +427,14 @@ extension ReceiptWriteVC {
     
     
     @objc private func payerInfoLblTapped() {
+    }
+    
+    
+    
+    
+    func changeUsersData(_ users: RoomUserDataDictionary) {
+        self.viewModel.makeCellVM(selectedUsers: users)
+        self.tableView.reloadData()
     }
 }
 

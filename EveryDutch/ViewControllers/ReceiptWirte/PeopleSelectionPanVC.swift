@@ -50,8 +50,10 @@ final class PeopleSelectionPanVC: UIViewController {
     
     
     // MARK: - 프로퍼티
-    var coordinator: Coordinator
-    var viewModel: PeopleSelectionPanVMProtocol
+    private var coordinator: Coordinator
+    private var viewModel: PeopleSelectionPanVMProtocol
+    // PeopleSelection_Coordinator로 전달 됨.
+    weak var delegate: PeopleSelectionDelegate?
     
     
     
@@ -133,7 +135,9 @@ extension PeopleSelectionPanVC {
     
     
     @objc private func bottomBtnTapped() {
-        print(#function)
+        self.dismiss(animated: true)
+        // People_Selecteion_Pan_Coordinator로 전달
+        self.delegate?.selectedUsers(users: self.viewModel.selectedUsers)
     }
 }
 
@@ -177,9 +181,14 @@ extension PeopleSelectionPanVC: UITableViewDataSource {
             withIdentifier: Identifier.peopleSelectionPanCell,
             for: indexPath) as! PeopleSelectionPanCell
         // 뷰모델에서 userID와 해당 RoomUsers 객체를 가져옴
-        let userEntry = viewModel.usersKeyValueArray[indexPath.row]
+        let userEntry = self.viewModel.usersKeyValueArray[indexPath.row]
         
-
+        let userID = userEntry.key
+        
+        cell.cellIsSelected = self.viewModel.getIdToRoomUser(usersID: userID)
+        
+        
+        
         // 셀에 userID와 user 데이터 설정
         cell.configureCellData(userID: userEntry.key,
                                user: userEntry.value)

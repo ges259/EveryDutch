@@ -13,8 +13,9 @@ final class PeopleSelectionPanCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
     
     var nav: UINavigationController
-    
-    
+    // WriteScreen_Coordinator로 전달 됨.
+    weak var delegate: PeopleSelectionDelegate?
+    var selectedUsers: RoomUserDataDictionary?
     
     
     // 의존성 주입
@@ -23,14 +24,17 @@ final class PeopleSelectionPanCoordinator: Coordinator {
     }
     
     
+    
+    // MARK: - Start - PeopleSelectionPanVC
     func start() {
         let peopleSelectionPanVM = PeopleSelectionPanVM(
+            selectedUsers: self.selectedUsers,
             roomDataManager: RoomDataManager.shared)
         
         let peopleSelectionPanVC = PeopleSelectionPanVC(
             viewModel: peopleSelectionPanVM,
             coordinator: self)
-        
+        peopleSelectionPanVC.delegate = self
         peopleSelectionPanVC.modalPresentationStyle = .overFullScreen
         
         self.nav.presentPanModal(peopleSelectionPanVC)
@@ -38,5 +42,13 @@ final class PeopleSelectionPanCoordinator: Coordinator {
     
     func didFinish() {
         self.parentCoordinator?.removeChildCoordinator(child: self)
+    }
+}
+
+// MARK: - PeopleSelection 델리게이트
+extension PeopleSelectionPanCoordinator: PeopleSelectionDelegate {
+    func selectedUsers(users: RoomUserDataDictionary) {
+        // Receipt_Write_Coordinator로 전달
+        self.delegate?.selectedUsers(users: users)
     }
 }

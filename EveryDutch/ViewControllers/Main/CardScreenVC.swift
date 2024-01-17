@@ -50,8 +50,11 @@ final class CardScreenVC: UIViewController {
     // MARK: - 프로퍼티
     private var viewModel: CardScreenVMProtocol
     private var coordinator: CardScreenCoordProtocol
+    /// CardScreenCoordinator로 전달 됨
+    weak var delegate: CardScreenDelegate?
     
-    weak var delegate: MultiPurposeScreenDelegate?
+    
+    
     private lazy var cardHeight = (self.view.frame.width - 20) * 1.8 / 3
     
     

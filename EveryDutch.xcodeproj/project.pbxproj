@@ -75,10 +75,11 @@
 		5F6848802B441C260015BFCC /* SignUpScreenCoordProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F68487F2B441C260015BFCC /* SignUpScreenCoordProtocol.swift */; };
 		5F6848822B441C360015BFCC /* SignUpScreenCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6848812B441C360015BFCC /* SignUpScreenCoordinator.swift */; };
 		5F6848852B4428310015BFCC /* CardTextDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6848842B4428310015BFCC /* CardTextDelegate.swift */; };
-		5F6848872B4431AF0015BFCC /* MultiPurposeScreenDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6848862B4431AF0015BFCC /* MultiPurposeScreenDelegate.swift */; };
+		5F6848872B4431AF0015BFCC /* CardScreenDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6848862B4431AF0015BFCC /* CardScreenDelegate.swift */; };
 		5F6C43492B3C3B6A00BBC466 /* UIStackView+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6C43482B3C3B6A00BBC466 /* UIStackView+Ext.swift */; };
 		5F6C434B2B3C4C1500BBC466 /* CustomTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6C434A2B3C4C1500BBC466 /* CustomTableView.swift */; };
 		5F6C434D2B3C5BD000BBC466 /* CustomLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6C434C2B3C5BD000BBC466 /* CustomLabel.swift */; };
+		5F6EBDCC2B5834DA0051D0A7 /* PeopleSelectionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6EBDCB2B5834DA0051D0A7 /* PeopleSelectionDelegate.swift */; };
 		5F6FDDE22B50568B00F09CCD /* ReceiptScreenTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6FDDE12B50568B00F09CCD /* ReceiptScreenTableViewCell.swift */; };
 		5F6FDDE42B505DD000F09CCD /* ReceiptScreenPanCellVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6FDDE32B505DD000F09CCD /* ReceiptScreenPanCellVM.swift */; };
 		5F6FDDE82B5067E700F09CCD /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6FDDE72B5067E700F09CCD /* UserManager.swift */; };
@@ -220,10 +221,11 @@
 		5F68487F2B441C260015BFCC /* SignUpScreenCoordProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpScreenCoordProtocol.swift; sourceTree = "<group>"; };
 		5F6848812B441C360015BFCC /* SignUpScreenCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpScreenCoordinator.swift; sourceTree = "<group>"; };
 		5F6848842B4428310015BFCC /* CardTextDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardTextDelegate.swift; sourceTree = "<group>"; };
-		5F6848862B4431AF0015BFCC /* MultiPurposeScreenDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiPurposeScreenDelegate.swift; sourceTree = "<group>"; };
+		5F6848862B4431AF0015BFCC /* CardScreenDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardScreenDelegate.swift; sourceTree = "<group>"; };
 		5F6C43482B3C3B6A00BBC466 /* UIStackView+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStackView+Ext.swift"; sourceTree = "<group>"; };
 		5F6C434A2B3C4C1500BBC466 /* CustomTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTableView.swift; sourceTree = "<group>"; };
 		5F6C434C2B3C5BD000BBC466 /* CustomLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLabel.swift; sourceTree = "<group>"; };
+		5F6EBDCB2B5834DA0051D0A7 /* PeopleSelectionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleSelectionDelegate.swift; sourceTree = "<group>"; };
 		5F6FDDE12B50568B00F09CCD /* ReceiptScreenTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptScreenTableViewCell.swift; sourceTree = "<group>"; };
 		5F6FDDE32B505DD000F09CCD /* ReceiptScreenPanCellVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptScreenPanCellVM.swift; sourceTree = "<group>"; };
 		5F6FDDE72B5067E700F09CCD /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
@@ -615,7 +617,8 @@
 			isa = PBXGroup;
 			children = (
 				5F6848842B4428310015BFCC /* CardTextDelegate.swift */,
-				5F6848862B4431AF0015BFCC /* MultiPurposeScreenDelegate.swift */,
+				5F6848862B4431AF0015BFCC /* CardScreenDelegate.swift */,
+				5F6EBDCB2B5834DA0051D0A7 /* PeopleSelectionDelegate.swift */,
 			);
 			path = Delegate;
 			sourceTree = "<group>";
@@ -1077,6 +1080,7 @@
 				5F614B4A2B45D47A00EF35CE /* PeopleSelectionPanCell.swift in Sources */,
 				5F4FA7272B553F13009EE4F4 /* VersionAPIProtocol.swift in Sources */,
 				5F4913DB2B3DBE5900CD76A8 /* SettlementCoordProtocol.swift in Sources */,
+				5F6EBDCC2B5834DA0051D0A7 /* PeopleSelectionDelegate.swift in Sources */,
 				5FE3DED12B39DA9C008D58AE /* UIView+Ext.swift in Sources */,
 				5F6848852B4428310015BFCC /* CardTextDelegate.swift in Sources */,
 				5FE3DEB42B39CB68008D58AE /* UIButton+Ext.swift in Sources */,
@@ -1112,7 +1116,7 @@
 				5F9905072B4ABAD400DB9747 /* UsersTableViewCellVM.swift in Sources */,
 				5F6C434B2B3C4C1500BBC466 /* CustomTableView.swift in Sources */,
 				5FE3DEB22B39CB5A008D58AE /* Coordinator.swift in Sources */,
-				5F6848872B4431AF0015BFCC /* MultiPurposeScreenDelegate.swift in Sources */,
+				5F6848872B4431AF0015BFCC /* CardScreenDelegate.swift in Sources */,
 				5FE3DEC62B39CBD9008D58AE /* MainCoordProtocol.swift in Sources */,
 				5F5B2ED52B516C870064B738 /* Date+Ext.swift in Sources */,
 				5F4FA7252B553C5B009EE4F4 /* ReceiptAPIProtocol.swift in Sources */,

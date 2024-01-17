@@ -7,6 +7,6 @@
 
 import Foundation
 
-protocol MultiPurposeScreenDelegate: AnyObject {
+protocol CardScreenDelegate: AnyObject {
     func logout()
 }

@@ -53,16 +53,16 @@ final class MainCoordinator: MainCoordProtocol{
     /// 플러스 버튼을 누르면 화면 이동
     func cardScreen(_ cardScreen_Enum: CardScreen_Enum) {
         // Main-Coordinator 생성
-        let multipurposeScreenCoordinator = CardScreenCoordinator(
+        let cardScreenCoordinator = CardScreenCoordinator(
             nav: self.nav,
             cardScreen_Enum: cardScreen_Enum)
-        
-        multipurposeScreenCoordinator.delegate = self
-        self.childCoordinators.append(multipurposeScreenCoordinator)
+        // ***** 델리게이트 설정 *****
+        cardScreenCoordinator.delegate = self
+        self.childCoordinators.append(cardScreenCoordinator)
         // 부모 코디네이터가 자신이라는 것을 명시 (뒤로가기 할 때 필요)
-            multipurposeScreenCoordinator.parentCoordinator = self
+        cardScreenCoordinator.parentCoordinator = self
         // 코디네이터에게 화면이동을 지시
-            multipurposeScreenCoordinator.start()
+        cardScreenCoordinator.start()
     }
     
     func selectALgoinMethodScreen() {
@@ -87,13 +87,8 @@ final class MainCoordinator: MainCoordProtocol{
     }
 }
 
-extension MainCoordinator: MultiPurposeScreenDelegate {
+extension MainCoordinator: CardScreenDelegate {
     func logout() {
-        // SettleMoneyRoomCoordinator 생성
-        let selectALoginMethodCoordinator = SelectALoginMethodCoordinator(nav: self.nav)
-        self.childCoordinators.append(selectALoginMethodCoordinator)
-        // 부모 코디네이터가 자신이라는 것을 명시 (뒤로가기 할 때 필요)
-        selectALoginMethodCoordinator.parentCoordinator = self
-        selectALoginMethodCoordinator.start()
+        self.selectALgoinMethodScreen()
     }
 }

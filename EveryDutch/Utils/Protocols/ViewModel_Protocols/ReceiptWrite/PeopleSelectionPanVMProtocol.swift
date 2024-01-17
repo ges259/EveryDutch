@@ -13,6 +13,9 @@ protocol PeopleSelectionPanVMProtocol {
     var numOfUsers: Int { get }
     func selectedUser(index: Int)
 //    var cellSelectedClosure: ((Bool) -> Void)? { get }
-    
+    var selectedUsers: RoomUserDataDictionary { get }
     var usersKeyValueArray: [(key: String, value: RoomUsers)] { get }
+    
+    
+    func getIdToRoomUser(usersID: String) -> Bool
 }

@@ -77,7 +77,7 @@ final class RoomSettingCoordinator: RoomSettingCoordProtocol{
     }
 }
 
-extension RoomSettingCoordinator: MultiPurposeScreenDelegate {
+extension RoomSettingCoordinator: CardScreenDelegate {
     func logout() {
         print(#function)
     }

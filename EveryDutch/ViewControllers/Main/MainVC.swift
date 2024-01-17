@@ -370,7 +370,7 @@ extension MainVC: UICollectionViewDataSource {
 }
 
 
-extension MainVC: MultiPurposeScreenDelegate {
+extension MainVC: CardScreenDelegate {
     func logout() {
         self.coordinator.selectALgoinMethodScreen()
     }
