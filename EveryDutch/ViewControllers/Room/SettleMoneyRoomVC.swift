@@ -14,22 +14,29 @@ final class SettleMoneyRoomVC: UIViewController {
     
     // MARK: - 탑뷰 레이아웃
     /// 네비게이션바를 가리는 뷰
-    private lazy var navView: UIView = UIView.configureView(
+    private var navView: UIView = UIView.configureView(
         color: UIColor.deep_Blue)
     
     /// 밑으로 내릴 수 있느 탑뷰
-    private lazy var topView: UIView = UIView.configureView(
+    private var topView: UIView = UIView.configureView(
         color: UIColor.deep_Blue)
     
     
     
     // 탑뷰 내부 레이아웃
+//    private lazy var segmentBtnStv: SegmentBtnStackView = {
+//        let btn = SegmentBtnStackView()
+//        btn.delegate = self
+//        return btn
+//    }()
+//    
     /// 유저를 보여주는 테이블뷰
-    private lazy var usersTableView: UsersTableView = UsersTableView(
+    private var usersTableView: UsersTableView = UsersTableView(
         viewModel: UsersTableViewVM(
             roomDataManager: RoomDataManager.shared, .isSettleMoney))
     /// 검색 버튼
-    private lazy var topViewBottomBtn: UIButton = UIButton.btnWithTitle(
+    private var topViewBottomBtn: UIButton = UIButton.btnWithTitle(
+        title: "검색",
         font: UIFont.boldSystemFont(ofSize: 17),
         backgroundColor: UIColor.normal_white)
     /// 탑뷰 스택뷰
@@ -44,12 +51,12 @@ final class SettleMoneyRoomVC: UIViewController {
         stv.setCustomSpacing(4, after: self.usersTableView)
         return stv
     }()
-    private lazy var arrowDownImg: UIImageView = {
+    private var arrowDownImg: UIImageView = {
         let img = UIImageView(image: UIImage.arrow_down)
         img.tintColor = .deep_Blue
         return img
     }()
-    private lazy var topViewIndicator: UIView = UIView.configureView(
+    private var topViewIndicator: UIView = UIView.configureView(
         color: UIColor.black)
     
     
@@ -119,6 +126,7 @@ final class SettleMoneyRoomVC: UIViewController {
         self.configureAutoLayout()
         self.configureAction()
         self.configureClosure()
+        self.configureViewWithViewModel()
     }
     init(viewModel: SettleMoneyRoomProtocol,
          coordinator: SettleMoneyRoomCoordProtocol) {
@@ -159,13 +167,7 @@ extension SettleMoneyRoomVC {
             view.clipsToBounds = true
             view.layer.cornerRadius = 10
         }
-        
-        // MARK: - Fix
-        self.bottomBtn.setTitle("영수증 작성", for: .normal)
-        self.navigationItem.title = "대충 방 이름"
-        self.topViewBottomBtn.setTitle("버튼", for: .normal)
     }
-    
     
     // MARK: - 오토레이아웃 설정
     private func configureAutoLayout() {
@@ -188,7 +190,9 @@ extension SettleMoneyRoomVC {
         self.topView.snp.makeConstraints { make in
             make.top.leading.trailing.equalToSuperview()
         }
-        self.topViewHeight = self.topView.bottomAnchor.constraint(equalTo: self.view.safeAreaLayoutGuide.topAnchor, constant: self.viewModel.minHeight)
+        self.topViewHeight = self.topView.bottomAnchor.constraint(
+            equalTo: self.view.safeAreaLayoutGuide.topAnchor,
+            constant: self.viewModel.minHeight)
         self.topViewHeight.isActive = true
         
         // 탑뷰 - 하단 인디케이터
@@ -232,8 +236,6 @@ extension SettleMoneyRoomVC {
             make.bottom.equalTo(self.bottomBtn.snp.top).offset(-5)
         }
     }
-    
-
     
     // MARK: - 액션 및 제스쳐 설정
     private func configureAction() {
@@ -287,8 +289,21 @@ extension SettleMoneyRoomVC {
         // 데이터를 처음 가져왔을 때
         self.viewModel.fetchMoneyDataClosure = {
             self.usersTableView.viewModel.makeCellVM()
-            self.usersTableView.reloadData()
+            self.usersTableView.usersTableView.reloadData()
         }
+    }
+    
+    
+    private func configureViewWithViewModel() {
+        // 바텀 버튼 설정
+        self.bottomBtn.setTitle(self.viewModel.bottomBtnTitle, for: .normal)
+        
+        // 탑뷰 바텀 버튼을 숨길지 말지 결정
+        self.topViewBottomBtn.isHidden = self.viewModel.isTopViewBtnIsHidden
+        
+        
+        // 네비게이션 타이틀 설정
+        self.navigationItem.title = self.viewModel.navTitle
     }
     
     
@@ -299,8 +314,7 @@ extension SettleMoneyRoomVC {
     
     
     
-    
-    // MARK: - 액션 함수
+    // MARK: - 액션 함수 (화면 이동)
     @objc private func bottomBtnTapped() {
         self.coordinator.receiptWriteScreen()
     }
@@ -310,11 +324,6 @@ extension SettleMoneyRoomVC {
     @objc private func backBtnTapped() {
         self.coordinator.didFinish()
     }
-    
-    
-    
-    
-    // MARK: - 액션
     
     
     
@@ -362,7 +371,7 @@ extension SettleMoneyRoomVC {
         // 탑뷰가 닫혀 있고, 
         // 스와이프 방향이 아래로,
         // 스와이프 속도가 기준치 이하일 때,
-        if !self.viewModel.topViewIsOpen
+        if !self.viewModel.isTopViewOpen
             && self.currentTranslation.y > 0
             && self.currentVelocity.y < 15000
         {
@@ -375,28 +384,36 @@ extension SettleMoneyRoomVC {
         }
     }
     
+    // MARK: - 탑뷰 열기 메서드
     private func openTopView() {
         // 상단 뷰의 높이를 최대 높이로 설정
         self.topViewHeight.constant = self.viewModel.maxHeight
         // 뷰모델 상태 true(open)으로 업데이트
-        self.viewModel.topViewIsOpen = true
-        // 뷰의 레이아웃을 애니메이션과 함께 업데이트
+        self.viewModel.isTopViewOpen = true
+        // 뷰의 레이아웃을 애니메이션과 함께 업데이\
         UIView.animate(withDuration: 0.4) {
             self.view.layoutIfNeeded()
         }
     }
     
+    // MARK: - 탑뷰 닫기 메서드
     private func closeTopView() {
         // 상단 뷰의 높이를 최소 높이로 설정
         self.topViewHeight.constant = self.viewModel.minHeight
         // 뷰모델 상태 false(close)으로 업데이트
-        self.viewModel.topViewIsOpen = false
+        self.viewModel.isTopViewOpen = false
         // 뷰의 레이아웃을 애니메이션과 함께 업데이트
         UIView.animate(withDuration: 0.4) {
             self.view.layoutIfNeeded()
         }
     }
 }
+
+
+
+
+
+
 
 
 
@@ -450,15 +467,38 @@ extension SettleMoneyRoomVC: UITableViewDataSource {
 }
 
 
+
+
+
+
+
+
+
+
 // MARK: - 스크롤뷰 델리게이트
 extension SettleMoneyRoomVC {
     /// 메인 테이블을 스크롤하면, topView 닫는 코드
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         // 메인 테이블뷰일 때만,
         // topView가 열려있다면
-        if scrollView == self.receiptTableView && self.viewModel.topViewIsOpen {
+        if scrollView == self.receiptTableView && self.viewModel.isTopViewOpen {
             // topView 닫기
             self.closeTopView()
         }
     }
 }
+
+
+
+
+
+
+
+
+//
+//extension SettleMoneyRoomVC: ReceiptBtnStvDelegate {
+//    func firstBtnTapped(_ bool: Bool) {
+//        self.usersTableView.isFirstBtn = bool
+//        self.usersTableView.reloadData()
+//    }
+//}

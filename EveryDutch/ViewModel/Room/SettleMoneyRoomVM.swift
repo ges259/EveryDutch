@@ -34,8 +34,23 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
     let minHeight: CGFloat = 35
     
     
+    
+    
+    
+    
     // MARK: - 탑뷰 토글
-    var topViewIsOpen: Bool = false
+    var isTopViewOpen: Bool = false
+    
+    var isSearchMode: Bool = false
+    
+    
+    var isTopViewBtnIsHidden: Bool {
+        return self.isSearchMode
+        ? true
+        : false
+    }
+    
+    
     
     
     // MARK: - 레시피 개수
@@ -44,7 +59,17 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
     }
     
     
+    var bottomBtnTitle: String {
+        return self.isSearchMode
+        ? "검색 설정"
+        : "영수증 작성"
+    }
     
+    var navTitle: String? {
+        return self.isSearchMode
+        ? "검색"
+        : self.roomDataManager.getRoomName
+    }
     
     
     

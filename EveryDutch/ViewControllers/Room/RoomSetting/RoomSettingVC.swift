@@ -115,7 +115,7 @@ extension RoomSettingVC {
     private func configureUI() {
         self.view.backgroundColor = UIColor.base_Blue
         
-        self.usersTableView.isScrollEnabled = false
+        self.usersTableView.usersTableView.isScrollEnabled = false
         
         [self.exitBtn,
          self.inviteBtn,
@@ -212,7 +212,7 @@ extension RoomSettingVC {
     // MARK: - 테이블뷰 데이터 설정
     private func configureUserTableView() {
         self.usersTableView.viewModel.makeCellVM()
-        self.usersTableView.reloadData()
+        self.usersTableView.usersTableView.reloadData()
     }
     
     

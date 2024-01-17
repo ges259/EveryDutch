@@ -35,12 +35,9 @@ final class RoomDataManager: RoomDataManagerProtocol {
     var getRoomUsersDict: RoomUserDataDictionary {
         return self.roomUserDataDict
     }
-    
-//    var getCumulativeAmountArray: CumulativeAmountDictionary {
-//        return self.cumulativeAmount
-//    }
-    
-    
+    var getRoomName: String? {
+        return self.roomData?.roomID
+    }
     
     func getIDToCumulativeAmount(userID: String) -> Int {
         return self.cumulativeAmount[userID]?.cumulativeAmount ?? 0

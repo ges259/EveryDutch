@@ -7,11 +7,11 @@
 
 import UIKit
 
-protocol ReceiptWirteVMProtocol {
+protocol ReceiptWriteVMProtocol {
     
     
     var numOfUsers: Int { get }
-    var roomUsers: RoomUserDataDictionary { get }
+    
     
     func cellViewModel(at index: Int) -> ReceiptWriteCellVM
     

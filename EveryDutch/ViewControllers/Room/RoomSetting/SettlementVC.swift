@@ -103,7 +103,7 @@ extension SettlementVC {
             view.layer.cornerRadius = 10
         }
         
-        self.usersTableView.isScrollEnabled = false
+        self.usersTableView.usersTableView.isScrollEnabled = false
     }
     
     // MARK: - 오토레이아웃 설정
@@ -167,7 +167,7 @@ extension SettlementVC {
     // MARK: - 테이블뷰 데이터 설정
     private func configureUserTableView() {
         self.usersTableView.viewModel.makeCellVM()
-        self.usersTableView.reloadData()
+        self.usersTableView.usersTableView.reloadData()
     }
     
     

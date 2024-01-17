@@ -11,6 +11,11 @@ protocol SettleMoneyRoomProtocol {
     func cellViewModel(at index: Int) -> SettleMoneyTableViewCellVM
     var numberOfReceipt: Int { get }
     var receipts: [Receipt] { get }
+    var bottomBtnTitle: String { get }
+    var navTitle: String? { get }
+    var isSearchMode: Bool { get set }
+    var isTopViewBtnIsHidden: Bool { get }
+    
     
     var receiptChangedClosure: (() -> Void)? { get set }
     var userChangedClosure: ((RoomUserDataDictionary) -> Void)? { get set }
@@ -22,5 +27,5 @@ protocol SettleMoneyRoomProtocol {
     
     var minHeight: CGFloat { get }
     var maxHeight: CGFloat { get }
-    var topViewIsOpen: Bool { get set }
+    var isTopViewOpen: Bool { get set }
 }

@@ -6,10 +6,11 @@
 //
 
 import UIKit
+import SnapKit
 
-final class UsersTableView: CustomTableView {
+final class UsersTableView: UIView {
     
-    // MARK: - 버튼 스택뷰 레이아웃
+    // MARK: - 버튼 레이아웃
     private var firstBtn: UIButton = UIButton.btnWithTitle(
         title: "누적 금액",
         font: UIFont.systemFont(ofSize: 14),
@@ -30,6 +31,19 @@ final class UsersTableView: CustomTableView {
     
     
     
+    // MARK: - 유저 테이블뷰
+    lazy var usersTableView: CustomTableView = {
+        let view = CustomTableView()
+        view.delegate = self
+        view.dataSource = self
+        view.register(
+            UsersTableViewCell.self,
+            forCellReuseIdentifier: Identifier.topViewTableViewCell)
+        return view
+    }()
+    
+    
+    
     
     
     
@@ -42,22 +56,25 @@ final class UsersTableView: CustomTableView {
     
     
     
+    
+    
     // MARK: - 라이프사이클
     init(viewModel: UsersTableViewVMProtocol) {
         self.viewModel = viewModel
-        super.init(frame: .zero, style: .plain)
+        super.init(frame: .zero)
         
         self.configureUI()
         self.configureAction()
+        self.configureAutoLayout()
         self.configureEnum(self.viewModel.customTableEnum)
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
+    
+    
  
-
-
 
 
 
@@ -71,22 +88,27 @@ extension UsersTableView {
     
     // MARK: - UI설정
     private func configureUI() {
-        self.separatorStyle = .none
-        self.backgroundColor = .clear
-        self.showsVerticalScrollIndicator = false
-        self.bounces = false
-        self.delegate = self
-        self.dataSource = self
-        
-        self.register(
-            UsersTableViewCell.self,
-            forCellReuseIdentifier: Identifier.topViewTableViewCell)
         
         // 모서리 설정
         self.firstBtn.layer.maskedCorners = [.layerMinXMinYCorner]
         self.secondBtn.layer.maskedCorners = [.layerMaxXMinYCorner]
         self.firstBtn.layer.cornerRadius = 10
         self.secondBtn.layer.cornerRadius = 10
+    }
+    
+    
+    private func configureAutoLayout() {
+        self.addSubview(self.btnStackView)
+        self.addSubview(self.usersTableView)
+        
+        self.btnStackView.snp.makeConstraints { make in
+            make.top.leading.trailing.equalToSuperview()
+            make.height.equalTo(34)
+        }
+        self.usersTableView.snp.makeConstraints { make in
+            make.top.equalTo(self.btnStackView.snp.bottom)
+            make.leading.trailing.bottom.equalToSuperview()
+        }
     }
     
     // MARK: - 액션 설정
@@ -101,7 +123,6 @@ extension UsersTableView {
             for: .touchUpInside)
     }
     
-    
     // MARK: - Enum에 따른 설정
     private func configureEnum(_ customTableEnum: CustomTableEnum) {
         switch customTableEnum {
@@ -109,13 +130,6 @@ extension UsersTableView {
         case .isRoomSetting, .isSettleMoney:
             self.layer.maskedCorners = [.layerMinXMaxYCorner,
                                         .layerMaxXMaxYCorner]
-            
-            self.tableHeaderView = self.btnStackView
-            self.btnStackView.frame = CGRect(
-                x: 0,
-                y: 0,
-                width: self.frame.size.width,
-                height: 34)
             fallthrough
             // 레이블
         case .isSettle:
@@ -135,7 +149,7 @@ extension UsersTableView {
 
 
 
-// MARK: - 액션 메서드 설정
+// MARK: - 액션 메서드
 
 extension UsersTableView {
     
@@ -150,10 +164,10 @@ extension UsersTableView {
         // 버튼 색상을 바꾸기 위한 함수
         self.btnColorChange()
         // 테이블뷰 reload를 통해 - price의 정보 바꾸기
-        self.reloadData()
+        self.usersTableView.reloadData()
     }
     
-    // MARK: - 버튼 색상 설정
+    // MARK: - 버튼 색상 설정 메서드
     func btnColorChange() {
         // 버튼의 색상을 가져옮 (어떤 버튼이 눌렸는 지에 따라 다랄짐
         let btnColor = self.viewModel.getBtnColor
@@ -185,20 +199,27 @@ extension UsersTableView: UITableViewDelegate {
     }
 }
 
+
+
 // MARK: - 테이블뷰 데이터소스
 extension UsersTableView: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView,
+                   numberOfRowsInSection section: Int)
+    -> Int {
         return self.viewModel.numbersOfUsers
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = self.dequeueReusableCell(
+    func tableView(_ tableView: UITableView,
+                   cellForRowAt indexPath: IndexPath)
+    -> UITableViewCell {
+        let cell = self.usersTableView.dequeueReusableCell(
             withIdentifier: Identifier.topViewTableViewCell,
             for: indexPath) as! UsersTableViewCell
         
-        let cellViewModel = self.viewModel.cellViewModel(at: indexPath.item)
+        let cellViewModel = self.viewModel.cellViewModel(
+            at: indexPath.item)
         
-        cell.configureCell(with: cellViewModel, 
+        cell.configureCell(with: cellViewModel,
                            firstBtnTapped: self.viewModel.firstBtnTapped)
         return cell
     }

@@ -200,7 +200,7 @@ final class ReceiptWriteVC: UIViewController {
     private lazy var calendarHeight: CGFloat = (self.view.frame.width - 10) * 3 / 4
     
     private var coordinator: ReceiptWriteCoordProtocol
-    private var viewModel: ReceiptWirteVMProtocol
+    private var viewModel: ReceiptWriteVMProtocol
     
     
     
@@ -220,7 +220,7 @@ final class ReceiptWriteVC: UIViewController {
         self.configureAction()
         self.configureViewWithViewModel()
     }
-    init(viewModel: ReceiptWirteVMProtocol,
+    init(viewModel: ReceiptWriteVMProtocol,
          coordinator: ReceiptWriteCoordProtocol) {
         self.viewModel = viewModel
         self.coordinator = coordinator
@@ -348,13 +348,8 @@ extension ReceiptWriteVC {
             for: .touchUpInside)
     }
     
+    // MARK: - 뷰모델을 통한 설정
     private func configureViewWithViewModel() {
-//        self.timeInfoLbl.text = "00:23"
-//        self.memoInfoTF.text = "맥도날드"
-//        self.priceInfoTF.text = "50,000원"
-//        self.payerInfoTF.text = "쁨"
-        
-        
         // MARK: - Fix
         self.moneyCountLbl.text = "남은 금액 : 25,000원"
         

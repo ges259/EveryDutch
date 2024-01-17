@@ -14,7 +14,7 @@ protocol RoomDataManagerProtocol {
     var getNumOfRoomUsers: Int { get }
     
     var getRoomUsersDict: RoomUserDataDictionary { get }
-    
+    var getRoomName: String? { get }
 //    var getCumulativeAmountArray: CumulativeAmountDictionary { get }
     
     func getIdToRoomUser(usersID: String) -> RoomUsers
