@@ -29,7 +29,7 @@ final class ReceiptWriteTableViewCell: UITableViewCell {
     
     // MARK: - 프로퍼티
     var viewModel: ReceiptWriteCellVM?
-    
+    weak var delegate: ReceiptWriteTableDelegate?
     
     // MARK: - 라이프사이클
     override init(style: UITableViewCell.CellStyle, 
@@ -124,7 +124,8 @@ extension ReceiptWriteTableViewCell {
     
     @objc private func rightBtnTapped() {
 //        self.viewModel?.done.toggle()
-        print(#function)
+//        print(#function)
+        self.delegate?.rightBtnTapped(self, userID: self.viewModel?.userID)
     }
 }
 

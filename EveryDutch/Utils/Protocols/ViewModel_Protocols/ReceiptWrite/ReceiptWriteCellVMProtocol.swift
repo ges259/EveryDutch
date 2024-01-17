@@ -8,5 +8,5 @@
 import Foundation
 
 protocol ReceiptWriteCellVMProtocol {
-    
+    var userID: String { get }
 }

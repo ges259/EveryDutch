@@ -474,8 +474,32 @@ extension ReceiptWriteVC: UITableViewDataSource {
         let cellViewModel = self.viewModel.cellViewModel(at: indexPath.item)
         // 셀의 뷰모델을 셀에 넣기
         cell.configureCell(with: cellViewModel)
-        
+        cell.delegate = self
         return cell
+    }
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - 테이블뷰 셀 버튼 델리게이트
+extension ReceiptWriteVC: ReceiptWriteTableDelegate {
+    func rightBtnTapped(_ cell: UITableViewCell,
+                        userID: String?) {
+        // 테이블뷰에 표시될 selectedUsers에서 해당 유저 삭제
+            // + 셀의 뷰모델 삭제
+        self.viewModel.deleteCellVM(userID: userID)
+        // 몇 번째 셀인지 확인
+        guard let indexPath = tableView.indexPath(for: cell) else { return }
+        // 셀 삭제
+        self.tableView.deleteRows(at: [indexPath],
+                                  with: .bottom)
     }
 }
 

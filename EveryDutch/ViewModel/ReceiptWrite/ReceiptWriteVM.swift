@@ -13,11 +13,7 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     private var cellViewModels: [ReceiptWriteCellVM] = [] {
         didSet {
             print("*************************")
-            print("*************************")
-            print("*************************")
             print(self.cellViewModels.count)
-            print("__________________________")
-            print("__________________________")
             print("__________________________")
         }
     }
@@ -84,6 +80,20 @@ extension ReceiptWriteVM {
                 roomUsers: roomUser)
         }
     }
+    
+    func deleteCellVM(userID: String?) {
+        // userID 옵셔널 바인딩
+        guard let userID = userID else { return }
+        // 선택 해제
+        self.selectedUsers.removeValue(forKey: userID)
+        // 셀의 뷰모델 중, 삭제할 userID를 가지고 있는 셀을 가져오기
+        if let index = self.cellViewModels
+            .firstIndex(where: { $0.userID == userID }) {
+            // 셀의 뷰모델 삭제
+            self.cellViewModels.remove(at: index)
+        }
+    }
+    
     
     // MARK: - 셀 뷰모델 반환
     // cellViewModels 반환

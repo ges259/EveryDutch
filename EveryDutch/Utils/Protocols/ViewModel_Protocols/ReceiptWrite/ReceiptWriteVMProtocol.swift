@@ -14,6 +14,6 @@ protocol ReceiptWriteVMProtocol {
     
     func makeCellVM(selectedUsers: RoomUserDataDictionary)
     func cellViewModel(at index: Int) -> ReceiptWriteCellVM
-    
+    func deleteCellVM(userID: String?)
     var dutchBtnColor: UIColor { get }
 }
