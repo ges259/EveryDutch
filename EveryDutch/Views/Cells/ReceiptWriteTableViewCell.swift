@@ -47,11 +47,17 @@ final class ReceiptWriteTableViewCell: UITableViewCell {
     override func setSelected(_ selected: Bool,
                               animated: Bool) {
         super.setSelected(selected, animated: animated)
-        if selected {
-            self.priceTf.isHidden = false
-        } else {
+        // priceTf가 selected(보여진 상태)라면
+            // -> priceTf숨기기
+        if !self.priceTf.isHidden {
             self.priceTf.isHidden = true
+            return
         }
+        // 선택된 셀의 priceTF만 보이게 하고, 나머지 셀은 숨기기
+        self.priceTf.isHidden
+        = selected
+        ? false
+        : true
     }
 }
 

@@ -247,7 +247,7 @@ final class ReceiptWriteVC: UIViewController {
     
     
     
-    
+    var isFull: Bool = false
     
     
     
@@ -408,6 +408,22 @@ extension ReceiptWriteVC {
         tapGesture.cancelsTouchesInView = false
         // 뷰에 제스처 인식기를 추가합니다.
         self.view.addGestureRecognizer(tapGesture)
+//        
+        self.memoInfoTF.addTarget(
+            self, 
+            action: #selector(self.memoInfoTFDidChanged),
+            for: .editingChanged)
+    }
+    
+    @objc private func memoInfoTFDidChanged() {
+        guard let text = self.memoInfoTF.text else { return }
+        
+        if text.count > 8 {
+            self.memoInfoTF.deleteBackward()
+            return
+        }
+        // 레이블 업데이트
+        self.memoNumOfCharLbl.text = "\(text.count) / 8"
     }
 }
     
@@ -515,7 +531,7 @@ extension ReceiptWriteVC: ReceiptWriteTableDelegate {
         guard let indexPath = selectedUsersTableView.indexPath(for: cell) else { return }
         // 셀 삭제
         self.selectedUsersTableView.deleteRows(at: [indexPath],
-                                  with: .bottom)
+                                               with: .left)
         // 삭제 후 0명이 된다면 -> 테이블뷰 안 보이도록 설정
         self.tableIsHidden()
     }
@@ -589,32 +605,37 @@ extension ReceiptWriteVC: UIScrollViewDelegate {
 
 
 // MARK: - 타임피커 데이터소스
+
 extension ReceiptWriteVC: UIPickerViewDataSource {
+    
+    // MARK: - 개수
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 2 // 시간과 분을 위한 두 개의 컴포넌트
     }
-
-    func pickerView(_ pickerView: UIPickerView, 
+    // MARK: - 최소 및 최대 숫자
+    func pickerView(_ pickerView: UIPickerView,
                     numberOfRowsInComponent component: Int)
     -> Int {
-        if component == 0 {
-            return 24 // 시간은 0부터 23까지
-        } else {
-            return 60 // 분은 0부터 59까지
-        }
+        return component == 0
+        ? 24 // 시간은 0부터 23까지
+        : 60 // 분은 0부터 59까지
     }
 }
 
 // MARK: - 타임피커 델리게이트
+
 extension ReceiptWriteVC: UIPickerViewDelegate {
-    func pickerView(_ pickerView: UIPickerView, 
+    
+    // MARK: - 형식
+    func pickerView(_ pickerView: UIPickerView,
                     titleForRow row: Int, 
                     forComponent component: Int)
     -> String? {
         return String(format: "%02d", row) // 두 자리 숫자 형식으로 반환
     }
-
-    func pickerView(_ pickerView: UIPickerView, 
+    
+    // MARK: - 선택 시 액션
+    func pickerView(_ pickerView: UIPickerView,
                     didSelectRow row: Int,
                     inComponent component: Int)
     {
@@ -624,19 +645,21 @@ extension ReceiptWriteVC: UIPickerViewDelegate {
         // 선택한 시간과 분을 이용하여 필요한 작업 수행
         let hour = String(format: "%02d", selectedHour)
         let minute = String(format: "%02d", selectedMinute)
-        
+        // 선택한 시간을 timeInfoLbl에 넣기
         self.timeInfoLbl.text = "\(hour) : \(minute)"
-        
     }
-    func pickerView(_ pickerView: UIPickerView, 
+    
+    // MARK: - 폰트
+    func pickerView(_ pickerView: UIPickerView,
                     viewForRow row: Int, 
                     forComponent component: Int,
                     reusing view: UIView?) 
     -> UIView {
-        // 재사용 가능한 뷰가 있으면 사용하고, 없으면 새로운 라벨을 생성
+        // 재사용 가능한 뷰가 있으면 사용하고,
         var label: UILabel
         if let view = view as? UILabel {
             label = view
+        // 없으면 새로운 라벨을 생성
         } else {
             label = UILabel()
         }
@@ -660,40 +683,13 @@ extension ReceiptWriteVC: UIPickerViewDelegate {
 
 
 // MARK: - 텍스트필드 델리게이트
-extension ReceiptWriteVC: UITextFieldDelegate {
-    // 텍스트 필드의 입력을 관리하는 함수
-    func textField(_ textField: UITextField, 
-                   shouldChangeCharactersIn range: NSRange,
-                   replacementString string: String) 
-    -> Bool {
-        // 현재 텍스트 가져오기
-        let currentText = textField.text ?? ""
-        // NSRange를 Swiftdml Range로 변환
-        guard let stringRange = Range(range, in: currentText) else { return false }
-        // 사용자가 입력하거나 삭제한 문자열을 현재 텍스트에 반영하여 업데이트된 텍스트를 생성
-        let updatedText = currentText.replacingCharacters(
-            in: stringRange,
-            with: string)
-        
-        // 현재 글자 수를 확인하고 8자리를 초과하는지 확인
-        if updatedText.count > 8 {
-            // 초과한다면 입력 불가
-            return false
-        }
-        
-        
-        // 가격 텍스트필드에 0이 적힌다면
-        if textField == self.priceInfoTF &&
-            updatedText == "0" {
-            self.priceInfoTF.text = "1"
-        }
-        // 8자리 이하라면 변경 허용
-        return true
-    }
-    
-    // 텍스트 필드 수정이 끝났을 때
-    func textFieldDidEndEditing(_ textField: UITextField) {
 
+extension ReceiptWriteVC: UITextFieldDelegate {
+    // MARK: - 수정이 끝났을 때
+    /// 텍스트 필드 수정이 끝났을 때
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        // 가격 텍스트필드일 때
+        guard textField == self.priceInfoTF else { return }
         
         // 텍스트 필드의 현재 텍스트를 변수에 저장
         let savedText = textField.text ?? ""
@@ -704,12 +700,13 @@ extension ReceiptWriteVC: UITextFieldDelegate {
             
         // 가격 텍스트필드 일때
         } else {
+            
             // Int 값 설정
             let priceInt = Int(savedText)
             self.viewModel.price = priceInt
             
             // String 값 설정
-            let priceString: String? 
+            let priceString: String?
             = savedText == ""
             ? nil
             // formatNumberString() -> 10,000처럼 바꾸기
@@ -724,26 +721,24 @@ extension ReceiptWriteVC: UITextFieldDelegate {
         }
     }
     
-
     
     
-    
-    
-    
+    // MARK: - 형식 제거
+    /// priceInfoTF의 수정을 시작할 때 ',' 및 '원'을 제거하는 메서드
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        if textField == self.priceInfoTF, 
-            let numberString = textField.text?.replacingOccurrences(of: "원", with: "").replacingOccurrences(of: ",", with: "") {
+        // 가격 텍스트필드일 때
+        guard textField == self.priceInfoTF else { return }
+        if textField == self.priceInfoTF,
+            let numberString = textField
+            .text?
+            .replacingOccurrences(of: "원", with: "")
+            .replacingOccurrences(of: ",", with: "") {
             textField.text = numberString
         }
     }
     
-    
-    
-    
-    
-    
-    
-    
+    // MARK: - 형식 추가
+    /// priceInfoTF의 수정이 끝났을 때 ',' 및 '원'을 추가하는 메서드
     private func formatNumberString(_ string: String) -> String {
         let numberFormatter = NumberFormatter()
             numberFormatter.numberStyle = .decimal
