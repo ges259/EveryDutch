@@ -8,14 +8,24 @@
 import UIKit
 
 protocol ReceiptWriteVMProtocol {
+    
+    var time: String? { get set }
+    var memo: String? { get set }
+    var price: Int? { get set }
+    var payer: RoomUserDataDictionary? { get }
     var selectedUsers: RoomUserDataDictionary { get set }
     
     var numOfUsers: Int { get }
-    var isPayer: RoomUserDataDictionary? { get }
+    
+    
+    var getPriceString: String { get }
+    
+    
+    
+    
     func isPayerSelected(user: RoomUserDataDictionary) -> String?
     
     func makeCellVM(selectedUsers: RoomUserDataDictionary)
     func cellViewModel(at index: Int) -> ReceiptWriteCellVM
     func deleteCellVM(userID: String?)
-    var dutchBtnColor: UIColor { get }
 }

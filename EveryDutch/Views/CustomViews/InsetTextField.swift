@@ -38,11 +38,12 @@ class InsetTextField: UITextField {
     }
     convenience init(placeholderText: String,
                      keyboardType: UIKeyboardType,
-                     keyboardReturnType: UIReturnKeyType) {
+                     keyboardReturnType: UIReturnKeyType,
+                     insertX: CGFloat = 16) {
         self.init(backgroundColor: UIColor.normal_white,
                    placeholerColor: UIColor.placeholder_gray,
                    placeholderText: placeholderText,
-                   insetX: 16)
+                   insetX: insertX)
         self.keyboardType = keyboardType
         self.returnKeyType = keyboardReturnType
     }

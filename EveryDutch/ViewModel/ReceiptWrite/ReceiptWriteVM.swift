@@ -19,35 +19,31 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     }
     private var roomDataManager: RoomDataManagerProtocol
 
-    var isPayer: RoomUserDataDictionary?
     
     
+    var time: String?
+    var memo: String?
+    var price: Int?
+    var payer: RoomUserDataDictionary?
+    var selectedUsers: RoomUserDataDictionary = [:]
     
-    var selectedUsers: RoomUserDataDictionary = [:] {
-        didSet {
-            dump(selectedUsers)
-        }
-    }
     
     
     func isPayerSelected(user: RoomUserDataDictionary) -> String? {
-        self.isPayer = user
+        self.payer = user
         return user.values.first?.roomUserName
     }
     
     
-    
+    var getPriceString: String {
+        let price = self.price ?? 0
+        return "\(price)원"
+    }
     
     
     
     var numOfUsers: Int {
         return self.selectedUsers.count
-    }
-    
-    var dutchBtnColor: UIColor {
-        return self.numOfUsers == 0
-        ? UIColor.normal_white
-        : UIColor.deep_Blue
     }
     
     

@@ -30,4 +30,14 @@ extension Date {
         
         return dateArray
     }
+    
+    static func returnCurrenTime() -> String {
+        let date = Date()
+        let timeFormatter = DateFormatter()
+        timeFormatter.dateFormat = "H : mm"
+        let timeStr = timeFormatter.string(from: date)
+        return timeStr
+    }
+    
+    
 }
