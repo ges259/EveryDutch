@@ -49,7 +49,7 @@ final class PeopleSelectionPanVM: PeopleSelectionPanVMProtocol  {
     }
     
     // 셀이 선택되었을 때
-    func selectedUser(index: Int) {
+    func multipleModeSelectedUsers(index: Int) {
         let user = self.usersKeyValueArray[index]
         
         // MARK: - 픽스
@@ -63,6 +63,13 @@ final class PeopleSelectionPanVM: PeopleSelectionPanVMProtocol  {
             // 새로운 유저라면, selectedUsers 배열에 추가
             self.selectedUsers[user.key] = user.value
         }
+    }
+    
+    
+    func singleModeSelectionUser(index: Int) {
+        self.selectedUsers.removeAll()
+        let user = self.usersKeyValueArray[index]
+        self.selectedUsers[user.key] = user.value
     }
     
     

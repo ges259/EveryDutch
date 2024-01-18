@@ -8,6 +8,7 @@
 import Foundation
 
 protocol ReceiptWriteCoordProtocol: Coordinator {
-    func peopleSelectionPanScreen(users: RoomUserDataDictionary?)
+    func peopleSelectionPanScreen(users: RoomUserDataDictionary?,
+                                  peopleSelectionEnum: PeopleSeelctionEnum?)
     func checkReceiptPanScreen()
 }

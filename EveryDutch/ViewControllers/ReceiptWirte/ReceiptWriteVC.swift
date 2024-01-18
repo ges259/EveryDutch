@@ -380,9 +380,11 @@ extension ReceiptWriteVC {
         
     }
     
-    // MARK: - 뷰모델을 통한 설정
+    // MARK: - 초기 화면 설정
     private func configureViewWithViewModel() {
         self.dutchBtn.backgroundColor = self.viewModel.dutchBtnColor
+        
+        
     }
 }
     
@@ -399,17 +401,23 @@ extension ReceiptWriteVC {
 
 extension ReceiptWriteVC {
     
-    
-    @objc private func bottomBtnTapped() {
-        self.coordinator.checkReceiptPanScreen()
-    }
-    @objc private func addPersonBtnTapped() {
-        self.coordinator.peopleSelectionPanScreen(
-            users: self.viewModel.selectedUsers)
-    }
     @objc private func backButtonTapped() {
         self.coordinator.didFinish()
     }
+    @objc private func addPersonBtnTapped() {
+        self.coordinator.peopleSelectionPanScreen(
+            users: self.viewModel.selectedUsers,
+            peopleSelectionEnum: .multipleSelection)
+    }
+    @objc private func payerInfoLblTapped() {
+        self.coordinator.peopleSelectionPanScreen(
+            users: self.viewModel.selectedUsers,
+            peopleSelectionEnum: .singleSelection)
+    }
+    @objc private func bottomBtnTapped() {
+        self.coordinator.checkReceiptPanScreen()
+    }
+    
     
     
     
@@ -426,16 +434,25 @@ extension ReceiptWriteVC {
     }
     
     
-    @objc private func payerInfoLblTapped() {
-    }
+
     
     
     
     
-    func changeUsersData(_ users: RoomUserDataDictionary) {
+    
+    
+    
+    
+    // MARK: - PeopleSelection_데이터 설정
+    func changeTableViewData(_ users: RoomUserDataDictionary) {
         self.viewModel.makeCellVM(selectedUsers: users)
         self.tableView.reloadData()
     }
+    
+    func changePayerLblData(_ user: RoomUserDataDictionary) {
+        self.payerInfoLbl.text = self.viewModel.isPayerSelected(user: user)
+    }
+    
 }
 
 

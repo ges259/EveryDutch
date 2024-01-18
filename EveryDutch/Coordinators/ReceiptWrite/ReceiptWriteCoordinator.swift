@@ -51,20 +51,22 @@ final class ReceiptWriteCoordinator: ReceiptWriteCoordProtocol {
     
     
     // MARK: - PeopleSelectionPanScreen
-    func peopleSelectionPanScreen(users: RoomUserDataDictionary?) {
+    func peopleSelectionPanScreen(users: RoomUserDataDictionary?,
+                                  peopleSelectionEnum: PeopleSeelctionEnum?) {
         // PeopleSelectionPanCoordinator 생성
-        let peopleSelectionPanCoordinator = PeopleSelectionPanCoordinator(
+        let peopleSelectionPanCoord = PeopleSelectionPanCoordinator(
             nav: self.modalNavController ?? self.nav)
-        self.childCoordinators.append(peopleSelectionPanCoordinator)
+        self.childCoordinators.append(peopleSelectionPanCoord)
         // 부모 코디네이터가 자신이라는 것을 명시 (뒤로가기 할 때 필요)
-        peopleSelectionPanCoordinator.parentCoordinator = self
+        peopleSelectionPanCoord.parentCoordinator = self
         // ***** 델리게이트 설정 *****
-        peopleSelectionPanCoordinator.delegate = self
+        peopleSelectionPanCoord.delegate = self
         // 데이터 전달
-        peopleSelectionPanCoordinator.selectedUsers = users
+        peopleSelectionPanCoord.selectedUsers = users
+        peopleSelectionPanCoord.peopleSelectionEnum = peopleSelectionEnum
         
         // 코디네이터에게 화면이동을 지시
-        peopleSelectionPanCoordinator.start()
+        peopleSelectionPanCoord.start()
     }
     
     
@@ -101,13 +103,19 @@ final class ReceiptWriteCoordinator: ReceiptWriteCoordProtocol {
 
 // MARK: - PeopleSelection 델리게이트
 extension ReceiptWriteCoordinator: PeopleSelectionDelegate {
-    func selectedUsers(users: RoomUserDataDictionary) {
+    func multipleModeSelectedUsers(
+        peopleSeelctionEnum: PeopleSeelctionEnum?,
+        users: RoomUserDataDictionary)
+    {
         // ReceiptWirteVC 찾기
         if let receiptWriteVC = self.modalNavController?
             .viewControllers
             .first(where: { $0 is ReceiptWriteVC }) as? ReceiptWriteVC {
+            
+            _ = peopleSeelctionEnum == .multipleSelection
             // ReceiptWirteVC의 메서드 실행
-            receiptWriteVC.changeUsersData(users)
+            ? receiptWriteVC.changeTableViewData(users)
+            : receiptWriteVC.changePayerLblData(users)
         }
     }
 }

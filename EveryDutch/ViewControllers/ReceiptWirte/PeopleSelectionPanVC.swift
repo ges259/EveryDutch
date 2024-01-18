@@ -56,7 +56,7 @@ final class PeopleSelectionPanVC: UIViewController {
     weak var delegate: PeopleSelectionDelegate?
     
     
-    
+    var peopleSelectionEnum: PeopleSeelctionEnum?
     
     // MARK: - 라이프사이클
     override func viewDidLoad() {
@@ -67,9 +67,11 @@ final class PeopleSelectionPanVC: UIViewController {
         self.configureAction()
     }
     init(viewModel: PeopleSelectionPanVMProtocol,
-         coordinator: Coordinator) {
+         coordinator: Coordinator,
+         peopleSelectionEnum: PeopleSeelctionEnum?) {
         self.coordinator = coordinator
         self.viewModel = viewModel
+        self.peopleSelectionEnum = peopleSelectionEnum
         super.init(nibName: nil, bundle: nil)
     }
     override func viewDidDisappear(_ animated: Bool) {
@@ -137,9 +139,15 @@ extension PeopleSelectionPanVC {
     @objc private func bottomBtnTapped() {
         self.dismiss(animated: true)
         // People_Selecteion_Pan_Coordinator로 전달
-        self.delegate?.selectedUsers(users: self.viewModel.selectedUsers)
+        
+        self.delegate?.multipleModeSelectedUsers(
+            peopleSeelctionEnum: self.peopleSelectionEnum,
+            users: self.viewModel.selectedUsers)
+        
+        
     }
 }
+
 
 
 
@@ -158,11 +166,19 @@ extension PeopleSelectionPanVC: UITableViewDelegate {
     }
     func tableView(_ tableView: UITableView, 
                    didSelectRowAt indexPath: IndexPath) {
-        self.viewModel.selectedUser(index: indexPath.row)
-        
-        // 해당 셀의 뷰를 업데이트
-        guard let cell = tableView.cellForRow(at: indexPath) as? PeopleSelectionPanCell else { return }
-        cell.cellIsSelected.toggle()
+        // 싱글 선택 모드라면
+        if self.peopleSelectionEnum == .singleSelection {
+            self.viewModel.singleModeSelectionUser(index: indexPath.row)
+            
+        // 다중 선택 모두라면
+        } else {
+            // 선택된 유저 저장 또는 삭제
+            self.viewModel.multipleModeSelectedUsers(index: indexPath.row)
+            
+            // 해당 셀의 뷰를 업데이트
+            guard let cell = tableView.cellForRow(at: indexPath) as? PeopleSelectionPanCell else { return }
+            cell.cellIsSelected.toggle()
+        }
     }
 }
 
@@ -187,7 +203,7 @@ extension PeopleSelectionPanVC: UITableViewDataSource {
         
         cell.cellIsSelected = self.viewModel.getIdToRoomUser(usersID: userID)
         
-        
+        cell.peopleSelectionEnum = self.peopleSelectionEnum
         
         // 셀에 userID와 user 데이터 설정
         cell.configureCellData(userID: userEntry.key,

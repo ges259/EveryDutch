@@ -16,7 +16,7 @@ final class PeopleSelectionPanCoordinator: Coordinator {
     // WriteScreen_Coordinator로 전달 됨.
     weak var delegate: PeopleSelectionDelegate?
     var selectedUsers: RoomUserDataDictionary?
-    
+    var peopleSelectionEnum: PeopleSeelctionEnum?
     
     // 의존성 주입
     init(nav: UINavigationController) {
@@ -33,7 +33,8 @@ final class PeopleSelectionPanCoordinator: Coordinator {
         
         let peopleSelectionPanVC = PeopleSelectionPanVC(
             viewModel: peopleSelectionPanVM,
-            coordinator: self)
+            coordinator: self, 
+            peopleSelectionEnum: self.peopleSelectionEnum)
         peopleSelectionPanVC.delegate = self
         peopleSelectionPanVC.modalPresentationStyle = .overFullScreen
         
@@ -47,8 +48,13 @@ final class PeopleSelectionPanCoordinator: Coordinator {
 
 // MARK: - PeopleSelection 델리게이트
 extension PeopleSelectionPanCoordinator: PeopleSelectionDelegate {
-    func selectedUsers(users: RoomUserDataDictionary) {
+    func multipleModeSelectedUsers(
+        peopleSeelctionEnum: PeopleSeelctionEnum?,
+        users: RoomUserDataDictionary) 
+    {
         // Receipt_Write_Coordinator로 전달
-        self.delegate?.selectedUsers(users: users)
+        self.delegate?.multipleModeSelectedUsers(
+            peopleSeelctionEnum: peopleSeelctionEnum,
+            users: users)
     }
 }

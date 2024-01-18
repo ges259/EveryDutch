@@ -30,11 +30,13 @@ final class PeopleSelectionPanCell: UITableViewCell {
     // MARK: - 프로퍼티
     var cellIsSelected: Bool = false {
         didSet {
-            print("cellIsSelected ----- \(!self.cellIsSelected)")
-            
             self.tableCellStv.rightImg.isHidden = !self.cellIsSelected
         }
     }
+    var peopleSelectionEnum: PeopleSeelctionEnum?
+    
+    
+    
     
     
     // MARK: - 라이프사이클
@@ -45,9 +47,18 @@ final class PeopleSelectionPanCell: UITableViewCell {
         self.configureAutoLayout()
         self.configureAction()
     }
-    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    override func setSelected(_ selected: Bool,
+                              animated: Bool) {
+        super.setSelected(selected, animated: animated)
+        // 싱글 선택 모드라면.
+        guard self.peopleSelectionEnum == .singleSelection else { return }
+        // 셀을 눌렀을 때, 해당 셀만 이미지 표시 (나머지는 이미지 숨기기)
+        self.tableCellStv.rightImg.isHidden = selected
+        ? false
+        : true
     }
 }
 

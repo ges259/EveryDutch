@@ -18,7 +18,8 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
         }
     }
     private var roomDataManager: RoomDataManagerProtocol
-    
+
+    var isPayer: RoomUserDataDictionary?
     
     
     
@@ -27,6 +28,13 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
             dump(selectedUsers)
         }
     }
+    
+    
+    func isPayerSelected(user: RoomUserDataDictionary) -> String? {
+        self.isPayer = user
+        return user.values.first?.roomUserName
+    }
+    
     
     
     

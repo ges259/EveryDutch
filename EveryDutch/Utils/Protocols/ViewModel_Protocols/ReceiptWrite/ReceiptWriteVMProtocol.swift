@@ -11,6 +11,8 @@ protocol ReceiptWriteVMProtocol {
     var selectedUsers: RoomUserDataDictionary { get set }
     
     var numOfUsers: Int { get }
+    var isPayer: RoomUserDataDictionary? { get }
+    func isPayerSelected(user: RoomUserDataDictionary) -> String?
     
     func makeCellVM(selectedUsers: RoomUserDataDictionary)
     func cellViewModel(at index: Int) -> ReceiptWriteCellVM
