@@ -13,7 +13,7 @@ struct ReceiptWriteCellVM: ReceiptWriteCellVMProtocol {
     var userName: String
     
     
-    var price: String = ""
+    
     
     var profileImg: UIImage? {
         return self.profileImageURL == ""
@@ -29,7 +29,13 @@ struct ReceiptWriteCellVM: ReceiptWriteCellVMProtocol {
         self.userName = roomUsers.roomUserName
     }
     
-    
-    
-    
+    // MARK: - 가격 레이블 텍스트 설정
+    func configureFormat(price: String?) -> String? {
+        guard let price = Int(price ?? "0" ) else { return "0원" }
+        
+        return price == 0
+        ? "0원"
+        // formatNumberString() -> 10,000처럼 바꾸기
+        : NumberFormatter.formatString(price: price)
+    }
 }

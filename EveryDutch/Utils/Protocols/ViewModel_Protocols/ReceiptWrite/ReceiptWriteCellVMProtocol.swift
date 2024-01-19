@@ -9,4 +9,7 @@ import Foundation
 
 protocol ReceiptWriteCellVMProtocol {
     var userID: String { get }
+    
+    
+    func configureFormat(price: String?) -> String?
 }

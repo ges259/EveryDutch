@@ -18,6 +18,7 @@ final class ReceiptWriteVC: UIViewController {
             scrollView.showsVerticalScrollIndicator = false
             scrollView.alwaysBounceVertical = true
         scrollView.delegate = self
+        scrollView.keyboardDismissMode = .onDrag
         return scrollView
     }()
     /// 컨텐트뷰 ( - 스크롤뷰)
@@ -79,7 +80,7 @@ final class ReceiptWriteVC: UIViewController {
     
     
     private var memoNumOfCharLbl: CustomLabel = CustomLabel(
-        text: "0 / 8",
+        text: "0 / 12",
         font: UIFont.systemFont(ofSize: 13))
     
     // MARK: - 상단 스택뷰
@@ -242,12 +243,14 @@ final class ReceiptWriteVC: UIViewController {
     // MARK: - 프로퍼티
     private lazy var calendarHeight: CGFloat = (self.view.frame.width - 10) * 3 / 4
     
+    
+    
     private var coordinator: ReceiptWriteCoordProtocol
     private var viewModel: ReceiptWriteVMProtocol
     
     
     
-    var isFull: Bool = false
+    
     
     
     
@@ -289,7 +292,7 @@ extension ReceiptWriteVC {
     // MARK: - UI 설정
     private func configureUI() {
         self.view.backgroundColor = UIColor.base_Blue
- 
+        
         [self.calendar,
          self.whiteView,
          self.addPersonBtn,
@@ -408,7 +411,7 @@ extension ReceiptWriteVC {
         tapGesture.cancelsTouchesInView = false
         // 뷰에 제스처 인식기를 추가합니다.
         self.view.addGestureRecognizer(tapGesture)
-//        
+        
         self.memoInfoTF.addTarget(
             self, 
             action: #selector(self.memoInfoTFDidChanged),
@@ -418,12 +421,11 @@ extension ReceiptWriteVC {
     @objc private func memoInfoTFDidChanged() {
         guard let text = self.memoInfoTF.text else { return }
         
-        if text.count > 8 {
+        if text.count > self.viewModel.TF_MAX_COUNT {
             self.memoInfoTF.deleteBackward()
-            return
         }
         // 레이블 업데이트
-        self.memoNumOfCharLbl.text = "\(text.count) / 8"
+        self.memoNumOfCharLbl.text = "\(text.count) / 12"
     }
 }
     
@@ -444,16 +446,25 @@ extension ReceiptWriteVC {
         self.coordinator.didFinish()
     }
     @objc private func addPersonBtnTapped() {
+        // 모든 키보드 내리기
+        self.dismissPicker()
+        // 화면 전환
         self.coordinator.peopleSelectionPanScreen(
             users: self.viewModel.selectedUsers,
             peopleSelectionEnum: .multipleSelection)
     }
     @objc private func payerInfoLblTapped() {
+        // 모든 키보드 내리기
+        self.dismissPicker()
+        // 화면 전환
         self.coordinator.peopleSelectionPanScreen(
             users: self.viewModel.selectedUsers,
             peopleSelectionEnum: .singleSelection)
     }
     @objc private func bottomBtnTapped() {
+        // 모든 키보드 내리기
+        self.dismissPicker()
+        // 화면 전환
         self.coordinator.checkReceiptPanScreen()
     }
     
@@ -462,14 +473,16 @@ extension ReceiptWriteVC {
     
     
     // MARK: - 데이트 피커 액션
-    /// 타임 피커가 보일 때, 뷰를 탭하면 타임 피커를 숨김
-    @objc func dismissPicker(_ gestureRecognizer: UITapGestureRecognizer) {
+    // 타임 피커가 보일 때, 뷰를 탭하면 타임 피커를 숨김
+    @objc func dismissPicker() {
+        self.view.endEditing(true)
         if !self.timePicker.isHidden {
             self.timePicker.isHidden = true
         }
     }
     /// 타임 레이블을 누르면 '타임 피커'가 보이도록 설정
     @objc private func timeInfoLblTapped() {
+        self.view.endEditing(true)
         self.timePicker.isHidden = false
     }
 }
@@ -491,16 +504,14 @@ extension ReceiptWriteVC {
     func changeTableViewData(_ users: RoomUserDataDictionary) {
         self.viewModel.makeCellVM(selectedUsers: users)
         self.selectedUsersTableView.reloadData()
-        self.selectedUsersTableView.isHidden = false
         // 삭제 후 0명이 된다면 -> 테이블뷰 안 보이도록 설정
-        self.tableIsHidden()
+        // 삭제 후 0명이 된다면 -> 테이블뷰 안 보이도록 설정
+        self.selectedUsersTableView.isHidden = self.viewModel.tableIsHidden
     }
     
     // MARK: - 계산한 사람 선택
     func changePayerLblData(_ user: RoomUserDataDictionary) {
         self.payerInfoLbl.text = self.viewModel.isPayerSelected(user: user)
-        
-        
         
         self.addPersonBtn.isHidden = false
         
@@ -508,16 +519,18 @@ extension ReceiptWriteVC {
         // priceInfoTF의 값이 바뀌면 -> 자동으로 moneyCountLbl의 값이 바뀌도록
         // + 셀에 가격 자동 차감
     }
-    
-    func tableIsHidden() {
-        self.selectedUsersTableView.isHidden
-        = self.viewModel.numOfUsers == 0
-        ? true
-        : false
-    }
 }
 
-// MARK: - 테이블뷰 셀 버튼 델리게이트
+
+
+
+
+
+
+
+
+
+// MARK: - 테이블뷰 셀 델리게이트
 
 extension ReceiptWriteVC: ReceiptWriteTableDelegate {
     
@@ -528,14 +541,25 @@ extension ReceiptWriteVC: ReceiptWriteTableDelegate {
             // + 셀의 뷰모델 삭제
         self.viewModel.deleteCellVM(userID: userID)
         // 몇 번째 셀인지 확인
-        guard let indexPath = selectedUsersTableView.indexPath(for: cell) else { return }
+        guard let indexPath = self.selectedUsersTableView.indexPath(for: cell) else { return }
         // 셀 삭제
         self.selectedUsersTableView.deleteRows(at: [indexPath],
                                                with: .left)
         // 삭제 후 0명이 된다면 -> 테이블뷰 안 보이도록 설정
-        self.tableIsHidden()
+        self.selectedUsersTableView.isHidden = self.viewModel.tableIsHidden
+    }
+    
+    // MARK: - 금액 설정
+    func setprice(userID: String?,
+                  price: Int?) {
+        
+        self.moneyCountLbl.text = self.viewModel.calculatePrice(
+            userID: userID,
+            price: price)
     }
 }
+
+
 
 
 
@@ -591,7 +615,6 @@ extension ReceiptWriteVC: UIScrollViewDelegate {
         if !self.timePicker.isHidden  {
             self.timePicker.isHidden = true
         }
-        self.view.endEditing(true)
     }
 }
 
@@ -631,7 +654,7 @@ extension ReceiptWriteVC: UIPickerViewDelegate {
                     titleForRow row: Int, 
                     forComponent component: Int)
     -> String? {
-        return String(format: "%02d", row) // 두 자리 숫자 형식으로 반환
+        return self.viewModel.timePickerFormat(row) // 두 자리 숫자 형식으로 반환
     }
     
     // MARK: - 선택 시 액션
@@ -642,11 +665,12 @@ extension ReceiptWriteVC: UIPickerViewDelegate {
         // 사용자가 선택한 시간과 분을 처리
         let selectedHour = pickerView.selectedRow(inComponent: 0)
         let selectedMinute = pickerView.selectedRow(inComponent: 1)
+        
         // 선택한 시간과 분을 이용하여 필요한 작업 수행
-        let hour = String(format: "%02d", selectedHour)
-        let minute = String(format: "%02d", selectedMinute)
         // 선택한 시간을 timeInfoLbl에 넣기
-        self.timeInfoLbl.text = "\(hour) : \(minute)"
+        self.timeInfoLbl.text = self.viewModel.timePickerString(
+            hour: selectedHour,
+            minute: selectedMinute)
     }
     
     // MARK: - 폰트
@@ -667,7 +691,7 @@ extension ReceiptWriteVC: UIPickerViewDelegate {
         label.textColor = .black
         label.textAlignment = .center
         label.font = UIFont.systemFont(ofSize: 18) // 폰트 크기를 24로 설정
-        label.text = String(format: "%02d", row)
+        label.text = self.viewModel.timePickerFormat(row)
         
         return label
     }
@@ -685,12 +709,10 @@ extension ReceiptWriteVC: UIPickerViewDelegate {
 // MARK: - 텍스트필드 델리게이트
 
 extension ReceiptWriteVC: UITextFieldDelegate {
+    
     // MARK: - 수정이 끝났을 때
     /// 텍스트 필드 수정이 끝났을 때
     func textFieldDidEndEditing(_ textField: UITextField) {
-        // 가격 텍스트필드일 때
-        guard textField == self.priceInfoTF else { return }
-        
         // 텍스트 필드의 현재 텍스트를 변수에 저장
         let savedText = textField.text ?? ""
         
@@ -700,52 +722,28 @@ extension ReceiptWriteVC: UITextFieldDelegate {
             
         // 가격 텍스트필드 일때
         } else {
-            
             // Int 값 설정
-            let priceInt = Int(savedText)
-            self.viewModel.price = priceInt
-            
-            // String 값 설정
-            let priceString: String?
-            = savedText == ""
-            ? nil
-            // formatNumberString() -> 10,000처럼 바꾸기
-            : self.formatNumberString(savedText)
-            
-            // 가격 텍스트필드에 적힌 값을 설정
-                // 적혀있지 않다면 -> 플레이스홀더가 보이도록 nil값 설정
-            self.priceInfoTF.text = priceString
-            // 현재 남은 가격을 설정
-                // 텍스트필드에 아무 것도 적혀있지 않다면 -> 0원으로 설정
-            self.moneyCountLbl.text = priceString ?? "0원"
+            self.viewModel.price = Int(savedText)
+            // 바뀐 가격을 ',' 및 '원'을 붙여 표시
+            self.priceInfoTF.text = self.viewModel.priceInfoTFText
+            self.moneyCountLbl.text = self.viewModel.moneyCountLblText
         }
     }
+
     
-    
-    
-    // MARK: - 형식 제거
+    // MARK: - 텍스트필드 수정 시작 시
     /// priceInfoTF의 수정을 시작할 때 ',' 및 '원'을 제거하는 메서드
     func textFieldDidBeginEditing(_ textField: UITextField) {
-        // 가격 텍스트필드일 때
-        guard textField == self.priceInfoTF else { return }
-        if textField == self.priceInfoTF,
-            let numberString = textField
-            .text?
-            .replacingOccurrences(of: "원", with: "")
-            .replacingOccurrences(of: ",", with: "") {
-            textField.text = numberString
+        // 가격 텍스트필드일 때, 빈칸이 아니라면
+        guard textField == self.priceInfoTF,
+              self.priceInfoTF.text != "" else { return }
+        
+        // priceInfoTF에 있는 ',' 및 '~원' 형식을 제거
+        self.priceInfoTF.text = self.viewModel.removeFormat(
+            price: self.priceInfoTF.text)
+        
+        if self.priceInfoTF.text == "0" {
+            self.priceInfoTF.text = ""
         }
-    }
-    
-    // MARK: - 형식 추가
-    /// priceInfoTF의 수정이 끝났을 때 ',' 및 '원'을 추가하는 메서드
-    private func formatNumberString(_ string: String) -> String {
-        let numberFormatter = NumberFormatter()
-            numberFormatter.numberStyle = .decimal
-        // 3번째 자리수마다 ',' 붙이기
-        let number = numberFormatter.number(from: string.replacingOccurrences(of: ",", with: "")) ?? 0
-        // 뒤에 '원' 붙이기
-        let returnString = "\(numberFormatter.string(from: number) ?? "")원"
-        return returnString
     }
 }

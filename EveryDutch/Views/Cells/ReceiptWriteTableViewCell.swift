@@ -18,15 +18,18 @@ final class ReceiptWriteTableViewCell: UITableViewCell {
         imageSize: 13)
     
     lazy var priceTf: InsetTextField = {
-        let tf =  InsetTextField(
-            backgroundColor: UIColor.medium_Blue,
-            placeholerColor: .placeholder_gray,
-            placeholderText: "가격 입력")
+        let tf = InsetTextField(
+            placeholderText: "가격을 입력해 주세요.",
+            keyboardType: .numberPad,
+            keyboardReturnType: .done,
+            insertX: 25)
+        tf.backgroundColor = UIColor.medium_Blue
         tf.isHidden = true
+        tf.delegate = self
         return tf
     }()
     
-    
+
     // MARK: - 프로퍼티
     var viewModel: ReceiptWriteCellVM?
     weak var delegate: ReceiptWriteTableDelegate?
@@ -54,8 +57,7 @@ final class ReceiptWriteTableViewCell: UITableViewCell {
             return
         }
         // 선택된 셀의 priceTF만 보이게 하고, 나머지 셀은 숨기기
-        self.priceTf.isHidden
-        = selected
+        self.priceTf.isHidden = selected
         ? false
         : true
     }
@@ -110,28 +112,67 @@ extension ReceiptWriteTableViewCell {
             action: #selector(self.rightBtnTapped),
             for: .touchUpInside)
     }
-    private func configureClosure() {
-        self.rightBtn.addTarget(
-            self,
-            action: #selector(self.rightBtnTapped),
-            for: .touchUpInside)
-    }
     
     
     
+    
+    
+    
+    
+    
+    
+    // MARK: - 셀 설정
     func configureCell(with viewModel: ReceiptWriteCellVM) {
         self.viewModel = viewModel
         
         self.tableCellStackView.userNameLbl.text = viewModel.userName
         self.tableCellStackView.profileImg.image = viewModel.profileImg
-        self.tableCellStackView.priceLbl.text = "0"
+        self.tableCellStackView.priceLbl.text = "0원"
     }
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    // MARK: - 오른쪽 버튼 액션
     @objc private func rightBtnTapped() {
-//        self.viewModel?.done.toggle()
-//        print(#function)
-        self.delegate?.rightBtnTapped(self, userID: self.viewModel?.userID)
+        self.delegate?.rightBtnTapped(
+            self,
+            userID: self.viewModel?.userID)
     }
 }
 
+
+
+
+
+
+
+
+// MARK: - 텍스트필드 델리게이트
+
+extension ReceiptWriteTableViewCell: UITextFieldDelegate {
+    
+    // MARK: - 수정이 끝났을 때
+    /// 텍스트 필드 수정이 끝났을 때
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        let savedText = textField.text ?? ""
+        // 텍스트필드 숨기기
+        self.priceTf.isHidden = true
+        // ',' 및 '~원' 형식 추가
+        self.tableCellStackView.priceLbl.text = self.viewModel?.configureFormat(price: savedText)
+        
+        // 델리게이트 - 가격 계산
+        self.delegate?.setprice(userID: self.viewModel?.userID,
+                                price: Int(savedText))
+        // 0원이면 삭제
+        if self.priceTf.text == "0" {
+            self.priceTf.text = ""
+        }
+    }
+}

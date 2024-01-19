@@ -16,11 +16,21 @@ protocol ReceiptWriteVMProtocol {
     var selectedUsers: RoomUserDataDictionary { get set }
     
     var numOfUsers: Int { get }
+    var TF_MAX_COUNT: Int { get }
+    
+    func calculatePrice(userID: String?, price: Int?) -> String?
+    
+    var priceInfoTFText: String? { get }
+    var moneyCountLblText: String? { get }
+    
+    var tableIsHidden: Bool { get }
     
     
-    var getPriceString: String { get }
+    func removeFormat(price: String?) -> String?
     
+    func timePickerString(hour: Int, minute: Int) -> String
     
+    func timePickerFormat(_ row: Int) -> String
     
     
     func isPayerSelected(user: RoomUserDataDictionary) -> String?

@@ -9,4 +9,5 @@ import UIKit
 
 protocol ReceiptWriteTableDelegate: AnyObject {
     func rightBtnTapped(_ cell: UITableViewCell, userID: String?)
+    func setprice(userID: String?, price: Int?)
 }
