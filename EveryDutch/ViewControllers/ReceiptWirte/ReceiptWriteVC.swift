@@ -416,16 +416,11 @@ extension ReceiptWriteVC {
             self, 
             action: #selector(self.memoInfoTFDidChanged),
             for: .editingChanged)
-    }
-    
-    @objc private func memoInfoTFDidChanged() {
-        guard let text = self.memoInfoTF.text else { return }
         
-        if text.count > self.viewModel.TF_MAX_COUNT {
-            self.memoInfoTF.deleteBackward()
-        }
-        // 레이블 업데이트
-        self.memoNumOfCharLbl.text = "\(text.count) / 12"
+        self.priceInfoTF.addTarget(
+            self,
+            action: #selector(self.priceInfoTFDidChanged),
+            for: .editingChanged)
     }
 }
     
@@ -710,6 +705,18 @@ extension ReceiptWriteVC: UIPickerViewDelegate {
 
 extension ReceiptWriteVC: UITextFieldDelegate {
     
+    // MARK: - 텍스트필드 수정 시작 시
+    /// priceInfoTF의 수정을 시작할 때 ',' 및 '원'을 제거하는 메서드
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        // 가격 텍스트필드일 때, 빈칸이 아니라면
+        guard textField == self.priceInfoTF,
+              self.priceInfoTF.text != "" else { return }
+        
+        // priceInfoTF에 있는 '~원' 형식을 제거
+        self.priceInfoTF.text = self.viewModel.removeWonFormat(
+            priceText: self.priceInfoTF.text)
+    }
+    
     // MARK: - 수정이 끝났을 때
     /// 텍스트 필드 수정이 끝났을 때
     func textFieldDidEndEditing(_ textField: UITextField) {
@@ -722,28 +729,37 @@ extension ReceiptWriteVC: UITextFieldDelegate {
             
         // 가격 텍스트필드 일때
         } else {
-            // Int 값 설정
-            self.viewModel.price = Int(savedText)
+            // 뷰모델에 price값 저장
+            self.viewModel.savePriceText(text: savedText)
+            
             // 바뀐 가격을 ',' 및 '원'을 붙여 표시
             self.priceInfoTF.text = self.viewModel.priceInfoTFText
             self.moneyCountLbl.text = self.viewModel.moneyCountLblText
         }
     }
-
     
-    // MARK: - 텍스트필드 수정 시작 시
-    /// priceInfoTF의 수정을 시작할 때 ',' 및 '원'을 제거하는 메서드
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        // 가격 텍스트필드일 때, 빈칸이 아니라면
-        guard textField == self.priceInfoTF,
-              self.priceInfoTF.text != "" else { return }
+    // MARK: - 가격 텍스트필드 액션 메서드
+    @objc private func priceInfoTFDidChanged() {
+        guard let currentText = self.priceInfoTF.text else { return }
+
+        // '0'이 입력되었을 경우 -> '10'으로 변경
+        // '0'이 아닐 경우 -> 그대로 진행
+        let newText = self.viewModel.updatePriceText(currentText)
         
-        // priceInfoTF에 있는 ',' 및 '~원' 형식을 제거
-        self.priceInfoTF.text = self.viewModel.removeFormat(
-            price: self.priceInfoTF.text)
+        // 포매팅된 문자열로 텍스트 필드 업데이트
+        self.priceInfoTF.text = self.viewModel.formatPriceForEditing(newText)
+    }
+    
+    // MARK: - 메모 텍스트필드 액션 메서드
+    @objc private func memoInfoTFDidChanged() {
+        guard let text = self.memoInfoTF.text else { return }
         
-        if self.priceInfoTF.text == "0" {
-            self.priceInfoTF.text = ""
+        // 최대 글자 수(12글자)를 넘어가면 더이상 작성이 안 되도록 설정
+        if text.count > self.viewModel.TF_MAX_COUNT {
+            self.memoInfoTF.deleteBackward()
         }
+        // 레이블 업데이트
+        self.memoNumOfCharLbl.text = self.viewModel.updateMemoCount(
+            count: text.count)
     }
 }

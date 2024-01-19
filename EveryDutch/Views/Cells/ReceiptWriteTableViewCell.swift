@@ -111,8 +111,14 @@ extension ReceiptWriteTableViewCell {
             self,
             action: #selector(self.rightBtnTapped),
             for: .touchUpInside)
+        
+        self.priceTf.addTarget(
+            self, 
+            action: #selector(self.priceTfDidChanged),
+            for: .editingChanged)
     }
     
+
     
     
     
@@ -158,21 +164,34 @@ extension ReceiptWriteTableViewCell {
 
 extension ReceiptWriteTableViewCell: UITextFieldDelegate {
     
+    @objc private func priceTfDidChanged() {
+        guard let currentText = self.priceTf.text else { return }
+        // '0'이 입력되었을 경우 '10'으로 변경
+        let newText = currentText == "0"
+        ? "10"
+        : currentText
+
+        // 포매팅된 문자열로 텍스트 필드 업데이트
+        self.priceTf.text = NumberFormatter.formatStringChange(
+            price: newText)
+    }
+    
     // MARK: - 수정이 끝났을 때
     /// 텍스트 필드 수정이 끝났을 때
     func textFieldDidEndEditing(_ textField: UITextField) {
         let savedText = textField.text ?? ""
         // 텍스트필드 숨기기
         self.priceTf.isHidden = true
+        
+        // 형식 제거
+        let priceInt = NumberFormatter.removeFormat(
+            price: savedText)
+        
         // ',' 및 '~원' 형식 추가
-        self.tableCellStackView.priceLbl.text = self.viewModel?.configureFormat(price: savedText)
+        self.tableCellStackView.priceLbl.text = self.viewModel?.configureFormat(price: priceInt)
         
         // 델리게이트 - 가격 계산
         self.delegate?.setprice(userID: self.viewModel?.userID,
                                 price: Int(savedText))
-        // 0원이면 삭제
-        if self.priceTf.text == "0" {
-            self.priceTf.text = ""
-        }
     }
 }

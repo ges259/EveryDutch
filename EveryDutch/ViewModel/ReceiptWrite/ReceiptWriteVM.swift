@@ -35,65 +35,16 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     var usersMoneyDict: [String : Int] = [:]
     
     
-    // MARK: - 가격 설정
-    func calculatePrice(userID: String?, price: Int?) -> String? {
-        // userID 옵셔널 바인딩
-        guard let userID = userID else {
-            return self.moneyCountLblText
-        }
-        
-        // [ 제거 ]
-        // 아무것도 적지 않았다면 (nil값)
-        if price == nil {
-            // 만약 유저가 돈이 있다면
-            // -> 0원으로 만들기
-            if self.usersMoneyDict.keys.contains(userID),
-               let price = price {
-                // usersMoneyDict에서 userID없애기
-                self.usersMoneyDict.removeValue(forKey: userID)
-                
-                // 금액 차감
-                self.cumulativeMoney -= price
-            }
-            
-        // [ 수정 ]
-        // userID가 있다면
-        } else if self.usersMoneyDict.keys.contains(userID) {
-            // 원래 돈 및 수정 돈가져오기
-            guard let original = self.usersMoneyDict[userID],
-                  let new = price
-            else { return self.moneyCountLblText }
-            // 금액 재설정
-            // 수정 금액 - 원래 설정된 있던 금액
-            self.cumulativeMoney += new - original
-            
-            
-        // [ 추가 ]
-        } else {
-            // 딕셔너리에 추가
-            self.usersMoneyDict[userID] = price
-            // 금액 추가
-            self.cumulativeMoney += price!
-        }
-        return self.moneyCountLblText
-    }
+
+    
+
     
     
 
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    // MARK: - 최대 글자 수
     /// 최대 글자 수 :  12
     let TF_MAX_COUNT: Int = 12
     
@@ -110,6 +61,144 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
         : false
     }
     
+
+    
+    
+    // MARK: - 라이프사이클
+    init(roomDataManager: RoomDataManagerProtocol) {
+        self.roomDataManager = roomDataManager
+    }
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - 가격 설정
+
+extension ReceiptWriteVM {
+    
+    // MARK: - 가격 설정
+    func calculatePrice(userID: String?, price: Int?) -> String? {
+        // userID 옵셔널 바인딩
+        guard let userID = userID else {
+            return self.moneyCountLblText
+        }
+        
+        // [ 제거 ]
+        // 아무것도 적지 않았다면 (nil값)
+        if price == nil {
+            // 만약 유저가 돈이 있다면
+            // -> 0원으로 만들기
+            self.removePrice(userID: userID, price: price)
+            
+        // [ 수정 ]
+        // userID가 있다면
+        } else if self.usersMoneyDict.keys.contains(userID) {
+
+            self.modifyPrice(userID: userID, price: price)
+            
+        // [ 추가 ]
+        } else {
+            self.createPrice(userID: userID, price: price)
+        }
+        return self.moneyCountLblText
+    }
+    
+    private func removePrice(userID: String, price: Int?) {
+        // 만약 유저가 돈이 있다면
+        // -> 0원으로 만들기
+        if self.usersMoneyDict.keys.contains(userID),
+           let price = price {
+            // usersMoneyDict에서 userID없애기
+            self.usersMoneyDict.removeValue(forKey: userID)
+            
+            // 금액 차감
+            self.cumulativeMoney -= price
+        }
+    }
+    private func modifyPrice(userID: String, price: Int?) {
+        // 원래 돈 및 수정 돈가져오기
+        guard let original = self.usersMoneyDict[userID],
+              let new = price
+        else { return }
+        // 금액 재설정
+        // 수정 금액 - 원래 설정된 있던 금액
+        self.cumulativeMoney += new - original
+    }
+    private func createPrice(userID: String, price: Int?) {
+        // 딕셔너리에 추가
+        self.usersMoneyDict[userID] = price
+        // 금액 추가
+        self.cumulativeMoney += price!
+    }
+}
+    
+
+
+
+
+
+
+
+
+
+// MARK: - 메모
+
+extension ReceiptWriteVM {
+    
+    // MARK: - 메모 글자 수 저장
+    func updateMemoCount(count: Int) -> String {
+        return "\(count) / \(self.TF_MAX_COUNT)"
+    }
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - 텍스트필드
+
+extension ReceiptWriteVM {
+    
+    // MARK: - '원' 삭제
+    func removeWonFormat(priceText: String?) -> String? {
+        return NumberFormatter.removeWon(price: priceText)
+    }
+    
+    // MARK: - 형식 유지하며 수정
+    func formatPriceForEditing(_ newText: String?) -> String? {
+        return NumberFormatter.formatStringChange(
+            price: newText)
+    }
+    
+    // MARK: - price(가격) 저장
+    func savePriceText(text: String?) {
+        // 형식 제거
+        if let priceInt = NumberFormatter.removeFormat(
+            price: text) {
+            // price 값 설정
+            self.price = Int(priceInt)
+        } else {
+            self.price = nil
+        }
+    }
+    
+    // MARK: - '0' 만 있을 경우
+    func updatePriceText(_ text: String) -> String {
+        return text == "0" ? "10" : text
+    }
+
     // MARK: - 가격 레이블 텍스트 설정
     var priceInfoTFText: String? {
         return self.price == nil
@@ -125,31 +214,6 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
             return NumberFormatter.formatString(price: total)
         }
         return "0원"
-    }
-    
-    
-    // MARK: - 라이프사이클
-    init(roomDataManager: RoomDataManagerProtocol) {
-        self.roomDataManager = roomDataManager
-    }
-}
-    
-
-
-
-
-
-
-
-
-
-// MARK: - 가격 레이블 설정
-    
-extension ReceiptWriteVM {
-    
-    // MARK: - price의 형식 제거
-    func removeFormat(price: String?) -> String? {
-        return NumberFormatter.removeFormat(price: price)
     }
 }
 
