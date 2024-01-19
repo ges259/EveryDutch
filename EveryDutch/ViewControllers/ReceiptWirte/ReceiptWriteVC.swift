@@ -264,6 +264,7 @@ final class ReceiptWriteVC: UIViewController {
         self.configureUI()
         self.configureAutoLayout()
         self.configureAction()
+        self.configureClosure()
     }
     init(viewModel: ReceiptWriteVMProtocol,
          coordinator: ReceiptWriteCoordProtocol) {
@@ -422,6 +423,13 @@ extension ReceiptWriteVC {
             action: #selector(self.priceInfoTFDidChanged),
             for: .editingChanged)
     }
+    
+    // MARK: - 클로저 설정
+    private func configureClosure() {
+        self.viewModel.calculatePriceClosure = { total in
+            self.moneyCountLbl.text = total
+        }
+    }
 }
     
     
@@ -500,19 +508,13 @@ extension ReceiptWriteVC {
         self.viewModel.makeCellVM(selectedUsers: users)
         self.selectedUsersTableView.reloadData()
         // 삭제 후 0명이 된다면 -> 테이블뷰 안 보이도록 설정
-        // 삭제 후 0명이 된다면 -> 테이블뷰 안 보이도록 설정
         self.selectedUsersTableView.isHidden = self.viewModel.tableIsHidden
     }
     
     // MARK: - 계산한 사람 선택
     func changePayerLblData(_ user: RoomUserDataDictionary) {
         self.payerInfoLbl.text = self.viewModel.isPayerSelected(user: user)
-        
         self.addPersonBtn.isHidden = false
-        
-        // MARK: - Fix
-        // priceInfoTF의 값이 바뀌면 -> 자동으로 moneyCountLbl의 값이 바뀌도록
-        // + 셀에 가격 자동 차감
     }
 }
 
@@ -547,10 +549,8 @@ extension ReceiptWriteVC: ReceiptWriteTableDelegate {
     // MARK: - 금액 설정
     func setprice(userID: String?,
                   price: Int?) {
-        
-        self.moneyCountLbl.text = self.viewModel.calculatePrice(
-            userID: userID,
-            price: price)
+        self.viewModel.calculatePrice(userID: userID,
+                                      price: price)
     }
 }
 
@@ -741,13 +741,9 @@ extension ReceiptWriteVC: UITextFieldDelegate {
     // MARK: - 가격 텍스트필드 액션 메서드
     @objc private func priceInfoTFDidChanged() {
         guard let currentText = self.priceInfoTF.text else { return }
-
-        // '0'이 입력되었을 경우 -> '10'으로 변경
-        // '0'이 아닐 경우 -> 그대로 진행
-        let newText = self.viewModel.updatePriceText(currentText)
         
         // 포매팅된 문자열로 텍스트 필드 업데이트
-        self.priceInfoTF.text = self.viewModel.formatPriceForEditing(newText)
+        self.priceInfoTF.text = self.viewModel.formatPriceForEditing(currentText)
     }
     
     // MARK: - 메모 텍스트필드 액션 메서드

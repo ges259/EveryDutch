@@ -166,20 +166,24 @@ extension ReceiptWriteTableViewCell: UITextFieldDelegate {
     
     @objc private func priceTfDidChanged() {
         guard let currentText = self.priceTf.text else { return }
-        // '0'이 입력되었을 경우 '10'으로 변경
-        let newText = currentText == "0"
-        ? "10"
-        : currentText
-
         // 포매팅된 문자열로 텍스트 필드 업데이트
         self.priceTf.text = NumberFormatter.formatStringChange(
-            price: newText)
+            price: currentText)
+    }
+    
+    // MARK: - 텍스트필드 수정 시작 시
+    /// priceInfoTF의 수정을 시작할 때 '0'이면, '0'을 제거하는 메서드
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        if self.priceTf.text == "0" {
+            self.priceTf.text = ""
+        }
     }
     
     // MARK: - 수정이 끝났을 때
     /// 텍스트 필드 수정이 끝났을 때
     func textFieldDidEndEditing(_ textField: UITextField) {
         let savedText = textField.text ?? ""
+        
         // 텍스트필드 숨기기
         self.priceTf.isHidden = true
         
@@ -192,6 +196,6 @@ extension ReceiptWriteTableViewCell: UITextFieldDelegate {
         
         // 델리게이트 - 가격 계산
         self.delegate?.setprice(userID: self.viewModel?.userID,
-                                price: Int(savedText))
+                                price: Int(priceInt ?? "0"))
     }
 }

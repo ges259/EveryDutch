@@ -30,14 +30,19 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     
     
     
-    var cumulativeMoney: Int = 0
+    var cumulativeMoney: Int = 0 {
+        didSet {
+            print(self.cumulativeMoney)
+            self.calculatePriceClosure?(self.moneyCountLblText)
+        }
+    }
     
     var usersMoneyDict: [String : Int] = [:]
     
     
 
     
-
+    var calculatePriceClosure: ((String?) -> Void)?
     
     
 
@@ -84,58 +89,65 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
 extension ReceiptWriteVM {
     
     // MARK: - 가격 설정
-    func calculatePrice(userID: String?, price: Int?) -> String? {
-        // userID 옵셔널 바인딩
-        guard let userID = userID else {
-            return self.moneyCountLblText
-        }
+    func calculatePrice(userID: String?, price: Int?) {
         
-        // [ 제거 ]
-        // 아무것도 적지 않았다면 (nil값)
+        // userID 옵셔널 바인딩
+        guard let userID = userID else { return }
+        
+        // [ 제거 ] - 아무것도 적지 않았다면 (nil값)
         if price == nil {
             // 만약 유저가 돈이 있다면
             // -> 0원으로 만들기
             self.removePrice(userID: userID, price: price)
-            
-        // [ 수정 ]
-        // userID가 있다면
+        // [ 수정 ] - userID가 있다면
         } else if self.usersMoneyDict.keys.contains(userID) {
-
             self.modifyPrice(userID: userID, price: price)
             
-        // [ 추가 ]
+        // [ 추가 ] - userID가 없다면
         } else {
             self.createPrice(userID: userID, price: price)
         }
-        return self.moneyCountLblText
     }
     
+    // MARK: - 가격 제거
     private func removePrice(userID: String, price: Int?) {
         // 만약 유저가 돈이 있다면
         // -> 0원으로 만들기
-        if self.usersMoneyDict.keys.contains(userID),
-           let price = price {
-            // usersMoneyDict에서 userID없애기
-            self.usersMoneyDict.removeValue(forKey: userID)
+        if self.usersMoneyDict.keys.contains(userID) {
+            // 유저의 '원래 돈' 가져오기
+            let money = self.usersMoneyDict[userID] ?? 0
             
             // 금액 차감
-            self.cumulativeMoney -= price
+            self.cumulativeMoney -= money
+            
+            // usersMoneyDict에서 userID없애기
+            self.usersMoneyDict.removeValue(forKey: userID)
         }
     }
+    
+    // MARK: - 가격 수정
     private func modifyPrice(userID: String, price: Int?) {
         // 원래 돈 및 수정 돈가져오기
         guard let original = self.usersMoneyDict[userID],
               let new = price
         else { return }
+        
+        self.usersMoneyDict[userID] = price
+        
+        let cumulativeMoney = self.cumulativeMoney
+        
         // 금액 재설정
         // 수정 금액 - 원래 설정된 있던 금액
-        self.cumulativeMoney += new - original
+        self.cumulativeMoney = (cumulativeMoney - original + new)
     }
+    
+    // MARK: - 가격 추가
     private func createPrice(userID: String, price: Int?) {
+        guard let price = price else { return }
         // 딕셔너리에 추가
         self.usersMoneyDict[userID] = price
         // 금액 추가
-        self.cumulativeMoney += price!
+        self.cumulativeMoney += price
     }
 }
     
@@ -148,11 +160,11 @@ extension ReceiptWriteVM {
 
 
 
-// MARK: - 메모
+// MARK: - 메모 글자 수
 
 extension ReceiptWriteVM {
     
-    // MARK: - 메모 글자 수 저장
+    // MARK: - 메모 글자 수 표시
     func updateMemoCount(count: Int) -> String {
         return "\(count) / \(self.TF_MAX_COUNT)"
     }
@@ -167,7 +179,7 @@ extension ReceiptWriteVM {
 
 
 
-// MARK: - 텍스트필드
+// MARK: - 가격 텍스트필드
 
 extension ReceiptWriteVM {
     
@@ -193,11 +205,6 @@ extension ReceiptWriteVM {
             self.price = nil
         }
     }
-    
-    // MARK: - '0' 만 있을 경우
-    func updatePriceText(_ text: String) -> String {
-        return text == "0" ? "10" : text
-    }
 
     // MARK: - 가격 레이블 텍스트 설정
     var priceInfoTFText: String? {
@@ -209,11 +216,9 @@ extension ReceiptWriteVM {
     
     // MARK: - 누적 금액 레이블 텍스트 설정
     var moneyCountLblText: String? {
-        if let price = self.price {
-            let total = price - self.cumulativeMoney
-            return NumberFormatter.formatString(price: total)
-        }
-        return "0원"
+        let price = self.price ?? 0
+        let total = price - self.cumulativeMoney
+        return NumberFormatter.formatString(price: total)
     }
 }
 
