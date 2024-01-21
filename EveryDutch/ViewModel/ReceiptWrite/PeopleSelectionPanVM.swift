@@ -15,10 +15,10 @@ final class PeopleSelectionPanVM: PeopleSelectionPanVMProtocol  {
     
     
     
-    
+    typealias UserDataTuple = (key: String, value: RoomUsers)
     
     // 딕셔너리의 key-value 쌍을 배열로 변환
-    func returnUserData(index: Int) -> (key: String, value: RoomUsers) {
+    func returnUserData(index: Int) -> UserDataTuple {
         return Array(self.users)[index]
     }
     
@@ -27,36 +27,79 @@ final class PeopleSelectionPanVM: PeopleSelectionPanVMProtocol  {
     // MARK: - 선택된 유저
     var selectedUsers: RoomUserDataDictionary = [:] {
         didSet {
+            print("selectedUsers --- \(selectedUsers)")
+        }
+    }
+    
+    var addedUsers: RoomUserDataDictionary = [:] {
+        didSet {
+            print("addedUsers --- \(addedUsers)")
             self.bottomBtnClosure?()
         }
     }
+    var removedSelectedUsers: RoomUserDataDictionary = [:] {
+        didSet {
+            print("removedSelectedUsers --- \(removedSelectedUsers)")
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     // MARK: - 바텀 버튼 클로저
     var bottomBtnClosure: (() -> Void)?
     
+    
+    
+    // MARK: - 선택된 유저의 수
+    private var usersCount: Bool {
+        let removedUsers = self.removedSelectedUsers.count
+        let addedUsers = self.addedUsers.count
+        let totalUsersCount = removedUsers + addedUsers
+        
+        return totalUsersCount == 0
+        ? true
+        : false
+    }
+    
     // MARK: - 유저 찾기
     func getIdToRoomUser(usersID: String) -> Bool {
-        if let _ = self.selectedUsers[usersID] {
+        if self.addedUsers[usersID] != nil
+            || self.selectedUsers[usersID] != nil {
             return true
         }
         return false
     }
     // MARK: - 바텀 버튼 isEnabled
     var bottomBtnIsEnabled: Bool {
-        return self.selectedUsers.count == 0
+        return self.usersCount
         ? false
         : true
     }
     // MARK: - 바텀 버튼 생상
     var bottomBtnColor: UIColor {
-        return self.selectedUsers.count == 0
+        return self.usersCount
         ? UIColor.unselected_Background
         : UIColor.normal_white
     }
     var bottomBtnTextColor: UIColor {
-        return self.selectedUsers.count == 0
+        return self.usersCount
         ? UIColor.gray
         : UIColor.black
     }
+    
+    
+    
+    
+    
+    
+    
     
     
     
@@ -92,6 +135,12 @@ final class PeopleSelectionPanVM: PeopleSelectionPanVMProtocol  {
     
     
     
+    
+    
+    
+    
+    
+    
     // MARK: - 라이프 사이클
     init(selectedUsers: RoomUserDataDictionary?,
          roomDataManager: RoomDataManagerProtocol,
@@ -104,36 +153,84 @@ final class PeopleSelectionPanVM: PeopleSelectionPanVMProtocol  {
         }
         self.users = roomDataManager.getRoomUsersDict
     }
+}
     
     
     
     
     
-    // MARK: - 다중 선택 모드
-    // 셀이 선택되었을 때
+    
+    
+ 
+
+
+// MARK: - 다중 선택 모드
+
+extension PeopleSelectionPanVM {
     func multipleModeSelectedUsers(index: Int) {
+        // 선택된 유저의 데이터 가져오기
         let user = self.returnUserData(index: index)
         
-        // 이미 선택된 유저인지 확인
-        if let selectedIndex = self.selectedUsers.firstIndex(
-            where: { $0.key == user.key }) {
-            // 이미 선택된 유저라면, selectedUsers 배열에서 삭제
-            self.selectedUsers.remove(at: selectedIndex)
+        // 가져온 유저가 삭제된 상태 (선택되어있지 않은 상태)
+        if self.removedSelectedUsers[user.key] != nil {
+            self.removeRemovedUser(user)
             
+            
+            // 가져온 유저에 있다면 (선택되어있는 상태)
+        } else if self.selectedUsers[user.key] != nil {
+            self.removeSelectedUser(user)
+            
+            
+            // 추가된 유저에 있다면 (선택되어있는 상태)
+        } else if self.addedUsers[user.key] != nil {
+            self.removeAddedUser(user.key)
+            
+            
+            // 유저 추가 (선택되어있지 않은 상태)
         } else {
-            // 새로운 유저라면, selectedUsers 배열에 추가
-            self.selectedUsers[user.key] = user.value
+            self.addUser(user)
         }
     }
     
-    // MARK: - 단일 선택 모드
-    func singleModeSelectionUser(index: Int) {
-        self.selectedUsers.removeAll()
-        let user = self.returnUserData(index: index)
+    // MARK: - [삭제] 삭제된 유저
+    // 선택된 유저가 삭제된 경우를 확인
+    private func removeRemovedUser(_ user: UserDataTuple) {
+        self.removedSelectedUsers.removeValue(forKey: user.key)
         self.selectedUsers[user.key] = user.value
     }
     
+    // MARK: - [삭제] 가져온 유저
+    private func removeSelectedUser(_ user: UserDataTuple) {
+        self.selectedUsers.removeValue(forKey: user.key)
+        self.removedSelectedUsers[user.key] = user.value
+    }
+    
+    // MARK: - [삭제] 추가된 유저
+    private func removeAddedUser(_ userID: String) {
+        self.addedUsers.removeValue(forKey: userID)
+    }
+    
+    // MARK: - [추가] 추가된 유저
+    private func addUser(_ user: UserDataTuple) {
+        self.addedUsers[user.key] = user.value
+    }
+}
     
     
     
+    
+    
+    
+    
+    
+
+
+// MARK: - 단일 선택 모드
+
+extension PeopleSelectionPanVM {
+    func singleModeSelectionUser(index: Int) {
+        self.addedUsers.removeAll()
+        let user = self.returnUserData(index: index)
+        self.addedUsers[user.key] = user.value
+    }
 }

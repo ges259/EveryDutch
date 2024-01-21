@@ -394,6 +394,11 @@ extension ReceiptWriteVC {
             self,
             action: #selector(self.priceInfoTFDidChanged),
             for: .editingChanged)
+        // 1 / N 버튼
+        self.dutchBtn.addTarget(
+            self, 
+            action: #selector(self.dutchBtnTapped),
+            for: .touchUpInside)
     }
     
     // MARK: - 제스처 설정
@@ -538,6 +543,21 @@ extension ReceiptWriteVC {
     
     
     
+
+// MARK: - 1 / N 버튼 액션
+extension ReceiptWriteVC {
+    @objc private func dutchBtnTapped() {
+        
+    }
+}
+
+
+
+
+
+
+
+
 
 
 // MARK: - 데이트 피커 액션

@@ -121,6 +121,7 @@ extension PeopleSelectionPanVC {
         }
     }
     
+    // MARK: - 뷰모델을 통한 설정
     private func configureViewWithViewModel() {
         self.topLbl.text = self.viewModel.topLblText
         self.bottomBtn.setTitle(self.viewModel.bottomBtnText, for: .normal)
@@ -161,7 +162,7 @@ extension PeopleSelectionPanVC {
         // People_Selecteion_Pan_Coordinator로 전달
         self.delegate?.multipleModeSelectedUsers(
             peopleSeelctionEnum: self.viewModel.peopleSelectionEnum,
-            users: self.viewModel.selectedUsers)
+            users: self.viewModel.addedUsers)
     }
 }
 
@@ -174,7 +175,7 @@ extension PeopleSelectionPanVC {
 
 
 
-// MARK: - 텍스트필드 델리게이트
+// MARK: - 테이블뷰 델리게이트
 extension PeopleSelectionPanVC: UITableViewDelegate {
     func tableView(_ tableView: UITableView,
                    heightForRowAt indexPath: IndexPath)
@@ -199,7 +200,7 @@ extension PeopleSelectionPanVC: UITableViewDelegate {
     }
 }
 
-// MARK: - 텍스트필드 데이터소스
+// MARK: - 테이블뷰 데이터소스
 extension PeopleSelectionPanVC: UITableViewDataSource {
     func tableView(_ tableView: UITableView,
                    numberOfRowsInSection section: Int)

@@ -11,6 +11,8 @@ import UIKit
 protocol PeopleSelectionPanVMProtocol {
     var peopleSelectionEnum: PeopleSeelctionEnum? { get }
     var selectedUsers: RoomUserDataDictionary { get }
+    var addedUsers: RoomUserDataDictionary { get }
+    var removedSelectedUsers: RoomUserDataDictionary { get }
 //    var usersKeyValueArray: [(key: String, value: RoomUsers)] { get }
     
     

@@ -110,7 +110,8 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     // MARK: - 키보드 높이
     var keyboardHeight: CGFloat = 291.31898
     
-    
+    // MARK: - 더치 버튼 클로저
+    var dutchedClosure: (() -> Void)?
     
     
     
@@ -231,6 +232,46 @@ extension ReceiptWriteVM {
     }
 }
     
+
+
+
+
+
+
+
+
+
+// MARK: - 가격 재분배 (1/N 버튼)
+extension ReceiptWriteVM {
+    
+    func dutchBtnTapped() {
+        // 현재 금액 가져오기
+        // 현재 금액이 0원이 아니라면
+        if let price = self.price {
+            let dutchedPrice = price / self.usersMoneyDict.count
+            // 재분배
+            self.cumulativeMoney = dutchedPrice
+            
+            
+        } else {
+            // 현재 금액이 0원이라면 -> 0원으로 모두 맞춤
+            self.cumulativeMoney = 0
+        }
+        
+        
+        // 클로저가 호출 되는데.....?
+        
+        
+        // 선택된 유저 모두 없애기
+        
+        
+        
+        // 선택된 유저 모두 가져오기
+        
+        // 누적 금액 -> 클로저 호출(0원으로 만들기)
+    }
+}
+
 
 
 
@@ -363,10 +404,12 @@ extension ReceiptWriteVM {
     
     // MARK: - 셀의 뷰모델 만들기
     func makeCellVM(selectedUsers: RoomUserDataDictionary) {
+        print(#function)
+        
         // 방의 유저들 정보 가져오기
         self.selectedUsers = selectedUsers
-        
-        self.cellViewModels.removeAll()
+        // MARK: - Fix
+//        self.cellViewModels.removeAll()
         // 유저 정보 보내기
         self.cellViewModels = self.selectedUsers.map { (userID, roomUser) in
             ReceiptWriteCellVM(
