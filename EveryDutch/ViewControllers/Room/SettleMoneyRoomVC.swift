@@ -12,33 +12,39 @@ import SnapKit
 
 final class SettleMoneyRoomVC: UIViewController {
     
-    // MARK: - 탑뷰 레이아웃
+// MARK: - 탑뷰 레이아웃
+    
+    
+    
+    // MARK: - 네비게이션뷰
     /// 네비게이션바를 가리는 뷰
     private var navView: UIView = UIView.configureView(
         color: UIColor.deep_Blue)
     
-    /// 밑으로 내릴 수 있느 탑뷰
-    private var topView: UIView = UIView.configureView(
-        color: UIColor.deep_Blue)
+    // MARK: - 탑뷰
+    /// 밑으로 내릴 수 있는 탑뷰
+    private var topView: UIView = {
+        let view = UIView.configureView(
+            color: UIColor.deep_Blue)
+        // 탑뷰에 그림자 추가
+        view.addShadow(bottom: true)
+        return view
+    }()
     
-    
-    
-    // 탑뷰 내부 레이아웃
-//    private lazy var segmentBtnStv: SegmentBtnStackView = {
-//        let btn = SegmentBtnStackView()
-//        btn.delegate = self
-//        return btn
-//    }()
-//    
+    // MARK: - 유저 금액 테이블뷰
     /// 유저를 보여주는 테이블뷰
     private var usersTableView: UsersTableView = UsersTableView(
         viewModel: UsersTableViewVM(
             roomDataManager: RoomDataManager.shared, .isSettleMoney))
+    
+    // MARK: - 하단 검색 버튼
     /// 검색 버튼
     private var topViewBottomBtn: UIButton = UIButton.btnWithTitle(
         title: "검색",
         font: UIFont.boldSystemFont(ofSize: 17),
         backgroundColor: UIColor.normal_white)
+    
+    // MARK: - 스택뷰
     /// 탑뷰 스택뷰
     private lazy var topViewStackView: UIStackView = {
         let stv = UIStackView.configureStv(
@@ -51,17 +57,25 @@ final class SettleMoneyRoomVC: UIViewController {
         stv.setCustomSpacing(4, after: self.usersTableView)
         return stv
     }()
+    
+    // MARK: - 아래 방향 이미지
     private var arrowDownImg: UIImageView = {
         let img = UIImageView(image: UIImage.arrow_down)
         img.tintColor = .deep_Blue
         return img
     }()
+    
+    // MARK: - 인디케이터
     private var topViewIndicator: UIView = UIView.configureView(
         color: UIColor.black)
     
     
     
-    // MARK: - 메인 레이아웃
+// MARK: - 메인 레이아웃
+    
+    
+    
+    // MARK: - 정산내역 테이블뷰
     /// 정산내역 테이블뷰
     private lazy var receiptTableView: CustomTableView = {
         let view = CustomTableView()
@@ -76,6 +90,8 @@ final class SettleMoneyRoomVC: UIViewController {
         view.bounces = true
         return view
     }()
+    
+    // MARK: - 하단 버튼
     /// 하단 '영수증 작성' 버튼
     private lazy var bottomBtn: BottomButton = BottomButton()
     
@@ -92,28 +108,18 @@ final class SettleMoneyRoomVC: UIViewController {
     private var coordinator: SettleMoneyRoomCoordProtocol
     private var viewModel: SettleMoneyRoomProtocol
     
-    
-    private lazy var cellHeight: CGFloat = self.receiptTableView.frame.width / 7 * 2
-    
-    // 탑뷰와 관련된 프로퍼티
+    /// 탑뷰의 높이 조절할 때 필요한 프로퍼티
     private var topViewHeight: NSLayoutConstraint!
     
     
-    
-    
-
-    
-    
-    
-//    private var topViewIsOpen: Bool = false
-    private var initialHeight: CGFloat = 100
-    private var currentTranslation: CGPoint = .zero
-    private var currentVelocity: CGPoint = .zero
+    /// 테이블뷰의 셀의 높이
+    private lazy var cellHeight: CGFloat = self.receiptTableView.frame.width / 7 * 2
     
 
     
     
     
+
     
     
     
@@ -125,6 +131,7 @@ final class SettleMoneyRoomVC: UIViewController {
         self.configureUI()
         self.configureAutoLayout()
         self.configureAction()
+        self.configureGesture()
         self.configureClosure()
         self.configureViewWithViewModel()
     }
@@ -147,10 +154,7 @@ extension SettleMoneyRoomVC {
     private func configureUI() {
         // 배경화면 설정
         self.view.backgroundColor = UIColor.base_Blue
-        // 바텀 버튼에 그림자 추가
-        self.bottomBtn.addShadow(top: true)
-        // 탑뷰에 그림자 추가
-        self.topView.addShadow(bottom: true)
+        
         // 모서리 설정
         // 탑뷰
         self.topView.layer.maskedCorners = [
@@ -242,16 +246,16 @@ extension SettleMoneyRoomVC {
         // ********** 액션 **********
         // 왼쪽 네비게이션 바 - 액션
         let leftBtn = UIBarButtonItem(
-            image: .chevronLeft, 
+            image: .chevronLeft,
             style: .done,
-            target: self, 
+            target: self,
             action: #selector(self.backBtnTapped))
         self.navigationItem.leftBarButtonItem = leftBtn
         // 오른쪽 네비게이션 바 - 액션
         let rightBtn = UIBarButtonItem(
-            image: .gear_Fill_Img, 
+            image: .gear_Fill_Img,
             style: .done,
-            target: self, 
+            target: self,
             action: #selector(self.settingBtnTapped))
         self.navigationItem.rightBarButtonItem = rightBtn
         // 바텀 버튼 액션
@@ -259,8 +263,10 @@ extension SettleMoneyRoomVC {
             self,
             action: #selector(self.bottomBtnTapped),
             for: .touchUpInside)
-        
-        // ********** 제스쳐 **********
+    }
+    
+    // MARK: - 제스처 설정
+    private func configureGesture() {
         // 탑뷰 - 팬 재스쳐
         let topViewPanGesture = UIPanGestureRecognizer(
             target: self,
@@ -278,8 +284,6 @@ extension SettleMoneyRoomVC {
         self.navigationController?.navigationBar.addGestureRecognizer(navPanGesture)
     }
     
-    
-    
     // MARK: - 클로저 설정
     private func configureClosure() {
         // 레시피를 가져왔을 때
@@ -293,7 +297,7 @@ extension SettleMoneyRoomVC {
         }
     }
     
-    
+    // MARK: - 뷰모델을 통한 설정
     private func configureViewWithViewModel() {
         // 바텀 버튼 설정
         self.bottomBtn.setTitle(self.viewModel.bottomBtnTitle, for: .normal)
@@ -301,40 +305,53 @@ extension SettleMoneyRoomVC {
         // 탑뷰 바텀 버튼을 숨길지 말지 결정
         self.topViewBottomBtn.isHidden = self.viewModel.isTopViewBtnIsHidden
         
-        
         // 네비게이션 타이틀 설정
         self.navigationItem.title = self.viewModel.navTitle
     }
+}
     
     
     
     
     
+
+
+
+
+
+// MARK: - 액션 함수 (화면 이동)
+
+extension SettleMoneyRoomVC {
     
-    
-    
-    
-    // MARK: - 액션 함수 (화면 이동)
+    // MARK: - 바텀 버튼
     @objc private func bottomBtnTapped() {
         self.coordinator.receiptWriteScreen()
     }
+    
+    // MARK: - 설정 버튼
     @objc private func settingBtnTapped() {
         self.coordinator.RoomSettingScreen()
     }
+    
+    // MARK: - 뒤로가기 버튼
     @objc private func backBtnTapped() {
         self.coordinator.didFinish()
     }
-    
+}
     
     
 
     
     
+
     
     
+
+
+// MARK: - 탑뷰 크기 조절
     
+extension SettleMoneyRoomVC {
     
-    // MARK: - 탑뷰 크기 조절
     @objc private func scrollVertical(sender: UIPanGestureRecognizer) {
         let translation = sender.translation(in: view)
         let velocity = sender.velocity(in: view) // 스와이프 속도를 가져옵니다.
@@ -342,43 +359,52 @@ extension SettleMoneyRoomVC {
         switch sender.state {
         case .began:
             // 제스처가 시작될 때 초기 높이를 저장
-            self.initialHeight = self.topViewHeight.constant
+            self.beganTopViewScroll()
             break
             
         case .changed:
-            self.currentTranslation = translation
-            self.currentVelocity = velocity
-            // 새 높이를 계산합니다.
-            var newHeight = self.initialHeight + translation.y
-            
-            // 새 높이가 최대 높이를 넘지 않도록 설정
-            newHeight = min(self.viewModel.maxHeight, newHeight)
-            // 새 높이가 최소 높이보다 작아지지 않도록 설정
-            newHeight = max(self.viewModel.minHeight, newHeight)
-            
-            // 제약 조건을 업데이트하지만 layoutIfNeeded는 호출 X
-            self.topViewHeight.constant = newHeight
+            self.changedTopViewScroll(translation: translation,
+                                      velocity: velocity)
             break
             
         case .ended, .cancelled:
             // 최종 높이 조절
-            self.adjustTopViewHeight()
+            self.endedTopViewScroll()
         default: break
         }
     }
+    
+    // MARK: - [시작 시]
+    private func beganTopViewScroll() {
+        // 제스처가 시작될 때 초기 높이를 저장
+        self.viewModel.initialHeight = self.topViewHeight.constant
+    }
+    
+    // MARK: - [바뀌는 도중]
+    private func changedTopViewScroll(translation: CGPoint, 
+                                      velocity: CGPoint) {
+        self.viewModel.currentTranslation = translation
+        self.viewModel.currentVelocity = velocity
+        
+        // 새 높이를 계산합니다.
+        let newHeight = self.viewModel.getMaxAndMinHeight
+        // 제약 조건을 업데이트하지만 layoutIfNeeded는 호출 X
+        self.topViewHeight.constant = newHeight
+    }
+    
     // MARK: - 탑뷰 최대 / 최소 크기 설정
-    private func adjustTopViewHeight() {
+    private func endedTopViewScroll() {
         // 탑뷰가 닫혀 있고, 
         // 스와이프 방향이 아래로,
         // 스와이프 속도가 기준치 이하일 때,
         if !self.viewModel.isTopViewOpen
-            && self.currentTranslation.y > 0
-            && self.currentVelocity.y < 15000
+            && self.viewModel.currentTranslation.y > 0
+            && self.viewModel.currentVelocity.y < 15000
         {
             // 최대 높이로 설정하고 탑뷰를 열기
             self.openTopView()
             // 스와이프 방향이 위로일 때
-        } else if self.currentTranslation.y < 0 {
+        } else if self.viewModel.currentTranslation.y < 0 {
             // 최소 높이로 설정하고 탑뷰를 닫기
             self.closeTopView()
         }
@@ -386,11 +412,11 @@ extension SettleMoneyRoomVC {
     
     // MARK: - 탑뷰 열기 메서드
     private func openTopView() {
-        // 상단 뷰의 높이를 최대 높이로 설정
-        self.topViewHeight.constant = self.viewModel.maxHeight
         // 뷰모델 상태 true(open)으로 업데이트
         self.viewModel.isTopViewOpen = true
-        // 뷰의 레이아웃을 애니메이션과 함께 업데이\
+        // 상단 뷰의 높이를 최대 높이로 설정
+        self.topViewHeight.constant = self.viewModel.maxHeight
+        // 뷰의 레이아웃을 애니메이션과 함께 업데이트
         UIView.animate(withDuration: 0.4) {
             self.view.layoutIfNeeded()
         }
@@ -398,10 +424,10 @@ extension SettleMoneyRoomVC {
     
     // MARK: - 탑뷰 닫기 메서드
     private func closeTopView() {
-        // 상단 뷰의 높이를 최소 높이로 설정
-        self.topViewHeight.constant = self.viewModel.minHeight
         // 뷰모델 상태 false(close)으로 업데이트
         self.viewModel.isTopViewOpen = false
+        // 상단 뷰의 높이를 최소 높이로 설정
+        self.topViewHeight.constant = self.viewModel.minHeight
         // 뷰의 레이아웃을 애니메이션과 함께 업데이트
         UIView.animate(withDuration: 0.4) {
             self.view.layoutIfNeeded()
@@ -419,9 +445,8 @@ extension SettleMoneyRoomVC {
 
 
 // MARK: - 테이블뷰 델리게이트
+
 extension SettleMoneyRoomVC: UITableViewDelegate {
-    
-    
     func tableView(_ tableView: UITableView,
                    heightForRowAt indexPath: IndexPath)
     -> CGFloat {
@@ -429,11 +454,10 @@ extension SettleMoneyRoomVC: UITableViewDelegate {
     }
     func tableView(_ tableView: UITableView,
                    didSelectRowAt indexPath: IndexPath) {
-        // 셀의 영수증 가져오기
+        // 뷰모델에서 셀의 영수증 가져오기
         let receipt = self.viewModel.receipts[indexPath.row]
         // '영수증 화면'으로 화면 이동
-        self.coordinator.ReceiptScreen(
-            receipt: receipt)
+        self.coordinator.ReceiptScreen(receipt: receipt)
     }
 }
 
@@ -481,24 +505,10 @@ extension SettleMoneyRoomVC {
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
         // 메인 테이블뷰일 때만,
         // topView가 열려있다면
-        if scrollView == self.receiptTableView && self.viewModel.isTopViewOpen {
+        if scrollView == self.receiptTableView 
+            && self.viewModel.isTopViewOpen {
             // topView 닫기
             self.closeTopView()
         }
     }
 }
-
-
-
-
-
-
-
-
-//
-//extension SettleMoneyRoomVC: ReceiptBtnStvDelegate {
-//    func firstBtnTapped(_ bool: Bool) {
-//        self.usersTableView.isFirstBtn = bool
-//        self.usersTableView.reloadData()
-//    }
-//}

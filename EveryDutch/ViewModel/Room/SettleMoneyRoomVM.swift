@@ -33,9 +33,7 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
     /// 탑뷰의 최소 크기
     let minHeight: CGFloat = 35
     
-    
-    
-    
+
     
     
     // MARK: - 탑뷰 토글
@@ -50,6 +48,20 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
         : false
     }
     
+    // MARK: - 탑뷰 크기 조절
+    var initialHeight: CGFloat = 100
+    var currentTranslation: CGPoint = .zero
+    var currentVelocity: CGPoint = .zero
+    
+    var getMaxAndMinHeight: CGFloat {
+        var height = self.initialHeight + currentTranslation.y
+        // 새 높이가 최대 높이를 넘지 않도록 설정
+        height = min(self.maxHeight, height)
+        // 새 높이가 최소 높이보다 작아지지 않도록 설정
+        height = max(self.minHeight, height)
+        // flxjs
+        return height
+    }
     
     
     

@@ -20,6 +20,13 @@ protocol SettleMoneyRoomProtocol {
     var receiptChangedClosure: (() -> Void)? { get set }
     var userChangedClosure: ((RoomUserDataDictionary) -> Void)? { get set }
     
+    // MARK: - 탑뷰 크기 조절
+    var initialHeight: CGFloat { get set }
+    var currentTranslation: CGPoint { get set }
+    var currentVelocity: CGPoint { get set }
+    var getMaxAndMinHeight: CGFloat { get }
+    
+    
     
 //    var fetchUserClosure: ((RoomUserDataDictionary) -> Void)? { get set }
     var fetchMoneyDataClosure: (() -> Void)? { get set }

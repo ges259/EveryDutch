@@ -231,12 +231,10 @@ final class ReceiptWriteVC: UIViewController {
     
     
     // MARK: - 프로퍼티
-    private lazy var calendarHeight: CGFloat = (self.view.frame.width - 10) * 3 / 4
-    // 높이 제약조건을 참조하기 위한 변수
-     var heightConstraint: Constraint?
-    
     private var coordinator: ReceiptWriteCoordProtocol
     private var viewModel: ReceiptWriteVMProtocol
+    
+    private lazy var calendarHeight: CGFloat = (self.view.frame.width - 10) * 3 / 4
     
     
     
@@ -687,7 +685,8 @@ extension ReceiptWriteVC: UITableViewDelegate {
         return 45
     }
     
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView,
+                   didSelectRowAt indexPath: IndexPath) {
         self.scrollToTableViewCellBottom(indexPath: indexPath)
     }
 }
