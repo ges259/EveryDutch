@@ -13,21 +13,31 @@ struct ReceiptWriteCellVM: ReceiptWriteCellVMProtocol {
     var userName: String
     
     
-    
-    
+
     var profileImg: UIImage? {
         return self.profileImageURL == ""
-        ? .person_Fill_Img
-        : .x_Mark_Img
+        ? UIImage.person_Fill_Img
+        : UIImage.x_Mark_Img
     }
     
     
+    // MARK: - 라이프사이클
     init(userID: String,
          roomUsers: RoomUsers) {
         self.userID = userID
         self.profileImageURL = roomUsers.roomUserImg
         self.userName = roomUsers.roomUserName
     }
+    
+    /// 가격 텍스트필드의 alpha값을 설정
+    func priceTFAlpha(isSelected: Bool) -> CGFloat {
+        return isSelected
+        ? 1
+        : 0
+    }
+    
+    
+    
     
     // MARK: - 가격 레이블 형식 설정
     func configureLblFormat(price: String) -> String? {

@@ -10,14 +10,16 @@ import UIKit
 final class ReceiptWriteTableViewCell: UITableViewCell {
     
     // MARK: - 레이아웃
+    // 스택뷰(이미지, 이름, 가격레이블)
     private var tableCellStackView: TableCellStackView = TableCellStackView(
         rightImgInStackView: false)
-    
+    /// 오른쪽 버튼
     private lazy var rightBtn: UIButton = UIButton.btnWithImg(
         image: .x_Mark_Img,
         imageSize: 13)
     
-    lazy var priceTf: InsetTextField = {
+    /// 가격 텍스트필드
+    private lazy var priceTf: InsetTextField = {
         let tf = InsetTextField(
             placeholderText: "가격을 입력해 주세요.",
             keyboardType: .numberPad,
@@ -25,13 +27,14 @@ final class ReceiptWriteTableViewCell: UITableViewCell {
             insertX: 25)
         tf.backgroundColor = UIColor.medium_Blue
         tf.isHidden = true
+        tf.alpha = 0
         tf.delegate = self
         return tf
     }()
     
 
     // MARK: - 프로퍼티
-    var viewModel: ReceiptWriteCellVM?
+    var viewModel: ReceiptWriteCellVMProtocol?
     weak var delegate: ReceiptWriteTableDelegate?
     
     // MARK: - 라이프사이클
@@ -50,17 +53,7 @@ final class ReceiptWriteTableViewCell: UITableViewCell {
     override func setSelected(_ selected: Bool,
                               animated: Bool) {
         super.setSelected(selected, animated: animated)
-        // priceTf가 selected(보여진 상태)라면
-            // -> priceTf숨기기
-        
-            // 선택된 셀의 priceTF만 보이게 하고, 나머지 셀은 숨기기
-        if selected {
-            self.priceTf.isHidden = false
-            self.priceTf.becomeFirstResponder()
-            
-        } else {
-            self.priceTf.isHidden = true
-        }
+        self.configurePriceTF(selected)
     }
 }
 
@@ -89,17 +82,19 @@ extension ReceiptWriteTableViewCell {
         self.contentView.addSubview(self.rightBtn)
         self.contentView.addSubview(self.priceTf)
         
+        // 오른쪽 버튼
         self.rightBtn.snp.makeConstraints { make in
             make.trailing.equalToSuperview().offset(-20)
             make.centerY.equalToSuperview()
             make.width.height.equalTo(21)
         }
+        // 스택뷰(이미지, 이름, 가격레이블)
         self.tableCellStackView.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(20)
             make.trailing.equalTo(self.rightBtn.snp.leading).offset(-10)
             make.centerY.equalToSuperview()
         }
-        
+        // 가격 텍스트필드
         self.priceTf.snp.makeConstraints { make in
             make.top.trailing.bottom.equalToSuperview()
             make.width.equalTo(self.frame.width / 2)
@@ -129,7 +124,7 @@ extension ReceiptWriteTableViewCell {
     
     
     // MARK: - 셀 설정
-    func configureCell(with viewModel: ReceiptWriteCellVM) {
+    func configureCell(with viewModel: ReceiptWriteCellVMProtocol) {
         self.viewModel = viewModel
         
         self.tableCellStackView.userNameLbl.text = viewModel.userName
@@ -151,6 +146,23 @@ extension ReceiptWriteTableViewCell {
         self.delegate?.rightBtnTapped(
             self,
             userID: self.viewModel?.userID)
+    }
+    
+    // MARK: - 셀 선택 시 가격 텍스트필드 설정
+    private func configurePriceTF(_ selected: Bool) {
+        
+        // priceTf가 selected(보여진 상태)에 따라 isHidden 설정
+        self.priceTf.isHidden = !selected
+        
+        // 뷰모델 옵셔널 바인딩
+        guard let viewModel = self.viewModel else { return }
+        // 숨기거나 보이게 할 때 애니메이션 효과 넣기
+        UIView.animate(withDuration: 0.3) {
+            // 선택된 셀의 priceTF만 보이게 하고, 나머지 셀은 숨기기
+            self.priceTf.alpha = viewModel.priceTFAlpha(isSelected: selected)
+        }
+        // 셀이 선택되었다면 -> 키보드 보이게 하기
+        if selected { self.priceTf.becomeFirstResponder() }
     }
 }
 

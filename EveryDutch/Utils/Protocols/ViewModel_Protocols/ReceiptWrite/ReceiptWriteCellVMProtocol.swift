@@ -5,10 +5,20 @@
 //  Created by 계은성 on 1/14/24.
 //
 
-import Foundation
+import UIKit
 
 protocol ReceiptWriteCellVMProtocol {
     var userID: String { get }
+    var profileImageURL: String { get }
+    var userName: String { get }
+    var profileImg: UIImage? { get }
+    
+    func priceTFAlpha(isSelected: Bool) -> CGFloat
+    
+    
+    
+    
+    
     
     
     func configureLblFormat(price: String) -> String?

@@ -19,8 +19,6 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     }
     private var roomDataManager: RoomDataManagerProtocol
     
-    
-    
     var time: String?
     var memo: String?
     var price: Int?
@@ -30,72 +28,41 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     
     
     
-    var keyboardClosure: (() -> Void)?
+    
+// MARK: - 클로저
     
     
-    var scrollViewIsScrollEnabled: Bool = true
+    
+    // MARK: - 누적금액 클로저
+    var calculatePriceClosure: ((String?) -> Void)?
+
+    
+    // MARK: - 키보드 클로저
+    /// 디바운싱이 끝나면 VC에서 endEditing()를 호출하는 클로저
+    var debouncingClosure: (() -> Void)?
     
     
-    // 디바운스 타이머
+    
+    
+    
+// MARK: - 디바운스
+    
+    
+    
+    // MARK: - 테이블뷰가 수정 중인지 여부
+    /// 테이블뷰 수정 중, endEditing(true)가 불리지 않게 하기 위한 메서드
+    var isTableViewEditing: Bool = false
+    
+    // MARK: - 디바운스 타이머
+    /// 디바운스 타이머
     private var debounceTimer: DispatchWorkItem?
     
     
-    /// 다바운싱 코드1
-    func setDebouncing(stop: Bool){
-        
-        // 이전에 설정된 타이머가 있으면 취소합니다.
-        self.debounceTimer?.cancel()
-        
-        self.scrollViewIsScrollEnabled = false
-        
-        // 키보드가 닫히면 디바운싱 진행 (4초 뒤)
-        guard !stop else { return }
-        
-        // 새로운 타이머 작업을 생성합니다.
-        let task = DispatchWorkItem { [weak self] in
-            self?.scrollViewIsScrollEnabled = true
-            self?.keyboardClosure?()
-        }
-        
-        // 4초 후에 작업을 실행하도록 예약합니다.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05, execute: task)
-
-        // 생성된 타이머 작업을 저장합니다.
-        self.debounceTimer = task
-    }
     
     
     
+// MARK: - 테이블뷰
     
-    
-    
-    
-    var keyboardHeight: CGFloat = 291.917
-    var cumulativeMoney: Int = 0 {
-        didSet {
-            self.calculatePriceClosure?(self.moneyCountLblText)
-        }
-    }
-    
-    var usersMoneyDict: [String : Int] = [:] {
-        didSet {
-            print("self.usersMoneyDict.count ----- \(self.usersMoneyDict.count)")
-        }
-    }
-    
-    
-
-    
-    var calculatePriceClosure: ((String?) -> Void)?
-    
-    
-
-    
-    
-    
-    // MARK: - 최대 글자 수
-    /// 최대 글자 수 :  12
-    let TF_MAX_COUNT: Int = 12
     
     
     // MARK: - 테이블뷰 개수
@@ -110,12 +77,83 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
         : false
     }
     
-
+    
+    
+    
+    
+// MARK: - 유저 선택
+    
+    
+    
+    // MARK: - 누적 금액
+    var cumulativeMoney: Int = 0 {
+        didSet {
+            self.calculatePriceClosure?(self.moneyCountLblText)
+        }
+    }
+    
+    // MARK: - 선택된 유저
+    var usersMoneyDict: [String : Int] = [:]
+    
+    
+    
+    
+    
+// MARK: - 기타
+    
+    
+    
+    // MARK: - 최대 글자 수
+    /// 최대 글자 수 :  12
+    let TF_MAX_COUNT: Int = 12
+    
+    // MARK: - 키보드 높이
+    var keyboardHeight: CGFloat = 291.31898
+    
+    
+    
     
     
     // MARK: - 라이프사이클
     init(roomDataManager: RoomDataManagerProtocol) {
         self.roomDataManager = roomDataManager
+    }
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - 디바운싱 코드
+
+extension ReceiptWriteVM {
+    /// 다바운싱 코드
+    func setDebouncing(stop: Bool){
+        
+        // 이전에 설정된 타이머가 있으면 취소합니다.
+        self.debounceTimer?.cancel()
+        
+        self.isTableViewEditing = true
+        
+        // 키보드가 닫히면 디바운싱 진행 (4초 뒤)
+        guard !stop else { return }
+        
+        // 새로운 타이머 작업을 생성합니다.
+        let task = DispatchWorkItem { [weak self] in
+            self?.isTableViewEditing = false
+            self?.debouncingClosure?()
+        }
+        
+        // 4초 후에 작업을 실행하도록 예약합니다.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05, execute: task)
+
+        // 생성된 타이머 작업을 저장합니다.
+        self.debounceTimer = task
     }
 }
 
@@ -202,25 +240,6 @@ extension ReceiptWriteVM {
 
 
 
-// MARK: - 메모 글자 수
-
-extension ReceiptWriteVM {
-    
-    // MARK: - 메모 글자 수 표시
-    func updateMemoCount(count: Int) -> String {
-        return "\(count) / \(self.TF_MAX_COUNT)"
-    }
-}
-
-
-
-
-
-
-
-
-
-
 // MARK: - 가격 텍스트필드
 
 extension ReceiptWriteVM {
@@ -273,11 +292,28 @@ extension ReceiptWriteVM {
 
 
 
+// MARK: - 메모 글자 수 표시
+
+extension ReceiptWriteVM {
+    func updateMemoCount(count: Int) -> String {
+        return "\(count) / \(self.TF_MAX_COUNT)"
+    }
+}
+
+
+
+
+
+
+
+
+
+
 // MARK: - 타임 피커
 
 extension ReceiptWriteVM {
     
-    // MARK: - 타임 피커 시간 설정
+    // MARK: - 시간 설정
     func timePickerString(hour: Int, minute: Int) -> String {
         // 선택한 시간과 분을 이용하여 필요한 작업 수행
         let hour = String(format: "%02d", hour)
@@ -286,7 +322,7 @@ extension ReceiptWriteVM {
         return "\(hour) : \(minute)"
     }
     
-    // MARK: - 타임피커의 형식 설정
+    // MARK: - 형식 설정
     func timePickerFormat(_ row: Int) -> String {
         return String(format: "%02d", row)
     }
@@ -301,7 +337,7 @@ extension ReceiptWriteVM {
 
 
 
-// MARK: - 단일 선택 - 셀 설정
+// MARK: - payer 선택
     
 extension ReceiptWriteVM {
     
@@ -321,7 +357,7 @@ extension ReceiptWriteVM {
 
 
 
-// MARK: - 다중 선택 - 셀 설정
+// MARK: - paymentDetails 선택
 
 extension ReceiptWriteVM {
     
@@ -339,6 +375,7 @@ extension ReceiptWriteVM {
         }
     }
     
+    // MARK: - 셀 삭제
     func deleteCellVM(userID: String?) {
         // userID 옵셔널 바인딩
         guard let userID = userID else { return }

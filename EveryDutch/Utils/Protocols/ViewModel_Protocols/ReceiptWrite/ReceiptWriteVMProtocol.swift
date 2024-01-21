@@ -17,13 +17,13 @@ protocol ReceiptWriteVMProtocol {
     
     
     
-    var keyboardClosure: (() -> Void)? { get set }
+    var debouncingClosure: (() -> Void)? { get set }
     var keyboardHeight: CGFloat { get set }
     
     
     func setDebouncing(stop: Bool)
 //    func setVariableTrue()
-    var scrollViewIsScrollEnabled: Bool { get }
+    var isTableViewEditing: Bool { get }
 
     
     // 클로저

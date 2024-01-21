@@ -17,8 +17,8 @@ final class ReceiptWriteVC: UIViewController {
         let scrollView = UIScrollView()
             scrollView.showsVerticalScrollIndicator = false
             scrollView.alwaysBounceVertical = true
-        scrollView.delegate = self
-        scrollView.keyboardDismissMode = .onDrag
+            scrollView.delegate = self
+            scrollView.keyboardDismissMode = .onDrag
         return scrollView
     }()
     /// 컨텐트뷰 ( - 스크롤뷰)
@@ -79,8 +79,8 @@ final class ReceiptWriteVC: UIViewController {
         leftInset: 25)
     
     
-    private var memoNumOfCharLbl: CustomLabel = CustomLabel(
-        text: "0 / 12",
+    private lazy var memoNumOfCharLbl: CustomLabel = CustomLabel(
+        text: "0 / \(self.viewModel.TF_MAX_COUNT)",
         font: UIFont.systemFont(ofSize: 13))
     
     // MARK: - 상단 스택뷰
@@ -184,15 +184,6 @@ final class ReceiptWriteVC: UIViewController {
         return btn
     }()
     
-    /// 키보드 사용할 때 totalStackView에 추가하여 사용하는 뷰
-    private lazy var clearView: UIView = {
-        let view = UIView()
-            view.isHidden = true
-        return view
-    }()
-    
-    
-    
     
     
     
@@ -201,8 +192,7 @@ final class ReceiptWriteVC: UIViewController {
         arrangedSubviews: [self.calendar,
                            self.whiteView,
                            self.selectedUsersTableView,
-                           self.addPersonBtn,
-                           self.clearView],
+                           self.addPersonBtn],
         axis: .vertical,
         spacing: 7,
         alignment: .fill,
@@ -242,7 +232,8 @@ final class ReceiptWriteVC: UIViewController {
     
     // MARK: - 프로퍼티
     private lazy var calendarHeight: CGFloat = (self.view.frame.width - 10) * 3 / 4
-    
+    // 높이 제약조건을 참조하기 위한 변수
+     var heightConstraint: Constraint?
     
     private var coordinator: ReceiptWriteCoordProtocol
     private var viewModel: ReceiptWriteVMProtocol
@@ -263,7 +254,9 @@ final class ReceiptWriteVC: UIViewController {
         self.configureUI()
         self.configureAutoLayout()
         self.configureAction()
+        self.configureGesture()
         self.configureClosure()
+        self.configureNotificatioon()
     }
     init(viewModel: ReceiptWriteVMProtocol,
          coordinator: ReceiptWriteCoordProtocol) {
@@ -273,16 +266,7 @@ final class ReceiptWriteVC: UIViewController {
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(keyboardWillShow),
-            name: UIResponder.keyboardWillShowNotification,
-            object: nil)
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(keyboardWillHide),
-            name: UIResponder.keyboardWillHideNotification,
-            object: nil)
+
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -326,7 +310,6 @@ extension ReceiptWriteVC {
         self.whiteView.addSubview(self.infoStackView)
         // 데이트 피커를 뷰의 서브뷰로 추가
         self.scrollView.addSubview(timePicker)
-        
         
         // 스크롤뷰
         self.scrollView.snp.makeConstraints { make in
@@ -383,67 +366,84 @@ extension ReceiptWriteVC {
             make.height.width.equalTo(150)
         }
     }
-    
+
     // MARK: - 액션 설정
     private func configureAction() {
-        // 버튼 생성
+        // 뒤로가기 버튼
         let backButton = UIBarButtonItem(
             image: .chevronLeft,
             style: .done,
             target: self,
             action: #selector(self.backButtonTapped))
-        // 네비게이션 바의 왼쪽 아이템으로 설정
         self.navigationItem.leftBarButtonItem = backButton
-        // 버튼 액션
+        // 사람 추가 버튼
         self.addPersonBtn.addTarget(
             self,
             action: #selector(self.addPersonBtnTapped),
             for: .touchUpInside)
+        // 바텀 버튼
         self.bottomBtn.addTarget(
             self,
             action: #selector(self.bottomBtnTapped),
             for: .touchUpInside)
-        
-        let timeGesture = UITapGestureRecognizer(
-            target: self,
-            action: #selector(self.timeInfoLblTapped))
-        self.timeInfoLbl.isUserInteractionEnabled = true
-        self.timeInfoLbl.addGestureRecognizer(timeGesture)
-        
-        let payerGesture = UITapGestureRecognizer(
-            target: self,
-            action: #selector(self.payerInfoLblTapped))
-        self.payerInfoLbl.isUserInteractionEnabled = true
-        self.payerInfoLbl.addGestureRecognizer(payerGesture)
-        
-        // 배경 탭 감지를 위한 제스처 인식기를 추가합니다.
-        let tapGesture = UITapGestureRecognizer(
-            target: self,
-            action: #selector(self.dismissPicker))
-        // 피커 뷰가 제스처 이벤트를 가로채지 못하게 합니다.
-        tapGesture.cancelsTouchesInView = false
-        // 뷰에 제스처 인식기를 추가합니다.
-        self.view.addGestureRecognizer(tapGesture)
-        
+        // 메모 텍스트필드
         self.memoInfoTF.addTarget(
             self, 
             action: #selector(self.memoInfoTFDidChanged),
             for: .editingChanged)
-        
+        // 가격 텍스트필드
         self.priceInfoTF.addTarget(
             self,
             action: #selector(self.priceInfoTFDidChanged),
             for: .editingChanged)
     }
     
+    // MARK: - 제스처 설정
+    private func configureGesture() {
+        // '시간' 레이블 제스처 설정
+        let timeGesture = UITapGestureRecognizer(
+            target: self,
+            action: #selector(self.timeInfoLblTapped))
+        self.timeInfoLbl.isUserInteractionEnabled = true
+        self.timeInfoLbl.addGestureRecognizer(timeGesture)
+        // '계산한 사람' 레이블 제스처 생성
+        let payerGesture = UITapGestureRecognizer(
+            target: self,
+            action: #selector(self.payerInfoLblTapped))
+        self.payerInfoLbl.isUserInteractionEnabled = true
+        self.payerInfoLbl.addGestureRecognizer(payerGesture)
+        
+        // 'self.view' 화면에 제스처 설정
+        let tapGesture = UITapGestureRecognizer(
+            target: self,
+            action: #selector(self.endEditing))
+        // 피커 뷰가 제스처 이벤트를 가로채지 못하게 설정
+        tapGesture.cancelsTouchesInView = false
+        self.view.addGestureRecognizer(tapGesture)
+    }
+    
+    // MARK: - 노티피케이션 설정
+    private func configureNotificatioon() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(self.keyboardWillShow),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(self.keyboardWillHide),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil)
+    }
+    
     // MARK: - 클로저 설정
     private func configureClosure() {
-        
+        // 누적 금액 설정 클로저
         self.viewModel.calculatePriceClosure = { [weak self] total in
             self?.moneyCountLbl.text = total
         }
-        
-        self.viewModel.keyboardClosure = {
+        // 키보드 디바운싱의 클로저
+        self.viewModel.debouncingClosure = {
             self.endEditing()
         }
     }
@@ -472,18 +472,10 @@ extension ReceiptWriteVC {
             let keyboardHeight = keyboardSize.height
             
             // 뷰모델의 기본 키보드 높이와 현재 디바이스의 키보드 높이 다르다면,
-                // 키보드가 처음 올라온 상태.
-            
-            // MARK: - Fix
+                // -> clearView의 높이 업데이트
             if self.viewModel.keyboardHeight != keyboardHeight {
-                // 뷰모델에 키보드 높이 저장
                 self.viewModel.keyboardHeight = keyboardHeight
-                // clearView의 높이를 키보드 높이로 설정
-                self.configureClearViewAutoLayout(keyboardHeight)
             }
-            
-            
-            
         }
     }
     
@@ -515,7 +507,7 @@ extension ReceiptWriteVC {
     // MARK: - 사람 추가 버튼 액션
     @objc private func addPersonBtnTapped() {
         // 모든 키보드 내리기
-        self.dismissPicker()
+        self.endEditing()
         // 화면 전환
         self.coordinator.peopleSelectionPanScreen(
             users: self.viewModel.selectedUsers,
@@ -525,7 +517,7 @@ extension ReceiptWriteVC {
     // MARK: - payer 액션
     @objc private func payerInfoLblTapped() {
         // 모든 키보드 내리기
-        self.dismissPicker()
+        self.endEditing()
         // 화면 전환
         self.coordinator.peopleSelectionPanScreen(
             users: self.viewModel.selectedUsers,
@@ -535,12 +527,11 @@ extension ReceiptWriteVC {
     // MARK: - 바텀 버튼 액션
     @objc private func bottomBtnTapped() {
         // 모든 키보드 내리기
-        self.dismissPicker()
+        self.endEditing()
         // 화면 전환
         self.coordinator.checkReceiptPanScreen()
     }
-    
-    
+}
     
     
     
@@ -550,16 +541,15 @@ extension ReceiptWriteVC {
     
     
 
-    // MARK: - 데이트 피커 액션
-    // 타임 피커가 보일 때, 뷰를 탭하면 타임 피커를 숨김
-    @objc func dismissPicker() {
-        self.endEditing()
-    }
+
+// MARK: - 데이트 피커 액션
+
+extension ReceiptWriteVC {
     
     // MARK: - 타임 피커 레이블
     /// 타임 레이블을 누르면 '타임 피커'가 보이도록 설정
     @objc private func timeInfoLblTapped() {
-        self.view.endEditing(true)
+        self.dismissKeyboard()
         self.timePicker.isHidden = false
     }
 }
@@ -573,38 +563,47 @@ extension ReceiptWriteVC {
 
 
 
-// MARK: - 기타 함수
+// MARK: - 화면 설정 초기화
 
 extension ReceiptWriteVC {
     
-    // MARK: - 스크롤, 뷰 터치 시 호출
-    func endEditing() {
-        if self.viewModel.scrollViewIsScrollEnabled {
-            if scrollView.contentInset != UIEdgeInsets.zero {
-                // contentInset을 기본값으로 초기화
-                let contentInsets = UIEdgeInsets.zero
-                self.scrollView.contentInset = contentInsets
-                self.scrollView.scrollIndicatorInsets = contentInsets
-                
-                self.clearView.isHidden = true
-            }
-            
-            if !self.timePicker.isHidden  {
-                self.timePicker.isHidden = true
-            }
-            self.view.endEditing(true)
+    // MARK: - 강제 편집 종료
+    /// 인터페이스 초기화 및 키보드 숨김 처리
+    /// - 스크롤뷰의 contentInset이 변경된 경우, 기본값으로 재설정
+    /// - 타임피커가 표시된 경우, 숨김
+    /// - 활성화된 텍스트 입력 필드가 있을 경우, 키보드를 내림
+    @objc private func endEditing() {
+        // 뷰 모델의 테이블뷰 편집 상태를 확인
+        if !self.viewModel.isTableViewEditing {
+            // 스크롤뷰의 contentInset이 변경된 경우, 기본값으로 재설정
+            self.resetScrollViewInsets()
+            // 타임피커가 표시된 경우, 숨김
+            self.hideTimePicker()
+            // 활성화된 텍스트 입력 필드가 있을 경우, 키보드를 내림
+            self.dismissKeyboard()
         }
     }
     
-    // MARK: - ClearView 오토레이아웃
-    func configureClearViewAutoLayout(_ height: CGFloat) {
-        // MARK: - Fix
-        // 키보드 화면 크기의 뷰 보이게 하기
-        self.clearView.isHidden = false
-        self.clearView.translatesAutoresizingMaskIntoConstraints = false
-        // 여기에서 키보드 높이를 사용하는 로직 구현
-        self.clearView.heightAnchor.constraint(
-            equalToConstant: self.viewModel.keyboardHeight).isActive = true
+    // MARK: - 스클로뷰 contentInset 초기화
+    /// 스크롤뷰의 contentInset과 scrollIndicatorInsets를 초기화합니다.
+    private func resetScrollViewInsets() {
+        // 자연스러운 감소를 위해, UIView.animate()사용
+        UIView.animate(withDuration: 0.3) {
+            // 스크롤뷰의 contentInset을 초기화.
+            self.scrollView.contentInset = .zero
+        }
+    }
+    
+    // MARK: - 타임피커 숨기기
+    /// 타임피커를 숨김
+    private func hideTimePicker() {
+        self.timePicker.isHidden = true
+    }
+
+    // MARK: - 키보드 내리기
+    /// 텍스트 입력 필드의 키보드를 내림
+    private func dismissKeyboard() {
+        self.view.endEditing(true)
     }
 }
     
@@ -617,7 +616,7 @@ extension ReceiptWriteVC {
     
     
     
-// MARK: - PeopleSelection_데이터 설정
+// MARK: - 유저 선택 시_데이터 설정
 
 extension ReceiptWriteVC {
     
@@ -665,8 +664,7 @@ extension ReceiptWriteVC: ReceiptWriteTableDelegate {
     }
     
     // MARK: - 금액 설정
-    func setprice(userID: String,
-                  price: Int?) {
+    func setprice(userID: String, price: Int?) {
         self.viewModel.calculatePrice(userID: userID,
                                       price: price)
     }
@@ -728,45 +726,80 @@ extension ReceiptWriteVC: UITableViewDataSource {
 
 
 // MARK: - 스크롤뷰 델리게이트
+
 extension ReceiptWriteVC: UIScrollViewDelegate {
+    
+    // MARK: - 스크롤 시작 시
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        
-        // 사용자가 스크롤을 시작했음을 표시
         self.endEditing()
     }
     
-    // MARK: - 테이블뷰 클릭 시 스크롤
+    // MARK: - 셀 클릭 시 스크롤
+    /// 선택한 셀의 위치로 스크롤하는 별도의 메서드
+    /// - Parameter indexPath: 선택한 셀의 'IndexPath'
     private func scrollToTableViewCellBottom(indexPath: IndexPath) {
-        
-        // 스크롤뷰가
-        if self.viewModel.scrollViewIsScrollEnabled {
-            
-            // 디바운싱 멈추기
+        // 테이블뷰 셀을
+            // 수정하고 있지 않다면 -> 선택한 셀의 위치로 자동 스크롤.
+            // 수정하고 있다면 -> 아무 행동도 하지 않음
+        if !self.viewModel.isTableViewEditing {
+            // 스크롤 동작 중에는 디바운싱을 중지
             self.viewModel.setDebouncing(stop: true)
             
-            // 키보드 화면 크기의 뷰 보이게 하기
-            self.clearView.isHidden = false
-            
-            
-            // 선택한 셀의 위치를 계산
-            let rectOfCellInTableView = self.selectedUsersTableView.rectForRow(
-                at: indexPath)
-            // 셀의 슈퍼뷰(여기서는 self.scrollView)로 변환
-            let rectOfCellInSuperview = self.selectedUsersTableView.convert(
-                rectOfCellInTableView,
-                to: self.scrollView)
-            
-            // 키보드 위로 셀의 하단이 오도록 offset 계산
-            let offset = rectOfCellInSuperview.origin.y
-            + rectOfCellInTableView.size.height
-            - (self.scrollView.frame.height - self.viewModel.keyboardHeight + 38)
-            
-            
-            // 키보드 높이만큼의 스크롤 여백을 추가
-            self.scrollView.contentInset.bottom = self.viewModel.keyboardHeight
-            // 스크롤뷰의 contentOffset을 설정하여 셀이 보이도록 스크롤합니다.
-            self.scrollView.setContentOffset(CGPoint(x: 0, y: offset), animated: true)
+            // 스크롤뷰의 콘텐츠 오프셋을 업데이트하는 메서드를 호출
+            self.updateScrollViewContentOffset(for: indexPath)
         }
+    }
+    
+    // MARK: - [계산] 셀의 오프셋
+    /// 스크롤뷰의 콘텐츠 오프셋을 계산하고 업데이트합니다.
+    /// - Parameters:
+    ///   - indexPath: 선택한 셀의 'IndexPath'
+    private func updateScrollViewContentOffset(for indexPath: IndexPath) {
+        // 스크롤뷰 내에서 셀의 프레임을 계산.
+        let cellFrame = self.calculateCellFrameInScrollView(for: indexPath)
+        // 계산된 프레임을 기반으로 스크롤뷰의 오프셋을 계산.
+        let offset = self.calculateScrollViewOffset(for: cellFrame)
+        
+        // 계산된 오프셋으로 스크롤뷰의 위치를 조정.
+        self.scrollView.setContentOffset(CGPoint(x: 0, y: offset), animated: true)
+    }
+    
+    // MARK: - [계산] 셀의 프레임
+    /// 스크롤뷰 내에서 선택한 셀의 프레임을 계산합니다.
+    /// - Parameters:
+    ///   - indexPath: 선택한 셀의 인덱스 패스입니다.
+    /// - Returns: 스크롤뷰 좌표계에서 셀의 프레임을 반환합니다.
+    private func calculateCellFrameInScrollView(for indexPath: IndexPath) -> CGRect {
+        // 선택한 셀의 프레임을 테이블뷰의 좌표계로부터 가져옵니다.
+        let rectOfCellInTableView = self.selectedUsersTableView.rectForRow(at: indexPath)
+        // 가져온 프레임을 스크롤뷰의 좌표계로 변환합니다.
+        return self.selectedUsersTableView.convert(
+            rectOfCellInTableView,
+            to: self.scrollView)
+    }
+
+    // MARK: - [계산] 스크롤뷰의 오프셋
+    /// 계산된 셀의 프레임을 바탕으로 스크롤뷰의 오프셋을 계산합니다.
+    /// 셀의 하단이 키보드 위로 올라오도록 오프셋을 설정합니다.
+    /// - Parameter cellFrame: 스크롤뷰 내에서 셀의 프레임입니다.
+    /// - Returns: 새로운 스크롤뷰의 오프셋을 반환합니다.
+    private func calculateScrollViewOffset(for cellFrame: CGRect) -> CGFloat {
+        // 스크롤할 y축 오프셋 구하기
+        // = 셀의 하단 y위치
+        // + 셀의 높이
+        // + 키보드의 높이
+        // - 스크롤뷰의 높이
+        // - 여백(38)
+        let offset = cellFrame.origin.y
+        + cellFrame.size.height
+        + self.viewModel.keyboardHeight
+        - self.scrollView.frame.height
+        - 38
+        
+        // 스크롤 시 셀이 키보드에 가려지지 않도록,
+            // 하단에 키보드 높이만큼의 여백을 추가
+        self.scrollView.contentInset.bottom = self.viewModel.keyboardHeight
+        return offset
     }
 }
 
@@ -888,15 +921,26 @@ extension ReceiptWriteVC: UITextFieldDelegate {
         // 가격 텍스트필드 일때
         } else {
             // 뷰모델에 price값 저장
-            self.viewModel.savePriceText(text: savedText)
-            
-            // 바뀐 가격을 ',' 및 '원'을 붙여 표시
-            self.priceInfoTF.text = self.viewModel.priceInfoTFText
-            self.moneyCountLbl.text = self.viewModel.moneyCountLblText
+            // 가격 레이블에 바뀐 가격을 ',' 및 '원'을 붙여 표시
+            // 누적금액 레이블에 (지불금액 - 누적금액) 설정
+            self.finishPriceTF(text: savedText)
         }
     }
     
-    // MARK: - 가격 텍스트필드 액션 메서드
+    // MARK: - [저장] 가격 텍스트필드
+    /// 가격 텍스트필드의 수정이 끝났을 때 호출되는 메서드
+    private func finishPriceTF(text: String?) {
+        // 뷰모델에 price값 저장
+        self.viewModel.savePriceText(text: text)
+        
+        // 가격 레이블에 바뀐 가격을 ',' 및 '원'을 붙여 표시
+        self.priceInfoTF.text = self.viewModel.priceInfoTFText
+        // 누적금액 레이블에 (지불금액 - 누적금액) 설정
+        self.moneyCountLbl.text = self.viewModel.moneyCountLblText
+    }
+    
+    
+    // MARK: - [액션] 가격 텍스트필드
     @objc private func priceInfoTFDidChanged() {
         guard let currentText = self.priceInfoTF.text else { return }
         
@@ -904,7 +948,7 @@ extension ReceiptWriteVC: UITextFieldDelegate {
         self.priceInfoTF.text = self.viewModel.formatPriceForEditing(currentText)
     }
     
-    // MARK: - 메모 텍스트필드 액션 메서드
+    // MARK: - [액션] 메모 텍스트필드
     @objc private func memoInfoTFDidChanged() {
         guard let text = self.memoInfoTF.text else { return }
         
