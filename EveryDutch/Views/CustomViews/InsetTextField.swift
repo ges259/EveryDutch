@@ -30,6 +30,10 @@ class InsetTextField: UITextField {
         self.backgroundColor = backgroundColor
         self.insetX = insetX
         
+        self.autocapitalizationType = .none
+        self.autocorrectionType = .no
+        
+        
         if let placeholderText = placeholderText {
             self.attributedPlaceholder = self.setAttributedText(
                 placeholderText: placeholderText,

@@ -29,12 +29,12 @@ final class PeopleSelectionPanCoordinator: Coordinator {
     func start() {
         let peopleSelectionPanVM = PeopleSelectionPanVM(
             selectedUsers: self.selectedUsers,
-            roomDataManager: RoomDataManager.shared)
+            roomDataManager: RoomDataManager.shared, 
+            peopleSelectionEnum: self.peopleSelectionEnum)
         
         let peopleSelectionPanVC = PeopleSelectionPanVC(
             viewModel: peopleSelectionPanVM,
-            coordinator: self, 
-            peopleSelectionEnum: self.peopleSelectionEnum)
+            coordinator: self)
         peopleSelectionPanVC.delegate = self
         peopleSelectionPanVC.modalPresentationStyle = .overFullScreen
         

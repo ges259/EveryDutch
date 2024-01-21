@@ -11,5 +11,10 @@ protocol ReceiptWriteCellVMProtocol {
     var userID: String { get }
     
     
-    func configureFormat(price: String?) -> String?
+    func configureLblFormat(price: String) -> String?
+    
+    
+    func removeFormat(text: String?) -> String
+    func textIsZero(text: String?) -> String?
+    func configureTfFormat(text: String?) -> String?
 }

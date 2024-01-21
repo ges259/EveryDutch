@@ -244,7 +244,6 @@ final class ReceiptWriteVC: UIViewController {
     private lazy var calendarHeight: CGFloat = (self.view.frame.width - 10) * 3 / 4
     
     
-    
     private var coordinator: ReceiptWriteCoordProtocol
     private var viewModel: ReceiptWriteVMProtocol
     
@@ -271,6 +270,19 @@ final class ReceiptWriteVC: UIViewController {
         self.viewModel = viewModel
         self.coordinator = coordinator
         super.init(nibName: nil, bundle: nil)
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillShow),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillHide),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil)
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -426,8 +438,13 @@ extension ReceiptWriteVC {
     
     // MARK: - 클로저 설정
     private func configureClosure() {
-        self.viewModel.calculatePriceClosure = { total in
-            self.moneyCountLbl.text = total
+        
+        self.viewModel.calculatePriceClosure = { [weak self] total in
+            self?.moneyCountLbl.text = total
+        }
+        
+        self.viewModel.keyboardClosure = {
+            self.endEditing()
         }
     }
 }
@@ -441,13 +458,61 @@ extension ReceiptWriteVC {
 
 
 
+// MARK: - 키보드 노티피케이션 액션
+
+extension ReceiptWriteVC {
+    
+    // MARK: - 키보드가 올라올 때
+    @objc func keyboardWillShow(notification: NSNotification) {
+        
+        // 키보드의 높이 구하기
+        if let keyboardSize = (notification
+            .userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?
+            .cgRectValue {
+            let keyboardHeight = keyboardSize.height
+            
+            // 뷰모델의 기본 키보드 높이와 현재 디바이스의 키보드 높이 다르다면,
+                // 키보드가 처음 올라온 상태.
+            
+            // MARK: - Fix
+            if self.viewModel.keyboardHeight != keyboardHeight {
+                // 뷰모델에 키보드 높이 저장
+                self.viewModel.keyboardHeight = keyboardHeight
+                // clearView의 높이를 키보드 높이로 설정
+                self.configureClearViewAutoLayout(keyboardHeight)
+            }
+            
+            
+            
+        }
+    }
+    
+    // MARK: - 키보드가 내려갈 때
+    @objc func keyboardWillHide(notification: NSNotification) {
+        self.viewModel.setDebouncing(stop: false)
+    }
+}
+
+
+
+
+
+
+
+
+
+
 // MARK: - 버튼 액션 ( 화면 이동 )
 
 extension ReceiptWriteVC {
     
+    // MARK: - 이전 화면 버튼 액션
     @objc private func backButtonTapped() {
+        NotificationCenter.default.removeObserver(self)
         self.coordinator.didFinish()
     }
+    
+    // MARK: - 사람 추가 버튼 액션
     @objc private func addPersonBtnTapped() {
         // 모든 키보드 내리기
         self.dismissPicker()
@@ -456,6 +521,8 @@ extension ReceiptWriteVC {
             users: self.viewModel.selectedUsers,
             peopleSelectionEnum: .multipleSelection)
     }
+    
+    // MARK: - payer 액션
     @objc private func payerInfoLblTapped() {
         // 모든 키보드 내리기
         self.dismissPicker()
@@ -464,6 +531,8 @@ extension ReceiptWriteVC {
             users: self.viewModel.selectedUsers,
             peopleSelectionEnum: .singleSelection)
     }
+    
+    // MARK: - 바텀 버튼 액션
     @objc private func bottomBtnTapped() {
         // 모든 키보드 내리기
         self.dismissPicker()
@@ -475,18 +544,67 @@ extension ReceiptWriteVC {
     
     
     
+    
+    
+    
+    
+    
+
     // MARK: - 데이트 피커 액션
     // 타임 피커가 보일 때, 뷰를 탭하면 타임 피커를 숨김
     @objc func dismissPicker() {
-        self.view.endEditing(true)
-        if !self.timePicker.isHidden {
-            self.timePicker.isHidden = true
-        }
+        self.endEditing()
     }
+    
+    // MARK: - 타임 피커 레이블
     /// 타임 레이블을 누르면 '타임 피커'가 보이도록 설정
     @objc private func timeInfoLblTapped() {
         self.view.endEditing(true)
         self.timePicker.isHidden = false
+    }
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - 기타 함수
+
+extension ReceiptWriteVC {
+    
+    // MARK: - 스크롤, 뷰 터치 시 호출
+    func endEditing() {
+        if self.viewModel.scrollViewIsScrollEnabled {
+            if scrollView.contentInset != UIEdgeInsets.zero {
+                // contentInset을 기본값으로 초기화
+                let contentInsets = UIEdgeInsets.zero
+                self.scrollView.contentInset = contentInsets
+                self.scrollView.scrollIndicatorInsets = contentInsets
+                
+                self.clearView.isHidden = true
+            }
+            
+            if !self.timePicker.isHidden  {
+                self.timePicker.isHidden = true
+            }
+            self.view.endEditing(true)
+        }
+    }
+    
+    // MARK: - ClearView 오토레이아웃
+    func configureClearViewAutoLayout(_ height: CGFloat) {
+        // MARK: - Fix
+        // 키보드 화면 크기의 뷰 보이게 하기
+        self.clearView.isHidden = false
+        self.clearView.translatesAutoresizingMaskIntoConstraints = false
+        // 여기에서 키보드 높이를 사용하는 로직 구현
+        self.clearView.heightAnchor.constraint(
+            equalToConstant: self.viewModel.keyboardHeight).isActive = true
     }
 }
     
@@ -547,7 +665,7 @@ extension ReceiptWriteVC: ReceiptWriteTableDelegate {
     }
     
     // MARK: - 금액 설정
-    func setprice(userID: String?,
+    func setprice(userID: String,
                   price: Int?) {
         self.viewModel.calculatePrice(userID: userID,
                                       price: price)
@@ -568,9 +686,14 @@ extension ReceiptWriteVC: UITableViewDelegate {
     func tableView(_ tableView: UITableView, 
                    heightForRowAt indexPath: IndexPath)
     -> CGFloat {
-        return 40
+        return 45
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        self.scrollToTableViewCellBottom(indexPath: indexPath)
     }
 }
+
 // MARK: - 테이블뷰 데이터소스
 extension ReceiptWriteVC: UITableViewDataSource {
     func tableView(_ tableView: UITableView, 
@@ -607,8 +730,42 @@ extension ReceiptWriteVC: UITableViewDataSource {
 // MARK: - 스크롤뷰 델리게이트
 extension ReceiptWriteVC: UIScrollViewDelegate {
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        if !self.timePicker.isHidden  {
-            self.timePicker.isHidden = true
+        
+        // 사용자가 스크롤을 시작했음을 표시
+        self.endEditing()
+    }
+    
+    // MARK: - 테이블뷰 클릭 시 스크롤
+    private func scrollToTableViewCellBottom(indexPath: IndexPath) {
+        
+        // 스크롤뷰가
+        if self.viewModel.scrollViewIsScrollEnabled {
+            
+            // 디바운싱 멈추기
+            self.viewModel.setDebouncing(stop: true)
+            
+            // 키보드 화면 크기의 뷰 보이게 하기
+            self.clearView.isHidden = false
+            
+            
+            // 선택한 셀의 위치를 계산
+            let rectOfCellInTableView = self.selectedUsersTableView.rectForRow(
+                at: indexPath)
+            // 셀의 슈퍼뷰(여기서는 self.scrollView)로 변환
+            let rectOfCellInSuperview = self.selectedUsersTableView.convert(
+                rectOfCellInTableView,
+                to: self.scrollView)
+            
+            // 키보드 위로 셀의 하단이 오도록 offset 계산
+            let offset = rectOfCellInSuperview.origin.y
+            + rectOfCellInTableView.size.height
+            - (self.scrollView.frame.height - self.viewModel.keyboardHeight + 38)
+            
+            
+            // 키보드 높이만큼의 스크롤 여백을 추가
+            self.scrollView.contentInset.bottom = self.viewModel.keyboardHeight
+            // 스크롤뷰의 contentOffset을 설정하여 셀이 보이도록 스크롤합니다.
+            self.scrollView.setContentOffset(CGPoint(x: 0, y: offset), animated: true)
         }
     }
 }
@@ -708,6 +865,7 @@ extension ReceiptWriteVC: UITextFieldDelegate {
     // MARK: - 텍스트필드 수정 시작 시
     /// priceInfoTF의 수정을 시작할 때 ',' 및 '원'을 제거하는 메서드
     func textFieldDidBeginEditing(_ textField: UITextField) {
+        
         // 가격 텍스트필드일 때, 빈칸이 아니라면
         guard textField == self.priceInfoTF,
               self.priceInfoTF.text != "" else { return }

@@ -16,6 +16,16 @@ protocol ReceiptWriteVMProtocol {
     var selectedUsers: RoomUserDataDictionary { get set }
     
     
+    
+    var keyboardClosure: (() -> Void)? { get set }
+    var keyboardHeight: CGFloat { get set }
+    
+    
+    func setDebouncing(stop: Bool)
+//    func setVariableTrue()
+    var scrollViewIsScrollEnabled: Bool { get }
+
+    
     // 클로저
     var calculatePriceClosure: ((String?) -> Void)? { get set }
     
@@ -31,7 +41,7 @@ protocol ReceiptWriteVMProtocol {
     var moneyCountLblText: String? { get }
     
     // 가격 텍스트필드
-    func calculatePrice(userID: String?, price: Int?)
+    func calculatePrice(userID: String, price: Int?)
     func formatPriceForEditing(_ newText: String?) -> String?
     func savePriceText(text: String?)
     func removeWonFormat(priceText: String?) -> String?

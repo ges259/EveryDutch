@@ -28,9 +28,14 @@ final class PeopleSelectionPanVC: UIViewController {
     }()
     
     
-    private var bottomBtn: UIButton = UIButton.btnWithTitle(
-        font: UIFont.boldSystemFont(ofSize: 16),
-        backgroundColor: UIColor.normal_white)
+    private var bottomBtn: UIButton = {
+        let btn = UIButton.btnWithTitle(
+            titleColor: UIColor.gray,
+            font: UIFont.boldSystemFont(ofSize: 16),
+            backgroundColor: UIColor.unselected_Background)
+        btn.isEnabled = false
+        return btn
+    }()
     
     
     
@@ -56,7 +61,6 @@ final class PeopleSelectionPanVC: UIViewController {
     weak var delegate: PeopleSelectionDelegate?
     
     
-    var peopleSelectionEnum: PeopleSeelctionEnum?
     
     // MARK: - 라이프사이클
     override func viewDidLoad() {
@@ -65,13 +69,13 @@ final class PeopleSelectionPanVC: UIViewController {
         self.configureUI()
         self.configureAutoLayout()
         self.configureAction()
+        self.configureViewWithViewModel()
+        self.configureClosure()
     }
     init(viewModel: PeopleSelectionPanVMProtocol,
-         coordinator: Coordinator,
-         peopleSelectionEnum: PeopleSeelctionEnum?) {
+         coordinator: Coordinator) {
         self.coordinator = coordinator
         self.viewModel = viewModel
-        self.peopleSelectionEnum = peopleSelectionEnum
         super.init(nibName: nil, bundle: nil)
     }
     override func viewDidDisappear(_ animated: Bool) {
@@ -97,11 +101,6 @@ extension PeopleSelectionPanVC {
             view.clipsToBounds = true
             view.layer.cornerRadius = 10
         }
-        
-        
-        // MARK: - Fix
-        self.topLbl.text = "계산할 사람을 선택해 주세요."
-        self.bottomBtn.setTitle("선택 완료", for: .normal)
     }
     
     // MARK: - 오토레이아웃 설정
@@ -122,29 +121,47 @@ extension PeopleSelectionPanVC {
         }
     }
     
+    private func configureViewWithViewModel() {
+        self.topLbl.text = self.viewModel.topLblText
+        self.bottomBtn.setTitle(self.viewModel.bottomBtnText, for: .normal)
+    }
+    
     // MARK: - 액션 설정
     private func configureAction() {
         self.bottomBtn.addTarget(
-            self, 
+            self,
             action: #selector(self.bottomBtnTapped),
             for: .touchUpInside)
     }
+    
     // MARK: - 클로저 설정
     private func configureClosure() {
+        self.viewModel.bottomBtnClosure = {
+            self.bottomBtn.isEnabled = self.viewModel.bottomBtnIsEnabled
+            self.bottomBtn.backgroundColor = self.viewModel.bottomBtnColor
+            self.bottomBtn.setTitleColor(
+                self.viewModel.bottomBtnTextColor,for: .normal)
+        }
     }
-    
-    
-    
-    
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - 바텀 버튼 액션
+extension PeopleSelectionPanVC {
     @objc private func bottomBtnTapped() {
         self.dismiss(animated: true)
         // People_Selecteion_Pan_Coordinator로 전달
-        
         self.delegate?.multipleModeSelectedUsers(
-            peopleSeelctionEnum: self.peopleSelectionEnum,
+            peopleSeelctionEnum: self.viewModel.peopleSelectionEnum,
             users: self.viewModel.selectedUsers)
-        
-        
     }
 }
 
@@ -167,7 +184,7 @@ extension PeopleSelectionPanVC: UITableViewDelegate {
     func tableView(_ tableView: UITableView, 
                    didSelectRowAt indexPath: IndexPath) {
         // 싱글 선택 모드라면
-        if self.peopleSelectionEnum == .singleSelection {
+        if self.viewModel.isSingleMode {
             self.viewModel.singleModeSelectionUser(index: indexPath.row)
             
         // 다중 선택 모두라면
@@ -197,13 +214,13 @@ extension PeopleSelectionPanVC: UITableViewDataSource {
             withIdentifier: Identifier.peopleSelectionPanCell,
             for: indexPath) as! PeopleSelectionPanCell
         // 뷰모델에서 userID와 해당 RoomUsers 객체를 가져옴
-        let userEntry = self.viewModel.usersKeyValueArray[indexPath.row]
+        let userEntry = self.viewModel.returnUserData(index: indexPath.row)
         
         let userID = userEntry.key
         
         cell.cellIsSelected = self.viewModel.getIdToRoomUser(usersID: userID)
         
-        cell.peopleSelectionEnum = self.peopleSelectionEnum
+        cell.peopleSelectionEnum = self.viewModel.peopleSelectionEnum
         
         // 셀에 userID와 user 데이터 설정
         cell.configureCellData(userID: userEntry.key,
@@ -244,7 +261,3 @@ extension PeopleSelectionPanVC: PanModalPresentable {
         return 23
     }
 }
-
-
-// MARK: - Fix
-// 테이블뷰가 0일 때 -> 아래로 스크롤하면 dismiss

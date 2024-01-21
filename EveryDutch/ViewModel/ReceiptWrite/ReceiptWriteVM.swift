@@ -30,14 +30,58 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     
     
     
+    var keyboardClosure: (() -> Void)?
+    
+    
+    var scrollViewIsScrollEnabled: Bool = true
+    
+    
+    // 디바운스 타이머
+    private var debounceTimer: DispatchWorkItem?
+    
+    
+    /// 다바운싱 코드1
+    func setDebouncing(stop: Bool){
+        
+        // 이전에 설정된 타이머가 있으면 취소합니다.
+        self.debounceTimer?.cancel()
+        
+        self.scrollViewIsScrollEnabled = false
+        
+        // 키보드가 닫히면 디바운싱 진행 (4초 뒤)
+        guard !stop else { return }
+        
+        // 새로운 타이머 작업을 생성합니다.
+        let task = DispatchWorkItem { [weak self] in
+            self?.scrollViewIsScrollEnabled = true
+            self?.keyboardClosure?()
+        }
+        
+        // 4초 후에 작업을 실행하도록 예약합니다.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.05, execute: task)
+
+        // 생성된 타이머 작업을 저장합니다.
+        self.debounceTimer = task
+    }
+    
+    
+    
+    
+    
+    
+    
+    var keyboardHeight: CGFloat = 291.917
     var cumulativeMoney: Int = 0 {
         didSet {
-            print(self.cumulativeMoney)
             self.calculatePriceClosure?(self.moneyCountLblText)
         }
     }
     
-    var usersMoneyDict: [String : Int] = [:]
+    var usersMoneyDict: [String : Int] = [:] {
+        didSet {
+            print("self.usersMoneyDict.count ----- \(self.usersMoneyDict.count)")
+        }
+    }
     
     
 
@@ -89,19 +133,18 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
 extension ReceiptWriteVM {
     
     // MARK: - 가격 설정
-    func calculatePrice(userID: String?, price: Int?) {
-        
-        // userID 옵셔널 바인딩
-        guard let userID = userID else { return }
-        
+    func calculatePrice(userID: String, price: Int?) {
         // [ 제거 ] - 아무것도 적지 않았다면 (nil값)
         if price == nil {
             // 만약 유저가 돈이 있다면
             // -> 0원으로 만들기
-            self.removePrice(userID: userID, price: price)
+            self.removePrice(userID: userID)
+            
+            
         // [ 수정 ] - userID가 있다면
         } else if self.usersMoneyDict.keys.contains(userID) {
             self.modifyPrice(userID: userID, price: price)
+            
             
         // [ 추가 ] - userID가 없다면
         } else {
@@ -110,16 +153,15 @@ extension ReceiptWriteVM {
     }
     
     // MARK: - 가격 제거
-    private func removePrice(userID: String, price: Int?) {
+    // (가격 제거 시) + (테이블에서 유저 삭제 시)
+    private func removePrice(userID: String) {
         // 만약 유저가 돈이 있다면
         // -> 0원으로 만들기
         if self.usersMoneyDict.keys.contains(userID) {
             // 유저의 '원래 돈' 가져오기
             let money = self.usersMoneyDict[userID] ?? 0
-            
-            // 금액 차감
+            // 누적 금액 차감
             self.cumulativeMoney -= money
-            
             // usersMoneyDict에서 userID없애기
             self.usersMoneyDict.removeValue(forKey: userID)
         }
@@ -300,6 +342,8 @@ extension ReceiptWriteVM {
     func deleteCellVM(userID: String?) {
         // userID 옵셔널 바인딩
         guard let userID = userID else { return }
+        // 가격 재설정
+        self.removePrice(userID: userID)
         // 선택 해제
         self.selectedUsers.removeValue(forKey: userID)
         // 셀의 뷰모델 중, 삭제할 userID를 가지고 있는 셀을 가져오기
@@ -309,7 +353,6 @@ extension ReceiptWriteVM {
             self.cellViewModels.remove(at: index)
         }
     }
-    
     
     // MARK: - 셀 뷰모델 반환
     // cellViewModels 반환
