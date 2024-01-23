@@ -14,4 +14,8 @@ protocol UsersTableViewCellVMProtocol {
     var customTableEnum: CustomTableEnum { get }
     
     var profileImg: UIImage? { get }
+    
+    var rightBtnImg: UIImage? { get }
+    var paybackPrice: Int { get }
+    
 }

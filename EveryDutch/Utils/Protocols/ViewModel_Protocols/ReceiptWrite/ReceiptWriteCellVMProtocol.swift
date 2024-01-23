@@ -12,6 +12,9 @@ protocol ReceiptWriteCellVMProtocol {
     var profileImageURL: String { get }
     var userName: String { get }
     var profileImg: UIImage? { get }
+    var roomUserDataDictionary: RoomUserDataDictionary { get }
+    
+    
     
     func priceTFAlpha(isSelected: Bool) -> CGFloat
     

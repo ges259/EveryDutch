@@ -103,26 +103,27 @@ final class ReceiptWriteCoordinator: ReceiptWriteCoordProtocol {
 
 // MARK: - PeopleSelection 델리게이트
 extension ReceiptWriteCoordinator: PeopleSelectionDelegate {
-    func multipleModeSelectedUsers(
-        peopleSeelctionEnum: PeopleSeelctionEnum?,
-        addedusers: RoomUserDataDictionary,
-        removedUsers: RoomUserDataDictionary)
-    {
-        // ReceiptWirteVC 찾기
-        if let receiptWriteVC = self.modalNavController?
-            .viewControllers
-            .first(where: { $0 is ReceiptWriteVC }) as? ReceiptWriteVC {
-            
-            _ = peopleSeelctionEnum == .multipleSelection
-            // ReceiptWirteVC의 메서드 실행
-            ? receiptWriteVC.changeTableViewData(addedUsers: addedusers, 
-                                                 removedUsers: removedUsers)
-            : receiptWriteVC.changePayerLblData(addedUsers: addedusers,
-                                                removedUsers: removedUsers)
-            
-            
-            
-            
+    
+    func multipleModeSelectedUsers(addedusers: RoomUserDataDictionary,
+                                   removedUsers: RoomUserDataDictionary) {
+        if let receiptWriteVC = self.findReceiptWriteVC {
+            receiptWriteVC.changeTableViewData(
+                addedUsers: addedusers,
+                removedUsers: removedUsers)
         }
+    }
+    
+    func payerSelectedUser(addedUser: RoomUserDataDictionary) {
+        if let receiptWriteVC = self.findReceiptWriteVC {
+            receiptWriteVC.changePayerLblData(addedUsers: addedUser)
+        }
+    }
+    
+    
+    // 공통된 ReceiptWriteVC 찾기 로직
+    private var findReceiptWriteVC: ReceiptWriteVC? {
+        return self.modalNavController?
+            .viewControllers
+            .first(where: { $0 is ReceiptWriteVC }) as? ReceiptWriteVC
     }
 }

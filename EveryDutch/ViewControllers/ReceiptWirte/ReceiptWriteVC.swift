@@ -467,16 +467,16 @@ extension ReceiptWriteVC {
     
     // MARK: - 키보드가 올라올 때
     @objc func keyboardWillShow(notification: NSNotification) {
-        
         // 키보드의 높이 구하기
         if let keyboardSize = (notification
             .userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?
             .cgRectValue {
+            // 키보드 높이
             let keyboardHeight = keyboardSize.height
             
             // 뷰모델의 기본 키보드 높이와 현재 디바이스의 키보드 높이 다르다면,
-                // -> clearView의 높이 업데이트
             if self.viewModel.keyboardHeight != keyboardHeight {
+                // 셀의 하단이 키보드 위로 올라오도록 스크롤뷰의 오프셋을 설정할 때 사용
                 self.viewModel.keyboardHeight = keyboardHeight
             }
         }
@@ -484,7 +484,11 @@ extension ReceiptWriteVC {
     
     // MARK: - 키보드가 내려갈 때
     @objc func keyboardWillHide(notification: NSNotification) {
-        self.viewModel.setDebouncing(stop: false)
+        // '테이블뷰 셀의 텍스트필드'의 수정이 끝났는지 확인
+        if self.viewModel.isTableViewEditing {
+            // '테이블뷰 셀의 텍스트필드' 라면 -> 디바운싱
+            self.viewModel.setDebouncing(stop: false)
+        }
     }
 }
 
@@ -591,6 +595,7 @@ extension ReceiptWriteVC {
     /// - 타임피커가 표시된 경우, 숨김
     /// - 활성화된 텍스트 입력 필드가 있을 경우, 키보드를 내림
     @objc private func endEditing() {
+        print(#function)
         // 뷰 모델의 테이블뷰 편집 상태를 확인
         if !self.viewModel.isTableViewEditing {
             // 스크롤뷰의 contentInset이 변경된 경우, 기본값으로 재설정
@@ -634,20 +639,21 @@ extension ReceiptWriteVC {
     
     
     
-// MARK: - 계산한 사람 모두 선택
+// MARK: - PaymentDetails
 
 extension ReceiptWriteVC {
     
-    // MARK: - 인원 다수 선택
-    func changeTableViewData(addedUsers: RoomUserDataDictionary, 
+    // MARK: - [여러명] 계산한 사람 모두 선택
+    func changeTableViewData(addedUsers: RoomUserDataDictionary,
                              removedUsers: RoomUserDataDictionary) {
-        self.tableViewCellUpdate(addedUsers: addedUsers,
+        self.updateTableViewCell(addedUsers: addedUsers,
                                  removedUsers: removedUsers)
+        // 유저 삭제 또는 추가 후, 0명이면, 테이블 숨기기
         self.tableViewIsHidden()
     }
     
     // MARK: - 테이블뷰 셀 업데이트
-    private func tableViewCellUpdate(addedUsers: RoomUserDataDictionary,
+    private func updateTableViewCell(addedUsers: RoomUserDataDictionary,
                                      removedUsers: RoomUserDataDictionary) {
         // 테이블 뷰 한 번에 업데이트
         self.selectedUsersTableView.performBatchUpdates({
@@ -662,10 +668,11 @@ extension ReceiptWriteVC {
     private func tableViewInsertRows(addedUsers: RoomUserDataDictionary) {
         // 생성할 유저가 있다면,
         if !addedUsers.isEmpty {
-            // 추가될 셀의 IndexPath를 계산합니다.
-            let indexPaths = viewModel.indexPathsForAddedUsers(addedUsers)
+            // 주의 --- 순서를 바꾸면 안 됨.
             // 뷰모델에서 셀의 뷰모델을 생성
             self.viewModel.addData(addedUsers: addedUsers)
+            // 추가될 셀의 IndexPath를 계산합니다.
+            let indexPaths = self.viewModel.indexPathsForAddedUsers(addedUsers)
             // 테이블뷰에 특정 셀을 생성
             self.selectedUsersTableView.insertRows(
                 at: indexPaths,
@@ -677,8 +684,9 @@ extension ReceiptWriteVC {
     private func tableViewDeleteRows(removedUsers: RoomUserDataDictionary) {
         // 삭제할 유저가 있다면,
         if !removedUsers.isEmpty {
+            // 주의 --- 순서를 바꾸면 안 됨.
             // 제거될 셀의 IndexPath를 계산
-            let indexPaths = viewModel.indexPathsForRemovedUsers(removedUsers)
+            let indexPaths = self.viewModel.indexPathsForRemovedUsers(removedUsers)
             // 뷰모델에서 셀의 뷰모델을 삭제
             self.viewModel.deleteData(removedUsers: removedUsers)
             // 테이블뷰의 특정 셀을 제거
@@ -688,26 +696,29 @@ extension ReceiptWriteVC {
         }
     }
     
-    
     // MARK: - 유저 수에 따라 테이블뷰 숨기기
     private func tableViewIsHidden() {
         self.selectedUsersTableView.isHidden = self.viewModel.tableIsHidden
     }
+}
     
     
     
     
     
     
+
+
     
     
+// MARK: - payer
+
+extension ReceiptWriteVC {
     
-    
-    
-    // MARK: - 계산한 사람 선택
-    func changePayerLblData(addedUsers: RoomUserDataDictionary,
-                            removedUsers: RoomUserDataDictionary) {
-        self.payerInfoLbl.text = self.viewModel.isPayerSelected(user: addedUsers)
+    // MARK: - [1명] 계산한 사람 선택
+    func changePayerLblData(addedUsers: RoomUserDataDictionary) {
+        self.payerInfoLbl.text = self.viewModel.isPayerSelected(
+            selectedUser: addedUsers)
         self.addPersonBtn.isHidden = false
     }
 }
@@ -726,19 +737,10 @@ extension ReceiptWriteVC {
 extension ReceiptWriteVC: ReceiptWriteTableDelegate {
     
     // MARK: - 유저 삭제
-    func rightBtnTapped(_ cell: UITableViewCell,
-                        userID: String?) {
-        // 테이블뷰에 표시될 selectedUsers에서 해당 유저 삭제
-            // + 셀의 뷰모델 삭제
-        self.viewModel.deleteCellVM(userID: userID)
-        // 몇 번째 셀인지 확인
-        guard let indexPath = self.selectedUsersTableView.indexPath(for: cell) else { return }
-        // 셀 삭제
-        self.selectedUsersTableView.deleteRows(at: [indexPath],
-                                               with: .left)
-        
-        // 삭제 후 0명이 된다면 -> 테이블뷰 안 보이도록 설정
-        self.tableViewIsHidden()
+    func rightBtnTapped(user: RoomUserDataDictionary?) {
+        guard let user = user else { return }
+        self.changeTableViewData(addedUsers: [:],
+                                 removedUsers: user)
     }
     
     // MARK: - 금액 설정
@@ -830,7 +832,7 @@ extension ReceiptWriteVC: UIScrollViewDelegate {
     }
     
     // MARK: - [계산] 셀의 오프셋
-    /// 스크롤뷰의 콘텐츠 오프셋을 계산하고 업데이트합니다.
+    /// 스크롤뷰의 콘텐츠 오프셋을 계산하고 업데이트
     /// - Parameters:
     ///   - indexPath: 선택한 셀의 'IndexPath'
     private func updateScrollViewContentOffset(for indexPath: IndexPath) {
@@ -844,10 +846,10 @@ extension ReceiptWriteVC: UIScrollViewDelegate {
     }
     
     // MARK: - [계산] 셀의 프레임
-    /// 스크롤뷰 내에서 선택한 셀의 프레임을 계산합니다.
+    /// 스크롤뷰 내에서 선택한 셀의 프레임을 계산
     /// - Parameters:
-    ///   - indexPath: 선택한 셀의 인덱스 패스입니다.
-    /// - Returns: 스크롤뷰 좌표계에서 셀의 프레임을 반환합니다.
+    ///   - indexPath: 선택한 셀의 인덱스 패스
+    /// - Returns: 스크롤뷰 좌표계에서 셀의 프레임을 반환
     private func calculateCellFrameInScrollView(for indexPath: IndexPath) -> CGRect {
         // 선택한 셀의 프레임을 테이블뷰의 좌표계로부터 가져옵니다.
         let rectOfCellInTableView = self.selectedUsersTableView.rectForRow(at: indexPath)
@@ -858,10 +860,10 @@ extension ReceiptWriteVC: UIScrollViewDelegate {
     }
 
     // MARK: - [계산] 스크롤뷰의 오프셋
-    /// 계산된 셀의 프레임을 바탕으로 스크롤뷰의 오프셋을 계산합니다.
-    /// 셀의 하단이 키보드 위로 올라오도록 오프셋을 설정합니다.
-    /// - Parameter cellFrame: 스크롤뷰 내에서 셀의 프레임입니다.
-    /// - Returns: 새로운 스크롤뷰의 오프셋을 반환합니다.
+    /// 계산된 셀의 프레임을 바탕으로 스크롤뷰의 오프셋을 계산
+    /// 셀의 하단이 키보드 위로 올라오도록 오프셋을 설정.
+    /// - Parameter cellFrame: 스크롤뷰 내에서 셀의 프레임
+    /// - Returns: 새로운 스크롤뷰의 오프셋을 반환
     private func calculateScrollViewOffset(for cellFrame: CGRect) -> CGFloat {
         // 스크롤할 y축 오프셋 구하기
         // = 셀의 하단 y위치
@@ -897,7 +899,8 @@ extension ReceiptWriteVC: UIPickerViewDataSource {
     
     // MARK: - 개수
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return 2 // 시간과 분을 위한 두 개의 컴포넌트
+        // 시간과 분을 위한 두 개의 컴포넌트
+        return 2
     }
     // MARK: - 최소 및 최대 숫자
     func pickerView(_ pickerView: UIPickerView,
@@ -978,7 +981,8 @@ extension ReceiptWriteVC: UITextFieldDelegate {
     /// priceInfoTF의 수정을 시작할 때 ',' 및 '원'을 제거하는 메서드
     func textFieldDidBeginEditing(_ textField: UITextField) {
         
-        // 가격 텍스트필드일 때, 빈칸이 아니라면
+        // 가격 텍스트필드일 때,
+        // priceInfoTF가 빈칸이 아니라면,
         guard textField == self.priceInfoTF,
               self.priceInfoTF.text != "" else { return }
         

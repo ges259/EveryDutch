@@ -144,8 +144,7 @@ extension ReceiptWriteTableViewCell {
     // MARK: - 오른쪽 버튼 액션
     @objc private func rightBtnTapped() {
         self.delegate?.rightBtnTapped(
-            self,
-            userID: self.viewModel?.userID)
+            user: self.viewModel?.roomUserDataDictionary)
     }
     
     // MARK: - 셀 선택 시 가격 텍스트필드 설정
@@ -161,6 +160,8 @@ extension ReceiptWriteTableViewCell {
             // 선택된 셀의 priceTF만 보이게 하고, 나머지 셀은 숨기기
             self.priceTf.alpha = viewModel.priceTFAlpha(isSelected: selected)
         }
+        
+        
         // 셀이 선택되었다면 -> 키보드 보이게 하기
         if selected { self.priceTf.becomeFirstResponder() }
     }

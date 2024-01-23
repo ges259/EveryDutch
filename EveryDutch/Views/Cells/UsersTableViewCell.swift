@@ -22,7 +22,7 @@ final class UsersTableViewCell: UITableViewCell {
     
     
     // MARK: - 프로퍼티
-    private var viewModel: UsersTableViewCellVM?
+    private var viewModel: UsersTableViewCellVMProtocol?
     
     
     
@@ -59,7 +59,7 @@ extension UsersTableViewCell {
     }
 
     // MARK: - 뷰모델을 통한 셀 설정
-    func configureCell(with viewModel: UsersTableViewCellVM?,
+    func configureCell(with viewModel: UsersTableViewCellVMProtocol?,
                        firstBtnTapped: Bool) {
         // 뷰모델 저장
         self.viewModel = viewModel
@@ -78,7 +78,7 @@ extension UsersTableViewCell {
     }
     
     // MARK: - 오토레이아웃 설정
-    private func configureAutoLayout(viewModel: UsersTableViewCellVM) {
+    private func configureAutoLayout(viewModel: UsersTableViewCellVMProtocol) {
         
         self.addSubview(self.tableCellStv)
         switch viewModel.customTableEnum {

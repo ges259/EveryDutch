@@ -39,6 +39,7 @@ final class PeopleSelectionPanVM: PeopleSelectionPanVMProtocol  {
     }
     var removedSelectedUsers: RoomUserDataDictionary = [:] {
         didSet {
+            self.bottomBtnClosure?()
             print("removedSelectedUsers --- \(removedSelectedUsers)")
         }
     }
@@ -99,6 +100,10 @@ final class PeopleSelectionPanVM: PeopleSelectionPanVMProtocol  {
     
     
     
+    
+    
+    
+    // MARK: - Fix
     
     
     

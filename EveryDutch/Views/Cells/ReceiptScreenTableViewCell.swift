@@ -21,7 +21,7 @@ final class ReceiptScreenTableViewCell: UITableViewCell {
     
     
     // MARK: - 프로퍼티
-    private var viewModel: ReceiptScreenPanCellVM?
+    private var viewModel: ReceiptScreenPanCellVMProtocol?
     
     
     // MARK: - 라이프사이클
@@ -51,7 +51,7 @@ extension ReceiptScreenTableViewCell {
         self.separatorInset = .zero
     }
     
-    func configureCell(with viewModel: ReceiptScreenPanCellVM) {
+    func configureCell(with viewModel: ReceiptScreenPanCellVMProtocol) {
         self.viewModel = viewModel
         
         self.tableCellStackView.userNameLbl.text = viewModel.userName
@@ -85,12 +85,18 @@ extension ReceiptScreenTableViewCell {
             for: .touchUpInside)
     }
     
+    // MARK: - 클로저 설정
     private func configureClosure() {
         self.viewModel?.doneStatusChanged = { img in
             self.rightBtn.setImage(img, for: .normal)
         }
     }
     
+    
+    
+    
+    
+    // MARK: - 오른쪽 버튼 액션
     @objc private func rightBtnTapped() {
         self.viewModel?.done.toggle()
     }

@@ -285,8 +285,9 @@ extension ReceiptWriteVM {
 
 extension ReceiptWriteVM {
     
-    // MARK: - '원' 삭제
+    // MARK: - '원' 형식 삭제
     func removeWonFormat(priceText: String?) -> String? {
+        // '원' 형식을 삭제 후 리턴
         return NumberFormatter.removeWon(price: priceText)
     }
     
@@ -383,9 +384,9 @@ extension ReceiptWriteVM {
 extension ReceiptWriteVM {
     
     // MARK: - 선택된 유저의 이름
-    func isPayerSelected(user: RoomUserDataDictionary) -> String? {
-        self.payer = user
-        return user.values.first?.roomUserName
+    func isPayerSelected(selectedUser: RoomUserDataDictionary) -> String? {
+        self.payer = selectedUser
+        return selectedUser.values.first?.roomUserName
     }
 }
 
@@ -475,9 +476,13 @@ extension ReceiptWriteVM {
 
 
 
+
+
+
 // MARK: - 셀 뷰모델 반환
 extension ReceiptWriteVM {
-    // cellViewModels 반환
+    /// cellViewModels 반환
+    /// 테이블뷰 cellForRowAt에서 사용 됨
     func cellViewModel(at index: Int) -> ReceiptWriteCellVM {
         return self.cellViewModels[index]
     }

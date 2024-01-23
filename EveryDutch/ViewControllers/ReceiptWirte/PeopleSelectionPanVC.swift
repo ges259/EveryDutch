@@ -133,19 +133,21 @@ extension PeopleSelectionPanVC {
             self,
             action: #selector(self.bottomBtnTapped),
             for: .touchUpInside)
-        
-        self.bottomBtn.isEnabled = true
     }
     
     // MARK: - 클로저 설정
     private func configureClosure() {
-        self.viewModel.bottomBtnClosure = {
-//            self.bottomBtn.isEnabled = self.viewModel.bottomBtnIsEnabled
-//            self.bottomBtn.isEnabled = true
-//            
-//            self.bottomBtn.backgroundColor = self.viewModel.bottomBtnColor
-//            self.bottomBtn.setTitleColor(
-//                self.viewModel.bottomBtnTextColor,for: .normal)
+        self.viewModel.bottomBtnClosure = { [weak self] in
+            // self 옵셔널 바인딩
+            guard let strongSelf = self else { return }
+            // 버튼 isEnable 설정
+            strongSelf.bottomBtn.isEnabled = strongSelf.viewModel.bottomBtnIsEnabled
+            // 버튼 색상 설정
+            strongSelf.bottomBtn.backgroundColor = strongSelf.viewModel.bottomBtnColor
+            // 버튼 글자 색상 설정
+            strongSelf.bottomBtn.setTitleColor(
+                strongSelf.viewModel.bottomBtnTextColor,
+                for: .normal)
         }
     }
 }
@@ -164,9 +166,20 @@ extension PeopleSelectionPanVC {
     @objc private func bottomBtnTapped() {
         self.dismiss(animated: true)
         // People_Selecteion_Pan_Coordinator로 전달
+        self.viewModel.isSingleMode
+        ? self.singleModeDelegate()
+        : self.multipleModeDelegate()
+    }
+    
+    // MARK: - 단일 선택 모드 일 때
+    private func singleModeDelegate() {
+        self.delegate?.payerSelectedUser(
+            addedUser: self.viewModel.addedUsers)
+    }
+    // MARK: - 다중 선택 모드 일 때
+    private func multipleModeDelegate() {
         self.delegate?.multipleModeSelectedUsers(
-            peopleSeelctionEnum: self.viewModel.peopleSelectionEnum,
-            addedusers: self.viewModel.addedUsers, 
+            addedusers: self.viewModel.addedUsers,
             removedUsers: self.viewModel.removedSelectedUsers)
     }
 }
@@ -181,27 +194,40 @@ extension PeopleSelectionPanVC {
 
 
 // MARK: - 테이블뷰 델리게이트
+
 extension PeopleSelectionPanVC: UITableViewDelegate {
+    
+    // MARK: - 높이
     func tableView(_ tableView: UITableView,
                    heightForRowAt indexPath: IndexPath)
     -> CGFloat {
         return 45
     }
-    func tableView(_ tableView: UITableView, 
+    
+    // MARK: - didSelectRowAt
+    func tableView(_ tableView: UITableView,
                    didSelectRowAt indexPath: IndexPath) {
+        // 현재 모드 확인
+        _ = self.viewModel.isSingleMode
         // 싱글 선택 모드라면
-        if self.viewModel.isSingleMode {
-            self.viewModel.singleModeSelectionUser(index: indexPath.row)
-            
+        ? self.singleModeDidSelectRowAt(index: indexPath.row)
         // 다중 선택 모두라면
-        } else {
-            // 선택된 유저 저장 또는 삭제
-            self.viewModel.multipleModeSelectedUsers(index: indexPath.row)
-            
-            // 해당 셀의 뷰를 업데이트
-            guard let cell = tableView.cellForRow(at: indexPath) as? PeopleSelectionPanCell else { return }
-            cell.cellIsSelected.toggle()
-        }
+        : self.multipleModeDidSelectRowAt(indexPath: indexPath)
+    }
+    
+    // MARK: - 단일 선택 모드일 때
+    private func singleModeDidSelectRowAt(index: Int) {
+        self.viewModel.singleModeSelectionUser(index: index)
+    }
+    
+    // MARK: - 다중 선택 모드일 때
+    private func multipleModeDidSelectRowAt(indexPath: IndexPath) {
+        // 선택된 유저 저장 또는 삭제
+        self.viewModel.multipleModeSelectedUsers(index: indexPath.row)
+        
+        // 해당 셀의 뷰를 업데이트
+        guard let cell = self.peopleSelectionTableView.cellForRow(at: indexPath) as? PeopleSelectionPanCell else { return }
+        cell.cellIsSelected.toggle()
     }
 }
 
@@ -222,11 +248,11 @@ extension PeopleSelectionPanVC: UITableViewDataSource {
         // 뷰모델에서 userID와 해당 RoomUsers 객체를 가져옴
         let userEntry = self.viewModel.returnUserData(index: indexPath.row)
         
-        let userID = userEntry.key
-        
-        cell.cellIsSelected = self.viewModel.getIdToRoomUser(usersID: userID)
-        
-        cell.peopleSelectionEnum = self.viewModel.peopleSelectionEnum
+        // 셀이 선택된 상태인지 확인
+        cell.cellIsSelected = self.viewModel.getIdToRoomUser(
+            usersID: userEntry.key)
+        // 현재 모드 전달
+        cell.isSingleMode = self.viewModel.isSingleMode
         
         // 셀에 userID와 user 데이터 설정
         cell.configureCellData(userID: userEntry.key,

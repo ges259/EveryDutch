@@ -22,7 +22,7 @@ final class MainCollectionViewCell: UICollectionViewCell {
         
     
     // MARK: - 프로퍼티
-    var viewModel: MainCollectionViewCellVM?
+    var viewModel: MainCollectionViewCellVMProtocol?
     
 
     
@@ -70,7 +70,7 @@ extension MainCollectionViewCell {
 // MARK: - 데이터 설정
 extension MainCollectionViewCell {
 
-    func configureCell(with viewModel: MainCollectionViewCellVM?) {
+    func configureCell(with viewModel: MainCollectionViewCellVMProtocol?) {
         // 뷰모델 저장
         self.viewModel = viewModel
         

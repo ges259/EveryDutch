@@ -12,8 +12,11 @@ struct ReceiptWriteCellVM: ReceiptWriteCellVMProtocol {
     var profileImageURL: String
     var userName: String
     
-    
+    var roomUserDataDictionary: RoomUserDataDictionary = [:]
 
+    
+    
+    
     var profileImg: UIImage? {
         return self.profileImageURL == ""
         ? UIImage.person_Fill_Img
@@ -27,6 +30,8 @@ struct ReceiptWriteCellVM: ReceiptWriteCellVMProtocol {
         self.userID = userID
         self.profileImageURL = roomUsers.roomUserImg
         self.userName = roomUsers.roomUserName
+        
+        self.roomUserDataDictionary = [userID: roomUsers]
     }
     
     /// 가격 텍스트필드의 alpha값을 설정

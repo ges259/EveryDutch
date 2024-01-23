@@ -70,7 +70,7 @@ protocol ReceiptWriteVMProtocol {
     func timePickerFormat(_ row: Int) -> String
     
     // 단일 선택
-    func isPayerSelected(user: RoomUserDataDictionary) -> String?
+    func isPayerSelected(selectedUser: RoomUserDataDictionary) -> String?
     
     // 다중 선택
 //    func makeCellVM(selectedUsers: RoomUserDataDictionary)

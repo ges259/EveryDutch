@@ -48,7 +48,7 @@ final class SettlementTableViewCell: UITableViewCell {
     
     // MARK: - 프로퍼티
     
-    var viewModel: SettleMoneyTableViewCellVM?
+    var viewModel: SettlementTableViewCellVMProtocol?
     
     
     // MARK: - 라이프사이클
@@ -119,7 +119,7 @@ extension SettlementTableViewCell {
 // MARK: - 데이터 설정
 extension SettlementTableViewCell {
 
-    func configureCell(with viewModel: SettleMoneyTableViewCellVM?) {
+    func configureCell(with viewModel: SettlementTableViewCellVMProtocol?) {
         // 뷰모델 저장
         self.viewModel = viewModel
         

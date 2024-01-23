@@ -48,14 +48,17 @@ final class PeopleSelectionPanCoordinator: Coordinator {
 
 // MARK: - PeopleSelection 델리게이트
 extension PeopleSelectionPanCoordinator: PeopleSelectionDelegate {
+    
+    func payerSelectedUser(addedUser: RoomUserDataDictionary) {
+        self.delegate?.payerSelectedUser(addedUser: addedUser)
+    }
+    
     func multipleModeSelectedUsers(
-        peopleSeelctionEnum: PeopleSeelctionEnum?,
         addedusers: RoomUserDataDictionary,
         removedUsers: RoomUserDataDictionary)
     {
         // Receipt_Write_Coordinator로 전달
         self.delegate?.multipleModeSelectedUsers(
-            peopleSeelctionEnum: peopleSeelctionEnum,
             addedusers: addedusers,
             removedUsers: removedUsers)
     }

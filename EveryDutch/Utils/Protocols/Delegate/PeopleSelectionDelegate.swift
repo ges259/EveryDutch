@@ -10,8 +10,9 @@ import Foundation
 
 protocol PeopleSelectionDelegate: AnyObject {
     func multipleModeSelectedUsers(
-        peopleSeelctionEnum: PeopleSeelctionEnum?,
         addedusers: RoomUserDataDictionary,
         removedUsers: RoomUserDataDictionary)
 
+    func payerSelectedUser(addedUser: RoomUserDataDictionary)
+    
 }

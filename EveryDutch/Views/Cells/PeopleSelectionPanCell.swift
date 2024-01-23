@@ -33,8 +33,8 @@ final class PeopleSelectionPanCell: UITableViewCell {
             self.tableCellStv.rightImg.isHidden = !self.cellIsSelected
         }
     }
-    var peopleSelectionEnum: PeopleSeelctionEnum?
     
+    var isSingleMode: Bool = true
     
     
     
@@ -45,7 +45,6 @@ final class PeopleSelectionPanCell: UITableViewCell {
         
         self.configureUI()
         self.configureAutoLayout()
-        self.configureAction()
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -54,7 +53,7 @@ final class PeopleSelectionPanCell: UITableViewCell {
                               animated: Bool) {
         super.setSelected(selected, animated: animated)
         // 싱글 선택 모드라면.
-        guard self.peopleSelectionEnum == .singleSelection else { return }
+        guard self.isSingleMode else { return }
         // 셀을 눌렀을 때, 해당 셀만 이미지 표시 (나머지는 이미지 숨기기)
         self.tableCellStv.rightImg.isHidden = selected
         ? false
@@ -94,11 +93,8 @@ extension PeopleSelectionPanCell {
         }
     }
     
-    // MARK: - 액션 설정
-    private func configureAction() {
-        
-    }
-    func configureCellData(userID: String, 
+    // MARK: - 셀의 데이터 설정
+    func configureCellData(userID: String,
                            user: RoomUsers) {
         self.self.tableCellStv.rightImg.isHidden = true
         self.tableCellStv.profileImg.image = UIImage.person_Fill_Img
