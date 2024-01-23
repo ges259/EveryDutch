@@ -105,7 +105,8 @@ final class ReceiptWriteCoordinator: ReceiptWriteCoordProtocol {
 extension ReceiptWriteCoordinator: PeopleSelectionDelegate {
     func multipleModeSelectedUsers(
         peopleSeelctionEnum: PeopleSeelctionEnum?,
-        users: RoomUserDataDictionary)
+        addedusers: RoomUserDataDictionary,
+        removedUsers: RoomUserDataDictionary)
     {
         // ReceiptWirteVC 찾기
         if let receiptWriteVC = self.modalNavController?
@@ -114,8 +115,14 @@ extension ReceiptWriteCoordinator: PeopleSelectionDelegate {
             
             _ = peopleSeelctionEnum == .multipleSelection
             // ReceiptWirteVC의 메서드 실행
-            ? receiptWriteVC.changeTableViewData(users)
-            : receiptWriteVC.changePayerLblData(users)
+            ? receiptWriteVC.changeTableViewData(addedUsers: addedusers, 
+                                                 removedUsers: removedUsers)
+            : receiptWriteVC.changePayerLblData(addedUsers: addedusers,
+                                                removedUsers: removedUsers)
+            
+            
+            
+            
         }
     }
 }

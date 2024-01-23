@@ -133,15 +133,19 @@ extension PeopleSelectionPanVC {
             self,
             action: #selector(self.bottomBtnTapped),
             for: .touchUpInside)
+        
+        self.bottomBtn.isEnabled = true
     }
     
     // MARK: - 클로저 설정
     private func configureClosure() {
         self.viewModel.bottomBtnClosure = {
-            self.bottomBtn.isEnabled = self.viewModel.bottomBtnIsEnabled
-            self.bottomBtn.backgroundColor = self.viewModel.bottomBtnColor
-            self.bottomBtn.setTitleColor(
-                self.viewModel.bottomBtnTextColor,for: .normal)
+//            self.bottomBtn.isEnabled = self.viewModel.bottomBtnIsEnabled
+//            self.bottomBtn.isEnabled = true
+//            
+//            self.bottomBtn.backgroundColor = self.viewModel.bottomBtnColor
+//            self.bottomBtn.setTitleColor(
+//                self.viewModel.bottomBtnTextColor,for: .normal)
         }
     }
 }
@@ -162,7 +166,8 @@ extension PeopleSelectionPanVC {
         // People_Selecteion_Pan_Coordinator로 전달
         self.delegate?.multipleModeSelectedUsers(
             peopleSeelctionEnum: self.viewModel.peopleSelectionEnum,
-            users: self.viewModel.addedUsers)
+            addedusers: self.viewModel.addedUsers, 
+            removedUsers: self.viewModel.removedSelectedUsers)
     }
 }
 

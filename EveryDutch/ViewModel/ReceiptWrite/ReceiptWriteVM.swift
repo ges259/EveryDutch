@@ -10,7 +10,7 @@ import UIKit
 final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     
     // MARK: - 모델
-    private var cellViewModels: [ReceiptWriteCellVM] = [] {
+    internal var cellViewModels: [ReceiptWriteCellVM] = [] {
         didSet {
             print("*************************")
             print(self.cellViewModels.count)
@@ -378,7 +378,7 @@ extension ReceiptWriteVM {
 
 
 
-// MARK: - payer 선택
+// MARK: - [1명] payer 선택
     
 extension ReceiptWriteVM {
     
@@ -398,43 +398,67 @@ extension ReceiptWriteVM {
 
 
 
-// MARK: - paymentDetails 선택
+
+
+
+// MARK: - [여러명] paymentDetails 선택
 
 extension ReceiptWriteVM {
-    
-    // MARK: - 셀의 뷰모델 만들기
-    func makeCellVM(selectedUsers: RoomUserDataDictionary) {
-        print(#function)
-        
-        // 방의 유저들 정보 가져오기
-        self.selectedUsers = selectedUsers
-        // MARK: - Fix
-//        self.cellViewModels.removeAll()
-        // 유저 정보 보내기
-        self.cellViewModels = self.selectedUsers.map { (userID, roomUser) in
-            ReceiptWriteCellVM(
-                userID: userID,
-                roomUsers: roomUser)
+    func changeTableViewData(addedUsers: RoomUserDataDictionary, removedUsers: RoomUserDataDictionary) {
+        // 제거된 유저 처리
+        removedUsers.keys.forEach { userID in
+            self.deleteCellVM(userID: userID)
+        }
+
+        // 추가된 유저 처리
+        addedUsers.forEach { (userID, roomUser) in
+            if self.selectedUsers[userID] == nil {
+                let newCellVM = ReceiptWriteCellVM(userID: userID, roomUsers: roomUser)
+                self.cellViewModels.append(newCellVM)
+                self.selectedUsers[userID] = roomUser
+            }
         }
     }
-    
-    // MARK: - 셀 삭제
+
+    // 셀 뷰모델 삭제
     func deleteCellVM(userID: String?) {
-        // userID 옵셔널 바인딩
         guard let userID = userID else { return }
-        // 가격 재설정
+        
         self.removePrice(userID: userID)
-        // 선택 해제
         self.selectedUsers.removeValue(forKey: userID)
-        // 셀의 뷰모델 중, 삭제할 userID를 가지고 있는 셀을 가져오기
-        if let index = self.cellViewModels
-            .firstIndex(where: { $0.userID == userID }) {
-            // 셀의 뷰모델 삭제
+        if let index = self.cellViewModels.firstIndex(where: { $0.userID == userID }) {
             self.cellViewModels.remove(at: index)
         }
     }
-    
-    // MARK: - 셀 뷰모델 반환
+
+    func indexPathsForUsers(_ users: RoomUserDataDictionary, isAdded: Bool) -> [IndexPath] {
+        var indexPaths = [IndexPath]()
+
+        if isAdded {
+            let startIndex = self.cellViewModels.count - users.count
+            indexPaths = (startIndex..<(startIndex + users.count)).map { IndexPath(row: $0, section: 0) }
+        } else {
+            users.keys.forEach { userID in
+                if let index = self.cellViewModels.firstIndex(where: { $0.userID == userID }) {
+                    indexPaths.append(IndexPath(row: index, section: 0))
+                }
+            }
+        }
+        return indexPaths
+    }
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - 셀 뷰모델 반환
+extension ReceiptWriteVM {
     // cellViewModels 반환
     func cellViewModel(at index: Int) -> ReceiptWriteCellVM {
         return self.cellViewModels[index]

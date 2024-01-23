@@ -639,16 +639,43 @@ extension ReceiptWriteVC {
 extension ReceiptWriteVC {
     
     // MARK: - 인원 다수 선택
-    func changeTableViewData(_ users: RoomUserDataDictionary) {
-        self.viewModel.makeCellVM(selectedUsers: users)
-        self.selectedUsersTableView.reloadData()
-        // 삭제 후 0명이 된다면 -> 테이블뷰 안 보이도록 설정
+    func changeTableViewData(addedUsers: RoomUserDataDictionary, removedUsers: RoomUserDataDictionary) {
+        
+        // 뷰모델 업데이트
+        self.viewModel.changeTableViewData(
+            addedUsers: addedUsers,
+            removedUsers: removedUsers
+        )
+        
+        // 테이블 뷰 업데이트
+        self.selectedUsersTableView.performBatchUpdates({
+            if !removedUsers.isEmpty {
+                // 제거될 셀의 IndexPath를 계산합니다.
+                let removedIndexPaths = viewModel.indexPathsForUsers(removedUsers, isAdded: false)
+                self.selectedUsersTableView.deleteRows(at: removedIndexPaths, with: .automatic)
+            }
+            if !addedUsers.isEmpty {
+                // 추가될 셀의 IndexPath를 계산합니다.
+                let addedIndexPaths = viewModel.indexPathsForUsers(addedUsers, isAdded: true)
+                self.selectedUsersTableView.insertRows(at: addedIndexPaths, with: .automatic)
+            }
+        })
         self.selectedUsersTableView.isHidden = self.viewModel.tableIsHidden
     }
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
     // MARK: - 계산한 사람 선택
-    func changePayerLblData(_ user: RoomUserDataDictionary) {
-        self.payerInfoLbl.text = self.viewModel.isPayerSelected(user: user)
+    func changePayerLblData(addedUsers: RoomUserDataDictionary,
+                            removedUsers: RoomUserDataDictionary) {
+        self.payerInfoLbl.text = self.viewModel.isPayerSelected(user: addedUsers)
         self.addPersonBtn.isHidden = false
     }
 }

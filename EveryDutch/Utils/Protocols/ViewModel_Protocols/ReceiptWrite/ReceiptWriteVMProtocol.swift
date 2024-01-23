@@ -15,7 +15,7 @@ protocol ReceiptWriteVMProtocol {
     var payer: RoomUserDataDictionary? { get }
     var selectedUsers: RoomUserDataDictionary { get set }
     
-    
+    var cellViewModels: [ReceiptWriteCellVM] { get set }
     
     var debouncingClosure: (() -> Void)? { get set }
     var keyboardHeight: CGFloat { get set }
@@ -24,8 +24,10 @@ protocol ReceiptWriteVMProtocol {
     func setDebouncing(stop: Bool)
 //    func setVariableTrue()
     var isTableViewEditing: Bool { get }
-
-    
+    func changeTableViewData(addedUsers: RoomUserDataDictionary,
+                             removedUsers: RoomUserDataDictionary)
+    // IndexPath 계산 메소드
+    func indexPathsForUsers(_ users: RoomUserDataDictionary, isAdded: Bool) -> [IndexPath]
     // 클로저
     var calculatePriceClosure: ((String?) -> Void)? { get set }
     
@@ -61,7 +63,12 @@ protocol ReceiptWriteVMProtocol {
     func isPayerSelected(user: RoomUserDataDictionary) -> String?
     
     // 다중 선택
-    func makeCellVM(selectedUsers: RoomUserDataDictionary)
+//    func makeCellVM(selectedUsers: RoomUserDataDictionary)
+    
+//    func deleteCellVM(userID: String)
+    
     func cellViewModel(at index: Int) -> ReceiptWriteCellVM
+    
+    
     func deleteCellVM(userID: String?)
 }

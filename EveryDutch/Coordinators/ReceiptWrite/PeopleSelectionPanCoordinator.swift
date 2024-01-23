@@ -50,11 +50,13 @@ final class PeopleSelectionPanCoordinator: Coordinator {
 extension PeopleSelectionPanCoordinator: PeopleSelectionDelegate {
     func multipleModeSelectedUsers(
         peopleSeelctionEnum: PeopleSeelctionEnum?,
-        users: RoomUserDataDictionary) 
+        addedusers: RoomUserDataDictionary,
+        removedUsers: RoomUserDataDictionary)
     {
         // Receipt_Write_Coordinator로 전달
         self.delegate?.multipleModeSelectedUsers(
             peopleSeelctionEnum: peopleSeelctionEnum,
-            users: users)
+            addedusers: addedusers,
+            removedUsers: removedUsers)
     }
 }
