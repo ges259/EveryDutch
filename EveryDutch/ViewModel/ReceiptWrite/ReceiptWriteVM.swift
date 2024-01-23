@@ -404,52 +404,70 @@ extension ReceiptWriteVM {
 // MARK: - [여러명] paymentDetails 선택
 
 extension ReceiptWriteVM {
-    func changeTableViewData(addedUsers: RoomUserDataDictionary, removedUsers: RoomUserDataDictionary) {
-        // 제거된 유저 처리
-        removedUsers.keys.forEach { userID in
-            self.deleteCellVM(userID: userID)
-        }
-
+    
+    // MARK: - 유저 추가, 셀의 뷰모델 생성
+    func addData(addedUsers: RoomUserDataDictionary) {
         // 추가된 유저 처리
         addedUsers.forEach { (userID, roomUser) in
             if self.selectedUsers[userID] == nil {
-                let newCellVM = ReceiptWriteCellVM(userID: userID, roomUsers: roomUser)
+                // 셀의 뷰모델 생성
+                let newCellVM = ReceiptWriteCellVM(userID: userID,
+                                                   roomUsers: roomUser)
                 self.cellViewModels.append(newCellVM)
+                // 선택되었다고 표시
                 self.selectedUsers[userID] = roomUser
             }
         }
     }
-
-    // 셀 뷰모델 삭제
-    func deleteCellVM(userID: String?) {
-        guard let userID = userID else { return }
-        
-        self.removePrice(userID: userID)
-        self.selectedUsers.removeValue(forKey: userID)
-        if let index = self.cellViewModels.firstIndex(where: { $0.userID == userID }) {
-            self.cellViewModels.remove(at: index)
+    
+    // MARK: - 추가될 셀의 IndexPath
+    func indexPathsForAddedUsers(_ users: RoomUserDataDictionary) -> [IndexPath] {
+        let startIndex = self.cellViewModels.count - users.count
+        return (startIndex..<(startIndex + users.count)).map { IndexPath(row: $0, section: 0) }
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    // MARK: - 유저 삭제
+    func deleteData(removedUsers: RoomUserDataDictionary) {
+        // 제거된 유저 처리
+        removedUsers.keys.forEach { userID in
+            self.deleteCellVM(userID: userID)
         }
     }
-
-    func indexPathsForUsers(_ users: RoomUserDataDictionary, isAdded: Bool) -> [IndexPath] {
+    
+    // MARK: - 삭제 될 셀의 IndexPath
+    func indexPathsForRemovedUsers(_ users: RoomUserDataDictionary) -> [IndexPath] {
         var indexPaths = [IndexPath]()
-
-        if isAdded {
-            let startIndex = self.cellViewModels.count - users.count
-            indexPaths = (startIndex..<(startIndex + users.count)).map { IndexPath(row: $0, section: 0) }
-        } else {
-            users.keys.forEach { userID in
-                if let index = self.cellViewModels.firstIndex(where: { $0.userID == userID }) {
-                    indexPaths.append(IndexPath(row: index, section: 0))
-                }
+        users.keys.forEach { userID in
+            if let index = self.cellViewModels.firstIndex(where: { $0.userID == userID }) {
+                indexPaths.append(IndexPath(row: index, section: 0))
             }
         }
         return indexPaths
     }
+    
+    // MARK: - 셀의 뷰모델 삭제
+    // 셀 뷰모델 삭제
+    func deleteCellVM(userID: String?) {
+        guard let userID = userID else { return }
+        // 가격 없애기
+        self.removePrice(userID: userID)
+        // 선택된 상태에서 없애기
+        self.selectedUsers.removeValue(forKey: userID)
+        // 뷰모델 없애기
+        if let index = self.cellViewModels.firstIndex(where: { $0.userID == userID }) {
+            self.cellViewModels.remove(at: index)
+        }
+    }
 }
-
-
-
 
 
 

@@ -634,34 +634,66 @@ extension ReceiptWriteVC {
     
     
     
-// MARK: - 유저 선택 시_데이터 설정
+// MARK: - 계산한 사람 모두 선택
 
 extension ReceiptWriteVC {
     
     // MARK: - 인원 다수 선택
-    func changeTableViewData(addedUsers: RoomUserDataDictionary, removedUsers: RoomUserDataDictionary) {
-        
-        // 뷰모델 업데이트
-        self.viewModel.changeTableViewData(
-            addedUsers: addedUsers,
-            removedUsers: removedUsers
-        )
-        
-        // 테이블 뷰 업데이트
+    func changeTableViewData(addedUsers: RoomUserDataDictionary, 
+                             removedUsers: RoomUserDataDictionary) {
+        self.tableViewCellUpdate(addedUsers: addedUsers,
+                                 removedUsers: removedUsers)
+        self.tableViewIsHidden()
+    }
+    
+    // MARK: - 테이블뷰 셀 업데이트
+    private func tableViewCellUpdate(addedUsers: RoomUserDataDictionary,
+                                     removedUsers: RoomUserDataDictionary) {
+        // 테이블 뷰 한 번에 업데이트
         self.selectedUsersTableView.performBatchUpdates({
-            if !removedUsers.isEmpty {
-                // 제거될 셀의 IndexPath를 계산합니다.
-                let removedIndexPaths = viewModel.indexPathsForUsers(removedUsers, isAdded: false)
-                self.selectedUsersTableView.deleteRows(at: removedIndexPaths, with: .automatic)
-            }
-            if !addedUsers.isEmpty {
-                // 추가될 셀의 IndexPath를 계산합니다.
-                let addedIndexPaths = viewModel.indexPathsForUsers(addedUsers, isAdded: true)
-                self.selectedUsersTableView.insertRows(at: addedIndexPaths, with: .automatic)
-            }
+            // 셀을 제거
+            self.tableViewDeleteRows(removedUsers: removedUsers)
+            // 셀을 생성
+            self.tableViewInsertRows(addedUsers: addedUsers)
         })
+    }
+    
+    // MARK: - 셀 생성
+    private func tableViewInsertRows(addedUsers: RoomUserDataDictionary) {
+        // 생성할 유저가 있다면,
+        if !addedUsers.isEmpty {
+            // 추가될 셀의 IndexPath를 계산합니다.
+            let indexPaths = viewModel.indexPathsForAddedUsers(addedUsers)
+            // 뷰모델에서 셀의 뷰모델을 생성
+            self.viewModel.addData(addedUsers: addedUsers)
+            // 테이블뷰에 특정 셀을 생성
+            self.selectedUsersTableView.insertRows(
+                at: indexPaths,
+                with: .automatic)
+        }
+    }
+    
+    // MARK: - 셀 삭제
+    private func tableViewDeleteRows(removedUsers: RoomUserDataDictionary) {
+        // 삭제할 유저가 있다면,
+        if !removedUsers.isEmpty {
+            // 제거될 셀의 IndexPath를 계산
+            let indexPaths = viewModel.indexPathsForRemovedUsers(removedUsers)
+            // 뷰모델에서 셀의 뷰모델을 삭제
+            self.viewModel.deleteData(removedUsers: removedUsers)
+            // 테이블뷰의 특정 셀을 제거
+            self.selectedUsersTableView.deleteRows(
+                at: indexPaths,
+                with: .automatic)
+        }
+    }
+    
+    
+    // MARK: - 유저 수에 따라 테이블뷰 숨기기
+    private func tableViewIsHidden() {
         self.selectedUsersTableView.isHidden = self.viewModel.tableIsHidden
     }
+    
     
     
     
@@ -704,8 +736,9 @@ extension ReceiptWriteVC: ReceiptWriteTableDelegate {
         // 셀 삭제
         self.selectedUsersTableView.deleteRows(at: [indexPath],
                                                with: .left)
+        
         // 삭제 후 0명이 된다면 -> 테이블뷰 안 보이도록 설정
-        self.selectedUsersTableView.isHidden = self.viewModel.tableIsHidden
+        self.tableViewIsHidden()
     }
     
     // MARK: - 금액 설정

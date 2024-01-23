@@ -24,10 +24,20 @@ protocol ReceiptWriteVMProtocol {
     func setDebouncing(stop: Bool)
 //    func setVariableTrue()
     var isTableViewEditing: Bool { get }
-    func changeTableViewData(addedUsers: RoomUserDataDictionary,
-                             removedUsers: RoomUserDataDictionary)
+    
+    
+    func addData(addedUsers: RoomUserDataDictionary)
+    func deleteData(removedUsers: RoomUserDataDictionary)
+    
+    
+    
+    
     // IndexPath 계산 메소드
-    func indexPathsForUsers(_ users: RoomUserDataDictionary, isAdded: Bool) -> [IndexPath]
+//    func indexPathsForUsers(_ users: RoomUserDataDictionary, isAdded: Bool) -> [IndexPath]
+    
+    
+    func indexPathsForAddedUsers(_ users: RoomUserDataDictionary) -> [IndexPath]
+    func indexPathsForRemovedUsers(_ users: RoomUserDataDictionary) -> [IndexPath]
     // 클로저
     var calculatePriceClosure: ((String?) -> Void)? { get set }
     
