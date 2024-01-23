@@ -21,8 +21,9 @@ protocol ReceiptWriteVMProtocol {
     var keyboardHeight: CGFloat { get set }
     
     
-    func setDebouncing(stop: Bool)
-//    func setVariableTrue()
+    
+    func setDebouncing()
+    func stopDebouncing()
     var isTableViewEditing: Bool { get }
     
     

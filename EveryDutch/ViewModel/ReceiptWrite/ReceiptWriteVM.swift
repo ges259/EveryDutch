@@ -133,16 +133,19 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
 // MARK: - 디바운싱 코드
 
 extension ReceiptWriteVM {
-    /// 다바운싱 코드
-    func setDebouncing(stop: Bool){
-        
+    
+    func stopDebouncing() {
         // 이전에 설정된 타이머가 있으면 취소합니다.
         self.debounceTimer?.cancel()
         
         self.isTableViewEditing = true
-        
+
+    }
+    
+    /// 다바운싱 코드
+    func setDebouncing() {
         // 키보드가 닫히면 디바운싱 진행 (4초 뒤)
-        guard !stop else { return }
+//        guard self.isTableViewEditing else { return }
         
         // 새로운 타이머 작업을 생성합니다.
         let task = DispatchWorkItem { [weak self] in

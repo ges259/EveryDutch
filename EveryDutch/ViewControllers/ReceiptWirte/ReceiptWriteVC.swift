@@ -216,8 +216,11 @@ final class ReceiptWriteVC: UIViewController {
         let picker = UIPickerView()
         picker.dataSource = self
         picker.delegate = self
+        
         picker.backgroundColor = UIColor.white
+        
         picker.isHidden = true
+        picker.alpha = 0
         return picker
     }()
     
@@ -446,8 +449,8 @@ extension ReceiptWriteVC {
             self?.moneyCountLbl.text = total
         }
         // 키보드 디바운싱의 클로저
-        self.viewModel.debouncingClosure = {
-            self.endEditing()
+        self.viewModel.debouncingClosure = { [weak self] in
+            self?.endEditing()
         }
     }
 }
@@ -483,11 +486,12 @@ extension ReceiptWriteVC {
     }
     
     // MARK: - 키보드가 내려갈 때
-    @objc func keyboardWillHide(notification: NSNotification) {
-        // '테이블뷰 셀의 텍스트필드'의 수정이 끝났는지 확인
+    @objc func keyboardWillHide() {
+        // '테이블뷰 셀의 텍스트필드'를 수정하고 있다면,
         if self.viewModel.isTableViewEditing {
-            // '테이블뷰 셀의 텍스트필드' 라면 -> 디바운싱
-            self.viewModel.setDebouncing(stop: false)
+            // -> 디바운싱 작업 실행
+            // -> 0.05초 이후 실행
+            self.viewModel.setDebouncing()
         }
     }
 }
@@ -572,7 +576,7 @@ extension ReceiptWriteVC {
     /// 타임 레이블을 누르면 '타임 피커'가 보이도록 설정
     @objc private func timeInfoLblTapped() {
         self.dismissKeyboard()
-        self.timePicker.isHidden = false
+        self.hideTimePicker(false)
     }
 }
 
@@ -595,13 +599,12 @@ extension ReceiptWriteVC {
     /// - 타임피커가 표시된 경우, 숨김
     /// - 활성화된 텍스트 입력 필드가 있을 경우, 키보드를 내림
     @objc private func endEditing() {
-        print(#function)
         // 뷰 모델의 테이블뷰 편집 상태를 확인
         if !self.viewModel.isTableViewEditing {
             // 스크롤뷰의 contentInset이 변경된 경우, 기본값으로 재설정
             self.resetScrollViewInsets()
             // 타임피커가 표시된 경우, 숨김
-            self.hideTimePicker()
+            self.hideTimePicker(true)
             // 활성화된 텍스트 입력 필드가 있을 경우, 키보드를 내림
             self.dismissKeyboard()
         }
@@ -611,7 +614,7 @@ extension ReceiptWriteVC {
     /// 스크롤뷰의 contentInset과 scrollIndicatorInsets를 초기화합니다.
     private func resetScrollViewInsets() {
         // 자연스러운 감소를 위해, UIView.animate()사용
-        UIView.animate(withDuration: 0.3) {
+        UIView.animate(withDuration: 0.5) {
             // 스크롤뷰의 contentInset을 초기화.
             self.scrollView.contentInset = .zero
         }
@@ -619,8 +622,11 @@ extension ReceiptWriteVC {
     
     // MARK: - 타임피커 숨기기
     /// 타임피커를 숨김
-    private func hideTimePicker() {
-        self.timePicker.isHidden = true
+    private func hideTimePicker(_ bool: Bool) {
+        UIView.animate(withDuration: 0.5) {
+            self.timePicker.isHidden = bool
+            self.timePicker.alpha = bool ? 0 : 1
+        }
     }
 
     // MARK: - 키보드 내리기
@@ -639,11 +645,11 @@ extension ReceiptWriteVC {
     
     
     
-// MARK: - PaymentDetails
+// MARK: - PeopleSelectionVC 관련 코드
 
 extension ReceiptWriteVC {
     
-    // MARK: - [여러명] 계산한 사람 모두 선택
+    // MARK: - [PaymentDetails] 여러명 선택
     func changeTableViewData(addedUsers: RoomUserDataDictionary,
                              removedUsers: RoomUserDataDictionary) {
         self.updateTableViewCell(addedUsers: addedUsers,
@@ -701,21 +707,14 @@ extension ReceiptWriteVC {
         self.selectedUsersTableView.isHidden = self.viewModel.tableIsHidden
     }
 }
+        
     
     
     
     
-    
-    
-
-
-    
-    
-// MARK: - payer
 
 extension ReceiptWriteVC {
-    
-    // MARK: - [1명] 계산한 사람 선택
+    // MARK: - [payer] 1명 선택
     func changePayerLblData(addedUsers: RoomUserDataDictionary) {
         self.payerInfoLbl.text = self.viewModel.isPayerSelected(
             selectedUser: addedUsers)
@@ -727,23 +726,18 @@ extension ReceiptWriteVC {
 
 
 
-
-
-
-
-
 // MARK: - 테이블뷰 셀 델리게이트
 
 extension ReceiptWriteVC: ReceiptWriteTableDelegate {
     
-    // MARK: - 유저 삭제
+    // MARK: - [X버튼] 유저 삭제
     func rightBtnTapped(user: RoomUserDataDictionary?) {
         guard let user = user else { return }
         self.changeTableViewData(addedUsers: [:],
                                  removedUsers: user)
     }
     
-    // MARK: - 금액 설정
+    // MARK: - [텍스트필드] 금액 재설정
     func setprice(userID: String, price: Int?) {
         self.viewModel.calculatePrice(userID: userID,
                                       price: price)
@@ -821,11 +815,10 @@ extension ReceiptWriteVC: UIScrollViewDelegate {
     private func scrollToTableViewCellBottom(indexPath: IndexPath) {
         // 테이블뷰 셀을
             // 수정하고 있지 않다면 -> 선택한 셀의 위치로 자동 스크롤.
-            // 수정하고 있다면 -> 아무 행동도 하지 않음
+            // 이미 수정하고 있다면 -> 아무 행동도 하지 않음
         if !self.viewModel.isTableViewEditing {
             // 스크롤 동작 중에는 디바운싱을 중지
-            self.viewModel.setDebouncing(stop: true)
-            
+            self.viewModel.stopDebouncing()
             // 스크롤뷰의 콘텐츠 오프셋을 업데이트하는 메서드를 호출
             self.updateScrollViewContentOffset(for: indexPath)
         }
