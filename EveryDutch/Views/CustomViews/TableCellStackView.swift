@@ -21,6 +21,7 @@ final class TableCellStackView: UIStackView {
         font: UIFont.systemFont(ofSize: 14))
     
     lazy var priceLbl: CustomLabel = CustomLabel(
+        text: "0원",
         backgroundColor: .medium_Blue,
         topBottomInset: 4,
         leftInset: 10,

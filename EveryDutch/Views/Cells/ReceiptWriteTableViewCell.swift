@@ -19,7 +19,7 @@ final class ReceiptWriteTableViewCell: UITableViewCell {
         imageSize: 13)
     
     /// 가격 텍스트필드
-    private lazy var priceTf: InsetTextField = {
+    lazy var priceTf: InsetTextField = {
         let tf = InsetTextField(
             placeholderText: "가격을 입력해 주세요.",
             keyboardType: .numberPad,
@@ -54,6 +54,13 @@ final class ReceiptWriteTableViewCell: UITableViewCell {
                               animated: Bool) {
         super.setSelected(selected, animated: animated)
         self.configurePriceTF(selected)
+    }
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        self.tableCellStackView.userNameLbl.text = ""
+        self.tableCellStackView.profileImg.image = nil
+        self.tableCellStackView.priceLbl.text = "0원"
+        self.priceTf.text = ""
     }
 }
 
@@ -129,9 +136,19 @@ extension ReceiptWriteTableViewCell {
         
         self.tableCellStackView.userNameLbl.text = viewModel.userName
         self.tableCellStackView.profileImg.image = viewModel.profileImg
-        self.tableCellStackView.priceLbl.text = "0원"
     }
     
+    
+    // MARK: - 더치 버튼 셀 설정
+    func configureDutchBtn(price: Int) {
+        guard let viewModel = self.viewModel else { return }
+        
+        self.tableCellStackView.priceLbl.text = viewModel.configureLblFormat(
+            price: "\(price)")
+        
+        self.priceTf.text = viewModel.configureTfFormat(
+            text: "\(price)")
+    }
     
     
     
@@ -155,12 +172,12 @@ extension ReceiptWriteTableViewCell {
         
         // 뷰모델 옵셔널 바인딩
         guard let viewModel = self.viewModel else { return }
+        
         // 숨기거나 보이게 할 때 애니메이션 효과 넣기
         UIView.animate(withDuration: 0.3) {
             // 선택된 셀의 priceTF만 보이게 하고, 나머지 셀은 숨기기
             self.priceTf.alpha = viewModel.priceTFAlpha(isSelected: selected)
         }
-        
         
         // 셀이 선택되었다면 -> 키보드 보이게 하기
         if selected { self.priceTf.becomeFirstResponder() }
@@ -216,7 +233,8 @@ extension ReceiptWriteTableViewCell: UITextFieldDelegate {
         let priceInt = viewModel.removeFormat(text: savedText)
         
         // ',' 및 '~원' 형식 추가
-        self.tableCellStackView.priceLbl.text = viewModel.configureLblFormat(price: priceInt)
+        self.tableCellStackView.priceLbl.text = viewModel.configureLblFormat(
+            price: priceInt)
         
         // 델리게이트 - 가격 계산
         self.delegate?.setprice(userID: viewModel.userID,

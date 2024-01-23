@@ -139,14 +139,14 @@ extension PeopleSelectionPanVC {
     private func configureClosure() {
         self.viewModel.bottomBtnClosure = { [weak self] in
             // self 옵셔널 바인딩
-            guard let strongSelf = self else { return }
+            guard let self = self else { return }
             // 버튼 isEnable 설정
-            strongSelf.bottomBtn.isEnabled = strongSelf.viewModel.bottomBtnIsEnabled
+            self.bottomBtn.isEnabled = self.viewModel.bottomBtnIsEnabled
             // 버튼 색상 설정
-            strongSelf.bottomBtn.backgroundColor = strongSelf.viewModel.bottomBtnColor
+            self.bottomBtn.backgroundColor = self.viewModel.bottomBtnColor
             // 버튼 글자 색상 설정
-            strongSelf.bottomBtn.setTitleColor(
-                strongSelf.viewModel.bottomBtnTextColor,
+            self.bottomBtn.setTitleColor(
+                self.viewModel.bottomBtnTextColor,
                 for: .normal)
         }
     }

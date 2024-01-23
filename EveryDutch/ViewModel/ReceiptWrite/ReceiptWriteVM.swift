@@ -26,28 +26,17 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     var selectedUsers: RoomUserDataDictionary = [:]
     
     
-    
-    
-    
-// MARK: - 클로저
-    
-    
-    
-    // MARK: - 누적금액 클로저
-    var calculatePriceClosure: ((String?) -> Void)?
 
-    
-    // MARK: - 키보드 클로저
-    /// 디바운싱이 끝나면 VC에서 endEditing()를 호출하는 클로저
-    var debouncingClosure: (() -> Void)?
-    
-    
     
     
     
 // MARK: - 디바운스
     
     
+    
+    // MARK: - 디바운싱 클로저
+    /// 디바운싱이 끝나면 VC에서 endEditing()를 호출하는 클로저
+    var debouncingClosure: (() -> Void)?
     
     // MARK: - 테이블뷰가 수정 중인지 여부
     /// 테이블뷰 수정 중, endEditing(true)가 불리지 않게 하기 위한 메서드
@@ -81,19 +70,42 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     
     
     
-// MARK: - 유저 선택
+// MARK: - 누적 금액
     
+    
+    
+    // MARK: - 누적금액 클로저
+    var calculatePriceClosure: ((String?) -> Void)?
     
     
     // MARK: - 누적 금액
-    var cumulativeMoney: Int = 0 {
+    private var cumulativeMoney: Int = 0 {
         didSet {
             self.calculatePriceClosure?(self.moneyCountLblText)
         }
     }
+
     
-    // MARK: - 선택된 유저
-    var usersMoneyDict: [String : Int] = [:]
+    
+// MARK: - 선택된 유저
+    private var usersMoneyDict: [String : Int] = [:]
+    
+    
+    
+    
+    
+// MARK: - 더치 버튼
+    
+    
+    
+    // MARK: - 더치 버튼 클로저
+    var dutchBtnClosure: (() -> Void)?
+    
+    // MARK: - 1 / N 버튼 여부
+    var isDutchedMode: Bool = false
+    
+    // MARK: - 더치 가격
+    var dutchedPrice: Int = 0
     
     
     
@@ -110,8 +122,14 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     // MARK: - 키보드 높이
     var keyboardHeight: CGFloat = 291.31898
     
-    // MARK: - 더치 버튼 클로저
-    var dutchedClosure: (() -> Void)?
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     
@@ -246,32 +264,32 @@ extension ReceiptWriteVM {
 
 // MARK: - 가격 재분배 (1/N 버튼)
 extension ReceiptWriteVM {
-    
     func dutchBtnTapped() {
-        // 현재 금액 가져오기
-        // 현재 금액이 0원이 아니라면
-        if let price = self.price {
-            let dutchedPrice = price / self.usersMoneyDict.count
-            // 재분배
-            self.cumulativeMoney = dutchedPrice
-            
-            
-        } else {
+        // 현재 금액 옵셔널 바인딩,
+        // + 현재 금액이 0원이 아니라면
+        guard let price = self.price, price != 0 else {
             // 현재 금액이 0원이라면 -> 0원으로 모두 맞춤
             self.cumulativeMoney = 0
+            self.dutchBtnClosure?()
+            return
+        }
+        
+        // 각 사용자에게 할당될 더치 페이 금액 계산
+        let dutchedPriceInt = price / self.selectedUsers.count
+        // 금액을 저장
+        self.dutchedPrice = dutchedPriceInt
+        // 선택된 유저들에게 dutchedPrice 넣기
+        self.selectedUsers.forEach { (userID: String, value: _) in
+            return self.usersMoneyDict[userID] = dutchedPriceInt
         }
         
         
-        // 클로저가 호출 되는데.....?
-        
-        
-        // 선택된 유저 모두 없애기
-        
-        
-        
-        // 선택된 유저 모두 가져오기
-        
-        // 누적 금액 -> 클로저 호출(0원으로 만들기)
+        // 누적 금액에 현재 금액(price)값 넣기 -> 클로저 호출(0원으로 만들기)
+        self.cumulativeMoney = price
+        // 현재 더치 버튼이 눌렸다고 표시
+        self.isDutchedMode = true
+        // 재분배 (더치 페이를 적용하여 테이블 뷰 업데이트)
+        self.dutchBtnClosure?()
     }
 }
 
@@ -288,19 +306,8 @@ extension ReceiptWriteVM {
 
 extension ReceiptWriteVM {
     
-    // MARK: - '원' 형식 삭제
-    func removeWonFormat(priceText: String?) -> String? {
-        // '원' 형식을 삭제 후 리턴
-        return NumberFormatter.removeWon(price: priceText)
-    }
     
-    // MARK: - 형식 유지하며 수정
-    func formatPriceForEditing(_ newText: String?) -> String? {
-        return NumberFormatter.formatStringChange(
-            price: newText)
-    }
-    
-    // MARK: - price(가격) 저장
+    // MARK: - [저장] price(가격)
     func savePriceText(text: String?) {
         // 형식 제거
         if let priceInt = NumberFormatter.removeFormat(
@@ -311,16 +318,30 @@ extension ReceiptWriteVM {
             self.price = nil
         }
     }
-
-    // MARK: - 가격 레이블 텍스트 설정
+    
+    
+    
+    // MARK: - [형식] '원' 형식 삭제
+    func removeWonFormat(priceText: String?) -> String? {
+        // '원' 형식을 삭제 후 리턴
+        return NumberFormatter.removeWon(price: priceText)
+    }
+    
+    // MARK: - [형식] 형식 유지하며 수정
+    func formatPriceForEditing(_ newText: String?) -> String? {
+        return NumberFormatter.formatStringChange(
+            price: newText)
+    }
+    
+    // MARK: - [형식] ',' 및 '원'형식 설정
     var priceInfoTFText: String? {
         return self.price == nil
         ? nil
-        // formatNumberString() -> 10,000처럼 바꾸기
+        // formatNumberString() -> 10,000원 처럼 바꾸기
         : NumberFormatter.formatString(price: self.price)
     }
     
-    // MARK: - 누적 금액 레이블 텍스트 설정
+    // MARK: - [형식] 누적 금액 레이블 텍스트 설정
     var moneyCountLblText: String? {
         let price = self.price ?? 0
         let total = price - self.cumulativeMoney

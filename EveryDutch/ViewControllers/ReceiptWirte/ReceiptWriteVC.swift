@@ -452,11 +452,30 @@ extension ReceiptWriteVC {
         self.viewModel.debouncingClosure = { [weak self] in
             self?.endEditing()
         }
+        // 더치 버튼을 누르면, 실행되는 클로저
+            // 테이블뷰를 리로드,
+            // 더치 모드(isDutchMode) 해제
+        self.viewModel.dutchBtnClosure = { [weak self] in
+            // self 옵셔널 바인딩
+            guard let self = self else { return }
+            // 애니메이션 및 레이아웃 변경을 위한 트랜잭션 시작
+            CATransaction.begin()
+            // CATransaction을 사용하여 reloadData가 완료될 때 수행될 작업을 정의
+            CATransaction.setCompletionBlock {
+                // reloadData가 완료된 후에 호출될 코드
+                self.viewModel.isDutchedMode = false
+            }
+            // 테이블뷰를 리로드함.
+            self.selectedUsersTableView.reloadData()
+            // reloadData() 후에 layoutIfNeeded()를 호출하여 레이아웃 업데이트를 즉시 실행
+            self.selectedUsersTableView.layoutIfNeeded()
+            CATransaction.commit()
+        }
     }
 }
     
     
-    
+ 
     
     
     
@@ -555,7 +574,7 @@ extension ReceiptWriteVC {
 // MARK: - 1 / N 버튼 액션
 extension ReceiptWriteVC {
     @objc private func dutchBtnTapped() {
-        
+        self.viewModel.dutchBtnTapped()
     }
 }
 
@@ -787,6 +806,10 @@ extension ReceiptWriteVC: UITableViewDataSource {
         // 셀의 뷰모델을 셀에 넣기
         cell.configureCell(with: cellViewModel)
         cell.delegate = self
+        
+        if self.viewModel.isDutchedMode {
+            cell.configureDutchBtn(price: self.viewModel.dutchedPrice)
+        }
         return cell
     }
 }

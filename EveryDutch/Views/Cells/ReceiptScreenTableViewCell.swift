@@ -87,8 +87,8 @@ extension ReceiptScreenTableViewCell {
     
     // MARK: - 클로저 설정
     private func configureClosure() {
-        self.viewModel?.doneStatusChanged = { img in
-            self.rightBtn.setImage(img, for: .normal)
+        self.viewModel?.doneStatusChanged = { [weak self] img in
+            self?.rightBtn.setImage(img, for: .normal)
         }
     }
     

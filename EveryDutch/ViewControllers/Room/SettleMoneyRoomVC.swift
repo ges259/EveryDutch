@@ -287,13 +287,13 @@ extension SettleMoneyRoomVC {
     // MARK: - 클로저 설정
     private func configureClosure() {
         // 레시피를 가져왔을 때
-        self.viewModel.receiptChangedClosure = {
-            self.receiptTableView.reloadData()
+        self.viewModel.receiptChangedClosure = { [weak self] in
+            self?.receiptTableView.reloadData()
         }
         // 데이터를 처음 가져왔을 때
-        self.viewModel.fetchMoneyDataClosure = {
-            self.usersTableView.viewModel.makeCellVM()
-            self.usersTableView.usersTableView.reloadData()
+        self.viewModel.fetchMoneyDataClosure = { [weak self] in
+            self?.usersTableView.viewModel.makeCellVM()
+            self?.usersTableView.usersTableView.reloadData()
         }
     }
     
