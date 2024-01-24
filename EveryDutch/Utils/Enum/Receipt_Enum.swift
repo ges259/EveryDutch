@@ -37,3 +37,12 @@ enum ReceiptEnum {
         }
     }
 }
+
+enum ReceiptCheck: String {
+    case memo
+    case price
+    case payer
+    case cumulativeMoney
+    case selectedUsers
+    case usersPrice
+}

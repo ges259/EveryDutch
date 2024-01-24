@@ -13,14 +13,19 @@ final class CheckReceiptCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
     
     var nav: UINavigationController
+    private var validationDict = [String: Bool]()
     
     // 의존성 주입
-    init(nav: UINavigationController) {
+    init(nav: UINavigationController,
+         validationDict: [String: Bool]) {
         self.nav = nav
+        self.validationDict = validationDict
     }
     
     func start() {
-        let checkReceiptPanVC = CheckReceiptPanVC(coordinator: self)
+        let checkReceiptPanVC = CheckReceiptPanVC(
+            coordinator: self,
+            validationDict: self.validationDict)
         
         checkReceiptPanVC.modalPresentationStyle = .overFullScreen
         

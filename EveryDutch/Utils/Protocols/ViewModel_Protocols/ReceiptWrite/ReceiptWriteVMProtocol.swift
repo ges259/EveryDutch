@@ -15,6 +15,7 @@ protocol ReceiptWriteVMProtocol {
     
     
     // MARK: - 모델
+    var date: Int? { get set }
     var time: String? { get set }
     var memo: String? { get set }
     var price: Int? { get set }
@@ -97,6 +98,13 @@ protocol ReceiptWriteVMProtocol {
     func timePickerFormat(_ row: Int) -> String
     func getCurrentTime() -> [Int]
     
+    
+    
+    // MARK: - 레시피 체크
+    var receiptDict: [String : Any?] { get }
+    var validationDict: [String : Bool] { get }
+    
+    func getCheckReceipt() -> Bool
     
     
     

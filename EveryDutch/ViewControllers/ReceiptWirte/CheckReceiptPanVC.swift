@@ -37,25 +37,29 @@ final class CheckReceiptPanVC: UIViewController {
     
     
     // 레이블
-    private var priceCheckLbl: CustomLabel = CustomLabel(
+    private lazy var memoCheckLbl: CustomLabel = CustomLabel(
+        text: "✓  메모을 작성해 주세요",
+        font: UIFont.systemFont(ofSize: 14))
+    private lazy var priceCheckLbl: CustomLabel = CustomLabel(
         text: "✓  가격을 설정해 주세요",
         font: UIFont.systemFont(ofSize: 14))
-    private var payerCheckLbl: CustomLabel = CustomLabel(
+    private lazy var payerCheckLbl: CustomLabel = CustomLabel(
         text: "✓  계산한 사람을 설정해 주세요.",
         font: UIFont.systemFont(ofSize: 14))
-    private var leftMoneyLbl: CustomLabel = CustomLabel(
+    private lazy var leftMoneyLbl: CustomLabel = CustomLabel(
         text: "✓  25,000원이 남았습니다.",
         font: UIFont.systemFont(ofSize: 14))
-    private var zeroWonLbl: CustomLabel = CustomLabel(
+    private lazy var zeroWonLbl: CustomLabel = CustomLabel(
         text: "✓  0원으로 설정되어있는 사람이 있습니다.",
         font: UIFont.systemFont(ofSize: 14))
-    private var exceededMoneyLbl: CustomLabel = CustomLabel(
+    private lazy var exceededMoneyLbl: CustomLabel = CustomLabel(
         text: "✓  금액이 초과되었습니다. 정확히 입력해 주세요.",
         font: UIFont.systemFont(ofSize: 14))
     
     
     private lazy var labelStackView: UIStackView = UIStackView.configureStv(
-        arrangedSubviews: [self.priceCheckLbl,
+        arrangedSubviews: [self.memoCheckLbl,
+                           self.priceCheckLbl,
                            self.payerCheckLbl,
                            self.leftMoneyLbl,
                            self.zeroWonLbl,
@@ -67,7 +71,7 @@ final class CheckReceiptPanVC: UIViewController {
     
     // MARK: - 프로퍼티
     var coordinator: Coordinator
-    
+    private var validationDict = [String: Bool]()
     
     // MARK: - 라이프사이클
     override func viewDidLoad() {
@@ -75,10 +79,12 @@ final class CheckReceiptPanVC: UIViewController {
         
         self.configureUI()
         self.configureAutoLayout()
-        self.configureAction()
+        self.configureViewWithValidation()
     }
-    init(coordinator: Coordinator) {
+    init(coordinator: Coordinator,
+         validationDict: [String: Bool]) {
         self.coordinator = coordinator
+        self.validationDict = validationDict
         super.init(nibName: nil, bundle: nil)
     }
     override func viewDidDisappear(_ animated: Bool) {
@@ -130,7 +136,7 @@ extension CheckReceiptPanVC {
     }
     
     // MARK: - 액션 설정
-    private func configureAction() {
+    private func configureViewWithValidation() {
         
     }
 }

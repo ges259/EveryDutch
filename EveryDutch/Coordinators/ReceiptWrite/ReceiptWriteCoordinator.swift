@@ -71,10 +71,11 @@ final class ReceiptWriteCoordinator: ReceiptWriteCoordProtocol {
     
     
     // MARK: - CheckReceiptPanScreen
-    func checkReceiptPanScreen() {
+    func checkReceiptPanScreen(_ validationDict: [String: Bool]) {
         // CheckReceiptCoordinator 생성
         let checkReceiptCoordinator = CheckReceiptCoordinator(
-            nav: self.modalNavController ?? self.nav)
+            nav: self.modalNavController ?? self.nav,
+            validationDict: validationDict)
         self.childCoordinators.append(checkReceiptCoordinator)
         // 부모 코디네이터가 자신이라는 것을 명시 (뒤로가기 할 때 필요)
         checkReceiptCoordinator.parentCoordinator = self

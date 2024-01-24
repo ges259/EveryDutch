@@ -134,6 +134,7 @@
 		5FC151072B4EEDC0008A9B16 /* ReceiptScreenPanVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FC151062B4EEDC0008A9B16 /* ReceiptScreenPanVM.swift */; };
 		5FC648452B42EB8000C451BF /* ReceiptWriteCoordProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FC648442B42EB8000C451BF /* ReceiptWriteCoordProtocol.swift */; };
 		5FC648472B42EB9500C451BF /* ReceiptWriteCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FC648462B42EB9500C451BF /* ReceiptWriteCoordinator.swift */; };
+		5FDA5D942B615097007D7BAD /* CalendarDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FDA5D932B615097007D7BAD /* CalendarDelegate.swift */; };
 		5FE3DE8F2B39CA9B008D58AE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE3DE8E2B39CA9B008D58AE /* AppDelegate.swift */; };
 		5FE3DE912B39CA9B008D58AE /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE3DE902B39CA9B008D58AE /* SceneDelegate.swift */; };
 		5FE3DE982B39CA9C008D58AE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5FE3DE972B39CA9C008D58AE /* Assets.xcassets */; };
@@ -283,6 +284,7 @@
 		5FC151062B4EEDC0008A9B16 /* ReceiptScreenPanVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptScreenPanVM.swift; sourceTree = "<group>"; };
 		5FC648442B42EB8000C451BF /* ReceiptWriteCoordProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptWriteCoordProtocol.swift; sourceTree = "<group>"; };
 		5FC648462B42EB9500C451BF /* ReceiptWriteCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptWriteCoordinator.swift; sourceTree = "<group>"; };
+		5FDA5D932B615097007D7BAD /* CalendarDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarDelegate.swift; sourceTree = "<group>"; };
 		5FE3DE8B2B39CA9B008D58AE /* EveryDutch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EveryDutch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5FE3DE8E2B39CA9B008D58AE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5FE3DE902B39CA9B008D58AE /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -626,6 +628,7 @@
 				5F6848862B4431AF0015BFCC /* CardScreenDelegate.swift */,
 				5F6EBDCB2B5834DA0051D0A7 /* PeopleSelectionDelegate.swift */,
 				5FAC8A942B5860AD003B4A05 /* ReceiptWriteTableDelegate.swift */,
+				5FDA5D932B615097007D7BAD /* CalendarDelegate.swift */,
 			);
 			path = Delegate;
 			sourceTree = "<group>";
@@ -1113,6 +1116,7 @@
 				5F614B442B45944600EF35CE /* DeleteAccountPanVC.swift in Sources */,
 				5FFEAE6D2B3F307E00E0B2BB /* ReceiptLblStackView.swift in Sources */,
 				5F0BCE362B5313F8007A3564 /* UsersTableViewCellVMProtocol.swift in Sources */,
+				5FDA5D942B615097007D7BAD /* CalendarDelegate.swift in Sources */,
 				5F8513FB2B4D7FAD00A5B22D /* DeleteUsers.swift in Sources */,
 				5FC648472B42EB9500C451BF /* ReceiptWriteCoordinator.swift in Sources */,
 				5F294B412B4D98C900396B6E /* Database_REF.swift in Sources */,

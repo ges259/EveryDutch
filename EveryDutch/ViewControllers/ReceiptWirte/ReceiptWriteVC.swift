@@ -31,7 +31,11 @@ final class ReceiptWriteVC: UIViewController {
     
     // MARK: - 캘린더
     /// 달력
-     private lazy var calendar: CustomCalendar = CustomCalendar()
+    private lazy var calendar: CustomCalendar = {
+        let calendar = CustomCalendar()
+        calendar.calendarDelegate = self
+        return calendar
+    }()
     
   
     // MARK: - Detail - 레이아웃
@@ -258,7 +262,7 @@ final class ReceiptWriteVC: UIViewController {
         self.configureGesture()     // 제스처 설정
         self.configureClosure()     // 클로저 설정
         self.configureNotificatioon() // 노티피케인션 설정
-        self.setupTimePicker()      // 타임 피커 설정
+        self.setupTimePicker()      // 타임 피커 초기 설정
     }
     init(viewModel: ReceiptWriteVMProtocol,
          coordinator: ReceiptWriteCoordProtocol) {
@@ -554,12 +558,18 @@ extension ReceiptWriteVC {
             peopleSelectionEnum: .singleSelection)
     }
     
-    // MARK: - 바텀 버튼 액션
+    // MARK: - 영수증 확인 버튼 액션
     @objc private func bottomBtnTapped() {
         // 모든 키보드 내리기
         self.endEditing()
-        // 화면 전환
-        self.coordinator.checkReceiptPanScreen()
+        
+        _ = self.viewModel.getCheckReceipt()
+        // 영수증 작성 완료.
+            // 뒤로가기 + DB에 저장
+        ? self.coordinator.checkReceiptPanScreen(self.viewModel.validationDict)
+        // 영수증 작성 실패
+            // ReceiptCheckVC로 이동 + 데이터 전달
+        : self.coordinator.checkReceiptPanScreen(self.viewModel.validationDict)
     }
 }
     
@@ -1001,11 +1011,16 @@ extension ReceiptWriteVC: UIPickerViewDelegate {
     
     // MARK: - [타임 레이블] 텍스트 설정
     private func setTimeInfoLblText(hour: Int, min: Int) {
-        // 선택한 시간과 분을 이용하여 필요한 작업 수행
-        // 선택한 시간을 timeInfoLbl에 넣기
-        self.timeInfoLbl.text = self.viewModel.timePickerString(
+        
+        let timeText = self.viewModel.timePickerString(
             hour: hour,
             minute: min)
+        
+        // 선택한 시간과 분을 이용하여 필요한 작업 수행
+        // 선택한 시간을 timeInfoLbl에 넣기
+        self.timeInfoLbl.text = timeText
+        // 뷰모델에 시간 저장
+        self.viewModel.time = timeText
     }
 }
 
@@ -1089,5 +1104,21 @@ extension ReceiptWriteVC: UITextFieldDelegate {
             self.memoNumOfCharLbl.text = self.viewModel.updateMemoCount(
                 count: text.count)
         }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - 캘린더 델리게이트
+extension ReceiptWriteVC: CalendarDelegate {
+    func didSelectDate(dateInt: Int) {
+        self.viewModel.date = dateInt
     }
 }

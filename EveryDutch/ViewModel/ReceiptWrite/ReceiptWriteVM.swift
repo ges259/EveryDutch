@@ -19,6 +19,7 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     }
     private var roomDataManager: RoomDataManagerProtocol
     
+    var date: Int?
     var time: String?
     var memo: String?
     var price: Int?
@@ -26,7 +27,16 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     var selectedUsers: RoomUserDataDictionary = [:]
     
     
-
+    // ********************************************
+    
+    var receiptDict = [String : Any?]()
+    var validationDict = [String : Bool]()
+    
+    
+    private var isCheckSuccess: Bool = false
+    
+    
+    
     
     
     
@@ -379,7 +389,7 @@ extension ReceiptWriteVM {
 
 extension ReceiptWriteVM {
     
-    // MARK: - 시간 설정
+    // MARK: - 시간 설정 + 시간 저장
     func timePickerString(hour: Int, minute: Int) -> String {
         // 선택한 시간과 분을 이용하여 필요한 작업 수행
         let hour = String(format: "%02d", hour)
@@ -520,5 +530,69 @@ extension ReceiptWriteVM {
     /// 테이블뷰 cellForRowAt에서 사용 됨
     func cellViewModel(at index: Int) -> ReceiptWriteCellVM {
         return self.cellViewModels[index]
+    }
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - 하단 버튼
+
+extension ReceiptWriteVM {
+    
+    // MARK: - 레시피 작성 가능 여부
+    func getCheckReceipt() -> Bool {
+        // 1
+        self.checkField(.memo, value: self.memo)
+        self.checkField(.payer, value: self.payer)
+        self.checkField(.price, value: self.price)
+        self.checkField(.selectedUsers, value: self.selectedUsers,
+                        isEmpty: self.selectedUsers.isEmpty)
+        
+        // 2
+        self.checkCumulativeMoney(.cumulativeMoney)
+        
+        self.checkUsersPrice(.usersPrice)
+        
+        return self.isCheckSuccess
+    }
+    
+    // MARK: - [체크]
+    private func checkField<T>(_ receiptCheck: ReceiptCheck, 
+                               value: T?,
+                               isEmpty: Bool = false) {
+        if let value = value, !isEmpty {
+            self.receiptDict[receiptCheck.rawValue] = value
+        } else {
+            self.validationDict[receiptCheck.rawValue] = false
+            self.isCheckSuccess = false
+        }
+    }
+    
+    // MARK: - [누적금액] 0원인지 확인
+    private func checkCumulativeMoney(_ receiptCheck: ReceiptCheck) {
+        if self.price == nil
+            || (self.price ?? 0) - self.cumulativeMoney != 0
+        {
+            self.validationDict[receiptCheck.rawValue] = false
+            self.isCheckSuccess = false
+        }
+    }
+    
+    // MARK: - 0원인 유저가 있는지 확인
+    private func checkUsersPrice(_ receiptCheck: ReceiptCheck) {
+        for (_, money) in self.usersMoneyDict {
+            if money == 0 {
+                self.validationDict[receiptCheck.rawValue] = false
+                self.isCheckSuccess = false
+                break
+            }
+        }
     }
 }

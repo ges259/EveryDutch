@@ -17,6 +17,12 @@ final class CustomCalendar: FSCalendar  {
         textAlignment: .center)
     
     
+    
+    
+    // MARK: - 프로퍼티
+    weak var calendarDelegate: CalendarDelegate?
+    
+    
     // MARK: - 라이프 사이클
     override init(frame: CGRect) {
         super.init(frame: .zero)
@@ -100,7 +106,9 @@ extension CustomCalendar: FSCalendarDelegate {
     func calendar(_ calendar: FSCalendar,
                   didSelect date: Date,
                   at monthPosition: FSCalendarMonthPosition) {
+        let dateInt = Int(date.timeIntervalSince1970)
         
+        self.calendarDelegate?.didSelectDate(dateInt: dateInt)
     }
     // MARK: - 캘린더 '월'이 바뀌었을 때
     // FSCalendarDelegate 메소드 구현
