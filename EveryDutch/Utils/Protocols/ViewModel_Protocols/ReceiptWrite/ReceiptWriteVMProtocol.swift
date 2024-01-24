@@ -95,7 +95,7 @@ protocol ReceiptWriteVMProtocol {
     // MARK: - 타임 피커
     func timePickerString(hour: Int, minute: Int) -> String
     func timePickerFormat(_ row: Int) -> String
-    
+    func getCurrentTime() -> [Int]
     
     
     

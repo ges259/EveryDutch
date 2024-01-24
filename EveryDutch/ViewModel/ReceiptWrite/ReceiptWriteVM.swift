@@ -392,6 +392,17 @@ extension ReceiptWriteVM {
     func timePickerFormat(_ row: Int) -> String {
         return String(format: "%02d", row)
     }
+    
+    func getCurrentTime() -> [Int] {
+        let now = Date()
+        let calendar = Calendar.current
+        
+        let hour = calendar.component(.hour, from: now)
+        let minute = calendar.component(.minute, from: now)
+        
+        return [hour, minute]
+    }
+
 }
     
     

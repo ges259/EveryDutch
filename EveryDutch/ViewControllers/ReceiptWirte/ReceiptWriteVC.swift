@@ -53,7 +53,6 @@ final class ReceiptWriteVC: UIViewController {
     
     // MARK: - Info - 레이아웃
     private var timeInfoLbl: CustomLabel = CustomLabel(
-        text: Date.returnCurrenTime(),
         backgroundColor: UIColor.normal_white,
         leftInset: 25)
     private lazy var memoInfoTF: InsetTextField = {
@@ -221,6 +220,7 @@ final class ReceiptWriteVC: UIViewController {
         
         picker.isHidden = true
         picker.alpha = 0
+        
         return picker
     }()
     
@@ -252,12 +252,13 @@ final class ReceiptWriteVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.configureUI()
-        self.configureAutoLayout()
-        self.configureAction()
-        self.configureGesture()
-        self.configureClosure()
-        self.configureNotificatioon()
+        self.configureUI()          // 기본적인 UI 설정
+        self.configureAutoLayout()  // 오토레이아웃 설정
+        self.configureAction()      // 액션 설정
+        self.configureGesture()     // 제스처 설정
+        self.configureClosure()     // 클로저 설정
+        self.configureNotificatioon() // 노티피케인션 설정
+        self.setupTimePicker()      // 타임 피커 설정
     }
     init(viewModel: ReceiptWriteVMProtocol,
          coordinator: ReceiptWriteCoordProtocol) {
@@ -309,7 +310,6 @@ extension ReceiptWriteVC {
         self.contentView.addSubview(self.topTotalStackView)
         self.memoStackView.addSubview(self.memoNumOfCharLbl)
         self.whiteView.addSubview(self.infoStackView)
-        // 데이트 피커를 뷰의 서브뷰로 추가
         self.scrollView.addSubview(timePicker)
         
         // 스크롤뷰
@@ -937,7 +937,8 @@ extension ReceiptWriteVC: UIPickerViewDelegate {
                     titleForRow row: Int, 
                     forComponent component: Int)
     -> String? {
-        return self.viewModel.timePickerFormat(row) // 두 자리 숫자 형식으로 반환
+        // 두 자리 숫자 형식으로 반환
+        return self.viewModel.timePickerFormat(row)
     }
     
     // MARK: - 선택 시 액션
@@ -951,9 +952,8 @@ extension ReceiptWriteVC: UIPickerViewDelegate {
         
         // 선택한 시간과 분을 이용하여 필요한 작업 수행
         // 선택한 시간을 timeInfoLbl에 넣기
-        self.timeInfoLbl.text = self.viewModel.timePickerString(
-            hour: selectedHour,
-            minute: selectedMinute)
+        self.setTimeInfoLblText(hour: selectedHour,
+                                min: selectedMinute)
     }
     
     // MARK: - 폰트
@@ -977,6 +977,35 @@ extension ReceiptWriteVC: UIPickerViewDelegate {
         label.text = self.viewModel.timePickerFormat(row)
         
         return label
+    }
+    
+    // MARK: - 타임피커 초기 설정
+    private func setupTimePicker() {
+        // 타임피커 레이블에 현재 시간(시,분)을 설정
+        let currentTime: [Int] = self.viewModel.getCurrentTime()
+        
+        // [타임 피커 내부 레이블] 설정
+        self.setTimePickerLbl(hour: currentTime[0],
+                              min: currentTime[1])
+        // [시간 레이블] 설정
+        self.setTimeInfoLblText(hour: currentTime[0],
+                                min: currentTime[1])
+    }
+    
+    // MARK: - [내부 레이블] 텍스트 설정
+    private func setTimePickerLbl(hour: Int, min: Int) {
+        // [타임피커 내부] 레이블 설정
+        self.timePicker.selectRow(hour, inComponent: 0, animated: false) // 시간
+        self.timePicker.selectRow(min, inComponent: 1, animated: false) // 분
+    }
+    
+    // MARK: - [타임 레이블] 텍스트 설정
+    private func setTimeInfoLblText(hour: Int, min: Int) {
+        // 선택한 시간과 분을 이용하여 필요한 작업 수행
+        // 선택한 시간을 timeInfoLbl에 넣기
+        self.timeInfoLbl.text = self.viewModel.timePickerString(
+            hour: hour,
+            minute: min)
     }
 }
 
@@ -1054,9 +1083,11 @@ extension ReceiptWriteVC: UITextFieldDelegate {
         // 최대 글자 수(12글자)를 넘어가면 더이상 작성이 안 되도록 설정
         if text.count > self.viewModel.TF_MAX_COUNT {
             self.memoInfoTF.deleteBackward()
+            
+        } else {
+            // 레이블 업데이트
+            self.memoNumOfCharLbl.text = self.viewModel.updateMemoCount(
+                count: text.count)
         }
-        // 레이블 업데이트
-        self.memoNumOfCharLbl.text = self.viewModel.updateMemoCount(
-            count: text.count)
     }
 }

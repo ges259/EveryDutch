@@ -10,44 +10,55 @@ import FSCalendar
 
 final class CustomCalendar: FSCalendar  {
     
+    // MARK: - 헤더뷰 레이아웃
+    private var customHeaderView: CustomLabel = CustomLabel(
+        textColor: .black,
+        font: UIFont.boldSystemFont(ofSize: 16),
+        textAlignment: .center)
     
+    
+    // MARK: - 라이프 사이클
     override init(frame: CGRect) {
         super.init(frame: .zero)
-        self.configureUI()
+        self.setupCustomHeaderView()
+        self.configureCalendar()
     }
-    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func configureUI() {
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    // MARK: - 캘린더 설정
+    private func configureCalendar() {
         self.delegate = self
+        
         // 배경 색상 설정
         self.backgroundColor = UIColor.normal_white
         
         // ----- 주(월/화/수/~~) -----
         // 한글로 표시
         self.locale = Locale(identifier: "ko_KR")
+        
         // 폰트 크기 설정
         self.appearance.weekdayFont = UIFont.systemFont(ofSize: 12)
         // 색상
         self.appearance.weekdayTextColor = .black.withAlphaComponent(0.7)
-        // 헤더(10월) 없애기
-//         calendar.headerHeight = 0
         // 헤더 양 옆 날짜(월) 없애기
         self.appearance.headerMinimumDissolvedAlpha = 0.0
         
-        // MARK: - Fix
         // 올해 - 1월
-        // 작년 or 내년 - 2023년 12월
-        self.appearance.headerDateFormat = "YYYY년 M월"
-        self.appearance.headerTitleFont = UIFont.boldSystemFont(ofSize: 18)
-        self.appearance.headerTitleColor = UIColor(named: "FFFFFF")?.withAlphaComponent(0.9)
-        self.appearance.headerTitleAlignment = .center
-        
+        self.appearance.headerTitleColor = UIColor.clear
         
         // 주(월,화,수)와 상단의 간격 넓히기
-        self.weekdayHeight = 35
+        self.weekdayHeight = 30
         
         // 찾았다?
 //         calendar.appearance.borderRadius = .zero
@@ -60,17 +71,59 @@ final class CustomCalendar: FSCalendar  {
         self.appearance.titleTodayColor = UIColor.black
         
         self.select(Date())
+        self.updateCalendarHeader()
     }
     
     
     
-    
+    // MARK: - 헤더뷰 설정
+    private func setupCustomHeaderView() {
+        self.calendarHeaderView.addSubview(customHeaderView)
+        customHeaderView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
+    }
 }
+
+
+
+
+
+
+
+
+
+
+// MARK: - 캘린더 델리게이트
 extension CustomCalendar: FSCalendarDelegate {
     /// 날짜를 선택했을 때
     func calendar(_ calendar: FSCalendar,
                   didSelect date: Date,
                   at monthPosition: FSCalendarMonthPosition) {
         
+    }
+    // MARK: - 캘린더 '월'이 바뀌었을 때
+    // FSCalendarDelegate 메소드 구현
+    func calendarCurrentPageDidChange(_ calendar: FSCalendar) {
+        updateCalendarHeader()
+    }
+    
+    // MARK: - 캘린더 헤더의 텍스트 설정
+    func updateCalendarHeader() {
+        let currentPage = self.currentPage
+        let currentYear = Calendar.current.component(.year, from: Date())
+        let currentPageYear = Calendar.current.component(.year, from: currentPage)
+
+        let dateFormatter = DateFormatter()
+        dateFormatter.locale = Locale(identifier: "ko_KR")
+    
+        if currentPageYear == currentYear {
+            dateFormatter.dateFormat = "M월"
+        } else {
+            dateFormatter.dateFormat = "YYYY년 M월"
+        }
+
+        let formattedTitle = dateFormatter.string(from: currentPage)
+        customHeaderView.text = formattedTitle
     }
 }
