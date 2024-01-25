@@ -351,11 +351,17 @@ extension ReceiptWriteVM {
         : NumberFormatter.formatString(price: self.price)
     }
     
-    // MARK: - [형식] 누적 금액 레이블 텍스트 설정
+    // MARK: - [형식] 남은 금액 레이블 텍스트 설정
     var moneyCountLblText: String? {
+        let price = self.calculateRemainingMoney
+        return NumberFormatter.formatString(price: price)
+    }
+    
+    // MARK: - 남은 금액 계산
+    private var calculateRemainingMoney: Int {
         let price = self.price ?? 0
         let total = price - self.cumulativeMoney
-        return NumberFormatter.formatString(price: total)
+        return total
     }
 }
 
@@ -557,13 +563,14 @@ extension ReceiptWriteVM {
                         isEmpty: self.selectedUsers.isEmpty)
         
         self.checkCumulativeMoney(.cumulativeMoney)
-        self.checkUsersPrice(.usersPrice)
+        self.checkUsersPrice(.usersPriceZero)
         
-        return isCheckSuccess.contains(false)
+        return self.isCheckSuccess.contains(false)
         ? false
         : true
     }
     
+    // MARK: - 확인 전 초기화 작업
     private func resetValidation() {
         self.receiptDict.removeAll()
         self.validationDict.removeAll()
@@ -576,20 +583,18 @@ extension ReceiptWriteVM {
                                value: T?,
                                isEmpty: Bool = false) {
         if let value = value, !isEmpty {
-            self.receiptDict[receiptCheck.rawValue] = value
+            self.setTrue(receiptCheck, value: value)
         } else {
-            self.validationDict[receiptCheck.rawValue] = false
-            self.isCheckSuccess.append(false)
+            self.setFalse(receiptCheck)
         }
     }
     
-    // MARK: - [누적금액] 0원인지 확인
+    // MARK: - [남은금액] 0원인지 확인
     private func checkCumulativeMoney(_ receiptCheck: ReceiptCheck) {
         if self.price == nil
-            || (self.price ?? 0) - self.cumulativeMoney != 0
+            || self.calculateRemainingMoney != 0
         {
-            self.validationDict[receiptCheck.rawValue] = false
-            self.isCheckSuccess.append(false)
+            self.setFalse(receiptCheck)
         }
     }
     
@@ -597,10 +602,20 @@ extension ReceiptWriteVM {
     private func checkUsersPrice(_ receiptCheck: ReceiptCheck) {
         for (userID, _) in self.selectedUsers {
             if self.usersMoneyDict[userID] == nil {
-                self.validationDict[receiptCheck.rawValue] = false
-                self.isCheckSuccess.append(false)
+                self.setFalse(receiptCheck)
                 break
             }
         }
+    }
+    
+    // MARK: - 검사 통과
+    private func setTrue<T>(_ receiptCheck: ReceiptCheck, value: T?) {
+        self.receiptDict[receiptCheck.rawValue] = value
+    }
+    
+    // MARK: - 검사 통과 X
+    private func setFalse(_ receiptCheck: ReceiptCheck) {
+        self.validationDict[receiptCheck.rawValue] = false
+        self.isCheckSuccess.append(false)
     }
 }

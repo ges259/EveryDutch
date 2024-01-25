@@ -37,23 +37,23 @@ final class CheckReceiptPanVC: UIViewController {
     
     
     // 레이블
-    private lazy var memoCheckLbl: CustomLabel = CustomLabel(
-        text: "✓  메모을 작성해 주세요",
+    private var memoCheckLbl: CustomLabel = CustomLabel(
+        text: ReceiptCheck.memo.description,
         font: UIFont.systemFont(ofSize: 14))
-    private lazy var priceCheckLbl: CustomLabel = CustomLabel(
-        text: "✓  가격을 설정해 주세요",
+    private var priceCheckLbl: CustomLabel = CustomLabel(
+        text: ReceiptCheck.price.description,
         font: UIFont.systemFont(ofSize: 14))
-    private lazy var payerCheckLbl: CustomLabel = CustomLabel(
-        text: "✓  계산한 사람을 설정해 주세요.",
+    private var payerCheckLbl: CustomLabel = CustomLabel(
+        text: ReceiptCheck.payer.description,
         font: UIFont.systemFont(ofSize: 14))
-    private lazy var noUsersLbl: CustomLabel = CustomLabel(
-        text: "✓  유저가 선택되었지 않습니다. 계산한 모든 사람을 선택해 주세요.",
+    private var noUsersLbl: CustomLabel = CustomLabel(
+        text: ReceiptCheck.selectedUsers.description,
         font: UIFont.systemFont(ofSize: 14))
-    private lazy var zeroWonLbl: CustomLabel = CustomLabel(
-        text: "✓  0원으로 설정되어있는 사람이 있습니다.",
+    private var zeroWonLbl: CustomLabel = CustomLabel(
+        text: ReceiptCheck.usersPriceZero.description,
         font: UIFont.systemFont(ofSize: 14))
-    private lazy var cumulativeMoneyLbl: CustomLabel = CustomLabel(
-        text: "✓  금액이 맞지 않습니다. 정확히 입력해 주세요.",
+    private var cumulativeMoneyLbl: CustomLabel = CustomLabel(
+        text: ReceiptCheck.cumulativeMoney.description,
         font: UIFont.systemFont(ofSize: 14))
     
     
@@ -65,7 +65,7 @@ final class CheckReceiptPanVC: UIViewController {
                            self.zeroWonLbl,
                            self.cumulativeMoneyLbl],
         axis: .vertical,
-        spacing: 25,
+        spacing: 23,
         alignment: .fill,
         distribution: .fillEqually)
     
@@ -102,7 +102,9 @@ extension CheckReceiptPanVC {
     
     // MARK: - UI 설정
     private func configureUI() {
+        // 배경 색상 설정
         self.view.backgroundColor = UIColor.deep_Blue
+        // 모서리 설정
         [self.topLbl,
          self.whiteView,
          self.bottomBtn].forEach { view in
@@ -116,26 +118,29 @@ extension CheckReceiptPanVC {
         self.view.addSubview(self.totalStackView)
         self.whiteView.addSubview(self.labelStackView)
         
-        
+        // 전체 스택뷰 (상단 레이블, 레이블 스택뷰, 하단 버튼)
         self.totalStackView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(15)
             make.leading.equalToSuperview().offset(12)
             make.trailing.equalToSuperview().offset(-12)
             make.bottom.lessThanOrEqualToSuperview().offset(-10)
         }
+        // 레이블들의 스택뷰
         self.labelStackView.snp.makeConstraints { make in
             make.top.leading.equalToSuperview().offset(15)
             make.trailing.bottom.equalToSuperview().offset(-15)
         }
+        // 상단 레이블
         self.topLbl.snp.makeConstraints { make in
             make.height.equalTo(40)
         }
+        // 하단 버튼
         self.bottomBtn.snp.makeConstraints { make in
             make.height.equalTo(55)
         }
     }
     
-    // MARK: - 액션 설정
+    // MARK: - 레이블 스택뷰 설정
     private func configureViewWithValidation() {
         // 레이블과 해당 ReceiptCheck를 연결
         let labelValidationPairs: [(label: UILabel, check: ReceiptCheck)] = [
@@ -143,13 +148,13 @@ extension CheckReceiptPanVC {
             (self.payerCheckLbl, .payer),
             (self.priceCheckLbl, .price),
             (self.noUsersLbl, .selectedUsers),
-            (self.zeroWonLbl, .usersPrice),
+            (self.zeroWonLbl, .usersPriceZero),
             (self.cumulativeMoneyLbl, .cumulativeMoney)
         ]
         
         // 각 레이블의 숨김 여부를 설정
         for (label, check) in labelValidationPairs {
-            label.isHidden = validationDict[check.rawValue] ?? true
+            label.isHidden = self.validationDict[check.rawValue] ?? true
         }
     }
 }
