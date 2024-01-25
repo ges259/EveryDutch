@@ -46,14 +46,14 @@ final class CheckReceiptPanVC: UIViewController {
     private lazy var payerCheckLbl: CustomLabel = CustomLabel(
         text: "✓  계산한 사람을 설정해 주세요.",
         font: UIFont.systemFont(ofSize: 14))
-    private lazy var leftMoneyLbl: CustomLabel = CustomLabel(
-        text: "✓  25,000원이 남았습니다.",
+    private lazy var noUsersLbl: CustomLabel = CustomLabel(
+        text: "✓  유저가 선택되었지 않습니다. 계산한 모든 사람을 선택해 주세요.",
         font: UIFont.systemFont(ofSize: 14))
     private lazy var zeroWonLbl: CustomLabel = CustomLabel(
         text: "✓  0원으로 설정되어있는 사람이 있습니다.",
         font: UIFont.systemFont(ofSize: 14))
-    private lazy var exceededMoneyLbl: CustomLabel = CustomLabel(
-        text: "✓  금액이 초과되었습니다. 정확히 입력해 주세요.",
+    private lazy var cumulativeMoneyLbl: CustomLabel = CustomLabel(
+        text: "✓  금액이 맞지 않습니다. 정확히 입력해 주세요.",
         font: UIFont.systemFont(ofSize: 14))
     
     
@@ -61,9 +61,9 @@ final class CheckReceiptPanVC: UIViewController {
         arrangedSubviews: [self.memoCheckLbl,
                            self.priceCheckLbl,
                            self.payerCheckLbl,
-                           self.leftMoneyLbl,
+                           self.noUsersLbl,
                            self.zeroWonLbl,
-                           self.exceededMoneyLbl],
+                           self.cumulativeMoneyLbl],
         axis: .vertical,
         spacing: 25,
         alignment: .fill,
@@ -137,7 +137,20 @@ extension CheckReceiptPanVC {
     
     // MARK: - 액션 설정
     private func configureViewWithValidation() {
+        // 레이블과 해당 ReceiptCheck를 연결
+        let labelValidationPairs: [(label: UILabel, check: ReceiptCheck)] = [
+            (self.memoCheckLbl, .memo),
+            (self.payerCheckLbl, .payer),
+            (self.priceCheckLbl, .price),
+            (self.noUsersLbl, .selectedUsers),
+            (self.zeroWonLbl, .usersPrice),
+            (self.cumulativeMoneyLbl, .cumulativeMoney)
+        ]
         
+        // 각 레이블의 숨김 여부를 설정
+        for (label, check) in labelValidationPairs {
+            label.isHidden = validationDict[check.rawValue] ?? true
+        }
     }
 }
 

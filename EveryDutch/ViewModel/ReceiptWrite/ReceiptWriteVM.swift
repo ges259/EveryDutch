@@ -33,7 +33,7 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     var validationDict = [String : Bool]()
     
     
-    private var isCheckSuccess: Bool = false
+    private var isCheckSuccess = [Bool]()
     
     
     
@@ -548,6 +548,7 @@ extension ReceiptWriteVM {
     
     // MARK: - 레시피 작성 가능 여부
     func getCheckReceipt() -> Bool {
+        self.resetValidation()
         // 1
         self.checkField(.memo, value: self.memo)
         self.checkField(.payer, value: self.payer)
@@ -555,13 +556,20 @@ extension ReceiptWriteVM {
         self.checkField(.selectedUsers, value: self.selectedUsers,
                         isEmpty: self.selectedUsers.isEmpty)
         
-        // 2
         self.checkCumulativeMoney(.cumulativeMoney)
-        
         self.checkUsersPrice(.usersPrice)
         
-        return self.isCheckSuccess
+        return isCheckSuccess.contains(false)
+        ? false
+        : true
     }
+    
+    private func resetValidation() {
+        self.receiptDict.removeAll()
+        self.validationDict.removeAll()
+        self.isCheckSuccess.removeAll()
+    }
+    
     
     // MARK: - [체크]
     private func checkField<T>(_ receiptCheck: ReceiptCheck, 
@@ -571,7 +579,7 @@ extension ReceiptWriteVM {
             self.receiptDict[receiptCheck.rawValue] = value
         } else {
             self.validationDict[receiptCheck.rawValue] = false
-            self.isCheckSuccess = false
+            self.isCheckSuccess.append(false)
         }
     }
     
@@ -581,16 +589,16 @@ extension ReceiptWriteVM {
             || (self.price ?? 0) - self.cumulativeMoney != 0
         {
             self.validationDict[receiptCheck.rawValue] = false
-            self.isCheckSuccess = false
+            self.isCheckSuccess.append(false)
         }
     }
     
     // MARK: - 0원인 유저가 있는지 확인
     private func checkUsersPrice(_ receiptCheck: ReceiptCheck) {
-        for (_, money) in self.usersMoneyDict {
-            if money == 0 {
+        for (userID, _) in self.selectedUsers {
+            if self.usersMoneyDict[userID] == nil {
                 self.validationDict[receiptCheck.rawValue] = false
-                self.isCheckSuccess = false
+                self.isCheckSuccess.append(false)
                 break
             }
         }
