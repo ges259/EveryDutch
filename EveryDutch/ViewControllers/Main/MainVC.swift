@@ -35,7 +35,11 @@ final class MainVC: UIViewController {
         tintColor: UIColor.white,
         backgroundColor: UIColor.deep_Blue)
     
-    private var noDataView: NoDataView = NoDataView()
+    private var noDataView: NoDataView = {
+        let view = NoDataView()
+        view.isHidden = true
+        return view
+    }()
     
     
     // 플로팅 버튼 레이아웃
@@ -85,11 +89,11 @@ final class MainVC: UIViewController {
     /// 컬렉션뷰 셀의 높이
     private lazy var cardHeight = (self.view.frame.width - 20) * 1.8 / 3
     
-    
+    /// 플로팅 버튼의 배열
     private lazy var floatingArray: [UIButton] = [self.makeRoomScreenBtn,
                                                   self.profileScreenBtn]
     
-    private var isFloatingShow: Bool = false
+//    private var isFloatingShow: Bool = false
     
     
     
@@ -100,6 +104,8 @@ final class MainVC: UIViewController {
         self.configureAutoLayout()
         self.configureUI()
         self.configureAction()
+        self.configureGesture()
+        self.configureClosure()
     }
     init(viewModel: MainVMProtocol,
          coordinator: MainCoordProtocol) {
@@ -118,7 +124,7 @@ final class MainVC: UIViewController {
         super.viewWillDisappear(animated)
         self.navigationController?.navigationBar.isHidden = false
         
-        if self.isFloatingShow {
+        if self.viewModel.getIsFloatingStatus {
             self.menuBtnTapped()
         }
     }
@@ -134,18 +140,16 @@ extension MainVC {
         // 배경 설정
         self.view.backgroundColor = UIColor.base_Blue
         
-        
+        // 플로팅 버튼 배열 설정
+            // 모서리 설정
+            // 화면 밖으로 설정
         self.floatingArray.forEach { btn in
             btn.clipsToBounds = true
             btn.layer.cornerRadius = 65 / 2
             btn.alpha = 0
-        }
-
-        // 버튼을 화면 밖으로 위치시킵니다.
-        self.floatingArray.forEach { btn in
+            // 버튼을 화면 밖으로 위치시키기
             btn.transform = CGAffineTransform(translationX: 0, y: 80)
         }
-        
         
         // 코너레디어스 설정
         self.menuBtn.clipsToBounds = true
@@ -153,54 +157,45 @@ extension MainVC {
         
         self.noDataView.clipsToBounds = true
         self.noDataView.layer.cornerRadius = 12
-        
-        // MARK: - Fix
-        self.noDataView.isHidden = true
-        
-        self.viewModel.collectionVeiwReloadClousure = {
-            self.collectionView.reloadData()
-        }
     }
     
     // MARK: - 오토레이아웃 설정
     private func configureAutoLayout() {
-        self.view.addSubview(self.collectionView)
-        self.view.addSubview(self.floatingDimView)
-        self.view.addSubview(self.floatingStackView)
-        self.view.addSubview(self.menuBtn)
-        self.view.addSubview(self.noDataView)
-        
-        
-        
-        
-        
-
-        
+        [self.collectionView,
+         self.floatingDimView,
+         self.floatingStackView,
+         self.menuBtn,
+         self.noDataView].forEach { view in
+            self.view.addSubview(view)
+        }
+        // 플로팅 버튼 백그라운드 화면
         self.floatingDimView.snp.makeConstraints { make in
             make.top.leading.trailing.bottom.equalTo(self.view)
         }
-        
+        // 콜렉션뷰
         self.collectionView.snp.makeConstraints { make in
             make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(2)
             make.leading.equalToSuperview()
             make.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
         }
+        // 메뉴버튼
         self.menuBtn.snp.makeConstraints { make in
             make.trailing.equalTo(-24)
             make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom).offset(-20)
             make.height.width.equalTo(80)
         }
+        // 방이 없을 때 나타나는 뷰
         self.noDataView.snp.makeConstraints { make in
             make.top.leading.trailing.equalTo(self.collectionView)
             make.height.equalTo(self.cardHeight)
         }
-        
+        // 플로팅 버튼 스택뷰
         self.floatingStackView.snp.makeConstraints { make in
             make.bottom.equalTo(self.menuBtn.snp.top).offset(-7)
             make.centerX.equalTo(self.menuBtn)
-            
         }
+        // 플로팅 버튼 넓이 및 높이 설정
         self.makeRoomScreenBtn.snp.makeConstraints { make in
             make.width.height.equalTo(65)
         }
@@ -208,14 +203,38 @@ extension MainVC {
     
     // MARK: - 액션 설정
     private func configureAction() {
-        self.menuBtn.addTarget(self, action: #selector(self.menuBtnTapped), for: .touchUpInside)
-        self.profileScreenBtn.addTarget(self, action: #selector(self.profileScreenBtnTapped), for: .touchUpInside)
-        self.makeRoomScreenBtn.addTarget(self, action: #selector(self.makeRoomScreenBtnTapped), for: .touchUpInside)
-        
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.floatingViewTappd))
+        self.menuBtn.addTarget(
+            self, 
+            action: #selector(self.menuBtnTapped),
+            for: .touchUpInside)
+        self.profileScreenBtn.addTarget(
+            self, 
+            action: #selector(self.profileScreenBtnTapped),
+            for: .touchUpInside)
+        self.makeRoomScreenBtn.addTarget(
+            self, 
+            action: #selector(self.makeRoomScreenBtnTapped),
+            for: .touchUpInside)
+    }
+    
+    // MARK: - 제스처 설정
+    private func configureGesture() {
+        let tapGesture = UITapGestureRecognizer(
+            target: self,
+            action: #selector(self.floatingViewTappd))
         self.floatingDimView.addGestureRecognizer(tapGesture)
     }
     
+    // MARK: - 클로저 설정
+    private func configureClosure() {
+        self.viewModel.collectionVeiwReloadClousure = { [weak self] in
+            self?.collectionView.reloadData()
+        }
+        
+        self.viewModel.onFloatingShowChanged = { [weak self] floatingType in
+            self?.updateFloatingUI(type: floatingType)
+        }
+    }
 }
 
 
@@ -223,14 +242,7 @@ extension MainVC {
 // MARK: - 플로팅 버튼 액션 설정
 extension MainVC {
     @objc private func menuBtnTapped() {
-        // 플로팅 버튼 액션
-        self.isFloatingShow
-        ? self.floatingBtnhidden()
-        : self.floatingBtnShow()
-        // 상태 업데이트
-        self.isFloatingShow.toggle()
-        // 메뉴버튼 이미지 돌리기
-        self.menuBtnSpin()
+        self.viewModel.toggleFloatingShow()
     }
     @objc private func profileScreenBtnTapped() {
         self.coordinator.cardScreen(.profile)
@@ -243,6 +255,15 @@ extension MainVC {
     @objc private func floatingViewTappd() {
         self.menuBtnTapped()
     }
+    
+    private func updateFloatingUI(type: floatingType) {
+        // 메뉴버튼 이미지 돌리기
+        self.menuBtnSpin()
+        // 플로팅 버튼 배경 설정
+        self.configureFloatingDimView(type: type)
+        // 플로팅 버튼 액션
+        self.configureFloatingButtons(type: type)
+    }
 }
 
 
@@ -252,57 +273,44 @@ extension MainVC {
 
 
 // MARK: - 플로팅 Spin 액션
+
 extension MainVC {
+    
+    // MARK: - 메뉴 버튼 회전
     /// 메뉴버튼 이미지 돌리기 (Spin)
     private func menuBtnSpin() {
-        // 얼마나 돌릴지 (Spin)
-        let roatation = self.isFloatingShow
-        ? CGAffineTransform(rotationAngle: .pi - (.pi / 4))
-        : CGAffineTransform.identity
         // 돌리기(Spin)
         UIView.animate(withDuration: 0.3) {
-            self.menuBtn.transform = roatation
+            self.menuBtn.transform = self.viewModel.getSpinRotation
         }
     }
     
-    /// 플로팅 버튼 보이게 하는 메서드
-    private func floatingBtnShow() {
-        // 회색 배경 보이도록 설정
-        self.floatingDimView.isHidden = false
+    // MARK: - 배경 (숨김/보임) 처리
+    private func configureFloatingDimView(type: floatingType) {
+        let image = self.viewModel.getMenuBtnImg
+        self.floatingDimView.isHidden = !type.show
         
+        // 회색 배경 설정 및 메뉴 버튼 이미지 설정
         UIView.animate(withDuration: 0.3) {
-            // MARK: - Fix
-            self.menuBtn.setImage(UIImage.plus_Img, for: .normal)
-            // 서서히 보이도록 설정
-            self.floatingDimView.alpha = 1
-        }
-        // 버튼 순서대로 올리기
-        for (index, button) in self.floatingArray.enumerated() {
-            let delay = Double(index) * 0.1 // 각 버튼마다 0.1초의 지연
-            UIView.animate(withDuration: 0.15, delay: delay) {
-                button.transform = .identity
-                button.alpha = 1
-            }
+            self.menuBtn.setImage(image, for: .normal)
+            self.floatingDimView.alpha = type.alpha
         }
     }
-    /// 플로팅 버튼 숨기는 메서드
-    private func floatingBtnhidden() {
+    
+    // MARK: - 버튼 (숨김/보임) 처리
+    private func configureFloatingButtons(type: floatingType) {
+        // 버튼 애니메이션
+        let buttons = type.show
+        ? self.floatingArray
+        : self.floatingArray.reversed()
         
-        UIView.animate(withDuration: 0.3) {
-            // MARK: - Fix
-            self.menuBtn.setImage(UIImage.menu_Img, for: .normal)
-            // 서서히 안 보이도록 설정
-            self.floatingDimView.alpha = 0
-        } completion: { _ in
-            self.floatingDimView.isHidden = true
-        }
-        // 버튼 순서대로 내리기
-        for (index, button) in self.floatingArray.reversed().enumerated() {
-            let delay = Double(index) * 0.1 // 각 버튼마다 0.1초의 지연
-            
+        for (index, button) in buttons.enumerated() {
+            // 각 버튼마다 0.1초의 지연
+            let delay = Double(index) * 0.1
+            // 각 버튼을 순차적으로 작업
             UIView.animate(withDuration: 0.15, delay: delay) {
-                button.alpha = 0
-                button.transform = CGAffineTransform(translationX: 0, y: 80)
+                button.transform = self.viewModel.getBtnTransform
+                button.alpha = type.alpha
             }
         }
     }
@@ -322,7 +330,6 @@ extension MainVC: UICollectionViewDelegateFlowLayout {
     /// 아이템을 눌렀을 때
     func collectionView(_ collectionView: UICollectionView,
                         didSelectItemAt indexPath: IndexPath) {
-        print(#function)
         let room = self.viewModel.rooms[indexPath.row]
         self.coordinator.settlementMoneyRoomScreen(room: room)
     }

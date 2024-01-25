@@ -9,6 +9,7 @@ import Foundation
 
 enum ErrorEnum: Error {
     case readError
-    
+    // 로그인 에러
+    case loginError
     
 }

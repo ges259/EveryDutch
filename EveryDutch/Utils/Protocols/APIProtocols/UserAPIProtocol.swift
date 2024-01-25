@@ -14,9 +14,9 @@ protocol UserAPIProtocol {
     typealias UserCompletion = (Result<User, ErrorEnum>) -> Void
     
     
-    func readUser(completion: @escaping UserCompletion)
+    func readUser(uid: String, completion: @escaping UserCompletion)
     
-    
+//    func fetchUserAndComplete(uid: String, completion: @escaping UserCompletion)
     
     
     

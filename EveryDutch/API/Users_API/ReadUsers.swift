@@ -23,18 +23,20 @@ import Firebase
 
 extension UserAPI {
     
-    func readUser(completion: @escaping UserCompletion) {
-//        guard let uid = Auth.auth().currentUser else { return }
+    func readUser(uid: String, completion: @escaping UserCompletion) {
         
+        // 유저데이터 가져오기
         USER_REF
-            .child("qqqqqq")
-            .observe(DataEventType.value) { snapshot  in
+            .child(uid)
+            .observeSingleEvent(of: DataEventType.value) { snapshot  in
                 
                 guard let value = snapshot.value as? [String: Any] else {
                     completion(.failure(.readError))
                     return
                 }
+                // 유저 모델 만들기
                 let user = User(dictionary: value)
+                // 컴플리션
                 completion(.success(user))
             }
     }

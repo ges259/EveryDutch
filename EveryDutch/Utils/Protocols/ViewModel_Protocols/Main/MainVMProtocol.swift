@@ -6,9 +6,29 @@
 //
 
 import UIKit
-
+typealias floatingType = (show: Bool, alpha: CGFloat)
 protocol MainVMProtocol {
     var rooms: [Rooms] { get }
+    
+    
+    
+//    var isFloatingShow: Bool { get set }
+    var getSpinRotation: CGAffineTransform { get }
+//    var onFloatingShowChanged: (() -> Void)? { get set }
+    var onFloatingShowChanged: ((floatingType) -> Void)? { get set }
+    
+    
+    func toggleFloatingShow()
+    var getMenuBtnImg: UIImage? { get }
+    
+    
+    var getBtnTransform: CGAffineTransform { get }
+    
+    
+    var getIsFloatingStatus: Bool { get }
+    
+    
+    
     var numberOfItems: Int { get }
     var collectionVeiwReloadClousure: (() -> Void)? { get set }
     

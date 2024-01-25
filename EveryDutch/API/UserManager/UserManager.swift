@@ -27,14 +27,17 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     
     
-    
+    // MARK: - 방의 개수
     var getNumOfRoomUsers: Int {
         return Array(self.roomUserDataDict.values).count
     }
     
+    // MARK: - 방의 유저 데이터
     var getRoomUsersDict: RoomUserDataDictionary {
         return self.roomUserDataDict
     }
+    
+    // MARK: - 방의 이름
     var getRoomName: String? {
         return self.roomData?.roomID
     }
@@ -42,17 +45,22 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     
     
+// MARK: - 특정 유저의 정보 리턴
     
     
+    
+    // MARK: - 유저의 누적 금액 리턴
     func getIDToCumulativeAmount(userID: String) -> Int {
         return self.cumulativeAmount[userID]?.cumulativeAmount ?? 0
     }
     
+    // MARK: - 유저의 정보 리턴
     func getIdToRoomUser(usersID: String) -> RoomUsers {
         return self.roomUserDataDict[usersID]
         ?? RoomUsers(dictionary: [:])
     }
     
+    // MARK: - 유저의 페이백 값 리턴
     func getIDToPayback(userID: String) -> Int {
         return self.paybackData?.payback[userID] ?? 0
     }
@@ -89,7 +97,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
             }
     }
     
-    
+    // MARK: - 누적 금액 데이터 가져오기
     func loadCumulativeAmountData(
         completion: @escaping () -> Void)
     {
@@ -104,6 +112,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
         }
     }
     
+    // MARK: - 페이백 데이터 가져오기
     func loadPaybackData(completion: @escaping () -> Void) {
         RoomsAPI.shared.readPayback { paybackData in
             switch paybackData {
