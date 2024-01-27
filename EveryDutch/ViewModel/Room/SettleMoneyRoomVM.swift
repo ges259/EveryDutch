@@ -122,9 +122,6 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
         self.fetchUsers(roomData: roomData)
         self.fetchRoomMoneyData()
     }
-    deinit {
-        print("------------------------------------------------------------")
-    }
 }
     
     

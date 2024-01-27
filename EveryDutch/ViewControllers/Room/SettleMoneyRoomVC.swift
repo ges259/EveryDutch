@@ -8,8 +8,6 @@
 import UIKit
 import SnapKit
 
-// MARK: - SettlementRoomVC
-
 final class SettleMoneyRoomVC: UIViewController {
     
 // MARK: - 탑뷰 레이아웃

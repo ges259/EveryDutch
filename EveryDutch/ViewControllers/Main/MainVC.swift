@@ -93,7 +93,13 @@ final class MainVC: UIViewController {
     private lazy var floatingArray: [UIButton] = [self.makeRoomScreenBtn,
                                                   self.profileScreenBtn]
     
-//    private var isFloatingShow: Bool = false
+
+    
+    
+    
+    
+    
+    
     
     
     
@@ -148,7 +154,7 @@ extension MainVC {
             btn.layer.cornerRadius = 65 / 2
             btn.alpha = 0
             // 버튼을 화면 밖으로 위치시키기
-            btn.transform = CGAffineTransform(translationX: 0, y: 80)
+            btn.transform = self.viewModel.getBtnTransform
         }
         
         // 코너레디어스 설정
@@ -168,6 +174,7 @@ extension MainVC {
          self.noDataView].forEach { view in
             self.view.addSubview(view)
         }
+        
         // 플로팅 버튼 백그라운드 화면
         self.floatingDimView.snp.makeConstraints { make in
             make.top.leading.trailing.bottom.equalTo(self.view)
@@ -239,32 +246,40 @@ extension MainVC {
 
 
 
+
+
+
+
+
+
+
 // MARK: - 플로팅 버튼 액션 설정
+
 extension MainVC {
+    
+    // MARK: - 메뉴 버튼 액션
     @objc private func menuBtnTapped() {
         self.viewModel.toggleFloatingShow()
     }
+    
+    // MARK: - 프로필 액션
     @objc private func profileScreenBtnTapped() {
         self.coordinator.cardScreen(.profile)
     }
     
+    // MARK: - 방 생성 액션
     @objc private func makeRoomScreenBtnTapped() {
         self.coordinator.cardScreen(.makeRoom)
     }
     
+    // MARK: - 배경 액션
     @objc private func floatingViewTappd() {
         self.menuBtnTapped()
     }
-    
-    private func updateFloatingUI(type: floatingType) {
-        // 메뉴버튼 이미지 돌리기
-        self.menuBtnSpin()
-        // 플로팅 버튼 배경 설정
-        self.configureFloatingDimView(type: type)
-        // 플로팅 버튼 액션
-        self.configureFloatingButtons(type: type)
-    }
 }
+
+
+
 
 
 
@@ -275,6 +290,16 @@ extension MainVC {
 // MARK: - 플로팅 Spin 액션
 
 extension MainVC {
+    
+    // MARK: - 플로팅 액션
+    private func updateFloatingUI(type: floatingType) {
+        // 메뉴버튼 이미지 돌리기
+        self.menuBtnSpin()
+        // 플로팅 버튼 배경 설정
+        self.configureFloatingDimView(type: type)
+        // 플로팅 버튼 액션
+        self.configureFloatingButtons(type: type)
+    }
     
     // MARK: - 메뉴 버튼 회전
     /// 메뉴버튼 이미지 돌리기 (Spin)
@@ -377,7 +402,19 @@ extension MainVC: UICollectionViewDataSource {
 }
 
 
+
+
+
+
+
+
+
+
+// MARK: - 카트 스크린 델리게이트
+
 extension MainVC: CardScreenDelegate {
+    
+    // MARK: - 로그아웃
     func logout() {
         self.coordinator.selectALgoinMethodScreen()
     }

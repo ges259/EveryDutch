@@ -159,8 +159,6 @@ extension UsersTableView {
         let btnBoolean = sender == self.firstBtn
         // 눌린 버튼을 뷰모델에 저장
         self.viewModel.firstBtnTapped = btnBoolean
-        ? true
-        : false
         // 버튼 색상을 바꾸기 위한 함수
         self.btnColorChange()
         // 테이블뷰 reload를 통해 - price의 정보 바꾸기

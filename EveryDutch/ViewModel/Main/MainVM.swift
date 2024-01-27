@@ -32,12 +32,12 @@ final class MainVM: MainVMProtocol {
     var collectionVeiwReloadClousure: (() -> Void)?
     
     
-
     
     
     
     
-
+    
+    
     
     
     
@@ -65,7 +65,7 @@ final class MainVM: MainVMProtocol {
     
     // MARK: - 플로팅 버튼 상태
     private var isFloatingShow: Bool = false
-
+    
     // MARK: - 플로팅 버튼 클로저
     var onFloatingShowChanged: ((floatingType) -> Void)?
     
@@ -80,7 +80,7 @@ final class MainVM: MainVMProtocol {
     var getIsFloatingStatus: Bool {
         return self.isFloatingShow
     }
-
+    
     // MARK: - 플로팅 버튼 위치 변경
     var getBtnTransform: CGAffineTransform {
         return self.isFloatingShow
@@ -116,6 +116,7 @@ final class MainVM: MainVMProtocol {
         
         self.onFloatingShowChanged?((show, alpha))
     }
+}
     
     
     
@@ -124,16 +125,18 @@ final class MainVM: MainVMProtocol {
     
     
     
-    
+ 
+// MARK: - API
+
+extension MainVM {
     
     // MARK: - [API] 방의 데이터
-    func fetchRoomsAPI() {
+    private func fetchRoomsAPI() {
         self.roomsAPI.readRooms { result in
             switch result {
             case .success(let rooms):
                 self.rooms = rooms
                 self.makeCellViewModel()
-                
                 break
                 // MARK: - Fix
             case .failure(_): break
@@ -141,6 +144,11 @@ final class MainVM: MainVMProtocol {
         }
     }
     
+    // MARK: - 로그인 여부 확인
+    private func checkLogin() {
+        
+    }
+}
     
     
     
@@ -149,6 +157,11 @@ final class MainVM: MainVMProtocol {
     
     
     
+
+
+// MARK: - 셀 설정
+
+extension MainVM {
     
     // MARK: - 셀의 데이터 만들기
     private func makeCellViewModel() {

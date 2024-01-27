@@ -40,6 +40,7 @@
 		5F4913DB2B3DBE5900CD76A8 /* SettlementCoordProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4913DA2B3DBE5900CD76A8 /* SettlementCoordProtocol.swift */; };
 		5F4913DD2B3DBE7C00CD76A8 /* SettlementCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4913DC2B3DBE7C00CD76A8 /* SettlementCoordinator.swift */; };
 		5F4913DF2B3DD97100CD76A8 /* NoDataView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4913DE2B3DD97100CD76A8 /* NoDataView.swift */; };
+		5F4E66492B63FE99004EF81E /* SplashScreenVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4E66482B63FE99004EF81E /* SplashScreenVC.swift */; };
 		5F4FA71F2B553B79009EE4F4 /* RoomsAPIProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4FA71E2B553B79009EE4F4 /* RoomsAPIProtocol.swift */; };
 		5F4FA7232B553C00009EE4F4 /* UserAPIProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4FA7222B553C00009EE4F4 /* UserAPIProtocol.swift */; };
 		5F4FA7252B553C5B009EE4F4 /* ReceiptAPIProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F4FA7242B553C5B009EE4F4 /* ReceiptAPIProtocol.swift */; };
@@ -194,6 +195,7 @@
 		5F4913DA2B3DBE5900CD76A8 /* SettlementCoordProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettlementCoordProtocol.swift; sourceTree = "<group>"; };
 		5F4913DC2B3DBE7C00CD76A8 /* SettlementCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettlementCoordinator.swift; sourceTree = "<group>"; };
 		5F4913DE2B3DD97100CD76A8 /* NoDataView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoDataView.swift; sourceTree = "<group>"; };
+		5F4E66482B63FE99004EF81E /* SplashScreenVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenVC.swift; sourceTree = "<group>"; };
 		5F4FA71E2B553B79009EE4F4 /* RoomsAPIProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomsAPIProtocol.swift; sourceTree = "<group>"; };
 		5F4FA7222B553C00009EE4F4 /* UserAPIProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserAPIProtocol.swift; sourceTree = "<group>"; };
 		5F4FA7242B553C5B009EE4F4 /* ReceiptAPIProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptAPIProtocol.swift; sourceTree = "<group>"; };
@@ -655,11 +657,11 @@
 		5F8513D12B4D673000A5B22D /* Users_API */ = {
 			isa = PBXGroup;
 			children = (
-				5F8513FA2B4D7FAD00A5B22D /* DeleteUsers.swift */,
+				5FC196BA2B629224005CC369 /* CheckUser.swift */,
 				5F8513F82B4D7FA200A5B22D /* CreateUsers.swift */,
 				5F8513D22B4D675500A5B22D /* ReadUsers.swift */,
 				5F8513D42B4D676400A5B22D /* UpdateUsers.swift */,
-				5FC196BA2B629224005CC369 /* CheckUser.swift */,
+				5F8513FA2B4D7FAD00A5B22D /* DeleteUsers.swift */,
 			);
 			path = Users_API;
 			sourceTree = "<group>";
@@ -764,6 +766,7 @@
 				5F614B392B45920800EF35CE /* Room */,
 				5F614B3C2B45930A00EF35CE /* ReceiptWirte */,
 				5F6848742B4415500015BFCC /* Auth */,
+				5F4E66482B63FE99004EF81E /* SplashScreenVC.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -1149,6 +1152,7 @@
 				5FE3DEB82B39CB75008D58AE /* UIColor+Ext.swift in Sources */,
 				5F8513C22B4D303900A5B22D /* Receipt.swift in Sources */,
 				5F630ADC2B559A96008F9CBD /* Payback.swift in Sources */,
+				5F4E66492B63FE99004EF81E /* SplashScreenVC.swift in Sources */,
 				5F47CD142B3AF01400FCBFA4 /* SettleMoneyRoomProtocol.swift in Sources */,
 				5F614B422B4593E900EF35CE /* PeopleSelectionPanVC.swift in Sources */,
 				5FB4F6F62B432528002F6CF3 /* CustomTableEnum.swift in Sources */,

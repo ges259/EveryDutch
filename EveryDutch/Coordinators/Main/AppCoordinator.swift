@@ -35,5 +35,10 @@ final class AppCoordinator: Coordinator {
             mainCoordinator.start()
     }
     
+    
+    func showSplashScreen() {
+        
+    }
+    
     func didFinish() {}
 }

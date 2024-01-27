@@ -72,7 +72,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     
     
-    // MARK: - 유저 데이터 가져오기
+    // MARK: - [API] 유저 데이터
     // 콜백 함수 만들기(completion)
     // SettlementMoneyRoomVM에서 호출 됨
     func loadRoomUsers(
@@ -97,7 +97,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
             }
     }
     
-    // MARK: - 누적 금액 데이터 가져오기
+    // MARK: - [API] 누적 금액 데이터
     func loadCumulativeAmountData(
         completion: @escaping () -> Void)
     {
@@ -112,7 +112,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
         }
     }
     
-    // MARK: - 페이백 데이터 가져오기
+    // MARK: - [API] 페이백 데이터
     func loadPaybackData(completion: @escaping () -> Void) {
         RoomsAPI.shared.readPayback { paybackData in
             switch paybackData {
