@@ -31,4 +31,23 @@ extension Coordinator {
         }
         print("Current childCoordinators: \(self.childCoordinators)")
     }
+    
+    func transitionAndRemoveVC<T: UIViewController>(
+        from nav: UINavigationController,
+        viewControllerType: T.Type,
+        completion: (() -> Void)? = nil)
+    {
+        
+        nav.transitionCoordinator?
+            .animate(
+                alongsideTransition: nil) { [weak self] _ in
+                    // 애니메이션이 완료되었을 때 실행될 작업
+                    self?.didFinish()
+                    
+                    nav.removeViewControllerOfType(
+                        viewControllerType)
+                    
+                    completion?()
+                }
+    }
 }

@@ -13,13 +13,14 @@ final class MainCoordinator: MainCoordProtocol{
     
     var childCoordinators: [Coordinator] = [] {
         didSet {
-            print("**********MainCoordinator**********")
+            print("**********\(self)**********")
             dump(childCoordinators)
             print("********************")
         }
     }
     
     var nav: UINavigationController
+    
     
     // 의존성 주입
     init(nav: UINavigationController) {
@@ -28,14 +29,27 @@ final class MainCoordinator: MainCoordProtocol{
     
     // MainViewController 띄우기
     func start() {
+        self.mainScreen()
+    }
+    
+    
+    func mainScreen() {
         // 뷰모델 인스턴스 생성 (이 부분이 추가됨)
         let mainViewModel = MainVM(
             roomsAPI: RoomsAPI.shared)
         // 뷰컨트롤러 인스턴스 생성 및 뷰모델 주입
         let mainVC = MainVC(viewModel: mainViewModel,
                             coordinator: self)
+        let mainVCNav = UINavigationController(rootViewController: mainVC)
+        
+        
+        mainVCNav.modalPresentationStyle = .fullScreen
         // 화면 전환
-        self.nav.pushViewController(mainVC, animated: true)
+        self.nav.present(mainVCNav, animated: true)
+        // 네비게이션 컨트롤러 참조 저장
+        self.nav = mainVCNav
+        
+        
     }
     
     /// 채팅방으로 이동
@@ -67,23 +81,31 @@ final class MainCoordinator: MainCoordProtocol{
     
     func selectALgoinMethodScreen() {
         // SettleMoneyRoomCoordinator 생성
-        let selectALoginMethodCoordinator = SelectALoginMethodCoordinator(nav: self.nav)
+        let selectALoginMethodCoordinator = SelectALoginMethodCoordinator(
+            nav: self.nav)
         self.childCoordinators.append(selectALoginMethodCoordinator)
         // 부모 코디네이터가 자신이라는 것을 명시 (뒤로가기 할 때 필요)
         selectALoginMethodCoordinator.parentCoordinator = self
         selectALoginMethodCoordinator.start()
+        
+        self.transitionAndRemoveVC(
+            from: self.nav,
+            viewControllerType: MainVC.self)
     }
-    
-    
     
     func profileScreen() {
         print(#function)
     }
     
-    func didFinish() {}
+    func didFinish() {
+        // 필요한 경우 여기에서 추가적인 정리 작업을 수행
+        // 자식 코디네이터를 부모의 배열에서 제거
+        // 즉, PlusBtnCoordinator이 MainCoordinator의 childCoordinators 배열에서 제거
+        self.parentCoordinator?.removeChildCoordinator(child: self)
+    }
     
     deinit {
-        print("deinit ----- \(#function)-----\(self)")
+        print("deinit --- \(#function)-----\(self)")
     }
 }
 

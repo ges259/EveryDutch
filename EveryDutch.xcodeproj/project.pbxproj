@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5F02CAB72B6570E000CD5280 /* UINavigationController+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F02CAB62B6570E000CD5280 /* UINavigationController+Ext.swift */; };
 		5F079C182B48182700E42EF6 /* BottomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F079C172B48182700E42EF6 /* BottomButton.swift */; };
 		5F0BCE322B5313AA007A3564 /* ReceiptScreenPanVMProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F0BCE312B5313AA007A3564 /* ReceiptScreenPanVMProtocol.swift */; };
 		5F0BCE342B5313CE007A3564 /* ReceiptScreenPanCellVMProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F0BCE332B5313CE007A3564 /* ReceiptScreenPanCellVMProtocol.swift */; };
@@ -171,6 +172,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5F02CAB62B6570E000CD5280 /* UINavigationController+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationController+Ext.swift"; sourceTree = "<group>"; };
 		5F079C172B48182700E42EF6 /* BottomButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomButton.swift; sourceTree = "<group>"; };
 		5F0BCE312B5313AA007A3564 /* ReceiptScreenPanVMProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptScreenPanVMProtocol.swift; sourceTree = "<group>"; };
 		5F0BCE332B5313CE007A3564 /* ReceiptScreenPanCellVMProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptScreenPanCellVMProtocol.swift; sourceTree = "<group>"; };
@@ -590,6 +592,7 @@
 		5F614B382B45917A00EF35CE /* Main */ = {
 			isa = PBXGroup;
 			children = (
+				5F4E66482B63FE99004EF81E /* SplashScreenVC.swift */,
 				5FB4F7022B433DEF002F6CF3 /* MainVC.swift */,
 				5FB4F7002B433DEF002F6CF3 /* CardScreenVC.swift */,
 			);
@@ -766,7 +769,6 @@
 				5F614B392B45920800EF35CE /* Room */,
 				5F614B3C2B45930A00EF35CE /* ReceiptWirte */,
 				5F6848742B4415500015BFCC /* Auth */,
-				5F4E66482B63FE99004EF81E /* SplashScreenVC.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -889,6 +891,7 @@
 				5F56C74B2B3D84CF00266C12 /* UIDevice+Ext.swift */,
 				5F5B2ED42B516C870064B738 /* Date+Ext.swift */,
 				5F9D169C2B5AD4DC00A9477C /* NumberFormatter+Ext.swift */,
+				5F02CAB62B6570E000CD5280 /* UINavigationController+Ext.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1035,6 +1038,7 @@
 				5FB4F70C2B433DEF002F6CF3 /* LoginVC.swift in Sources */,
 				5FE3DECC2B39CC8D008D58AE /* MainCollectionViewCellVM.swift in Sources */,
 				5F87DF2C2B3C99A3001D5B80 /* RoomSettingCoordProtocol.swift in Sources */,
+				5F02CAB72B6570E000CD5280 /* UINavigationController+Ext.swift in Sources */,
 				5F8513DA2B4D67EC00A5B22D /* CreateReceipt.swift in Sources */,
 				5F7DB59B2B5921E300E8C11F /* PeopleSeelctionEnum.swift in Sources */,
 				5F6848762B4415D70015BFCC /* SignUpVC.swift in Sources */,

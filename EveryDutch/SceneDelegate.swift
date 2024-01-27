@@ -11,28 +11,29 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     var window: UIWindow?
 
+    // AppCoordinator 유지를 위한 속성 추가
+    // AppCoordinator는 앱의 생명주기 동안 메모리에서 해제되면 안 되기 때문에 이렇게 설정
+    var appCoordinator: AppCoordinator?
 
-    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
-
-        // 윈도우 씬을 가져온다.
+    func scene(_ scene: UIScene, 
+               willConnectTo session: UISceneSession,
+               options connectionOptions: UIScene.ConnectionOptions)
+    {
         guard let windowScene = (scene as? UIWindowScene) else { return }
-        // 윈도우 크기 설정
+
         self.window = UIWindow(windowScene: windowScene)
-        
-        
         let navigationController = UINavigationController()
-        let appCoordinator = AppCoordinator(nav: navigationController)
-        appCoordinator.start()
         
-        
-        // 뿌리 뷰컨트롤러를 위에서 설정한 네비게이션 컨트롤러로 설정
+        // AppCoordinator 인스턴스를 속성으로 유지
+        self.appCoordinator = AppCoordinator(nav: navigationController)
+        self.appCoordinator?.start()
+
         self.window?.rootViewController = navigationController
-        // 설정한 윈도우를 보이게끔 설정
         self.window?.makeKeyAndVisible()
-        // 윈도우 씬 설정
         self.window?.windowScene = windowScene
     }
-
+    
+    
     func sceneDidDisconnect(_ scene: UIScene) {
         // Called as the scene is being released by the system.
         // This occurs shortly after the scene enters the background, or when its session is discarded.

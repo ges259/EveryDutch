@@ -51,10 +51,12 @@ final class MainVM: MainVMProtocol {
     // MARK: - 라이프 사이클
     init(roomsAPI: RoomsAPIProtocol) {
         self.roomsAPI = roomsAPI
-        
-        self.fetchRoomsAPI()
+        // MARK: - Fix
+//        self.fetchRoomsAPI()
     }
-    
+    deinit {
+        print("deinit --- \(#function)-----\(self)")
+    }
     
     
     

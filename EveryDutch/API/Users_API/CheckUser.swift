@@ -9,9 +9,7 @@ import Foundation
 import FirebaseAuth
 import Firebase
 
-
 extension UserAPI {
-    
     
     // MARK: - 로그인 여부 확인
     func checkLogin(completion: @escaping UserCompletion) {
