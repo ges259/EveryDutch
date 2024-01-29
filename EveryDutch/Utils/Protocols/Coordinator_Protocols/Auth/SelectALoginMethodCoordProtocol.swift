@@ -8,6 +8,6 @@
 import Foundation
 
 protocol SelectALoginMethodCoordProtocol: Coordinator {
-    func loginScreen()
+//    func loginScreen()
     func navigateToMain()
 }

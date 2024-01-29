@@ -96,8 +96,7 @@ final class ReceiptWriteCoordinator: ReceiptWriteCoordProtocol {
     }
     
     deinit {
-        print("deinit ----- \(#function)-----\(self)")
-
+        print("\(#function)-----\(self)")
     }
 }
 

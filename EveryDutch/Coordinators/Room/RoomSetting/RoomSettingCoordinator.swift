@@ -73,7 +73,7 @@ final class RoomSettingCoordinator: RoomSettingCoordProtocol{
             child: self)
     }
     deinit {
-        print("deinit ----- \(#function)-----\(self)")
+        print("\(#function)-----\(self)")
     }
 }
 

@@ -37,8 +37,6 @@ final class CheckReceiptCoordinator: Coordinator {
 
     }
     deinit {
-        print("deinit ----- \(#function)-----\(self)")
-
+        print("\(#function)-----\(self)")
     }
-    
 }

@@ -20,7 +20,7 @@ final class MainCoordinator: MainCoordProtocol{
     }
     
     var nav: UINavigationController
-    
+    var user: User?
     
     // 의존성 주입
     init(nav: UINavigationController) {
@@ -32,26 +32,28 @@ final class MainCoordinator: MainCoordProtocol{
         self.mainScreen()
     }
     
-    
+    // MARK: - 메인 화면
     func mainScreen() {
         // 뷰모델 인스턴스 생성 (이 부분이 추가됨)
         let mainViewModel = MainVM(
-            roomsAPI: RoomsAPI.shared)
+            roomDataManager: RoomDataManager.shared)
         // 뷰컨트롤러 인스턴스 생성 및 뷰모델 주입
         let mainVC = MainVC(viewModel: mainViewModel,
                             coordinator: self)
-        let mainVCNav = UINavigationController(rootViewController: mainVC)
+        let mainVCNav = UINavigationController(
+            rootViewController: mainVC)
         
         
         mainVCNav.modalPresentationStyle = .fullScreen
+        
+        let animated = self.nav.topViewController is SelectALoginMethodVC
         // 화면 전환
-        self.nav.present(mainVCNav, animated: true)
+        self.nav.present(mainVCNav, animated: animated)
         // 네비게이션 컨트롤러 참조 저장
         self.nav = mainVCNav
-        
-        
     }
     
+    // MARK: - 정산방
     /// 채팅방으로 이동
     func settlementMoneyRoomScreen(room: Rooms) {
         // SettleMoneyRoomCoordinator 생성
@@ -64,6 +66,7 @@ final class MainCoordinator: MainCoordProtocol{
             settlementRoomCoordinator.start()
     }
     
+    // MARK: - 카드 스크린
     /// 플러스 버튼을 누르면 화면 이동
     func cardScreen(_ cardScreen_Enum: CardScreen_Enum) {
         // Main-Coordinator 생성
@@ -79,6 +82,7 @@ final class MainCoordinator: MainCoordProtocol{
         cardScreenCoordinator.start()
     }
     
+    // MARK: - 로그인 선택 화면
     func selectALgoinMethodScreen() {
         // SettleMoneyRoomCoordinator 생성
         let selectALoginMethodCoordinator = SelectALoginMethodCoordinator(
@@ -105,7 +109,7 @@ final class MainCoordinator: MainCoordProtocol{
     }
     
     deinit {
-        print("deinit --- \(#function)-----\(self)")
+        print("\(#function)-----\(self)")
     }
 }
 

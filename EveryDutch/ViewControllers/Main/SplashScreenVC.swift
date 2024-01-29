@@ -10,7 +10,7 @@ import UIKit
 class SplashScreenVC: UIViewController {
     
 
-    private let userAPI: UserAPIProtocol
+    private let viewModel: SplashScreenVMProtocol
     private let coordinator: AppCoordProtocol
     
     
@@ -18,13 +18,13 @@ class SplashScreenVC: UIViewController {
     // MARK: - 라이프 사이클
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .red
+        self.view.backgroundColor = .base_Blue
         
         self.checkLogin()
     }
-    init(userAPI: UserAPI,
+    init(viewModel: SplashScreenVMProtocol,
          coordinator: AppCoordProtocol) {
-        self.userAPI = userAPI
+        self.viewModel = viewModel
         self.coordinator = coordinator
         super.init(nibName: nil, bundle: nil)
     }
@@ -35,24 +35,34 @@ class SplashScreenVC: UIViewController {
         print("deinit --- \(#function)-----\(self)")
     }
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
     // MARK: - 로그인 확인
     private func checkLogin() {
-        
-        self.navigateToLoginScreen()
-        
+        self.viewModel.checkLogin { [weak self] bool in
+            _ = bool
+            ? self?.goToMainScreen()
+            : self?.goToLoginScreen()
+        }
     }
-    
     
     // MARK: - 메인 화면으로 이동
     // 메인 화면으로 이동하는 함수
-    func navigateToMainScreen() {
+    private func goToMainScreen() {
         // MARK: - Fix 유저 fetch
         self.coordinator.mainScreen()
     }
     
     // MARK: - 로그인 선택 화면으로 이동
     // 로그인 화면으로 이동하는 함수
-    func navigateToLoginScreen() {
+    private func goToLoginScreen() {
             // 로그인 화면으로 이동하는 코드
         self.coordinator.selectALoginMethodScreen()
     }

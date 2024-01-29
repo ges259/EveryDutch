@@ -360,7 +360,8 @@ extension MainVC: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView,
                         didSelectItemAt indexPath: IndexPath) {
         let room = self.viewModel.rooms[indexPath.row]
-        self.coordinator.settlementMoneyRoomScreen(room: room)
+        self.coordinator.settlementMoneyRoomScreen(
+            room: room)
     }
     
     /// 아이템의 크기 설정

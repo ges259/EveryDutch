@@ -16,7 +16,9 @@ final class CardScreenVM: CardScreenVMProtocol {
     init(cardScreen_Enum: CardScreen_Enum) {
         self.cardScreen_Enum = cardScreen_Enum
     }
-    
+    deinit {
+        print("\(#function)-----\(self)")
+    }
     
     
     var first_Mode: CardMode {

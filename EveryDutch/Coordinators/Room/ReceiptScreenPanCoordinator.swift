@@ -44,4 +44,7 @@ final class ReceiptScreenPanCoordinator: Coordinator {
     func didFinish() {
         self.parentCoordinator?.removeChildCoordinator(child: self)
     }
+    deinit {
+        print("\(#function)-----\(self)")
+    }
 }

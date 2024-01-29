@@ -44,6 +44,9 @@ final class PeopleSelectionPanCoordinator: Coordinator {
     func didFinish() {
         self.parentCoordinator?.removeChildCoordinator(child: self)
     }
+    deinit {
+        print("\(#function)-----\(self)")
+    }
 }
 
 // MARK: - PeopleSelection 델리게이트

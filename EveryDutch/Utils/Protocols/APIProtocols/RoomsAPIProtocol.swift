@@ -13,9 +13,10 @@ protocol RoomsAPIProtocol {
     typealias RoomsIDCompletion = (Result<[Rooms], ErrorEnum>) -> Void
     typealias RoomUsersCompletion = (Result<[String: RoomUsers], ErrorEnum>) -> Void
     typealias RoomMoneyDataCompletion = (Result<CumulativeAmountDictionary, ErrorEnum>) -> Void
-    
+    typealias PaybackCompletion = (Result<Payback, ErrorEnum>) -> Void
     
     func readRooms(completion: @escaping RoomsIDCompletion)
     func readRoomUsers(roomID: String, completion: @escaping RoomUsersCompletion)
     func readCumulativeAmount(completion: @escaping RoomMoneyDataCompletion)
+    func readPayback(completion: @escaping PaybackCompletion)
 }

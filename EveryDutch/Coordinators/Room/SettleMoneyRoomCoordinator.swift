@@ -77,6 +77,6 @@ final class SettleMoneyRoomCoordinator: SettleMoneyRoomCoordProtocol {
     }
     
     deinit {
-        print("deinit ----- \(#function)-----\(self)")
+        print("\(#function)-----\(self)")
     }
 }

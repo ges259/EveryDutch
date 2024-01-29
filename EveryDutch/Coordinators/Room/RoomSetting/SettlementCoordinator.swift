@@ -41,6 +41,6 @@ final class SettlementCoordinator: SettlementCoordProtocol {
     }
     
     deinit {
-        print("deinit ----- \(#function)-----\(self)")
+        print("\(#function)-----\(self)")
     }
 }

@@ -49,24 +49,33 @@ final class AppCoordinator: AppCoordProtocol {
     
     // MARK: - 스플레시 화면
     func splashScreen() {
-        // SplashScreenVC를 루트 뷰 컨트롤러로 설정하는 방식을 변경하겠습니다.
-        let splashScreen = SplashScreenVC(userAPI: UserAPI.shared, coordinator: self)
         
-        self.nav.viewControllers = [splashScreen]
+        let splashScreenVM = SplashScreenVM(
+            authAPI: AuthAPI.shared,
+            roomDataManager: RoomDataManager.shared)
+        
+        // SplashScreenVC를 루트 뷰 컨트롤러로 설정하는 방식
+        let splashScreenVC = SplashScreenVC(
+            viewModel: splashScreenVM,
+            coordinator: self)
+        
+        self.nav.viewControllers = [splashScreenVC]
     }
     
     
     // MARK: - 메인화면
     /// 메인화면으로 이동
     func mainScreen() {
-        self.nav.removeViewControllerOfType(SplashScreenVC.self)
         
-        self.nav.dismiss(animated: true)
         let mainCoordinator = MainCoordinator(
             nav: self.nav)
+        // 유저
+        
         mainCoordinator.parentCoordinator = self
         self.childCoordinators.append(mainCoordinator)
         mainCoordinator.start()
+        
+        self.transitionAndRemoveSplashVC()
     }
     
     
@@ -80,7 +89,13 @@ final class AppCoordinator: AppCoordProtocol {
         self.childCoordinators.append(selectALoginMethodCoord)
         selectALoginMethodCoord.start()
         
-        
+        self.transitionAndRemoveSplashVC()
+    }
+    
+    
+    
+    
+    private func transitionAndRemoveSplashVC() {
         self.transitionAndRemoveVC(
             from: self.nav,
             viewControllerType: SplashScreenVC.self)
@@ -91,6 +106,6 @@ final class AppCoordinator: AppCoordProtocol {
     }
     
     deinit {
-        print("deinit --- \(#function)-----\(self)")
+        print("\(#function)-----\(self)")
     }
 }

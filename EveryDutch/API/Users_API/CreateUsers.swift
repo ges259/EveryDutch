@@ -8,7 +8,7 @@
 import Foundation
 
 struct UserAPI: UserAPIProtocol {
-    static let shared: UserAPI = UserAPI()
+    static let shared: UserAPIProtocol = UserAPI()
     private init() {}
     
     // typealias

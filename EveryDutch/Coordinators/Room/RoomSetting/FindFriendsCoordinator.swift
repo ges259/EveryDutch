@@ -35,4 +35,7 @@ final class FindFriendsCoordinator: Coordinator {
         self.nav.popViewController(animated: true)
         self.parentCoordinator?.removeChildCoordinator(child: self)
     }
+    deinit {
+        print("\(#function)-----\(self)")
+    }
 }

@@ -6,7 +6,7 @@
 //
 
 import Foundation
-
-protocol SignUpScreenCoordProtocol: Coordinator {
-    
-}
+//
+//protocol SignUpScreenCoordProtocol: Coordinator {
+//    
+//}

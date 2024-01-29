@@ -48,7 +48,7 @@ final class CardScreenCoordinator: CardScreenCoordProtocol {
     }
     
     deinit {
-        print("deinit ----- \(#function)-----\(self)")
+        print("\(#function)-----\(self)")
     }
 }
 

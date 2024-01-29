@@ -13,11 +13,25 @@ typealias CumulativeAmountDictionary = [String : CumulativeAmount]
 
 
 final class RoomDataManager: RoomDataManagerProtocol {
-    static let shared: RoomDataManager = RoomDataManager()
-    private init() {}
+    static let shared: RoomDataManagerProtocol = RoomDataManager(
+        roomsAPI: RoomsAPI.shared)
+    
+    
+    var roomsAPI: RoomsAPIProtocol
+    
+    
+    // MARK: - 라이프사이클
+    init(roomsAPI: RoomsAPIProtocol) {
+        self.roomsAPI = roomsAPI
+    }
+    
+    
+    
     
     /// roomID / versionID / roomNam / roomImg
     private var roomData: Rooms?
+    private var rooms: [Rooms]?
+    private var currentIndex: Int = 0
     
     private var roomUserDataDict: RoomUserDataDictionary = [:]
     private var cumulativeAmount: CumulativeAmountDictionary = [:]
@@ -83,7 +97,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
         self.roomData = roomData
         
         // 데이터베이스나 네트워크에서 RoomUser 데이터를 가져오는 로직
-        RoomsAPI.shared.readRoomUsers(
+        self.roomsAPI.readRoomUsers(
             roomID: roomData.roomID) { result in
                 switch result {
                 case .success(let users):
@@ -101,7 +115,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
     func loadCumulativeAmountData(
         completion: @escaping () -> Void)
     {
-        RoomsAPI.shared.readCumulativeAmount { data in
+        self.roomsAPI.readCumulativeAmount { data in
             switch data {
             case .success(let moneyData):
                 self.cumulativeAmount = moneyData
@@ -114,13 +128,28 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     // MARK: - [API] 페이백 데이터
     func loadPaybackData(completion: @escaping () -> Void) {
-        RoomsAPI.shared.readPayback { paybackData in
+        self.roomsAPI.readPayback { paybackData in
             switch paybackData {
             case .success(let data):
                 self.paybackData = data
                 self.loadCumulativeAmountData {
                     completion()
                 }
+                break
+                // MARK: - Fix
+            case .failure(_): break
+            }
+        }
+    }
+    
+    
+    // MARK: - [API] 방의 데이터
+    func loadRooms(completion: @escaping () -> Void) {
+        self.roomsAPI.readRooms { result in
+            switch result {
+            case .success(let rooms):
+                self.rooms = rooms
+                completion()
                 break
                 // MARK: - Fix
             case .failure(_): break

@@ -14,7 +14,7 @@ final class MainVM: MainVMProtocol {
     
     // 1. 데이터를 받아서 cellViewModel에 넣는다.
     var rooms: [Rooms] = []
-    var roomsAPI: RoomsAPIProtocol
+//    var roomsAPI: RoomsAPIProtocol
     
     
     
@@ -46,16 +46,16 @@ final class MainVM: MainVMProtocol {
     
     
     
-    
+    var roomDataManager: RoomDataManagerProtocol
     
     // MARK: - 라이프 사이클
-    init(roomsAPI: RoomsAPIProtocol) {
-        self.roomsAPI = roomsAPI
+    init(roomDataManager: RoomDataManagerProtocol) {
+        self.roomDataManager = roomDataManager
         // MARK: - Fix
 //        self.fetchRoomsAPI()
     }
     deinit {
-        print("deinit --- \(#function)-----\(self)")
+        print("\(#function)-----\(self)")
     }
     
     
@@ -134,21 +134,16 @@ extension MainVM {
     
     // MARK: - [API] 방의 데이터
     private func fetchRoomsAPI() {
-        self.roomsAPI.readRooms { result in
-            switch result {
-            case .success(let rooms):
-                self.rooms = rooms
-                self.makeCellViewModel()
-                break
-                // MARK: - Fix
-            case .failure(_): break
-            }
-        }
-    }
-    
-    // MARK: - 로그인 여부 확인
-    private func checkLogin() {
-        
+//        self.roomsAPI.readRooms { result in
+//            switch result {
+//            case .success(let rooms):
+//                self.rooms = rooms
+//                self.makeCellViewModel()
+//                break
+//                // MARK: - Fix
+//            case .failure(_): break
+//            }
+//        }
     }
 }
     

@@ -33,7 +33,11 @@ final class SelectALoginMethodCoordinator: SelectALoginMethodCoordProtocol {
     
     // MARK: - 로그인 선택 화면
     private func selectALoginMethodScreen() {
+        let selectALoginMethodVM = SelectALoginMethodVM(
+            authAPI: AuthAPI.shared)
+        
         let selectALoginMethodVC = SelectALoginMethodVC(
+            viewModel: selectALoginMethodVM,
             coordinator: self)
         
         let selectALoginMethodNav = UINavigationController(
@@ -53,14 +57,14 @@ final class SelectALoginMethodCoordinator: SelectALoginMethodCoordProtocol {
     
     
     // MARK: - 로그인 화면
-    func loginScreen() {
-        let loginScreenCoordinator = LoginScreenCoordinator(
-            nav: self.nav)
-        self.childCoordinators.append(loginScreenCoordinator)
-        loginScreenCoordinator.parentCoordinator = self
-        loginScreenCoordinator.start()
-        
-    }
+//    func loginScreen() {
+//        let loginScreenCoordinator = LoginScreenCoordinator(
+//            nav: self.nav)
+//        self.childCoordinators.append(loginScreenCoordinator)
+//        loginScreenCoordinator.parentCoordinator = self
+//        loginScreenCoordinator.start()
+//        
+//    }
     
     // MARK: - 메인 화면으로 이동
     func navigateToMain() {
@@ -87,6 +91,6 @@ final class SelectALoginMethodCoordinator: SelectALoginMethodCoordProtocol {
 
     
     deinit {
-        print("deinit --- \(#function)-----\(self)")
+        print("\(#function)-----\(self)")
     }
 }

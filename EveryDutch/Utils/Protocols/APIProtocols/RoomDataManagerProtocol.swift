@@ -9,7 +9,7 @@ import Foundation
 
 
 protocol RoomDataManagerProtocol {
-    static var shared: RoomDataManager { get }
+    static var shared: RoomDataManagerProtocol { get }
     
     var getNumOfRoomUsers: Int { get }
     
@@ -30,4 +30,6 @@ protocol RoomDataManagerProtocol {
     func loadCumulativeAmountData(
         completion: @escaping () -> Void) 
     func loadPaybackData(completion: @escaping () -> Void)
+    
+    func loadRooms(completion: @escaping () -> Void)
 }
