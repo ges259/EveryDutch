@@ -7,6 +7,7 @@
 
 import Foundation
 import FirebaseDatabase
+import Firebase
 
 // 앱 실행 시
     // 자신이 속한 방 가져오기 ----- (Rooms_ID)
@@ -16,13 +17,17 @@ extension RoomsAPI {
     typealias RoomsIDCompletion = (Result<[Rooms], ErrorEnum>) -> Void
     
     func readRooms(completion: @escaping RoomsIDCompletion) {
+        
+//        guard let uid = Auth.auth().currentUser?.uid else { return }
+        
         // 비동기 작업들의 완료를 동기화하기 위한 DispatchGroup 객체 생성
         let dispatchGroup = DispatchGroup()
         // 최종적으로 반환될 Rooms 배열
         var rooms: [Rooms] = []
         
-        
+        // MARK: - 99999Fix
         ROOMS_ID_REF
+//            .child(uid)
             .child("qqqqqq")
             .observeSingleEvent(of: DataEventType.value) { snapshot in
                 

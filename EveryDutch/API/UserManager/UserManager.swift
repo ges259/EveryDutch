@@ -58,23 +58,43 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     
     
+    var getRooms: [Rooms] {
+        guard let rooms = self.rooms else { return [] }
+        return rooms
+    }
     
-// MARK: - 특정 유저의 정보 리턴
+    // MARK: - 선택된 현재 방 저장
+    func currentRooms(index: Int) {
+        self.roomData = self.rooms?[index]
+    }
+    
+    private var getCurrentRoomsID: String? {
+        return self.roomData?.roomID
+    }
     
     
     
-    // MARK: - 유저의 누적 금액 리턴
+    
+    
+    
+    
+    
+// MARK: - 특정 유저 정보 리턴
+    
+    
+    
+    // MARK: - 누적 금액
     func getIDToCumulativeAmount(userID: String) -> Int {
         return self.cumulativeAmount[userID]?.cumulativeAmount ?? 0
     }
     
-    // MARK: - 유저의 정보 리턴
+    // MARK: - RoomUsers 정보
     func getIdToRoomUser(usersID: String) -> RoomUsers {
         return self.roomUserDataDict[usersID]
         ?? RoomUsers(dictionary: [:])
     }
     
-    // MARK: - 유저의 페이백 값 리턴
+    // MARK: - 페이백 값
     func getIDToPayback(userID: String) -> Int {
         return self.paybackData?.payback[userID] ?? 0
     }
@@ -90,19 +110,18 @@ final class RoomDataManager: RoomDataManagerProtocol {
     // 콜백 함수 만들기(completion)
     // SettlementMoneyRoomVM에서 호출 됨
     func loadRoomUsers(
-        roomData: Rooms,
         completion: @escaping (RoomUserDataDictionary) -> Void)
     {
         // roomData 저장
-        self.roomData = roomData
+        guard let roomID = self.roomData?.roomID else { return }
         
         // 데이터베이스나 네트워크에서 RoomUser 데이터를 가져오는 로직
         self.roomsAPI.readRoomUsers(
-            roomID: roomData.roomID) { result in
+            roomID: roomID) { [weak self] result in
                 switch result {
                 case .success(let users):
                     // [String : RoomUsers] 딕셔너리 저장
-                    self.roomUserDataDict = users
+                    self?.roomUserDataDict = users
                     completion(users)
                     break
                     // MARK: - Fix
@@ -115,10 +134,10 @@ final class RoomDataManager: RoomDataManagerProtocol {
     func loadCumulativeAmountData(
         completion: @escaping () -> Void)
     {
-        self.roomsAPI.readCumulativeAmount { data in
+        self.roomsAPI.readCumulativeAmount { [weak self] data in
             switch data {
             case .success(let moneyData):
-                self.cumulativeAmount = moneyData
+                self?.cumulativeAmount = moneyData
                 completion()
             // MARK: - Fix
             case .failure(_): break
@@ -128,11 +147,11 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     // MARK: - [API] 페이백 데이터
     func loadPaybackData(completion: @escaping () -> Void) {
-        self.roomsAPI.readPayback { paybackData in
+        self.roomsAPI.readPayback { [weak self] paybackData in
             switch paybackData {
             case .success(let data):
-                self.paybackData = data
-                self.loadCumulativeAmountData {
+                self?.paybackData = data
+                self?.loadCumulativeAmountData {
                     completion()
                 }
                 break
@@ -145,10 +164,11 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     // MARK: - [API] 방의 데이터
     func loadRooms(completion: @escaping () -> Void) {
-        self.roomsAPI.readRooms { result in
+        
+        self.roomsAPI.readRooms {[weak self] result in
             switch result {
             case .success(let rooms):
-                self.rooms = rooms
+                self?.rooms = rooms
                 completion()
                 break
                 // MARK: - Fix

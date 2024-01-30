@@ -12,23 +12,23 @@ final class CardScreenVC: UIViewController {
     
     // MARK: - 레이아웃
     /// 스크롤뷰
-    private lazy var scrollView: UIScrollView = {
+    private var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
             scrollView.showsVerticalScrollIndicator = false
             scrollView.alwaysBounceVertical = true
         return scrollView
     }()
     /// 컨텐트뷰 ( - 스크롤뷰)
-    private lazy var contentView: UIView = UIView()
+    private var contentView: UIView = UIView()
     
     private var cardImgView: CardImageView = CardImageView()
     
-    private lazy var roomInfoCardView: CardTextView = CardTextView(
+    private lazy var roomInfoCardView: CardEditView = CardEditView(
         mode: self.viewModel.first_Mode)
     
-    private lazy var userInfoCardView: CardTextView = {
-        let view = CardTextView(
-            mode: self.viewModel.second_Mode ?? .info_Btn)
+    private lazy var userInfoCardView: CardEditView = {
+        let view = CardEditView(
+            mode: self.viewModel.second_Mode ?? .setting_Auth)
         view.delegate = self
         return view
     }()
@@ -41,10 +41,18 @@ final class CardScreenVC: UIViewController {
         alignment: .fill,
         distribution: .fillEqually)
     
-    private lazy var clearView: UIView = UIView()
+    private var clearView: UIView = UIView()
     
     
-    private lazy var bottomBtn: BottomButton = BottomButton()
+    private var bottomBtn: BottomButton = BottomButton()
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     // MARK: - 프로퍼티
@@ -81,7 +89,18 @@ final class CardScreenVC: UIViewController {
 }
 
 
+
+
+
+
+
+
+
+
+// MARK: - 화면 설정
+
 extension CardScreenVC {
+    
     // MARK: - UI 설정
     private func configureUI() {
         self.view.backgroundColor = UIColor.base_Blue
@@ -144,12 +163,27 @@ extension CardScreenVC {
     // MARK: - 액션 설정
     private func configureAction() {
         // 버튼 생성
-        let backButton = UIBarButtonItem(image: .chevronLeft, style: .done, target: self, action: #selector(self.backButtonTapped))
+        let backButton = UIBarButtonItem(
+            image: .chevronLeft, 
+            style: .done,
+            target: self, 
+            action: #selector(self.backButtonTapped))
         // 네비게이션 바의 왼쪽 아이템으로 설정
         self.navigationItem.leftBarButtonItem = backButton
     }
-    
-    
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - 액션 메서드
+extension CardScreenVC {
     @objc private func backButtonTapped() {
         self.coordinator.didFinish()
     }
@@ -157,6 +191,14 @@ extension CardScreenVC {
 
 
 
+
+
+
+
+
+
+
+// MARK: - 카드뷰 델리게이트
 extension CardScreenVC: CardTextDelegate {
     func firstStackViewTapped() {
         print(#function)

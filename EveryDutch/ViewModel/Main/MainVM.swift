@@ -13,7 +13,7 @@ final class MainVM: MainVMProtocol {
     private var cellViewModels: [MainCollectionViewCellVM] = []
     
     // 1. 데이터를 받아서 cellViewModel에 넣는다.
-    var rooms: [Rooms] = []
+    private var rooms: [Rooms] = []
 //    var roomsAPI: RoomsAPIProtocol
     
     
@@ -51,8 +51,9 @@ final class MainVM: MainVMProtocol {
     // MARK: - 라이프 사이클
     init(roomDataManager: RoomDataManagerProtocol) {
         self.roomDataManager = roomDataManager
-        // MARK: - Fix
-//        self.fetchRoomsAPI()
+        
+        // '방'의 모든 데이터 가져오기
+        self.getRoomsData()
     }
     deinit {
         print("\(#function)-----\(self)")
@@ -60,8 +61,10 @@ final class MainVM: MainVMProtocol {
     
     
     
-    
-    
+    // MARK: - 아이템이 눌렸을 때
+    func itemTapped(index: Int) {
+        self.roomDataManager.currentRooms(index: index)
+    }
     
     
     
@@ -133,17 +136,9 @@ final class MainVM: MainVMProtocol {
 extension MainVM {
     
     // MARK: - [API] 방의 데이터
-    private func fetchRoomsAPI() {
-//        self.roomsAPI.readRooms { result in
-//            switch result {
-//            case .success(let rooms):
-//                self.rooms = rooms
-//                self.makeCellViewModel()
-//                break
-//                // MARK: - Fix
-//            case .failure(_): break
-//            }
-//        }
+    private func getRoomsData() {
+        self.rooms = self.roomDataManager.getRooms
+        self.makeCellViewModel()
     }
 }
     

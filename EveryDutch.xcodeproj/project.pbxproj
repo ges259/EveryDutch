@@ -16,6 +16,7 @@
 		5F0BCE3A2B53144A007A3564 /* ReceiptWriteCellVMProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F0BCE392B53144A007A3564 /* ReceiptWriteCellVMProtocol.swift */; };
 		5F17137E2B46A643006B3EBB /* Receipt_Enum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F17137D2B46A643006B3EBB /* Receipt_Enum.swift */; };
 		5F1713822B46D2E4006B3EBB /* ReceiptScreenPanCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F1713812B46D2E4006B3EBB /* ReceiptScreenPanCoordinator.swift */; };
+		5F2213D92B68303D00D11B1B /* CardProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F2213D82B68303D00D11B1B /* CardProfileView.swift */; };
 		5F23C20E2B4C04D600C7D6A3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5F23C20D2B4C04D600C7D6A3 /* GoogleService-Info.plist */; };
 		5F294B412B4D98C900396B6E /* Database_REF.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F294B402B4D98C900396B6E /* Database_REF.swift */; };
 		5F294B432B4DA4BE00396B6E /* DatabaseConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F294B422B4DA4BE00396B6E /* DatabaseConstants.swift */; };
@@ -30,7 +31,7 @@
 		5F294B562B4DBA0100396B6E /* FirebaseDatabaseSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 5F294B552B4DBA0100396B6E /* FirebaseDatabaseSwift */; };
 		5F294B582B4DBA0100396B6E /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 5F294B572B4DBA0100396B6E /* FirebaseStorage */; };
 		5F2F7A782B3ECD91004B136F /* CardImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F2F7A772B3ECD91004B136F /* CardImageView.swift */; };
-		5F2F7A7A2B3ECD98004B136F /* CardTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F2F7A792B3ECD98004B136F /* CardTextView.swift */; };
+		5F2F7A7A2B3ECD98004B136F /* CardEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F2F7A792B3ECD98004B136F /* CardEditView.swift */; };
 		5F3211AF2B50028B0027C8B3 /* UsersTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F3211AE2B50028B0027C8B3 /* UsersTableView.swift */; };
 		5F47CD082B3AD8F500FCBFA4 /* CardScreenVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F47CD072B3AD8F500FCBFA4 /* CardScreenVM.swift */; };
 		5F47CD0A2B3AE9D800FCBFA4 /* CardScreenVMProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F47CD092B3AE9D800FCBFA4 /* CardScreenVMProtocol.swift */; };
@@ -186,12 +187,13 @@
 		5F0BCE392B53144A007A3564 /* ReceiptWriteCellVMProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptWriteCellVMProtocol.swift; sourceTree = "<group>"; };
 		5F17137D2B46A643006B3EBB /* Receipt_Enum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Receipt_Enum.swift; sourceTree = "<group>"; };
 		5F1713812B46D2E4006B3EBB /* ReceiptScreenPanCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptScreenPanCoordinator.swift; sourceTree = "<group>"; };
+		5F2213D82B68303D00D11B1B /* CardProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardProfileView.swift; sourceTree = "<group>"; };
 		5F23C20D2B4C04D600C7D6A3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5F294B402B4D98C900396B6E /* Database_REF.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database_REF.swift; sourceTree = "<group>"; };
 		5F294B422B4DA4BE00396B6E /* DatabaseConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseConstants.swift; sourceTree = "<group>"; };
 		5F294B442B4DA4E900396B6E /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
 		5F2F7A772B3ECD91004B136F /* CardImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardImageView.swift; sourceTree = "<group>"; };
-		5F2F7A792B3ECD98004B136F /* CardTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardTextView.swift; sourceTree = "<group>"; };
+		5F2F7A792B3ECD98004B136F /* CardEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardEditView.swift; sourceTree = "<group>"; };
 		5F3211AE2B50028B0027C8B3 /* UsersTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersTableView.swift; sourceTree = "<group>"; };
 		5F47CD072B3AD8F500FCBFA4 /* CardScreenVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardScreenVM.swift; sourceTree = "<group>"; };
 		5F47CD092B3AE9D800FCBFA4 /* CardScreenVMProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardScreenVMProtocol.swift; sourceTree = "<group>"; };
@@ -517,7 +519,8 @@
 			children = (
 				5F4913DE2B3DD97100CD76A8 /* NoDataView.swift */,
 				5F2F7A772B3ECD91004B136F /* CardImageView.swift */,
-				5F2F7A792B3ECD98004B136F /* CardTextView.swift */,
+				5F2F7A792B3ECD98004B136F /* CardEditView.swift */,
+				5F2213D82B68303D00D11B1B /* CardProfileView.swift */,
 			);
 			path = UIViews;
 			sourceTree = "<group>";
@@ -606,9 +609,9 @@
 		5F614B382B45917A00EF35CE /* Main */ = {
 			isa = PBXGroup;
 			children = (
-				5F4E66482B63FE99004EF81E /* SplashScreenVC.swift */,
 				5FB4F7022B433DEF002F6CF3 /* MainVC.swift */,
 				5FB4F7002B433DEF002F6CF3 /* CardScreenVC.swift */,
+				5F4E66482B63FE99004EF81E /* SplashScreenVC.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -1112,6 +1115,7 @@
 				5FE3DE8F2B39CA9B008D58AE /* AppDelegate.swift in Sources */,
 				5F294B452B4DA4E900396B6E /* APIError.swift in Sources */,
 				5F2F7A782B3ECD91004B136F /* CardImageView.swift in Sources */,
+				5F2213D92B68303D00D11B1B /* CardProfileView.swift in Sources */,
 				5FC196B92B627583005CC369 /* ReceiptCheckEnum.swift in Sources */,
 				5F9905052B4ABACC00DB9747 /* UsersTableViewVM.swift in Sources */,
 				5FAC8A952B5860AD003B4A05 /* ReceiptWriteTableDelegate.swift in Sources */,
@@ -1190,7 +1194,7 @@
 				5FE3DEB02B39CB4A008D58AE /* MainVMProtocol.swift in Sources */,
 				5FFF661D2B52A087000A5EC4 /* PeopleSelectionPanVMProtocol.swift in Sources */,
 				5F47CD082B3AD8F500FCBFA4 /* CardScreenVM.swift in Sources */,
-				5F2F7A7A2B3ECD98004B136F /* CardTextView.swift in Sources */,
+				5F2F7A7A2B3ECD98004B136F /* CardEditView.swift in Sources */,
 				5F6FDDE22B50568B00F09CCD /* ReceiptScreenTableViewCell.swift in Sources */,
 				5F4FA7232B553C00009EE4F4 /* UserAPIProtocol.swift in Sources */,
 				5F68487C2B441BB70015BFCC /* LoginScreenCoordProtocol.swift in Sources */,

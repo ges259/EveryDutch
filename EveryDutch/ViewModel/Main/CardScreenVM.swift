@@ -10,9 +10,17 @@ import UIKit
 final class CardScreenVM: CardScreenVMProtocol {
     
     private var cardScreen_Enum: CardScreen_Enum = .profile
-//    var mode: CardMode =
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    // MARK: - 라이프사이클
     init(cardScreen_Enum: CardScreen_Enum) {
         self.cardScreen_Enum = cardScreen_Enum
     }
@@ -23,25 +31,21 @@ final class CardScreenVM: CardScreenVMProtocol {
     
     var first_Mode: CardMode {
         switch self.cardScreen_Enum {
-        case .makeRoom: return .makeRoom
-        case .editProfile: return .infoFix_User
-        case .profile: return .readMode_profile
+        case .makeRoom: return .roomMake
+        case .editProfile: return .profile_Fix
+        case .profile: return .profile
         }
     }
     
     var second_Mode: CardMode? {
         switch self.cardScreen_Enum {
-        case .makeRoom: return .infoFix_User
-        case .editProfile: return nil
-        case .profile: return .info_Btn
+        case .profile: return .setting_Auth
+        case .makeRoom, .editProfile: return nil
         }
     }
     
     
     
-    
-//    var first_Title
-//    var second_Title
     
     
     var bottomBtn_IsHidden: Bool {

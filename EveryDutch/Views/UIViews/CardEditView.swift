@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 
 
-final class CardTextView: UIView {
+final class CardEditView: UIView {
     
     // MARK: - 레이아웃
     // 타이틀 레이블
@@ -137,7 +137,7 @@ final class CardTextView: UIView {
 
 // MARK: - 화면 설정
 
-extension CardTextView {
+extension CardEditView {
     
     // MARK: - UI 설정
     private func configureUI() {
@@ -182,70 +182,115 @@ extension CardTextView {
     }
 }
 
-extension CardTextView {
+
+
+
+
+
+
+
+
+
+// MARK: - 모드에 따른 설정
+
+extension CardEditView {
+    
+    // MARK: - UI 설정
     private func configureMode() {
         guard let mode = self.mode else { return }
         self.configureText(mode: mode)
         
         switch mode {
-        case .makeRoom:
-            self.configureStackView(first: self.firstTF,
-                                    second: self.secondTF,
-                                    third: self.bottomBtn)
-            break
-             
-        case .infoFix_User:
-            self.configureStackView(first: self.firstInfoLbl,
-                                    second: self.secondTF,
-                                    third: self.bottomBtn)
+        case .roomMake:
+            self.configureStackView(
+                first: self.firstTF,
+                second: self.secondTF,
+                third: self.bottomBtn)
             break
             
-        case .readMode:
-            self.configureStackView(first: self.firstInfoLbl,
-                                    second: self.secondInfoLbl,
-                                    third: self.thirdStackView)
+        case .roomFix:
+            self.configureStackView(
+                first: self.firstInfoLbl,
+                second: self.secondTF,
+                third: self.bottomBtn)
             break
-        case .readMode_profile:
-            self.configureStackView(first: self.firstInfoLbl,
-                                    second: self.secondInfoLbl,
-                                    third: self.thirdStackView)
+            
+        case .profile:
+            self.configureStackView(
+                first: self.firstInfoLbl,
+                second: self.secondInfoLbl,
+                third: self.clearView)
+            break
+            
+        case .profile_Fix:
+            self.configureStackView(
+                first: self.firstInfoLbl,
+                second: self.secondInfoLbl,
+                third: self.bottomBtn)
             self.addEditBtnAction()
-        case .info_Btn:
-            self.configureStackView(first: self.firstInfoLbl,
-                                    second: self.secondInfoLbl,
-                                    third: self.clearView)
+            break
+            
+        case .setting_Auth:
+            self.configureStackView(
+                first: self.firstInfoLbl,
+                second: self.secondInfoLbl,
+                third: self.clearView)
             self.addStackViewGesture()
             break
-
         }
     }
     
+    // MARK: - 텍스트 설정
     private func configureText(mode: CardMode) {
-        let textArray: [String] = mode.configureTitle
-        
-        self.titleLbl.text = textArray[0]
-        self.firstDetailLbl.text = textArray[1]
-        self.secondDetailLbl.text = textArray[2]
+        self.configureCommonSettings(mode)
         
         switch mode {
-        case .makeRoom:
-            self.firstTF.attributedPlaceholder = self.setAttributedText(
-                placeholderText: mode.placeholderTitle[0])
+        case .roomMake:
+            self.configureFirstTf()
             fallthrough
             
-        case .infoFix_User:
-            self.bottomBtn.setTitle(mode.thirdViewTitle, for: .normal)
-            self.secondTF.attributedPlaceholder = self.setAttributedText(
-                placeholderText: mode.placeholderTitle[1])
-            break
+        case .roomFix:
+            self.configureSecondTf(mode)
+            fallthrough
     
-        case .readMode, .readMode_profile:
-            self.thirdDetailLbl.text = mode.thirdViewTitle
+        case .profile_Fix:
+            self.configureBottomBtn(mode)
             break
             
-        case .info_Btn: break
+        case .setting_Auth, .profile:  break
         }
     }
+    
+    // MARK: - 타이틀 및 디테일 설정
+    private func configureCommonSettings(_ mode: CardMode) {
+        self.titleLbl.text = mode.title
+        let textArray: [String] = mode.description
+        self.firstDetailLbl.text = textArray[0]
+        self.secondDetailLbl.text = textArray[1]
+    }
+    
+    // MARK: - 첫 번째 TF
+    private func configureFirstTf() {
+        self.firstTF.attributedPlaceholder = self.setAttributedText(
+            placeholderText: CardMode.roomMake.firstTfPlaceholder)
+    }
+    
+    // MARK: - 두 번째 TF
+    private func configureSecondTf(_ mode: CardMode) {
+        self.secondTF.attributedPlaceholder = self.setAttributedText(
+            placeholderText: mode.secondTfPlaceholder)
+    }
+    
+    // MARK: - 바텀 버튼
+    private func configureBottomBtn(_ mode: CardMode) {
+        self.bottomBtn.setTitle(mode.btnTitle, for: .normal)
+    }
+    
+    
+    
+    
+    
+    
     
     
     
@@ -262,6 +307,15 @@ extension CardTextView {
         self.totalStackView.addArrangedSubview(third)
     }
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
     // MARK: - 텍스트필드 코너레디어스
     private func tfCornerRadius(_ textFieldArray: [UIView]) {
         
@@ -270,7 +324,6 @@ extension CardTextView {
                 
                 textField.clipsToBounds = true
                 textField.layer.maskedCorners = [.layerMinXMinYCorner]
-                textField.clipsToBounds = true
                 textField.layer.cornerRadius = 12
                 
                 // 첫 번째 텍스트 필드에 적용했다면 루프를 종료
@@ -282,7 +335,7 @@ extension CardTextView {
     
     
     
-    // MARK: - info_Setting 버튼 액션
+    // MARK: - 프로필 수정 버튼 액션
     private func addEditBtnAction() {
         self.addSubview(self.editProfileBtn)
         self.editProfileBtn.snp.makeConstraints { make in
@@ -290,8 +343,11 @@ extension CardTextView {
             make.centerY.equalTo(self.titleLbl)
         }
         
-        self.editProfileBtn.addTarget(self, action: #selector(self.editProfileBtnTapped), for: .touchUpInside)
-        self.thirdStackView.insertArrangedSubview(self.copyBtn, at: 1)
+        self.editProfileBtn.addTarget(
+            self,
+            action: #selector(self.editProfileBtnTapped),
+            for: .touchUpInside)
+//        self.thirdStackView.insertArrangedSubview(self.copyBtn, at: 1)
     }
     @objc private func editProfileBtnTapped() {
         print(#function)
@@ -300,13 +356,25 @@ extension CardTextView {
     
     
     
+    
+    
+    
+    
+    
+    
     // MARK: - ect_Setting 제스쳐
     private func addStackViewGesture() {
-        let firstStackViewGesture = UITapGestureRecognizer(target: self, action: #selector(self.firstStackViewTapped))
-        self.firstStackView.addGestureRecognizer(firstStackViewGesture)
+        let firstStackViewGesture = UITapGestureRecognizer(
+            target: self,
+            action: #selector(self.firstStackViewTapped))
+        self.firstStackView.addGestureRecognizer(
+            firstStackViewGesture)
         
-        let secondStackViewGesture = UITapGestureRecognizer(target: self, action: #selector(self.secondStackViewTapped))
-        self.secondStackView.addGestureRecognizer(secondStackViewGesture)
+        let secondStackViewGesture = UITapGestureRecognizer(
+            target: self,
+            action: #selector(self.secondStackViewTapped))
+        self.secondStackView.addGestureRecognizer(
+            secondStackViewGesture)
     }
     @objc private func firstStackViewTapped() {
         print(#function)

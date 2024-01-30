@@ -43,7 +43,6 @@ final class MainCoordinator: MainCoordProtocol{
         let mainVCNav = UINavigationController(
             rootViewController: mainVC)
         
-        
         mainVCNav.modalPresentationStyle = .fullScreen
         
         let animated = self.nav.topViewController is SelectALoginMethodVC
@@ -55,11 +54,10 @@ final class MainCoordinator: MainCoordProtocol{
     
     // MARK: - 정산방
     /// 채팅방으로 이동
-    func settlementMoneyRoomScreen(room: Rooms) {
+    func settlementMoneyRoomScreen() {
         // SettleMoneyRoomCoordinator 생성
         let settlementRoomCoordinator = SettleMoneyRoomCoordinator(
-            nav: self.nav,
-            room: room)
+            nav: self.nav)
         // 부모 코디네이터가 자신이라는 것을 명시 (뒤로가기 할 때 필요)
             settlementRoomCoordinator.parentCoordinator = self
         self.childCoordinators.append(settlementRoomCoordinator)

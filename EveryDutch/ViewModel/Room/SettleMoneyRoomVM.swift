@@ -111,15 +111,15 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
     
     
     // MARK: - 라이프 사이클
-    init(roomData: Rooms,
-         receiptAPI: ReceiptAPIProtocol,
+    init(receiptAPI: ReceiptAPIProtocol,
          roomDataManager: RoomDataManagerProtocol) {
         self.receiptAPI = receiptAPI
-        
         self.roomDataManager = roomDataManager
+        
+        
         // api호출
         // 영수증 가져오기
-        self.fetchUsers(roomData: roomData)
+        self.getUsersData()
         self.fetchRoomMoneyData()
     }
 }
@@ -139,26 +139,28 @@ extension SettleMoneyRoomVM {
     
     // MARK: - 누적 금액 및 페이백 데이터 API
     private func fetchRoomMoneyData() {
-        self.roomDataManager.loadPaybackData {
-            self.fetchMoneyDataClosure?()
+        self.roomDataManager.loadPaybackData { [weak self] in
+            self?.fetchMoneyDataClosure?()
         }
     }
     
     // MARK: - 유져 + 레시피 가져오기
     /// RoomDataManager에서 RoomUsers데이터 가져오기
-    private func fetchUsers(roomData: Rooms) {
-        self.roomDataManager.loadRoomUsers(roomData: roomData) { roomusers in
+    private func getUsersData() {
+        
+        // MARK: - Fix
+        self.roomDataManager.loadRoomUsers() { [weak self] roomusers in
             // 영수증 가져오기
-            self.fetchReceipt()
+            self?.fetchReceipt()
         }
     }
     
     // MARK: - 영수증 데이터 가져오기
     private func fetchReceipt() {
-        self.receiptAPI.readReceipt { result in
+        self.receiptAPI.readReceipt { [weak self] result in
             switch result {
             case .success(let receipts):
-                self.makeCell(receipts: receipts)
+                self?.makeCell(receipts: receipts)
                 break
                 // MARK: - Fix
             case .failure(_): break
@@ -182,13 +184,14 @@ extension SettleMoneyRoomVM {
     
     // MARK: - 셀 만들기
     private func makeCell(receipts: [Receipt]) {
-        self.cellViewModels = receipts.map({ receipt in
+        self.cellViewModels = receipts.map({ [weak self] receipt in
             
             let payer = receipt.payer
-            let payerData = self.roomDataManager.getIdToRoomUser(usersID: payer)
+            
+            let payerData = self?.roomDataManager.getIdToRoomUser(usersID: payer)
             
             return SettleMoneyTableViewCellVM(
-                payer: payerData.roomUserName,
+                payer: payerData?.roomUserName ?? "",
                 receiptData: receipt)
         })
         self.receipts = receipts

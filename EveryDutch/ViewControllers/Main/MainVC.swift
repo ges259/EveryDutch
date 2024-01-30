@@ -264,16 +264,13 @@ extension MainVC {
     
     // MARK: - 프로필 액션
     @objc private func profileScreenBtnTapped() {
-//        self.coordinator.cardScreen(.profile)
-        self.coordinator.selectALgoinMethodScreen()
-        
+        self.coordinator.cardScreen(.profile)
     }
     
     // MARK: - 방 생성 액션
     @objc private func makeRoomScreenBtnTapped() {
         // MARK: - Fix
-//        self.coordinator.cardScreen(.makeRoom)
-        self.coordinator.selectALgoinMethodScreen()
+        self.coordinator.cardScreen(.makeRoom)
     }
     
     // MARK: - 배경 액션
@@ -359,9 +356,9 @@ extension MainVC: UICollectionViewDelegateFlowLayout {
     /// 아이템을 눌렀을 때
     func collectionView(_ collectionView: UICollectionView,
                         didSelectItemAt indexPath: IndexPath) {
-        let room = self.viewModel.rooms[indexPath.row]
-        self.coordinator.settlementMoneyRoomScreen(
-            room: room)
+        self.viewModel.itemTapped(index: indexPath.row)
+        
+        self.coordinator.settlementMoneyRoomScreen()
     }
     
     /// 아이템의 크기 설정

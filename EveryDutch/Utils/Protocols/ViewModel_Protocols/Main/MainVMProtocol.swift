@@ -8,8 +8,8 @@
 import UIKit
 typealias floatingType = (show: Bool, alpha: CGFloat)
 protocol MainVMProtocol {
-    var rooms: [Rooms] { get }
-    
+//    var rooms: [Rooms] { get }
+    func itemTapped(index: Int)
     
     
 //    var isFloatingShow: Bool { get set }

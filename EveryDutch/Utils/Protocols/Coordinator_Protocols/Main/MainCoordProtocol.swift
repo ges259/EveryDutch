@@ -9,7 +9,7 @@ import UIKit
 
 protocol MainCoordProtocol: Coordinator {
     func cardScreen(_ cardScreen_Enum: CardScreen_Enum)
-    func settlementMoneyRoomScreen(room: Rooms)
+    func settlementMoneyRoomScreen()
     func profileScreen()
     func selectALgoinMethodScreen()
 }

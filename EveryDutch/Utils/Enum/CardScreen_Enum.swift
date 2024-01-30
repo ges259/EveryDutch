@@ -12,51 +12,74 @@ enum CardScreen_Enum {
     case editProfile
     case profile
 }
+
 enum CardMode {
-    case makeRoom
-    case infoFix_User
+    case roomMake
+    case roomFix
     
-    case readMode
-    case readMode_profile
-    case info_Btn
+    case profile
+    case profile_Fix
+    case setting_Auth
     
-    var configureTitle: [String] {
+    
+    var title: String {
         switch self {
-        case .makeRoom: return ["정산방 정보",
-                                "정산방 이름",
-                                "모임 이름"]
-        case .infoFix_User: return ["회원 정보",
-                                    "개인_ID",
-                                    "닉네임"]
-        case .readMode, .readMode_profile: return ["회원 정보",
-                                                   "개인_ID",
-                                                   "닉네임"]
-        case .info_Btn: return ["기타",
-                                "로그아웃",
-                                "회원 탈퇴"]
+        case .roomMake, .roomFix:
+            return "정산방 정보"
+        case .profile, .profile_Fix:
+            return "개인 정보"
+        case .setting_Auth:
+            return "기타"
+        }
+    }
+    var description: [String] {
+        switch self {
+        case .roomMake, .roomFix:
+            return ["정산방 이름",
+                    "모임 이름"]
+        case .profile, .profile_Fix:
+            return ["개인 ID",
+                    "닉네임"]
+        case .setting_Auth:
+            return ["로그아웃",
+                    "회원탈퇴"]
         }
     }
     
-    var thirdViewTitle: String {
+    var btnTitle: String {
         switch self {
-        case .makeRoom: return "배경 이미지 설정"
-        case .infoFix_User: return "프로필 이미지 설정"
-        case .readMode, .readMode_profile: return "이메일"
-        case .info_Btn: return ""
-        }
-    }
-    
-    var placeholderTitle: [String] {
-        switch self {
+        case .roomFix, .roomMake:
+            return "배경 이미지 설정"
             
-        case .makeRoom: return ["정산방의 이름을 설정해 주세요.",
-                                "모임의 이름을 설정해 주세요."]
-        case .infoFix_User: return ["",
-                                    "닉네임을 설정해 주세요."]
-        case .readMode, .readMode_profile, .info_Btn: return []
+        case .profile_Fix:
+            return "프로필 이미지 설정"
+            
+        case .profile, .setting_Auth:
+            return ""
+        }
+    }
+    var firstTfPlaceholder: String {
+        switch self {
+        case .roomMake, .roomFix:
+            return "정산방의 이름을 설정해 주세요."
+            
+        case .profile, .setting_Auth, .profile_Fix:
+            return ""
         }
     }
     
+    var secondTfPlaceholder: String {
+        switch self {
+        case .roomMake, .roomFix:
+            return "모임의 이름을 설정해 주세요."
+            
+        case .profile_Fix:
+            return "닉네임을 설정해 주세요."
+            
+        case .profile, .setting_Auth:
+            return ""
+        }
+    }
 }
 
 
