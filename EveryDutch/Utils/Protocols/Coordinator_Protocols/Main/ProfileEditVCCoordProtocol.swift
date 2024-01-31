@@ -7,6 +7,6 @@
 
 import Foundation
 
-protocol CardScreenCoordProtocol: Coordinator {
+protocol ProfileEditVCCoordProtocol: Coordinator {
     
 }

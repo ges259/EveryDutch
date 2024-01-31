@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-final class CardProfileView: UIView {
+final class ProfileEditView: UIView {
     // MARK: - 레이아웃
     // 타이틀 레이블
     private var titleLbl: CustomLabel = CustomLabel(
@@ -92,7 +92,7 @@ final class CardProfileView: UIView {
 
 // MARK: - 화면 설정
 
-extension CardProfileView {
+extension ProfileEditView {
     
     // MARK: - UI 설정
     private func configureUI() {

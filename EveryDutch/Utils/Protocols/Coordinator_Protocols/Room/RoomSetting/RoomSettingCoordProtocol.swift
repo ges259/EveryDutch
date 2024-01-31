@@ -10,6 +10,6 @@ import Foundation
 protocol RoomSettingCoordProtocol: Coordinator {
     func settlementScreen()
     func FindFriendsScreen()
-    func CardScreen(_ cardScreen_Enum: CardScreen_Enum)
+    func CardScreen(_ profileEditEnum: ProfileEditEnum)
 
 }

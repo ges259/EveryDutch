@@ -122,8 +122,8 @@ final class CardEditView: UIView {
     
     
     // MARK: - 라이프사이클
-    init(mode: CardMode) {
-        self.mode = mode
+    init(mode: ProfileEditEnum) {
+//        self.mode = mode
         super.init(frame: .zero)
         self.configureUI()
         self.configureAutoLayout()

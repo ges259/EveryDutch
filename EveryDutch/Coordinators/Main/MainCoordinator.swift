@@ -22,15 +22,30 @@ final class MainCoordinator: MainCoordProtocol{
     var nav: UINavigationController
     var user: User?
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    // MARK: - 라이프사이클
     // 의존성 주입
     init(nav: UINavigationController) {
         self.nav = nav
     }
     
+    // MARK: - start
     // MainViewController 띄우기
     func start() {
         self.mainScreen()
     }
+    
+    
+    
+    
     
     // MARK: - 메인 화면
     func mainScreen() {
@@ -64,13 +79,13 @@ final class MainCoordinator: MainCoordProtocol{
             settlementRoomCoordinator.start()
     }
     
-    // MARK: - 카드 스크린
+    // MARK: - 프로필 스크린
     /// 플러스 버튼을 누르면 화면 이동
-    func cardScreen(_ cardScreen_Enum: CardScreen_Enum) {
+    func profileEditScreen() {
         // Main-Coordinator 생성
-        let cardScreenCoordinator = CardScreenCoordinator(
+        let cardScreenCoordinator = ProfileEditVCCoordinator(
             nav: self.nav,
-            cardScreen_Enum: cardScreen_Enum)
+            profileEditEnum: .profile)
         // ***** 델리게이트 설정 *****
         cardScreenCoordinator.delegate = self
         self.childCoordinators.append(cardScreenCoordinator)
@@ -78,6 +93,11 @@ final class MainCoordinator: MainCoordProtocol{
         cardScreenCoordinator.parentCoordinator = self
         // 코디네이터에게 화면이동을 지시
         cardScreenCoordinator.start()
+    }
+    
+    // MARK: - 방 생성 스크린
+    func roomEditScreen() {
+        
     }
     
     // MARK: - 로그인 선택 화면
@@ -99,17 +119,26 @@ final class MainCoordinator: MainCoordProtocol{
         print(#function)
     }
     
+    // MARK: - didFinish
     func didFinish() {
         // 필요한 경우 여기에서 추가적인 정리 작업을 수행
         // 자식 코디네이터를 부모의 배열에서 제거
         // 즉, PlusBtnCoordinator이 MainCoordinator의 childCoordinators 배열에서 제거
         self.parentCoordinator?.removeChildCoordinator(child: self)
     }
-    
     deinit {
         print("\(#function)-----\(self)")
     }
 }
+
+
+
+
+
+
+
+
+
 
 extension MainCoordinator: CardScreenDelegate {
     func logout() {

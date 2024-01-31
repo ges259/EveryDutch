@@ -54,11 +54,11 @@ final class RoomSettingCoordinator: RoomSettingCoordProtocol{
         // 코디네이터에게 화면이동을 지시
         findFriendsCoordinator.start()
     }
-    func CardScreen(_ cardScreen_Enum: CardScreen_Enum) {
+    func CardScreen(_ profileEditEnum: ProfileEditEnum) {
         // CardScreenCoordinator 생성
-        let cardScreenCoordinator = CardScreenCoordinator(
+        let cardScreenCoordinator = ProfileEditVCCoordinator(
             nav: self.nav,
-            cardScreen_Enum: cardScreen_Enum)
+            profileEditEnum: profileEditEnum)
         
         cardScreenCoordinator.delegate = self
         self.childCoordinators.append(cardScreenCoordinator)

@@ -7,9 +7,9 @@
 
 import Foundation
 
-protocol CardScreenVMProtocol {
-    var first_Mode: CardMode { get }
-    var second_Mode: CardMode? { get }
+protocol ProfileEditVMProtocol {
+    
+    var getCurrentMode: ProfileEditEnum { get }
     
     var bottomBtn_IsHidden: Bool { get }
     var bottomBtn_Title: String? { get }
