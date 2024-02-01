@@ -58,6 +58,8 @@
 		5F5AFBD82B4947E700BBBB9D /* SettleMoneyTableViewCellVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F5AFBD72B4947E700BBBB9D /* SettleMoneyTableViewCellVM.swift */; };
 		5F5B2ED52B516C870064B738 /* Date+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F5B2ED42B516C870064B738 /* Date+Ext.swift */; };
 		5F5B2ED72B5194250064B738 /* CustomCalendar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F5B2ED62B5194250064B738 /* CustomCalendar.swift */; };
+		5F5FC6122B6A7EBD00693E6F /* ProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F5FC6112B6A7EBD00693E6F /* ProfileVC.swift */; };
+		5F5FC6142B6AA48400693E6F /* ProfileVCEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F5FC6132B6AA48400693E6F /* ProfileVCEnum.swift */; };
 		5F614B352B4590C500EF35CE /* PanModal in Frameworks */ = {isa = PBXBuildFile; productRef = 5F614B342B4590C500EF35CE /* PanModal */; };
 		5F614B3B2B4592EF00EF35CE /* ReceiptWriteVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F614B3A2B4592EF00EF35CE /* ReceiptWriteVC.swift */; };
 		5F614B3E2B45938D00EF35CE /* CheckReceiptPanVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F614B3D2B45938D00EF35CE /* CheckReceiptPanVC.swift */; };
@@ -225,6 +227,8 @@
 		5F5AFBD72B4947E700BBBB9D /* SettleMoneyTableViewCellVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettleMoneyTableViewCellVM.swift; sourceTree = "<group>"; };
 		5F5B2ED42B516C870064B738 /* Date+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+Ext.swift"; sourceTree = "<group>"; };
 		5F5B2ED62B5194250064B738 /* CustomCalendar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomCalendar.swift; sourceTree = "<group>"; };
+		5F5FC6112B6A7EBD00693E6F /* ProfileVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileVC.swift; sourceTree = "<group>"; };
+		5F5FC6132B6AA48400693E6F /* ProfileVCEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileVCEnum.swift; sourceTree = "<group>"; };
 		5F614B3A2B4592EF00EF35CE /* ReceiptWriteVC.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReceiptWriteVC.swift; sourceTree = "<group>"; };
 		5F614B3D2B45938D00EF35CE /* CheckReceiptPanVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckReceiptPanVC.swift; sourceTree = "<group>"; };
 		5F614B3F2B4593AE00EF35CE /* ReceiptScreenPanVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptScreenPanVC.swift; sourceTree = "<group>"; };
@@ -627,6 +631,7 @@
 				5FB4F7022B433DEF002F6CF3 /* MainVC.swift */,
 				5FB4F7002B433DEF002F6CF3 /* ProfileEditVC.swift */,
 				5F7B9FD32B68F217006917E6 /* RoomEditVC.swift */,
+				5F5FC6112B6A7EBD00693E6F /* ProfileVC.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -781,6 +786,7 @@
 				5F9CD1732B4845D200F2CE07 /* CardScreen_Enum.swift */,
 				5F294B442B4DA4E900396B6E /* APIError.swift */,
 				5F7DB59A2B5921E300E8C11F /* PeopleSeelctionEnum.swift */,
+				5F5FC6132B6AA48400693E6F /* ProfileVCEnum.swift */,
 			);
 			path = Enum;
 			sourceTree = "<group>";
@@ -1174,6 +1180,7 @@
 				5F8513FB2B4D7FAD00A5B22D /* DeleteUsers.swift in Sources */,
 				5FC648472B42EB9500C451BF /* ReceiptWriteCoordinator.swift in Sources */,
 				5F294B412B4D98C900396B6E /* Database_REF.swift in Sources */,
+				5F5FC6122B6A7EBD00693E6F /* ProfileVC.swift in Sources */,
 				5F17137E2B46A643006B3EBB /* Receipt_Enum.swift in Sources */,
 				5FE3DEC42B39CBA4008D58AE /* MainCollectionViewCell.swift in Sources */,
 				5F8513F32B4D794200A5B22D /* UpdateRoomUsers.swift in Sources */,
@@ -1203,6 +1210,7 @@
 				5F7B9FD22B68F165006917E6 /* RoomEditVCCoordinator.swift in Sources */,
 				5F80EA8F2B67BDED00BD8D0C /* UIViewController+Ext.swift in Sources */,
 				5FB4F6F62B432528002F6CF3 /* CustomTableEnum.swift in Sources */,
+				5F5FC6142B6AA48400693E6F /* ProfileVCEnum.swift in Sources */,
 				5F5AFBC22B49390500BBBB9D /* ReceiptWriteVM.swift in Sources */,
 				5F80EA8D2B679CE900BD8D0C /* SelectALoginMethodVM.swift in Sources */,
 				5FE3DEAA2B39CB15008D58AE /* Identifier.swift in Sources */,

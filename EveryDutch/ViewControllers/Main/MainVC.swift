@@ -264,7 +264,10 @@ extension MainVC {
     
     // MARK: - 프로필 액션
     @objc private func profileScreenBtnTapped() {
-        self.coordinator.profileEditScreen()
+//        self.coordinator.profileEditScreen()
+        let profileVC = ProfileVC()
+        
+        self.navigationController?.pushViewController(profileVC, animated: true)
     }
     
     // MARK: - 방 생성 액션
