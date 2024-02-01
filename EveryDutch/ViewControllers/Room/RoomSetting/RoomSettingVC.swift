@@ -129,7 +129,7 @@ extension RoomSettingVC {
             .layerMinXMinYCorner,
             .layerMaxXMinYCorner]
         self.tabBarView.layer.cornerRadius = 20
-        self.tabBarView.addShadow(top: true, bottom: false)
+        self.tabBarView.addShadow(shadowType: .all)
         
     }
     

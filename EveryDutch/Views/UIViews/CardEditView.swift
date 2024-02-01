@@ -142,7 +142,7 @@ extension CardEditView {
     // MARK: - UI 설정
     private func configureUI() {
         self.backgroundColor = .medium_Blue
-        self.addShadow(card: true)
+        self.addShadow(shadowType: .card)
         
         self.bottomBtn.clipsToBounds = true
         self.bottomBtn.layer.maskedCorners = [

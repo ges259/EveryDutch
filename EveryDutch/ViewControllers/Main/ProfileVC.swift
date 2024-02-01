@@ -27,7 +27,11 @@ final class ProfileVC: UIViewController {
     
     private lazy var tableVeiw: CustomTableView = {
         let view = CustomTableView()
-        view.register(ProfileTableViewCell.self, forCellReuseIdentifier: Identifier.profileTableViewCell)
+        view.register(
+            ProfileTableViewCell.self,
+            forCellReuseIdentifier: Identifier.profileTableViewCell)
+        
+        view.sectionHeaderTopPadding = 12
         
         view.delegate = self
         view.dataSource = self
@@ -40,7 +44,7 @@ final class ProfileVC: UIViewController {
         arrangedSubviews: [self.cardImgView,
                            self.tableVeiw],
         axis: .vertical,
-        spacing: 12,
+        spacing: 0,
         alignment: .fill,
         distribution: .fill)
     
@@ -82,6 +86,9 @@ extension ProfileVC {
     // MARK: - UI 설정
     private func configureUI() {
         self.view.backgroundColor = .base_Blue
+        
+        
+        self.tableVeiw.addShadow(shadowType: .card)
     }
     
     // MARK: - 오토레이아웃 설정
@@ -107,16 +114,13 @@ extension ProfileVC {
             make.height.equalTo(self.cardHeight)
         }
         
-        
         // 스택뷰
         self.totalStackView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(2)
             make.leading.equalToSuperview().offset(10)
             make.trailing.equalToSuperview().offset(-10)
-            make.bottom.equalToSuperview().offset(-UIDevice.current.bottomBtnHeight - 10)
+            make.bottom.equalToSuperview().offset(-15)
         }
-        
-        
     }
     
     // MARK: - 액션 설정
@@ -137,117 +141,117 @@ extension ProfileVC {
 // MARK: - 테이블뷰 델리게이트
 
 extension ProfileVC: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    
+    // MARK: - 셀의 높이
+    /// 셀의 높이를 설정합니다.
+    func tableView(_ tableView: UITableView, 
+                   heightForRowAt indexPath: IndexPath)
+    -> CGFloat {
         return 50
     }
-    /// 헤더의 높이 설정
+    
+    // MARK: - 헤더뷰 설정
+    /// 헤더 뷰를 구성합니다.
+    func tableView(_ tableView: UITableView, 
+                   viewForHeaderInSection section: Int)
+    -> UIView? {
+        return self.configureHeaderView(for: section)
+    }
+    
+    // MARK: - 헤더 높이
+    /// 헤더의 높이를 설정합니다.
     func tableView(_ tableView: UITableView,
                    heightForHeaderInSection section: Int)
     -> CGFloat {
         return 70
     }
-    /// 셀의 모서리 설정 (마지막 셀만 설정)
-    func tableView(_ tableView: UITableView,
-                   willDisplay cell: UITableViewCell,
-                   forRowAt indexPath: IndexPath) {
-        
-        let section = indexPath.section
-        guard !self.checkHeight(section: section) else { return }
-        
-        // Reset corners
-        cell.contentView.layer.cornerRadius = 0
-        cell.contentView.layer.maskedCorners = []
-
-        
-        if indexPath.row == tableView.numberOfRows(inSection: indexPath.section) - 1 {
-            cell.contentView.layer.cornerRadius = 10
-            cell.contentView.layer.maskedCorners = [
-                .layerMinXMaxYCorner,
-                .layerMaxXMaxYCorner]
-            cell.contentView.layer.masksToBounds = true
-        }
-    }
     
-    
-    ///
-    func tableView(_ tableView: UITableView,
-                   didEndDisplaying cell: UITableViewCell,
-                   forRowAt indexPath: IndexPath) {
-        cell.contentView.layer.cornerRadius = 0
-    }
-    
-    /// 헤더 설정
-    func tableView(_ tableView: UITableView,
-                   viewForHeaderInSection section: Int)
+    // MARK: - 푸터뷰 설정
+    /// 푸터 뷰를 구성합니다. 특정 조건을 만족하는 섹션에만 푸터를 설정합니다.
+    func tableView(_ tableView: UITableView, 
+                   viewForFooterInSection section: Int)
     -> UIView? {
-        let headerView = UIView()
-        headerView.backgroundColor = UIColor.medium_Blue // 원하는 색상으로 변경하세요.
+        return self.configureFooterView(for: section)
+    }
+    
+    // MARK: - 푸터뷰 높이
+    /// 푸터의 높이를 설정합니다. 특정 조건을 만족할 때만 높이를 할당합니다.
+    func tableView(_ tableView: UITableView, 
+                   heightForFooterInSection section: Int)
+    -> CGFloat {
+        return self.checkHeight(section: section) ? 50 : 5
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+// MARK: - Helper Methods
+    
+    
+    
+    // MARK: - 셀의 최소 높이
+    
+    /// 섹션의 높이를 확인하여 조건을 충족시키는지 검사합니다.
+    private func checkHeight(section: Int) -> Bool {
+        let sectionData = self.section[section].tableData
+        let numberOfRows = sectionData?.count ?? 0
+        return numberOfRows <= 3
+    }
+    
+    // MARK: - 헤더뷰 생성
+    /// 헤더 뷰를 생성합니다.
+    private func configureHeaderView(for section: Int) -> UIView {
+        let headerView = self.createHeaderFooterView(isHeader: true)
+        let headerLabel = self.createHeaderLabel(for: section)
         
-        let headerLabel = CustomLabel(
-            text: self.section[section].title,
-            textColor: UIColor.black,
-            font: UIFont.boldSystemFont(ofSize: 25))
-        
-        headerView.addSubview(headerLabel)
-        headerLabel.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(10)
-            make.centerY.equalToSuperview()
-        }
-        
-        // 상단 모서리에만 cornerRadius 적용
-        headerView.layer.cornerRadius = 10
-        headerView.layer.maskedCorners = [
-            .layerMinXMinYCorner,
-            .layerMaxXMinYCorner]
-        headerView.clipsToBounds = true
-        
+        self.configureHeaderAutoLayout(in: headerView,
+                                       with: headerLabel)
         return headerView
     }
     
+    // MARK: - 헤더 레이블 생성
+    /// 헤더 라벨을 생성 및 구성합니다.
+    private func createHeaderLabel(for section: Int) -> UILabel {
+        return CustomLabel(
+            text: self.section[section].title,
+            textColor: UIColor.black,
+            font: UIFont.boldSystemFont(ofSize: 25))
+    }
     
+    // MARK: - 헤더 레이블 오토레이아웃 설정
+    /// 헤더 뷰 내에서 라벨의 오토레이아웃을 구성합니다.
+    private func configureHeaderAutoLayout(in headerView: UIView,
+                                           with headerLabel: UILabel) {
+        headerView.addSubview(headerLabel)
+        headerLabel.snp.makeConstraints { make in
+           make.leading.equalToSuperview().offset(20)
+           make.centerY.equalToSuperview()
+       }
+    }
     
+    // MARK: - 푸터뷰 생성
+    private func configureFooterView(for section: Int) -> UIView {
+        let view = createHeaderFooterView(isHeader: false)
+        view.addShadow(shadowType: .bottom,
+                       shadowOpacity: 0)
+        return view
+    }
     
-    
-    
-    
-    
-    func tableView(_ tableView: UITableView,
-                   viewForFooterInSection section: Int)
-    -> UIView? {
-        guard self.checkHeight(section: section) else { return nil }
+    // MARK: - 헤더뷰 및 푸터뷰 생성
+    /// 헤더 또는 푸터 뷰를 생성합니다.
+    private func createHeaderFooterView(isHeader: Bool) -> UIView {
+        let cornerType: CornerRoundType = isHeader ? .top : .bottom
         
-        // 푸터 뷰를 커스텀 뷰로 생성합니다.
-        let footerView = UIView()
-        footerView.backgroundColor = UIColor.medium_Blue
-        // 상단 모서리에만 cornerRadius 적용
-        footerView.layer.cornerRadius = 10
-        footerView.layer.maskedCorners = [
-            .layerMinXMaxYCorner,
-            .layerMaxXMaxYCorner]
-        footerView.clipsToBounds = true
-        return footerView
-    }
-    
-    
-    
-    
-    
-    
-    
-    func tableView(_ tableView: UITableView,
-                   heightForFooterInSection section: Int)
-    -> CGFloat {
-        return self.checkHeight(section: section)
-        ? 50 // 섹션 콘텐츠의 총 높이가 최소 높이보다 크거나 같은 경우, 기본 푸터 높이를 반환
-        : 0 // 푸터 뷰를 보이지 않게 하기 위한 최소값
-    }
-    
-    private func checkHeight(section: Int) -> Bool {
-        // 푸터 높이를 계산하여 최소 높이를 충족시킵니다.
-        let sectionData = self.section[section].tableData
-        let numberOfRows = sectionData?.count ?? 0
-        // 섹션 콘텐츠의 총 높이가 cardHeight 미만인 경우, 푸터 높이를 조정합니다.
-        return numberOfRows <= 3
+        let view = UIView()
+        view.setRoundedCorners(cornerType, withCornerRadius: 10)
+        view.backgroundColor = .medium_Blue
+        return view
     }
 }
 
@@ -255,9 +259,14 @@ extension ProfileVC: UITableViewDelegate {
 
 extension ProfileVC: UITableViewDataSource {
     
+    // MARK: - 섹션 수
+    // 테이블 뷰의 섹션 수를 반환
     func numberOfSections(in tableView: UITableView) -> Int {
         return self.section.count
     }
+    
+    // MARK: - 셀의 개수
+    // 각 섹션의 행 수를 반환
     func tableView(_ tableView: UITableView, 
                    numberOfRowsInSection section: Int)
     -> Int {
@@ -266,84 +275,20 @@ extension ProfileVC: UITableViewDataSource {
         return sectionType.tableData?.count ?? 0
     }
     
-    
-    
+    // MARK: - 셀 구성
+    // 셀을 구성하는 함수
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(
             withIdentifier: Identifier.profileTableViewCell,
             for: indexPath) as! ProfileTableViewCell
         
-        
         let sectionType = self.section[indexPath.section]
         
         if let tableData = sectionType.tableData {
-             let key = Array(tableData.keys)[indexPath.row]
-             cell.detailLbl.text = key
-             cell.infoLbl.text = tableData[key]
-         }
+            let cellData = Array(tableData)[indexPath.row]
+            cell.configureCell(cellData)
+        }
         
         return cell
-    }
-    func tableView(_ tableView: UITableView, 
-                   titleForHeaderInSection section: Int)
-    -> String? {
-        return self.section[section].title
-    }
-}
-
-
-
-
-
-
-
-
-
-
-final class ProfileTableViewCell: UITableViewCell {
-    
-    
-    var detailLbl: CustomLabel = CustomLabel(
-        leftInset: 26)
-    
-    var infoLbl: CustomLabel = CustomLabel(
-        textAlignment: .right,
-        rightInset: 26)
-    
-    
-    
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        
-        self.backgroundColor = .clear // 셀의 배경을 투명하게 설정합니다.
-        self.contentView.backgroundColor = .medium_Blue // contentView에 색상을 지정합니다.
-        
-        self.clipsToBounds = true
-        
-        
-        self.configureUI()
-        self.configureAutoLayout()
-    }
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    
-    private func configureUI() {
-        
-    }
-    private func configureAutoLayout() {
-        self.addSubview(self.detailLbl)
-        self.addSubview(self.infoLbl)
-        
-        self.detailLbl.snp.makeConstraints { make in
-            make.leading.equalToSuperview()
-            make.centerY.equalToSuperview()
-        }
-        // 기존의 configureAutoLayout() 메서드 내부의 infoLbl 제약 조건을 수정합니다.
-        self.infoLbl.snp.makeConstraints { make in
-            make.trailing.equalToSuperview()
-            make.centerY.equalToSuperview()
-        }
     }
 }

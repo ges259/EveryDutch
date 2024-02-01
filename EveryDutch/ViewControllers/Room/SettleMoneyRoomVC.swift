@@ -25,7 +25,7 @@ final class SettleMoneyRoomVC: UIViewController {
         let view = UIView.configureView(
             color: UIColor.deep_Blue)
         // 탑뷰에 그림자 추가
-        view.addShadow(bottom: true)
+        view.addShadow(shadowType: .bottom)
         return view
     }()
     

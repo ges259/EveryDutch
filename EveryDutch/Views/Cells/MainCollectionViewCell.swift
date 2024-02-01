@@ -47,7 +47,7 @@ extension MainCollectionViewCell {
     private func configureUI() {
         self.backgroundColor = UIColor.medium_Blue
         self.layer.cornerRadius = 10
-        self.addShadow(card: true)
+        self.addShadow(shadowType: .card)
     }
     
     // MARK: - 오토레이아웃 설정

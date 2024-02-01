@@ -61,7 +61,7 @@ extension CardImageView {
     // MARK: - UI 설정
     private func configureUI() {
         
-        self.addShadow(card: true)
+        self.addShadow(shadowType: .card)
         self.backgroundImg.clipsToBounds = true
         self.backgroundImg.layer.cornerRadius = 10
         

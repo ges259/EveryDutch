@@ -18,21 +18,23 @@ enum ProfileVCEnum {
         }
     }
     
-    var tableData: [String: String]? {
+    var tableData: [(String, String)]? {
         switch self {
         case .userInfo: 
-            return ["계정 ID" : "dsjfaK23fds33",
-                    "닉네임" : "김게임성"]
+            return [("계정 ID", "dsjfaK23fds33"),
+                    ("닉네임", "김게임성")]
             
         case .others:
-            return ["로그아웃" : "",
-                    "회원탈퇴" : "",
-                    "1111": "",
-                    "2222": "",
-                    "3333": ""]
+            return [("로그아웃", ""),
+                    ("회원탈퇴", ""),
+                    ("1111", ""),
+                    ("2222", ""),
+                    ("3333", "")]
         }
     }
-    
+    /*
+
+     */
     
     
 }

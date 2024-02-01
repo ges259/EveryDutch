@@ -29,7 +29,7 @@ final class BottomButton: UIButton {
         self.layer.cornerRadius = cornerRadius
         
         // 그림자 설정
-        self.addShadow(top: true, bottom: false)
+        self.addShadow(shadowType: .all)
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

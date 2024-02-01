@@ -90,7 +90,7 @@ extension FindFriendsVC {
          self.inviteBtn].forEach { btn in
             btn.clipsToBounds = true
             btn.layer.cornerRadius = 10
-            btn.addShadow(card: true)
+            btn.addShadow(shadowType: .card)
         }
     }
     
