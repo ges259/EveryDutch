@@ -134,6 +134,12 @@
 		5F9905072B4ABAD400DB9747 /* UsersTableViewCellVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F9905062B4ABAD400DB9747 /* UsersTableViewCellVM.swift */; };
 		5F9CD1742B4845D200F2CE07 /* CardScreen_Enum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F9CD1732B4845D200F2CE07 /* CardScreen_Enum.swift */; };
 		5F9D169D2B5AD4DC00A9477C /* NumberFormatter+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F9D169C2B5AD4DC00A9477C /* NumberFormatter+Ext.swift */; };
+		5F9F76592B6C17C700BB6511 /* ProfileVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F9F76582B6C17C700BB6511 /* ProfileVM.swift */; };
+		5F9F765B2B6C17F200BB6511 /* CornerRoundType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F9F765A2B6C17F200BB6511 /* CornerRoundType.swift */; };
+		5F9F765D2B6C181000BB6511 /* ShadowType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F9F765C2B6C181000BB6511 /* ShadowType.swift */; };
+		5F9F765F2B6C223F00BB6511 /* ProfileVMProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F9F765E2B6C223E00BB6511 /* ProfileVMProtocol.swift */; };
+		5F9F76612B6C225700BB6511 /* ProfileCoordProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F9F76602B6C225700BB6511 /* ProfileCoordProtocol.swift */; };
+		5F9F76632B6C227D00BB6511 /* ProfileCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F9F76622B6C227D00BB6511 /* ProfileCoordinator.swift */; };
 		5FA14C632B5422C000E8F0E7 /* ReadRoomMoneyData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FA14C622B5422C000E8F0E7 /* ReadRoomMoneyData.swift */; };
 		5FAC8A952B5860AD003B4A05 /* ReceiptWriteTableDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FAC8A942B5860AD003B4A05 /* ReceiptWriteTableDelegate.swift */; };
 		5FB278612B4716B400491C2B /* CheckReceiptCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FB278602B4716B400491C2B /* CheckReceiptCoordinator.swift */; };
@@ -302,6 +308,12 @@
 		5F9905062B4ABAD400DB9747 /* UsersTableViewCellVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersTableViewCellVM.swift; sourceTree = "<group>"; };
 		5F9CD1732B4845D200F2CE07 /* CardScreen_Enum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardScreen_Enum.swift; sourceTree = "<group>"; };
 		5F9D169C2B5AD4DC00A9477C /* NumberFormatter+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NumberFormatter+Ext.swift"; sourceTree = "<group>"; };
+		5F9F76582B6C17C700BB6511 /* ProfileVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileVM.swift; sourceTree = "<group>"; };
+		5F9F765A2B6C17F200BB6511 /* CornerRoundType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerRoundType.swift; sourceTree = "<group>"; };
+		5F9F765C2B6C181000BB6511 /* ShadowType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowType.swift; sourceTree = "<group>"; };
+		5F9F765E2B6C223E00BB6511 /* ProfileVMProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileVMProtocol.swift; sourceTree = "<group>"; };
+		5F9F76602B6C225700BB6511 /* ProfileCoordProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCoordProtocol.swift; sourceTree = "<group>"; };
+		5F9F76622B6C227D00BB6511 /* ProfileCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCoordinator.swift; sourceTree = "<group>"; };
 		5FA14C622B5422C000E8F0E7 /* ReadRoomMoneyData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadRoomMoneyData.swift; sourceTree = "<group>"; };
 		5FAC8A942B5860AD003B4A05 /* ReceiptWriteTableDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptWriteTableDelegate.swift; sourceTree = "<group>"; };
 		5FB278602B4716B400491C2B /* CheckReceiptCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckReceiptCoordinator.swift; sourceTree = "<group>"; };
@@ -384,6 +396,7 @@
 				5FE3DEBB2B39CB87008D58AE /* MainCoordinator.swift */,
 				5FE3DEC92B39CC52008D58AE /* ProfileEditVCCoordinator.swift */,
 				5F7B9FD12B68F164006917E6 /* RoomEditVCCoordinator.swift */,
+				5F9F76622B6C227D00BB6511 /* ProfileCoordinator.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -425,6 +438,7 @@
 				5FE3DEC52B39CBD9008D58AE /* MainCoordProtocol.swift */,
 				5FE3DED52B39F416008D58AE /* ProfileEditVCCoordProtocol.swift */,
 				5F7B9FD52B68F24A006917E6 /* RoomEditVCCoordProtocol.swift */,
+				5F9F76602B6C225700BB6511 /* ProfileCoordProtocol.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -464,6 +478,7 @@
 				5FE3DECB2B39CC8D008D58AE /* MainCollectionViewCellVM.swift */,
 				5F47CD072B3AD8F500FCBFA4 /* ProfileEditVM.swift */,
 				5F7B9FD72B68F6AF006917E6 /* RoomEditVM.swift */,
+				5F9F76582B6C17C700BB6511 /* ProfileVM.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -582,6 +597,7 @@
 				5F47CD092B3AE9D800FCBFA4 /* ProfileEditVMProtocol.swift */,
 				5F80EA922B67DF8100BD8D0C /* SplashScreenVMProtocol.swift */,
 				5F7B9FD92B6917B1006917E6 /* RoomEditVMProtocol.swift */,
+				5F9F765E2B6C223E00BB6511 /* ProfileVMProtocol.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -790,6 +806,8 @@
 				5F294B442B4DA4E900396B6E /* APIError.swift */,
 				5F7DB59A2B5921E300E8C11F /* PeopleSeelctionEnum.swift */,
 				5F5FC6132B6AA48400693E6F /* ProfileVCEnum.swift */,
+				5F9F765A2B6C17F200BB6511 /* CornerRoundType.swift */,
+				5F9F765C2B6C181000BB6511 /* ShadowType.swift */,
 			);
 			path = Enum;
 			sourceTree = "<group>";
@@ -1075,6 +1093,7 @@
 				5F614B3E2B45938D00EF35CE /* CheckReceiptPanVC.swift in Sources */,
 				5F47CD102B3AECB500FCBFA4 /* SettleMoneyRoomCoordinator.swift in Sources */,
 				5F0BCE3A2B53144A007A3564 /* ReceiptWriteCellVMProtocol.swift in Sources */,
+				5F9F765D2B6C181000BB6511 /* ShadowType.swift in Sources */,
 				5F8513CC2B4D5F1900A5B22D /* ReadReceipt.swift in Sources */,
 				5F6C434D2B3C5BD000BBC466 /* CustomLabel.swift in Sources */,
 				5FB4F70C2B433DEF002F6CF3 /* LoginVC.swift in Sources */,
@@ -1094,7 +1113,9 @@
 				5F6FDDE82B5067E700F09CCD /* UserManager.swift in Sources */,
 				5F8513F92B4D7FA200A5B22D /* CreateUsers.swift in Sources */,
 				5FE3DED62B39F416008D58AE /* ProfileEditVCCoordProtocol.swift in Sources */,
+				5F9F76592B6C17C700BB6511 /* ProfileVM.swift in Sources */,
 				5FB278612B4716B400491C2B /* CheckReceiptCoordinator.swift in Sources */,
+				5F9F765F2B6C223F00BB6511 /* ProfileVMProtocol.swift in Sources */,
 				5F7B9FD82B68F6AF006917E6 /* RoomEditVM.swift in Sources */,
 				5F1713822B46D2E4006B3EBB /* ReceiptScreenPanCoordinator.swift in Sources */,
 				5F87DF2A2B3C999D001D5B80 /* RoomSettingCoordinator.swift in Sources */,
@@ -1115,6 +1136,7 @@
 				5FE3DEC82B39CC2A008D58AE /* AppCoordinator.swift in Sources */,
 				5F6FDDE42B505DD000F09CCD /* ReceiptScreenPanCellVM.swift in Sources */,
 				5F5AFBCE2B493D2A00BBBB9D /* RoomSettingVMProtocol.swift in Sources */,
+				5F9F76632B6C227D00BB6511 /* ProfileCoordinator.swift in Sources */,
 				5F8513EB2B4D705D00A5B22D /* CreateRooms.swift in Sources */,
 				5F68487E2B441BCA0015BFCC /* LoginScreenCoordinator.swift in Sources */,
 				5FE3DED82B39F8F3008D58AE /* InsetTextField.swift in Sources */,
@@ -1136,6 +1158,7 @@
 				5FFEAE712B3F3AE100E0B2BB /* FindFriendsCoordinator.swift in Sources */,
 				5F4FA7292B553F3E009EE4F4 /* RoomDataManagerProtocol.swift in Sources */,
 				5F5AFBD22B4940DA00BBBB9D /* MainCollectionViewCellVMProtocol.swift in Sources */,
+				5F9F76612B6C225700BB6511 /* ProfileCoordProtocol.swift in Sources */,
 				5F8513C42B4D306A00A5B22D /* CumulativeAmount.swift in Sources */,
 				5FE3DE8F2B39CA9B008D58AE /* AppDelegate.swift in Sources */,
 				5F294B452B4DA4E900396B6E /* APIError.swift in Sources */,
@@ -1162,6 +1185,7 @@
 				5F6848852B4428310015BFCC /* CardTextDelegate.swift in Sources */,
 				5FE3DEB42B39CB68008D58AE /* UIButton+Ext.swift in Sources */,
 				5F0BCE382B531429007A3564 /* SettlementVMProtocol.swift in Sources */,
+				5F9F765B2B6C17F200BB6511 /* CornerRoundType.swift in Sources */,
 				5F8513BC2B4D2FE700A5B22D /* User.swift in Sources */,
 				5F8513E92B4D6EB900A5B22D /* DeleteReceipt.swift in Sources */,
 				5F4913DF2B3DD97100CD76A8 /* NoDataView.swift in Sources */,

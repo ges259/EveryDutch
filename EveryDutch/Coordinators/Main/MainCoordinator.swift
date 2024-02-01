@@ -79,7 +79,7 @@ final class MainCoordinator: MainCoordProtocol{
             settlementRoomCoordinator.start()
     }
     
-    // MARK: - 프로필 스크린
+    
     /// 플러스 버튼을 누르면 화면 이동
     func profileEditScreen() {
         // Main-Coordinator 생성
@@ -100,6 +100,17 @@ final class MainCoordinator: MainCoordProtocol{
         
     }
     
+    // MARK: - 프로필 스크린
+    func profileScreen() {
+        let profileCoordinator = ProfileCoordinator(
+            nav: self.nav)
+        self.childCoordinators.append(profileCoordinator)
+        profileCoordinator.parentCoordinator = self
+        profileCoordinator.start()
+    }
+    
+    
+    
     // MARK: - 로그인 선택 화면
     func selectALgoinMethodScreen() {
         // SettleMoneyRoomCoordinator 생성
@@ -113,10 +124,6 @@ final class MainCoordinator: MainCoordProtocol{
         self.transitionAndRemoveVC(
             from: self.nav,
             viewControllerType: MainVC.self)
-    }
-    
-    func profileScreen() {
-        print(#function)
     }
     
     // MARK: - didFinish

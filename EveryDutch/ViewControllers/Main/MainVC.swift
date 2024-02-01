@@ -134,6 +134,9 @@ final class MainVC: UIViewController {
             self.menuBtnTapped()
         }
     }
+    deinit {
+        print("\(#function)-----\(self)")
+    }
 }
 
 
@@ -264,10 +267,7 @@ extension MainVC {
     
     // MARK: - 프로필 액션
     @objc private func profileScreenBtnTapped() {
-//        self.coordinator.profileEditScreen()
-        let profileVC = ProfileVC()
-        
-        self.navigationController?.pushViewController(profileVC, animated: true)
+        self.coordinator.profileScreen()
     }
     
     // MARK: - 방 생성 액션

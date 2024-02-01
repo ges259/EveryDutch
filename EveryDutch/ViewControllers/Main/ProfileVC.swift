@@ -54,10 +54,19 @@ final class ProfileVC: UIViewController {
     
     
     // MARK: - 프로퍼티
-    let section: [ProfileVCEnum] = [.userInfo, .others]
+    private let viewModel: ProfileVMProtocol
+    private let coordinator: ProfileCoordProtocol
     
     
     private lazy var cardHeight = (self.view.frame.width - 20) * 1.8 / 3
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     // MARK: - 라이프사이클
@@ -67,6 +76,18 @@ final class ProfileVC: UIViewController {
         self.configureUI()
         self.configureAutoLayout()
         self.configureAction()
+    }
+    init(viewModel: ProfileVMProtocol,
+         coordinator: ProfileCoordProtocol) {
+        self.viewModel = viewModel
+        self.coordinator = coordinator
+        super.init(nibName: nil, bundle: nil)
+    }
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    deinit {
+        print("\(#function)-----\(self)")
     }
 }
 
@@ -103,6 +124,7 @@ extension ProfileVC {
             make.leading.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
         }
+        
         // 컨텐트뷰
         self.contentView.snp.makeConstraints { make in
             make.edges.equalTo(self.scrollView.contentLayoutGuide)
@@ -179,13 +201,8 @@ extension ProfileVC: UITableViewDelegate {
     func tableView(_ tableView: UITableView, 
                    heightForFooterInSection section: Int)
     -> CGFloat {
-        return self.checkHeight(section: section) ? 50 : 5
+        return self.viewModel.getFooterViewHeight(section: section)
     }
-    
-    
-    
-    
-    
     
     
     
@@ -194,15 +211,6 @@ extension ProfileVC: UITableViewDelegate {
 // MARK: - Helper Methods
     
     
-    
-    // MARK: - 셀의 최소 높이
-    
-    /// 섹션의 높이를 확인하여 조건을 충족시키는지 검사합니다.
-    private func checkHeight(section: Int) -> Bool {
-        let sectionData = self.section[section].tableData
-        let numberOfRows = sectionData?.count ?? 0
-        return numberOfRows <= 3
-    }
     
     // MARK: - 헤더뷰 생성
     /// 헤더 뷰를 생성합니다.
@@ -219,7 +227,7 @@ extension ProfileVC: UITableViewDelegate {
     /// 헤더 라벨을 생성 및 구성합니다.
     private func createHeaderLabel(for section: Int) -> UILabel {
         return CustomLabel(
-            text: self.section[section].title,
+            text: self.viewModel.getHeaderTitle(section: section),
             textColor: UIColor.black,
             font: UIFont.boldSystemFont(ofSize: 25))
     }
@@ -243,7 +251,7 @@ extension ProfileVC: UITableViewDelegate {
         return view
     }
     
-    // MARK: - 헤더뷰 및 푸터뷰 생성
+    // MARK: - 헤더뷰 푸터뷰의 '뷰'생성
     /// 헤더 또는 푸터 뷰를 생성합니다.
     private func createHeaderFooterView(isHeader: Bool) -> UIView {
         let cornerType: CornerRoundType = isHeader ? .top : .bottom
@@ -255,6 +263,15 @@ extension ProfileVC: UITableViewDelegate {
     }
 }
 
+
+
+
+
+
+
+
+
+
 // MARK: - 테이블뷰 데이터소스
 
 extension ProfileVC: UITableViewDataSource {
@@ -262,7 +279,7 @@ extension ProfileVC: UITableViewDataSource {
     // MARK: - 섹션 수
     // 테이블 뷰의 섹션 수를 반환
     func numberOfSections(in tableView: UITableView) -> Int {
-        return self.section.count
+        return self.viewModel.getNumOfSection
     }
     
     // MARK: - 셀의 개수
@@ -270,9 +287,7 @@ extension ProfileVC: UITableViewDataSource {
     func tableView(_ tableView: UITableView, 
                    numberOfRowsInSection section: Int)
     -> Int {
-        let sectionType = self.section[section]
-        
-        return sectionType.tableData?.count ?? 0
+        return self.viewModel.getNumOfTableData(section: section)
     }
     
     // MARK: - 셀 구성
@@ -282,13 +297,9 @@ extension ProfileVC: UITableViewDataSource {
             withIdentifier: Identifier.profileTableViewCell,
             for: indexPath) as! ProfileTableViewCell
         
-        let sectionType = self.section[indexPath.section]
-        
-        if let tableData = sectionType.tableData {
-            let cellData = Array(tableData)[indexPath.row]
-            cell.configureCell(cellData)
-        }
-        
+        let tableData = self.viewModel.getTableData(section: indexPath.section,
+                                               index: indexPath.row)
+        cell.configureCell(tableData)
         return cell
     }
 }

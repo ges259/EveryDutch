@@ -7,22 +7,27 @@
 
 import UIKit
 
-
-enum ShadowType {
-    case all
-    case top
-    case bottom
-    case card
-}
+// MARK: - UIView
 
 extension UIView {
+    
+    // MARK: - 뷰 만들기 +배경 색
     static func configureView(color: UIColor) -> UIView {
         let view = UIView()
             view.backgroundColor = color
         return view
     }
     
+    // MARK: - 모서리 설정
+    /// 모서리 둥글게 처리 설정
+    func setRoundedCorners(_ type: CornerRoundType,
+                           withCornerRadius radius: CGFloat) {
+        self.layer.cornerRadius = type == .none ? 0 : radius
+        self.layer.maskedCorners = type.cornerMask
+        self.clipsToBounds = true
+    }
     
+    // MARK: - 그림자 추가
     // 그림자를 추가하는 함수
     func addShadow(shadowType: ShadowType,
                    shadowColor: UIColor = .black,
@@ -53,7 +58,7 @@ extension UIView {
                 height: shadowRadius)
         }
     }
-    
+    // MARK: - AttributedText
     func setAttributedText(
         placeholderText: String,
         placeholerColor: UIColor = UIColor.placeholder_gray)
@@ -64,56 +69,5 @@ extension UIView {
             font: UIFont.systemFont(ofSize: 12))
         
         return string
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    /// 모서리 둥글게 처리 설정
-    func setRoundedCorners(_ type: CornerRoundType,
-                           withCornerRadius radius: CGFloat) {
-        self.layer.cornerRadius = type == .none ? 0 : radius
-        self.layer.maskedCorners = type.cornerMask
-        self.clipsToBounds = true
-    }
-}
-
-
-
-
-
-
-
-enum CornerRoundType {
-    case top
-    case bottom
-    case all
-    case none
-    
-    var cornerMask: CACornerMask {
-        switch self {
-        case .top:
-            return [.layerMinXMinYCorner, .layerMaxXMinYCorner]
-        case .bottom:
-            return [.layerMinXMaxYCorner, .layerMaxXMaxYCorner]
-        case .all:
-            return [.layerMinXMinYCorner, .layerMaxXMinYCorner, .layerMinXMaxYCorner, .layerMaxXMaxYCorner]
-        case .none:
-            return []
-        }
     }
 }
