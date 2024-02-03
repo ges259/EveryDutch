@@ -7,7 +7,7 @@
 
 import UIKit
 
-enum ReceiptEnum {
+enum ReceiptEnum: CaseIterable {
     case memo
     case date
     case time

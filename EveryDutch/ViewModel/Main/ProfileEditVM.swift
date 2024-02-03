@@ -13,7 +13,7 @@ final class ProfileEditVM: ProfileEditVMProtocol {
     
     
     
-    private let section: [ProfileEdit] = ProfileEdit.allCases
+    private let section: [profileEditEnum] = profileEditEnum.allCases
     
     
     

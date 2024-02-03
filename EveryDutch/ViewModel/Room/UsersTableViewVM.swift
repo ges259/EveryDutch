@@ -12,7 +12,7 @@ class UsersTableViewVM: UsersTableViewVMProtocol {
     var cellViewModels: [UsersTableViewCellVM] = []
     
 
-    var customTableEnum: CustomTableEnum
+    var customTableEnum: UsersTableEnum
     
     var users: RoomUserDataDictionary = [:]
     
@@ -44,7 +44,7 @@ class UsersTableViewVM: UsersTableViewVMProtocol {
     private var roomDataManager: RoomDataManagerProtocol
     // MARK: - Fix
     init(roomDataManager: RoomDataManagerProtocol,
-         _ customTableEnum: CustomTableEnum) {
+         _ customTableEnum: UsersTableEnum) {
         self.roomDataManager = roomDataManager
         self.customTableEnum = customTableEnum
     }

@@ -11,7 +11,7 @@ protocol UsersTableViewCellVMProtocol {
     var profileImageURL: String { get }
     var userName: String { get }
     var cumulativeAmount: Int { get }
-    var customTableEnum: CustomTableEnum { get }
+    var customTableEnum: UsersTableEnum { get }
     
     var profileImg: UIImage? { get }
     

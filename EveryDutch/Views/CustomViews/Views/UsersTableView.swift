@@ -124,7 +124,7 @@ extension UsersTableView {
     }
     
     // MARK: - Enum에 따른 설정
-    private func configureEnum(_ customTableEnum: CustomTableEnum) {
+    private func configureEnum(_ customTableEnum: UsersTableEnum) {
         switch customTableEnum {
             // 상단 버튼
         case .isRoomSetting, .isSettleMoney:

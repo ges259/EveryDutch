@@ -18,14 +18,14 @@ struct UsersTableViewCellVM: UsersTableViewCellVMProtocol {
     var userID: String
     
     
-    var customTableEnum: CustomTableEnum
+    var customTableEnum: UsersTableEnum
     
     
     init(userID: String,
          moneyData : Int,
          paybackPrice: Int,
          roomUsers: RoomUsers,
-         customTableEnum: CustomTableEnum) {
+         customTableEnum: UsersTableEnum) {
         self.userID = userID
         self.cumulativeAmount = moneyData
         
