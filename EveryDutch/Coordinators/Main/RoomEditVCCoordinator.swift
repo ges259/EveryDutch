@@ -21,7 +21,7 @@ final class RoomEditVCCoordinator: RoomEditVCCoordProtocol {
     weak var delegate: CardScreenDelegate?
     
     var nav: UINavigationController
-    private var roomEditEnum: RoomEditEnum = .room
+    
     
     
     
@@ -34,10 +34,8 @@ final class RoomEditVCCoordinator: RoomEditVCCoordProtocol {
     
     // MARK: - 라이프사이클
     // 의존성 주입
-    init(nav: UINavigationController,
-         roomEditEnum: RoomEditEnum) {
+    init(nav: UINavigationController) {
         self.nav = nav
-        self.roomEditEnum = roomEditEnum
     }
     // MARK: - start
     func start() {
@@ -49,9 +47,7 @@ final class RoomEditVCCoordinator: RoomEditVCCoordProtocol {
     
     // MARK: - 방 수정 화면
     private func roomEditScreen() {
-        let roomEditVM = RoomEditVM(
-            profileEditEnum:
-            self.roomEditEnum)
+        let roomEditVM = RoomEditVM()
         // PlusViewController 인스턴스 생성
         let roomEditVC = RoomEditVC(
             viewModel: roomEditVM,

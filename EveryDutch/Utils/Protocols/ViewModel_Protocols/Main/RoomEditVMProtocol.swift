@@ -8,5 +8,5 @@
 import Foundation
 
 protocol RoomEditVMProtocol {
-    var profileEditEnum: RoomEditEnum { get }
+    
 }

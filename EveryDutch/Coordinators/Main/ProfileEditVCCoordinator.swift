@@ -21,7 +21,6 @@ final class ProfileEditVCCoordinator: ProfileEditVCCoordProtocol {
     weak var delegate: CardScreenDelegate?
     
     var nav: UINavigationController
-    private var profileEditEnum: ProfileEditEnum = .profile
     
     
     
@@ -34,10 +33,8 @@ final class ProfileEditVCCoordinator: ProfileEditVCCoordProtocol {
     
     // MARK: - 라이프사이클
     // 의존성 주입
-    init(nav: UINavigationController,
-         profileEditEnum: ProfileEditEnum) {
+    init(nav: UINavigationController) {
         self.nav = nav
-        self.profileEditEnum = profileEditEnum
     }
     
     // MARK: - start
@@ -56,8 +53,7 @@ final class ProfileEditVCCoordinator: ProfileEditVCCoordProtocol {
     
     // MARK: - 프로필 화면
     private func profileEditScreen() {
-        let profileEditVM = ProfileEditVM(
-            profileEditEnum: self.profileEditEnum)
+        let profileEditVM = ProfileEditVM()
         // PlusViewController 인스턴스 생성
         let cardScreenVC = ProfileEditVC(
             viewModel: profileEditVM,

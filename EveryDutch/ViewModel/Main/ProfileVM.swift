@@ -9,8 +9,11 @@ import UIKit
 
 final class ProfileVM: ProfileVMProtocol {
     
-    private let section: [ProfileVCEnum] = [.userInfo, .others]
+    private let section: [ProfileVCEnum] = ProfileVCEnum.allCases
     
+    
+    
+    // MARK: - 섹션의 개수
     var getNumOfSection: Int {
         return self.section.count
     }
@@ -24,31 +27,35 @@ final class ProfileVM: ProfileVMProtocol {
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    // MARK: - 헤더의 타이틀
+    func getHeaderTitle(section: Int) -> String {
+        return self.section[section].headerTitle
+    }
+    
+    // MARK: - 푸터뷰 높이
     func getFooterViewHeight(section: Int) -> CGFloat {
-        let tableData = self.section[section].tableData
-        let count = tableData?.count ?? 0
+        let tableData = self.section[section].cellTitle
+        let count = tableData.count
         
         return count < 3 ? 50 : 5
     }
     
-    
-    
-    
-    
-    func getNumOfTableData(section: Int) -> Int {
-        let tableData = self.section[section].tableData
-        return tableData?.count ?? 0
+    // MARK: - 섹션 당 데이터 개수
+    func getNumOfCell(section: Int) -> Int {
+        let tableData = self.section[section].cellTitle
+        return tableData.count
     }
     
-    
-
-    func getHeaderTitle(section: Int) -> String {
-        return self.section[section].title 
-    }
-    
-    
-    func getTableData(section: Int, index: Int) -> (String, String)? {
-        let tableData: [(String, String)]? = self.section[section].tableData
-        return tableData?[index]
+    // MARK: - 테이블 데이터
+    func getTableData(section: Int, index: Int) -> String {
+        let tableData: [String] = self.section[section].cellTitle
+        return tableData[index]
     }
 }

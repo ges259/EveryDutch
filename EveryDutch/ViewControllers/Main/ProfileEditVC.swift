@@ -23,30 +23,44 @@ final class ProfileEditVC: UIViewController {
     
     private var cardImgView: CardImageView = CardImageView()
     
-    private lazy var roomInfoCardView: CardEditView = CardEditView(
-        mode: self.viewModel.getCurrentMode)
-    
-    private lazy var userInfoCardView: CardEditView = {
-        let view = CardEditView(mode: .profile)
+    // MARK: - 테이블뷰
+    private lazy var tableView: CustomTableView = {
+        let view = CustomTableView()
+        view.register(
+            CardDataCell.self,
+            forCellReuseIdentifier: Identifier.cardDataCell)
+        view.register(
+            CardDecorationCell.self,
+            forCellReuseIdentifier: Identifier.cardDecorationCell)
+        
+        view.sectionHeaderTopPadding = 12
+        
         view.delegate = self
+        view.dataSource = self
+        view.backgroundColor = .clear
         return view
     }()
     
-    private lazy var stackView: UIStackView = UIStackView.configureStv(
-        arrangedSubviews: [self.cardImgView,
-                           self.roomInfoCardView],
-        axis: .vertical,
-        spacing: 10,
-        alignment: .fill,
-        distribution: .fillEqually)
+    
+    
+    
     
     private var clearView: UIView = UIView()
     
     
-    private var bottomBtn: BottomButton = BottomButton()
+    private var bottomBtn: BottomButton = BottomButton(
+        title: "완료")
     
     
+    private var profileChangeBtn: UIButton = UIButton.btnWithTitle(
+        title: "프로필 이미지 설정",
+        font: UIFont.boldSystemFont(ofSize: 14),
+        backgroundColor: .deep_Blue)
     
+    private var backgroundChangeBtn: UIButton = UIButton.btnWithTitle(
+        title: "배경 이미지 설정",
+        font: UIFont.boldSystemFont(ofSize: 14),
+        backgroundColor: .deep_Blue)
     
     
     
@@ -104,25 +118,22 @@ extension ProfileEditVC {
     private func configureUI() {
         self.view.backgroundColor = UIColor.base_Blue
         
+        self.tableView.addShadow(shadowType: .card)
+        
+        self.profileChangeBtn.setRoundedCorners(.bottom, withCornerRadius: 12)
+        self.backgroundChangeBtn.setRoundedCorners(.bottom, withCornerRadius: 12)
         
         
-        self.bottomBtn.isHidden = self.viewModel.bottomBtn_IsHidden
-        
-        if let btnTitle = self.viewModel.bottomBtn_Title  {
-            self.bottomBtn.setTitle(btnTitle, for: .normal)
-        }
-        
-        if self.viewModel.secondStv_IsHidden {
-            self.stackView.addArrangedSubview(self.userInfoCardView)
-        }
-        
+        let btnTitle = self.viewModel.bottomBtn_Title
+        self.bottomBtn.setTitle(btnTitle, for: .normal)
     }
     
     // MARK: - 오토레이아웃 설정
     private func configureAutoLayout() {
         self.view.addSubview(self.scrollView)
         self.scrollView.addSubview(self.contentView)
-        self.contentView.addSubview(self.stackView)
+        self.contentView.addSubview(self.cardImgView)
+        self.contentView.addSubview(self.tableView)
         self.view.addSubview(self.bottomBtn)
         
         // 스크롤뷰
@@ -141,17 +152,18 @@ extension ProfileEditVC {
             make.height.equalTo(self.cardHeight)
         }
         // 스택뷰
-        self.stackView.snp.makeConstraints { make in
+        self.cardImgView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(2)
             make.leading.equalToSuperview().offset(10)
             make.trailing.equalToSuperview().offset(-10)
-            
-            if self.viewModel.bottomBtn_IsHidden {
-                make.bottom.equalToSuperview().offset(-10)
-            } else {
-                make.bottom.equalToSuperview().offset(-UIDevice.current.bottomBtnHeight - 10)
-            }
         }
+        // 테이블뷰
+        self.tableView.snp.makeConstraints { make in
+            make.top.equalTo(self.cardImgView.snp.bottom)
+            make.leading.trailing.equalTo(self.cardImgView)
+            make.bottom.equalToSuperview().offset(-UIDevice.current.bottomBtnHeight - 10)
+        }
+        
         // 바텀뷰
         self.bottomBtn.snp.makeConstraints { make in
             make.bottom.leading.trailing.equalToSuperview()
@@ -211,5 +223,158 @@ extension ProfileEditVC: CardTextDelegate {
     
     func editBtnTapped() {
         print(#function)
+    }
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - 테이블뷰 델리게이트
+
+extension ProfileEditVC: UITableViewDelegate {
+    
+    // MARK: - 셀의 높이
+    /// 셀의 높이를 설정합니다.
+    func tableView(_ tableView: UITableView,
+                   heightForRowAt indexPath: IndexPath)
+    -> CGFloat {
+        return 50
+    }
+    
+    // MARK: - 헤더뷰 설정
+    /// 헤더 뷰를 구성합니다.
+    func tableView(_ tableView: UITableView,
+                   viewForHeaderInSection section: Int)
+    -> UIView? {
+        return self.createHeaderView(for: section)
+    }
+    
+    // MARK: - 헤더 높이
+    /// 헤더의 높이를 설정합니다.
+    func tableView(_ tableView: UITableView,
+                   heightForHeaderInSection section: Int)
+    -> CGFloat {
+        return 70
+    }
+    
+    // MARK: - 푸터뷰 설정
+    /// 푸터 뷰를 구성합니다. 특정 조건을 만족하는 섹션에만 푸터를 설정합니다.
+    func tableView(_ tableView: UITableView,
+                   viewForFooterInSection section: Int)
+    -> UIView? {
+        return section == 1
+        ? self.backgroundChangeBtn
+        : self.profileChangeBtn
+    }
+    
+    // MARK: - 푸터뷰 높이
+    /// 푸터의 높이를 설정합니다. 특정 조건을 만족할 때만 높이를 할당합니다.
+    func tableView(_ tableView: UITableView,
+                   heightForFooterInSection section: Int)
+    -> CGFloat {
+        return 50
+    }
+    
+    
+    
+    
+    
+// MARK: - Helper_Functions
+    
+    
+    
+    // MARK: - 헤더뷰 생성
+    /// 헤더 뷰를 생성합니다.
+    private func createHeaderView(for section: Int) -> UIView {
+        let title = self.viewModel.getHeaderTitle(
+            section: section)
+        return TableHeaderView(title: title)
+    }
+    
+    // MARK: - 푸터뷰 생성
+    private func createFooterView() -> UIView {
+        
+        
+        
+        return TableFooterView()
+    }
+    
+    
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - 테이블뷰 데이터소스
+
+extension ProfileEditVC: UITableViewDataSource {
+    
+    // MARK: - 섹션 수
+    // 테이블 뷰의 섹션 수를 반환
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return self.viewModel.getNumOfSection
+    }
+    
+    // MARK: - 셀의 개수
+    func tableView(_ tableView: UITableView,
+                   numberOfRowsInSection section: Int) 
+    -> Int {
+        return self.viewModel.getNumOfCell(
+            section: section)
+    }
+    
+    // MARK: - 셀 구성
+    func tableView(_ tableView: UITableView,
+                   cellForRowAt indexPath: IndexPath)
+    -> UITableViewCell {
+        
+        if indexPath.section == 1 {
+            let cell = tableView.dequeueReusableCell(
+                withIdentifier: Identifier.cardDecorationCell,
+                for: indexPath) as! CardDecorationCell
+            
+            
+            let text = self.viewModel.getTableData(
+                section: indexPath.section,
+                index: indexPath.row)
+            cell.setDetailLbl(text: text)
+            
+            return cell
+            
+            
+        } else {
+            let cell = tableView.dequeueReusableCell(
+                withIdentifier: Identifier.cardDataCell,
+                for: indexPath) as! CardDataCell
+            // 첫 번째 셀이라면, 오른쪽 상단 모서리 설정
+            if indexPath.row == 0 {
+                self.firstCellSetCorner(cell: cell)
+            }
+            
+            let text = self.viewModel.getTableData(
+                section: indexPath.section,
+                index: indexPath.row)
+            cell.setDetailLbl(text: text)
+            
+            return cell
+        }
+    }
+    
+    
+    // MARK: - 셀의 모서리 설정
+    private func firstCellSetCorner(cell: CardDataCell) {
+        cell.textField.setRoundedCorners(.rightTop, withCornerRadius: 12)
     }
 }

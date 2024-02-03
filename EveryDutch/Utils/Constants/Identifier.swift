@@ -20,6 +20,10 @@ enum Identifier {
     
     
     static let profileTableViewCell: String = "ProfileTableViewCell"
+    
+    static let cardDataCell: String = "CardDataCell"
+    static let cardDecorationCell: String = "CardDecorationCell"
+    
 }
 
 

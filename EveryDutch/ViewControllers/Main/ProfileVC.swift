@@ -25,7 +25,7 @@ final class ProfileVC: UIViewController {
     
     
     
-    private lazy var tableVeiw: CustomTableView = {
+    private lazy var tableView: CustomTableView = {
         let view = CustomTableView()
         view.register(
             ProfileTableViewCell.self,
@@ -42,7 +42,7 @@ final class ProfileVC: UIViewController {
     
     private lazy var totalStackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.cardImgView,
-                           self.tableVeiw],
+                           self.tableView],
         axis: .vertical,
         spacing: 0,
         alignment: .fill,
@@ -109,7 +109,7 @@ extension ProfileVC {
         self.view.backgroundColor = .base_Blue
         
         
-        self.tableVeiw.addShadow(shadowType: .card)
+        self.tableView.addShadow(shadowType: .card)
     }
     
     // MARK: - 오토레이아웃 설정
@@ -147,7 +147,31 @@ extension ProfileVC {
     
     // MARK: - 액션 설정
     private func configureAction() {
-        
+        // 버튼 생성
+        let backButton = UIBarButtonItem(
+            image: .chevronLeft,
+            style: .done,
+            target: self,
+            action: #selector(self.backButtonTapped))
+        // 네비게이션 바의 왼쪽 아이템으로 설정
+        self.navigationItem.leftBarButtonItem = backButton
+    }
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - 액션 설정
+
+extension ProfileVC {
+    @objc private func backButtonTapped() {
+        self.coordinator.didFinish()
     }
 }
 
@@ -177,7 +201,7 @@ extension ProfileVC: UITableViewDelegate {
     func tableView(_ tableView: UITableView, 
                    viewForHeaderInSection section: Int)
     -> UIView? {
-        return self.configureHeaderView(for: section)
+        return self.createHeaderView(for: section)
     }
     
     // MARK: - 헤더 높이
@@ -193,7 +217,7 @@ extension ProfileVC: UITableViewDelegate {
     func tableView(_ tableView: UITableView, 
                    viewForFooterInSection section: Int)
     -> UIView? {
-        return self.configureFooterView(for: section)
+        return self.createFooterView()
     }
     
     // MARK: - 푸터뷰 높이
@@ -208,58 +232,19 @@ extension ProfileVC: UITableViewDelegate {
     
     
     
-// MARK: - Helper Methods
+// MARK: - Helper_Functions
     
     
     
     // MARK: - 헤더뷰 생성
     /// 헤더 뷰를 생성합니다.
-    private func configureHeaderView(for section: Int) -> UIView {
-        let headerView = self.createHeaderFooterView(isHeader: true)
-        let headerLabel = self.createHeaderLabel(for: section)
-        
-        self.configureHeaderAutoLayout(in: headerView,
-                                       with: headerLabel)
-        return headerView
+    private func createHeaderView(for section: Int) -> UIView {
+        let title = self.viewModel.getHeaderTitle(section: section)
+        return TableHeaderView(title: title)
     }
-    
-    // MARK: - 헤더 레이블 생성
-    /// 헤더 라벨을 생성 및 구성합니다.
-    private func createHeaderLabel(for section: Int) -> UILabel {
-        return CustomLabel(
-            text: self.viewModel.getHeaderTitle(section: section),
-            textColor: UIColor.black,
-            font: UIFont.boldSystemFont(ofSize: 25))
-    }
-    
-    // MARK: - 헤더 레이블 오토레이아웃 설정
-    /// 헤더 뷰 내에서 라벨의 오토레이아웃을 구성합니다.
-    private func configureHeaderAutoLayout(in headerView: UIView,
-                                           with headerLabel: UILabel) {
-        headerView.addSubview(headerLabel)
-        headerLabel.snp.makeConstraints { make in
-           make.leading.equalToSuperview().offset(20)
-           make.centerY.equalToSuperview()
-       }
-    }
-    
     // MARK: - 푸터뷰 생성
-    private func configureFooterView(for section: Int) -> UIView {
-        let view = createHeaderFooterView(isHeader: false)
-        view.addShadow(shadowType: .bottom,
-                       shadowOpacity: 0)
-        return view
-    }
-    
-    // MARK: - 헤더뷰 푸터뷰의 '뷰'생성
-    /// 헤더 또는 푸터 뷰를 생성합니다.
-    private func createHeaderFooterView(isHeader: Bool) -> UIView {
-        let cornerType: CornerRoundType = isHeader ? .top : .bottom
-        
-        let view = UIView()
-        view.setRoundedCorners(cornerType, withCornerRadius: 10)
-        view.backgroundColor = .medium_Blue
-        return view
+    private func createFooterView() -> UIView {
+        return TableFooterView()
     }
 }
 
@@ -287,18 +272,22 @@ extension ProfileVC: UITableViewDataSource {
     func tableView(_ tableView: UITableView, 
                    numberOfRowsInSection section: Int)
     -> Int {
-        return self.viewModel.getNumOfTableData(section: section)
+        return self.viewModel.getNumOfCell(
+            section: section)
     }
     
     // MARK: - 셀 구성
     // 셀을 구성하는 함수
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, 
+                   cellForRowAt indexPath: IndexPath)
+    -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(
             withIdentifier: Identifier.profileTableViewCell,
             for: indexPath) as! ProfileTableViewCell
         
-        let tableData = self.viewModel.getTableData(section: indexPath.section,
-                                               index: indexPath.row)
+        let tableData = self.viewModel.getTableData(
+            section: indexPath.section,
+            index: indexPath.row)
         cell.configureCell(tableData)
         return cell
     }

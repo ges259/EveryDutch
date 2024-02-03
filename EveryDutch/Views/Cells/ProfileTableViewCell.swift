@@ -49,7 +49,9 @@ extension ProfileTableViewCell {
     // MARK: - UI 설정
     private func configureUI() {
         self.backgroundColor = .clear
-        self.contentView.backgroundColor = .medium_Blue
+        self.selectionStyle = .none
+        self.separatorInset = .zero
+        self.backgroundColor = .medium_Blue
     }
     
     // MARK: - 오토레이아웃 설정
@@ -68,8 +70,8 @@ extension ProfileTableViewCell {
         }
     }
     
-    func configureCell(_ data: (String, String)?) {
-        self.detailLbl.text = data?.0
-        self.infoLbl.text = data?.1
+    func configureCell(_ data: String) {
+        self.detailLbl.text = data
+        self.infoLbl.text = "1111"
     }
 }

@@ -9,12 +9,12 @@ import UIKit
 
 final class RoomEditVM: RoomEditVMProtocol {
     
-    var profileEditEnum: RoomEditEnum
     
     
     
-    init(profileEditEnum: RoomEditEnum) {
-        self.profileEditEnum = profileEditEnum
+    
+    init() {
+        
         
         
     }

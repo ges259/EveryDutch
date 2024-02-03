@@ -84,8 +84,7 @@ final class MainCoordinator: MainCoordProtocol{
     func profileEditScreen() {
         // Main-Coordinator 생성
         let cardScreenCoordinator = ProfileEditVCCoordinator(
-            nav: self.nav,
-            profileEditEnum: .profile)
+            nav: self.nav)
         // ***** 델리게이트 설정 *****
         cardScreenCoordinator.delegate = self
         self.childCoordinators.append(cardScreenCoordinator)

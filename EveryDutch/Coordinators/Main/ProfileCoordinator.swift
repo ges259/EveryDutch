@@ -42,6 +42,7 @@ final class ProfileCoordinator: ProfileCoordProtocol {
     
     
     func didFinish() {
+        self.nav.popViewController(animated: true)
         self.parentCoordinator?.removeChildCoordinator(child: self)
     }
     

@@ -247,15 +247,17 @@ extension PeopleSelectionPanVC: UITableViewDataSource {
             for: indexPath) as! PeopleSelectionPanCell
         // 뷰모델에서 userID와 해당 RoomUsers 객체를 가져옴
         let userEntry = self.viewModel.returnUserData(index: indexPath.row)
-        
         // 셀이 선택된 상태인지 확인
-        cell.cellIsSelected = self.viewModel.getIdToRoomUser(
+        let isSelected = self.viewModel.getIdToRoomUser(
             usersID: userEntry.key)
         // 현재 모드 전달
-        cell.isSingleMode = self.viewModel.isSingleMode
+        let mode = self.viewModel.isSingleMode
+        
         
         // 셀에 userID와 user 데이터 설정
-        cell.configureCellData(userID: userEntry.key,
+        cell.configureCellData(isSingleMode: mode, 
+                               isSelected: isSelected,
+                               userID: userEntry.key,
                                user: userEntry.value)
         return cell
     }

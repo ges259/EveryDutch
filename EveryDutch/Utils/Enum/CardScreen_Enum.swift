@@ -7,22 +7,22 @@
 
 import Foundation
 
-enum RoomEditEnum {
-    case room
-    case roomEdit
-}
-enum ProfileEditEnum {
-    case profile
-    case profileEdit
-}
-
-
-enum CardScreenViewEnum {
-    case profile
-    case makeProfile
-    
-    case room
-}
+//enum RoomEditEnum {
+//    case room
+//    case roomEdit
+//}
+//enum ProfileEditEnum {
+//    case profile
+//    case profileEdit
+//}
+//
+//
+//enum CardScreenViewEnum {
+//    case profile
+//    case makeProfile
+//    
+//    case room
+//}
 
 
 

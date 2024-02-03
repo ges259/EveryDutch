@@ -24,13 +24,11 @@ final class RoomEditVC: UIViewController {
     private var cardImgView: CardImageView = CardImageView()
     
     
-    private lazy var roomInfoCardView: CardEditView = CardEditView(
-        mode: .profile)
+    
     
     
     private lazy var stackView: UIStackView = UIStackView.configureStv(
-        arrangedSubviews: [self.cardImgView,
-                           self.roomInfoCardView],
+        arrangedSubviews: [self.cardImgView],
         axis: .vertical,
         spacing: 10,
         alignment: .fill,

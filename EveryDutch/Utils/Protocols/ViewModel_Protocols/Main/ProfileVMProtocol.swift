@@ -11,12 +11,12 @@ protocol ProfileVMProtocol {
     
     var getNumOfSection: Int { get }
     
-    func getNumOfTableData(section: Int) -> Int
+    func getNumOfCell(section: Int) -> Int
     
     
     func getFooterViewHeight(section: Int) -> CGFloat
     func getHeaderTitle(section: Int) -> String
     
     
-    func getTableData(section: Int, index: Int) -> (String, String)?
+    func getTableData(section: Int, index: Int) -> String
 }
