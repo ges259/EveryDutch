@@ -28,7 +28,7 @@ final class ProfileVC: UIViewController {
     private lazy var tableView: CustomTableView = {
         let view = CustomTableView()
         view.register(
-            ProfileTableViewCell.self,
+            ProfileCell.self,
             forCellReuseIdentifier: Identifier.profileTableViewCell)
         
         view.sectionHeaderTopPadding = 12
@@ -283,7 +283,7 @@ extension ProfileVC: UITableViewDataSource {
     -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(
             withIdentifier: Identifier.profileTableViewCell,
-            for: indexPath) as! ProfileTableViewCell
+            for: indexPath) as! ProfileCell
         
         let tableData = self.viewModel.getTableData(
             section: indexPath.section,

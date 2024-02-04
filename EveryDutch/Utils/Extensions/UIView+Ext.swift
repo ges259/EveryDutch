@@ -23,9 +23,11 @@ extension UIView {
     /// 모서리 둥글게 처리 설정
     func setRoundedCorners(_ type: CornerRoundType,
                            withCornerRadius radius: CGFloat) {
-        self.layer.cornerRadius = type == .none ? 0 : radius
+        self.layer.cornerRadius = radius
         self.layer.maskedCorners = type.cornerMask
-        self.clipsToBounds = true
+        // .none이라면 false
+        // .none이 아니라면 true
+        self.clipsToBounds = type != .none
     }
     
     // MARK: - 그림자 추가

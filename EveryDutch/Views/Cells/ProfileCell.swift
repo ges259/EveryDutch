@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-final class ProfileTableViewCell: UITableViewCell {
+final class ProfileCell: UITableViewCell {
     
     
     var detailLbl: CustomLabel = CustomLabel(
@@ -44,7 +44,7 @@ final class ProfileTableViewCell: UITableViewCell {
 
 // MARK: - 화면 설정
 
-extension ProfileTableViewCell {
+extension ProfileCell {
     
     // MARK: - UI 설정
     private func configureUI() {

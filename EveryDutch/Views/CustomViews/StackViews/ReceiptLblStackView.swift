@@ -19,7 +19,7 @@ final class ReceiptLblStackView: UIStackView {
         font: UIFont.systemFont(ofSize: 14))
     
     lazy var receiptInfoLbl: CustomLabel = CustomLabel(
-        font: UIFont.boldSystemFont(ofSize: 14),
+        font: UIFont.systemFont(ofSize: 14),
         textAlignment: .right,
         leftInset: 10,
         rightInset: 10)

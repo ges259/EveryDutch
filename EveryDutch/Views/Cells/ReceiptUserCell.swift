@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-final class ReceiptScreenTableViewCell: UITableViewCell {
+final class ReceiptUserCell: UITableViewCell {
     
     // MARK: - 레이아웃
     private var tableCellStackView: TableCellStackView = TableCellStackView(
@@ -42,13 +42,14 @@ final class ReceiptScreenTableViewCell: UITableViewCell {
 
 // MARK: - 화면 설정
 
-extension ReceiptScreenTableViewCell {
+extension ReceiptUserCell {
     
     // MARK: - UI 설정
     private func configureUI() {
         self.backgroundColor = .clear
         self.selectionStyle = .none
         self.separatorInset = .zero
+        self.backgroundColor = .normal_white
     }
     
     func configureCell(with viewModel: ReceiptScreenPanCellVMProtocol) {

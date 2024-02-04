@@ -22,8 +22,6 @@ final class ProfileEditVM: ProfileEditVMProtocol {
     
     // MARK: - 섹션의 개수
     var getNumOfSection: Int {
-        print("섹션의  \(self.section)")
-        print("섹션의 개수 \(self.section.count)")
         return self.section.count
     }
     

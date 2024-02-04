@@ -15,7 +15,7 @@ enum Identifier {
     static let topViewTableViewCell: String = "TopViewTableViewCell"
     
     static let peopleSelectionPanCell: String = "PeopleSelectionPanCell"
-    static let receiptScreenTableViewCell: String = "ReceiptScreenTableViewCell"
+    static let receiptUserCell: String = "ReceiptScreenTableViewCell"
     static let receiptWriteTableViewCell: String = "ReceiptWriteTableViewCell"
     
     
@@ -23,6 +23,9 @@ enum Identifier {
     
     static let cardDataCell: String = "CardDataCell"
     static let cardDecorationCell: String = "CardDecorationCell"
+    
+    
+    static let receiptDataCell: String = "ReceiptDataCell"
     
 }
 

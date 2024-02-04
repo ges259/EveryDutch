@@ -23,43 +23,6 @@ final class ReceiptScreenPanVC: UIViewController {
     private lazy var contentView: UIView = UIView()
     
     
-    
-    private var topLbl: CustomLabel = CustomLabel(
-        text: "영수증",
-        font: UIFont.systemFont(ofSize: 15),
-        backgroundColor: UIColor.normal_white,
-        textAlignment: .center)
-    
-    private var whiteVeiw: UIView = UIView.configureView(
-        color: UIColor.normal_white)
-    
-    // 스택뷰
-    private var memoStackView: ReceiptLblStackView = ReceiptLblStackView(
-        receiptEnum: .memo,
-        addInfoLbl: true)
-    private var dateStackView: ReceiptLblStackView = ReceiptLblStackView(
-        receiptEnum: .date,
-        addInfoLbl: true)
-    private var timeStackView: ReceiptLblStackView = ReceiptLblStackView(
-        receiptEnum: .time,
-        addInfoLbl: true)
-    private var priceStackView: ReceiptLblStackView = ReceiptLblStackView(
-        receiptEnum: .price,
-        addInfoLbl: true)
-    private var payerStackVeiw: ReceiptLblStackView = ReceiptLblStackView(
-        receiptEnum: .payer,
-        addInfoLbl: true)
-    private var paymentMethodStackView: ReceiptLblStackView = ReceiptLblStackView(
-        receiptEnum: .payment_Method,
-        addInfoLbl: true)
-    
-    
-    /// 정산내역 레이블
-    private var usersLabel: CustomLabel = CustomLabel(
-        text: "정산 내역",
-        font: UIFont.systemFont(ofSize: 15),
-        backgroundColor: UIColor.normal_white,
-        textAlignment: .center)
     /// 테이블뷰
     private lazy var usersTableView: CustomTableView = {
         let view = CustomTableView()
@@ -67,8 +30,16 @@ final class ReceiptScreenPanVC: UIViewController {
         view.dataSource = self
         
         view.register(
-            ReceiptScreenTableViewCell.self,
-            forCellReuseIdentifier: Identifier.receiptScreenTableViewCell)
+            ReceiptUserCell.self,
+            forCellReuseIdentifier: Identifier.receiptUserCell)
+        
+        view.register(
+            ReceiptDataCell.self,
+            forCellReuseIdentifier: Identifier.receiptDataCell)
+        view.backgroundColor = .clear
+        view.setRoundedCorners(.all, withCornerRadius: 10)
+        
+        view.sectionHeaderTopPadding = 0
         
         return view
     }()
@@ -79,33 +50,18 @@ final class ReceiptScreenPanVC: UIViewController {
         backgroundColor: UIColor.normal_white)
     
     
-    private lazy var totalStackView: UIStackView = UIStackView.configureStv(
-        arrangedSubviews: [self.topLbl,
-                           self.whiteVeiw,
-                           self.usersLabel,
-                           self.usersTableView],
-        axis: .vertical,
-        spacing: 4,
-        alignment: .fill,
-        distribution: .fill)
     
-    private lazy var receiptStackView: UIStackView = UIStackView.configureStv(
-        arrangedSubviews: [self.memoStackView,
-                           self.dateStackView,
-                           self.timeStackView,
-                           self.priceStackView,
-                           self.payerStackVeiw,
-                           self.paymentMethodStackView],
-        axis: .vertical,
-        spacing: 0,
-        alignment: .fill,
-        distribution: .fillEqually)
+    
+    
+    
+    
     
     
     
     // MARK: - 프로퍼티
     var coordinator: Coordinator
     var viewModel: ReceiptScreenPanVMProtocol
+    
     
     
     // MARK: - 라이프사이클
@@ -141,30 +97,19 @@ extension ReceiptScreenPanVC {
     // MARK: - UI 설정
     private func configureUI() {
         self.view.backgroundColor = UIColor.deep_Blue
-        self.usersTableView.backgroundColor = .normal_white
-        
-        [self.topLbl,
-         self.whiteVeiw,
-         self.usersLabel,
-         self.usersTableView].forEach { view in
-            view.clipsToBounds = true
-            view.layer.cornerRadius = 10
-        }
-        
-
     }
     
     private func configureViewWithViewModel() {
         
         
-        self.payerStackVeiw.receiptInfoLbl.text = self.viewModel.getPayerName
-        self.paymentMethodStackView.receiptInfoLbl.text = self.viewModel.getPayMethod
-        
-        let receipt = self.viewModel.getReceipt
-        self.memoStackView.receiptInfoLbl.text = receipt.context
-        self.dateStackView.receiptInfoLbl.text = receipt.date
-        self.timeStackView.receiptInfoLbl.text = receipt.time
-        self.priceStackView.receiptInfoLbl.text = "\(receipt.price)"
+//        self.payerStackVeiw.receiptInfoLbl.text = self.viewModel.getPayerName
+//        self.paymentMethodStackView.receiptInfoLbl.text = self.viewModel.getPayMethod
+//        
+//        let receipt = self.viewModel.getReceipt
+//        self.memoStackView.receiptInfoLbl.text = receipt.context
+//        self.dateStackView.receiptInfoLbl.text = receipt.date
+//        self.timeStackView.receiptInfoLbl.text = receipt.time
+//        self.priceStackView.receiptInfoLbl.text = "\(receipt.price)"
     }
     
     // MARK: - 오토레이아웃 설정
@@ -172,8 +117,8 @@ extension ReceiptScreenPanVC {
         self.view.addSubview(self.scrollView)
         self.scrollView.addSubview(self.contentView)
         
-        self.contentView.addSubview(self.totalStackView)
-        self.whiteVeiw.addSubview(self.receiptStackView)
+        self.contentView.addSubview(self.usersTableView)
+        
         
         
         // 스크롤뷰
@@ -187,28 +132,9 @@ extension ReceiptScreenPanVC {
             make.edges.equalTo(self.scrollView.contentLayoutGuide)
             make.width.equalTo(self.scrollView.frameLayoutGuide)
         }
-        
-        
-        self.totalStackView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(15)
-            make.leading.equalToSuperview().offset(12)
-            make.trailing.equalToSuperview().offset(-12)
-            make.bottom.lessThanOrEqualToSuperview().offset(-10)
-        }
-        self.receiptStackView.snp.makeConstraints { make in
-            make.top.bottom.equalToSuperview()
-            make.leading.equalToSuperview().offset(20)
-            make.trailing.equalToSuperview().offset(-20)
-        }
-        
-        self.memoStackView.snp.makeConstraints { make in
-            make.height.equalTo(40)
-        }
-        self.topLbl.snp.makeConstraints { make in
-            make.height.equalTo(30)
-        }
-        self.usersLabel.snp.makeConstraints { make in
-            make.height.equalTo(30)
+        self.usersTableView.snp.makeConstraints { make in
+            make.top.leading.equalToSuperview().offset(10)
+            make.trailing.bottom.equalToSuperview().offset(-10)
         }
         self.bottomBtn.snp.makeConstraints { make in
             make.height.equalTo(55)
@@ -219,12 +145,9 @@ extension ReceiptScreenPanVC {
     private func configureAction() {
         
     }
+    
     // MARK: - 클로저 설정
     private func configureClosure() {
-        // 데이터를 처음 가져왔을 때
-//        self.usersTableView.viewModel.makeCellVM(users: self.viewModel.roomUsers)
-//        self.usersTableView.reloadData()
-//        self.view.layoutIfNeeded()
     }
 }
 
@@ -239,32 +162,146 @@ extension ReceiptScreenPanVC {
 
 // MARK: - 테이블뷰 델리게이트
 extension ReceiptScreenPanVC: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, 
+    // MARK: - 셀의 높이
+    func tableView(_ tableView: UITableView,
                    heightForRowAt indexPath: IndexPath)
     -> CGFloat {
-        return 50
-    }
-}
-// MARK: - 테이블뷰 데이터소스
-extension ReceiptScreenPanVC: UITableViewDataSource {
-    func tableView(_ tableView: UITableView, 
-                   numberOfRowsInSection section: Int) 
-    -> Int {
-        return self.viewModel.currentNumOfUsers
+        return self.viewModel.getCellHeight(
+            section: indexPath.section)
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(
-            withIdentifier: Identifier.receiptScreenTableViewCell,
-            for: indexPath) as! ReceiptScreenTableViewCell
+    // MARK: - 헤더 높이
+    /// 헤더의 높이를 설정합니다.
+    func tableView(_ tableView: UITableView,
+                   heightForHeaderInSection section: Int)
+    -> CGFloat {
+        return 40
+    }
+    
+    // MARK: - 헤더뷰 설정
+    /// 헤더 뷰를 구성합니다.
+    func tableView(_ tableView: UITableView,
+                   viewForHeaderInSection section: Int)
+    -> UIView? {
+        return self.createHeaderView(for: section)
+    }
+    
+    // MARK: - 헤더 만들기
+    private func createHeaderView(for section: Int) -> UIView {
+        let title: String = self.viewModel.getHeaderTitle(section: section)
         
-        let cellViewModel = self.viewModel.cellViewModel(at: indexPath.row)
+        let view = UIView.configureView(
+            color: .clear)
         
-        cell.configureCell(with: cellViewModel)
+        let lbl = CustomLabel(
+            text: title,
+            font: UIFont.systemFont(ofSize: 15),
+            backgroundColor: UIColor.normal_white,
+            textAlignment: .center)
+        lbl.setRoundedCorners(.all, withCornerRadius: 10)
         
-        return cell
+        
+        view.addSubview(lbl)
+        lbl.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(4)
+            make.leading.trailing.equalToSuperview()
+            make.bottom.equalToSuperview().offset(-4)
+        }
+        return view
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        // 코너 둥글기 적용
+        self.applyCornerRadiusForCell(cell,
+                                      at: indexPath,
+                                      in: tableView)
+    }
+
+    func applyCornerRadiusForCell(
+        _ cell: UITableViewCell,
+        at indexPath: IndexPath,
+        in tableView: UITableView) 
+    {
+        
+        let isFirstIndex = indexPath.row == 0
+        
+        let isLastIndex = indexPath.row == tableView.numberOfRows(inSection: indexPath.section) - 1
+        
+        
+        // 섹션 내의 첫 번째 셀인지, 마지막 셀인지, 또는 유일한 셀인지 확인합니다.
+        if isFirstIndex
+            && isLastIndex {
+            // 섹션에 셀이 하나뿐인 경우
+            cell.setRoundedCorners(.all, withCornerRadius: 10)
+            
+        } else if isFirstIndex {
+            // 섹션의 첫 번째 셀인 경우
+            cell.setRoundedCorners(.top, withCornerRadius: 10)
+        } else if isLastIndex {
+            // 섹션의 마지막 셀인 경우
+            cell.setRoundedCorners(.bottom, withCornerRadius: 10)
+        }
     }
 }
+
+
+
+
+
+
+
+
+
+
+// MARK: - 테이블뷰 데이터소스
+extension ReceiptScreenPanVC: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return self.viewModel.getNumOfSection
+    }
+    
+    
+    func tableView(_ tableView: UITableView,
+                   numberOfRowsInSection section: Int) 
+    -> Int {
+        return self.viewModel.getNumOfCell(section: section)
+    }
+    
+    func tableView(_ tableView: UITableView, 
+                   cellForRowAt indexPath: IndexPath)
+    -> UITableViewCell {
+        
+        if indexPath.section == 1 {
+            let cell = tableView.dequeueReusableCell(
+                withIdentifier: Identifier.receiptUserCell,
+                for: indexPath) as! ReceiptUserCell
+            
+            let cellViewModel = self.viewModel.cellViewModel(at: indexPath.row)
+            
+            cell.configureCell(with: cellViewModel)
+            
+            return cell
+            
+            
+        } else {
+            let cell = tableView.dequeueReusableCell(
+                withIdentifier: Identifier.receiptDataCell,
+                for: indexPath) as! ReceiptDataCell
+            
+            let receiptEnum = self.viewModel.getReceiptEnum(
+                index: indexPath.row)
+            cell.configure(withReceiptEnum: receiptEnum)
+            
+            return cell
+        }
+    }
+}
+
+
+
+
+
+
+
 
 
 
@@ -276,7 +313,7 @@ extension ReceiptScreenPanVC: PanModalPresentable {
     /// 최대 사이즈
     var longFormHeight: PanModalHeight {
         self.view.layoutIfNeeded()
-        return .contentHeight(self.totalStackView.frame.height + 10 + 15 + 8)
+        return .contentHeight(self.usersTableView.frame.height + 10 + 15 + 8)
     }
     
     /// 화면 밖 - 배경 색
