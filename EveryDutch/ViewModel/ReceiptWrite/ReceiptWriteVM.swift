@@ -37,6 +37,23 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     
     
     
+    var getSectionCount: Int {
+        return 2
+    }
+    
+    private var receiptEnum: [ReceiptEnum] = [.time,
+                                              .memo,
+                                              .price,
+                                              .payer]
+    var getNumOfReceiptEnum: Int {
+        return self.receiptEnum.count
+    }
+    
+    func getReceiptEnum(index: Int) -> ReceiptEnum {
+        return self.receiptEnum[index]
+    }
+    
+    
     
     
     

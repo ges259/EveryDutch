@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class ReceiptWriteTableViewCell: UITableViewCell {
+final class ReceiptWriteUsersCell: UITableViewCell {
     
     // MARK: - 레이아웃
     // 스택뷰(이미지, 이름, 가격레이블)
@@ -66,7 +66,7 @@ final class ReceiptWriteTableViewCell: UITableViewCell {
 
 // MARK: - 화면 설정
 
-extension ReceiptWriteTableViewCell {
+extension ReceiptWriteUsersCell {
     
     // MARK: - UI 설정
     private func configureUI() {
@@ -195,7 +195,7 @@ extension ReceiptWriteTableViewCell {
 
 // MARK: - 텍스트필드 델리게이트
 
-extension ReceiptWriteTableViewCell: UITextFieldDelegate {
+extension ReceiptWriteUsersCell: UITextFieldDelegate {
     
     @objc private func priceTfDidChanged() {
         // 현재 텍스트 가져오기

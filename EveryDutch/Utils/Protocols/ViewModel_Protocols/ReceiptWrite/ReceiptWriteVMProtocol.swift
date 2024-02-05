@@ -9,6 +9,18 @@ import UIKit
 
 protocol ReceiptWriteVMProtocol {
 
+    var getSectionCount: Int { get }
+    
+    var getNumOfReceiptEnum: Int { get }
+    
+    func getReceiptEnum(index: Int) -> ReceiptEnum
+    
+    
+    
+    
+    
+    
+    
     // MARK: - 셀의 뷰모델
     var cellViewModels: [ReceiptWriteCellVM] { get set }
     
