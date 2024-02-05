@@ -7,8 +7,16 @@
 
 import Foundation
 
-protocol CardTextDelegate: AnyObject {
-    func firstStackViewTapped()
-    func secondStackViewTapped()
-    func editBtnTapped()
+//protocol CardTextDelegate: AnyObject {
+//    func firstStackViewTapped()
+//    func secondStackViewTapped()
+//    func editBtnTapped()
+//}
+
+
+protocol ReceiptWriteDataCellDelegate: AnyObject {
+    func timeLblTapped()
+    func payerLblTapped()
+    func finishPriceTF(price: Int)
+    func finishMemoTF(memo: String)
 }

@@ -11,7 +11,7 @@ import FSCalendar
 
 final class ReceiptWriteVC: UIViewController {
     
-// MARK: - 스크롤뷰
+    // MARK: - 스크롤뷰
     /// 스크롤뷰
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -36,7 +36,7 @@ final class ReceiptWriteVC: UIViewController {
     }()
     
     
-// MARK: - 테이블뷰 레이아웃
+    // MARK: - 테이블뷰 레이아웃
     private var moneyCountLbl: CustomLabel = CustomLabel(
         text: "0원",
         backgroundColor: UIColor.normal_white,
@@ -74,11 +74,7 @@ final class ReceiptWriteVC: UIViewController {
     }()
     
     
-    
-    
-    
-    
-// MARK: - 하단 레이아웃
+    // MARK: - 유저 추가 버튼
     private var addPersonBtn: UIButton = {
         let btn = UIButton.btnWithTitle(
             title: "✓ 계산할 사람 선택",
@@ -87,7 +83,6 @@ final class ReceiptWriteVC: UIViewController {
         btn.isHidden = true
         return btn
     }()
-    
     
     
     
@@ -276,38 +271,10 @@ extension ReceiptWriteVC {
             self,
             action: #selector(self.bottomBtnTapped),
             for: .touchUpInside)
-        // 메모 텍스트필드
-//        self.memoInfoTF.addTarget(
-//            self, 
-//            action: #selector(self.memoInfoTFDidChanged),
-//            for: .editingChanged)
-//        // 가격 텍스트필드
-//        self.priceInfoTF.addTarget(
-//            self,
-//            action: #selector(self.priceInfoTFDidChanged),
-//            for: .editingChanged)
-//        // 1 / N 버튼
-//        self.dutchBtn.addTarget(
-//            self, 
-//            action: #selector(self.dutchBtnTapped),
-//            for: .touchUpInside)
     }
     
     // MARK: - 제스처 설정
     private func configureGesture() {
-        // '시간' 레이블 제스처 설정
-//        let timeGesture = UITapGestureRecognizer(
-//            target: self,
-//            action: #selector(self.timeInfoLblTapped))
-//        self.timeInfoLbl.isUserInteractionEnabled = true
-//        self.timeInfoLbl.addGestureRecognizer(timeGesture)
-//        // '계산한 사람' 레이블 제스처 생성
-//        let payerGesture = UITapGestureRecognizer(
-//            target: self,
-//            action: #selector(self.payerInfoLblTapped))
-//        self.payerInfoLbl.isUserInteractionEnabled = true
-//        self.payerInfoLbl.addGestureRecognizer(payerGesture)
-        
         // 'self.view' 화면에 제스처 설정
         let tapGesture = UITapGestureRecognizer(
             target: self,
@@ -641,28 +608,6 @@ extension ReceiptWriteVC {
 
 
 
-// MARK: - 테이블뷰 셀 델리게이트
-
-extension ReceiptWriteVC: ReceiptWriteTableDelegate {
-    
-    // MARK: - [X버튼] 유저 삭제
-    func rightBtnTapped(user: RoomUserDataDictionary?) {
-        guard let user = user else { return }
-        self.changeTableViewData(addedUsers: [:],
-                                 removedUsers: user)
-    }
-    
-    // MARK: - [텍스트필드] 금액 재설정
-    func setprice(userID: String, price: Int?) {
-        self.viewModel.calculatePrice(userID: userID,
-                                      price: price)
-    }
-}
-
-
-
-
-
 
 
 
@@ -758,6 +703,8 @@ extension ReceiptWriteVC: UITableViewDataSource {
             let receiptEnum = self.viewModel.getReceiptEnum(
                 index: indexPath.row)
             cell.configure(withReceiptEnum: receiptEnum)
+            
+            cell.delegate = self
             return cell
         }
     }
@@ -995,7 +942,7 @@ extension ReceiptWriteVC: UITextFieldDelegate {
     /// 텍스트 필드 수정이 끝났을 때
     func textFieldDidEndEditing(_ textField: UITextField) {
         // 텍스트 필드의 현재 텍스트를 변수에 저장
-        let savedText = textField.text ?? ""
+//        let savedText = textField.text ?? ""
         // MARK: - Fix
 //        // 메모 텍스트필드일 때
 //        if textField == self.memoInfoTF {
@@ -1062,5 +1009,63 @@ extension ReceiptWriteVC: UITextFieldDelegate {
 extension ReceiptWriteVC: CalendarDelegate {
     func didSelectDate(dateInt: Int) {
         self.viewModel.date = dateInt
+    }
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - [유저 셀] 델리게이트
+
+extension ReceiptWriteVC: ReceiptWriteTableDelegate {
+    
+    // MARK: - [X버튼] 유저 삭제
+    func rightBtnTapped(user: RoomUserDataDictionary?) {
+        guard let user = user else { return }
+        self.changeTableViewData(addedUsers: [:],
+                                 removedUsers: user)
+    }
+    
+    // MARK: - [텍스트필드] 금액 재설정
+    func setprice(userID: String, price: Int?) {
+        self.viewModel.calculatePrice(userID: userID,
+                                      price: price)
+    }
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - [데이터 셀] 델리게이트
+
+extension ReceiptWriteVC: ReceiptWriteDataCellDelegate {
+    
+    
+    func timeLblTapped() {
+        print(#function)
+    }
+    
+    func payerLblTapped() {
+        print(#function)
+    }
+    
+    func finishPriceTF(price: Int) {
+        print(#function)
+    }
+    
+    func finishMemoTF(memo: String) {
+        print(#function)
     }
 }

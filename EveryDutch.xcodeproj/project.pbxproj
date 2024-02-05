@@ -86,6 +86,7 @@
 		5F6C43492B3C3B6A00BBC466 /* UIStackView+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6C43482B3C3B6A00BBC466 /* UIStackView+Ext.swift */; };
 		5F6C434B2B3C4C1500BBC466 /* CustomTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6C434A2B3C4C1500BBC466 /* CustomTableView.swift */; };
 		5F6C434D2B3C5BD000BBC466 /* CustomLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6C434C2B3C5BD000BBC466 /* CustomLabel.swift */; };
+		5F6CE3442B7154F30092DA39 /* ReceiptWriteDataCellVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6CE3432B7154F30092DA39 /* ReceiptWriteDataCellVM.swift */; };
 		5F6EBDCC2B5834DA0051D0A7 /* PeopleSelectionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6EBDCB2B5834DA0051D0A7 /* PeopleSelectionDelegate.swift */; };
 		5F6FDDE22B50568B00F09CCD /* ReceiptUserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6FDDE12B50568B00F09CCD /* ReceiptUserCell.swift */; };
 		5F6FDDE42B505DD000F09CCD /* ReceiptScreenPanCellVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6FDDE32B505DD000F09CCD /* ReceiptScreenPanCellVM.swift */; };
@@ -265,6 +266,7 @@
 		5F6C43482B3C3B6A00BBC466 /* UIStackView+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStackView+Ext.swift"; sourceTree = "<group>"; };
 		5F6C434A2B3C4C1500BBC466 /* CustomTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTableView.swift; sourceTree = "<group>"; };
 		5F6C434C2B3C5BD000BBC466 /* CustomLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomLabel.swift; sourceTree = "<group>"; };
+		5F6CE3432B7154F30092DA39 /* ReceiptWriteDataCellVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptWriteDataCellVM.swift; sourceTree = "<group>"; };
 		5F6EBDCB2B5834DA0051D0A7 /* PeopleSelectionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleSelectionDelegate.swift; sourceTree = "<group>"; };
 		5F6FDDE12B50568B00F09CCD /* ReceiptUserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptUserCell.swift; sourceTree = "<group>"; };
 		5F6FDDE32B505DD000F09CCD /* ReceiptScreenPanCellVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptScreenPanCellVM.swift; sourceTree = "<group>"; };
@@ -507,6 +509,7 @@
 				5F5AFBC12B49390500BBBB9D /* ReceiptWriteVM.swift */,
 				5FFF66182B51B9BE000A5EC4 /* ReceiptWriteCellVM.swift */,
 				5FFF661A2B529E35000A5EC4 /* PeopleSelectionPanVM.swift */,
+				5F6CE3432B7154F30092DA39 /* ReceiptWriteDataCellVM.swift */,
 			);
 			path = ReceiptWrite;
 			sourceTree = "<group>";
@@ -1235,6 +1238,7 @@
 				5F5AFBD22B4940DA00BBBB9D /* MainCollectionViewCellVMProtocol.swift in Sources */,
 				5F9F76612B6C225700BB6511 /* ProfileCoordProtocol.swift in Sources */,
 				5F8513C42B4D306A00A5B22D /* CumulativeAmount.swift in Sources */,
+				5F6CE3442B7154F30092DA39 /* ReceiptWriteDataCellVM.swift in Sources */,
 				5FE3DE8F2B39CA9B008D58AE /* AppDelegate.swift in Sources */,
 				5F294B452B4DA4E900396B6E /* APIError.swift in Sources */,
 				5F2F7A782B3ECD91004B136F /* CardImageView.swift in Sources */,
