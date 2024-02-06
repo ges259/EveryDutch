@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-final class ReceiptDataCell: UITableViewCell {
+final class ReceiptScreenDataCell: UITableViewCell {
     
     // MARK: - 레이아웃
     private lazy var cellStv: ReceiptLblStackView = ReceiptLblStackView(
@@ -26,14 +26,6 @@ final class ReceiptDataCell: UITableViewCell {
     
     
     // MARK: - 라이프사이클
-//    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-//        super.init(style: style, reuseIdentifier: reuseIdentifier)
-//        
-//
-//    }
-//    required init?(coder: NSCoder) {
-//        fatalError("init(coder:) has not been implemented")
-//    }
     // 설정 메서드 추가
     func configure(withReceiptEnum receiptEnum: ReceiptEnum) {
         self.receiptEnum = receiptEnum
@@ -55,7 +47,7 @@ final class ReceiptDataCell: UITableViewCell {
 
 // MARK: - 화면 설정
 
-extension ReceiptDataCell {
+extension ReceiptScreenDataCell {
     
     // MARK: - UI 설정
     private func configureUI() {

@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-final class ReceiptUserCell: UITableViewCell {
+final class ReceiptScreenUsersCell: UITableViewCell {
     
     // MARK: - 레이아웃
     private var tableCellStackView: TableCellStackView = TableCellStackView(
@@ -42,7 +42,7 @@ final class ReceiptUserCell: UITableViewCell {
 
 // MARK: - 화면 설정
 
-extension ReceiptUserCell {
+extension ReceiptScreenUsersCell {
     
     // MARK: - UI 설정
     private func configureUI() {

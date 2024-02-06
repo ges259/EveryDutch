@@ -21,10 +21,6 @@ protocol ReceiptWriteVMProtocol {
     
     
     
-    // MARK: - 셀의 뷰모델
-    var cellViewModels: [ReceiptWriteCellVM] { get set }
-    
-    
     
     // MARK: - 모델
     var date: Int? { get set }
@@ -77,9 +73,6 @@ protocol ReceiptWriteVMProtocol {
     // MARK: - 기타
     /// 키보드 높이
     var keyboardHeight: CGFloat { get set }
-    /// 최대 글자 수
-    var TF_MAX_COUNT: Int { get }
-    
     
     
     
@@ -92,16 +85,14 @@ protocol ReceiptWriteVMProtocol {
     
     // MARK: - 가격 텍스트필드
     // [형식]
-    func savePriceText(text: String?)
-    func removeWonFormat(priceText: String?) -> String?
-    func formatPriceForEditing(_ newText: String?) -> String?
-    var priceInfoTFText: String? { get }
+////    func savePriceText(text: String?)
+    func savePriceText(price: Int)
+//    
+//    func removeWonFormat(priceText: String?) -> String?
+//    func formatPriceForEditing(_ newText: String?) -> String?
+//    var priceInfoTFText: String? { get }
     var moneyCountLblText: String? { get }
-    
-    
-    
-    // MARK: - 메모 글자 수 표시
-    func updateMemoCount(count: Int) -> String
+//    
     
     
     
@@ -125,7 +116,7 @@ protocol ReceiptWriteVMProtocol {
     
     
     // MARK: - 유저 추가
-    func addData(addedUsers: RoomUserDataDictionary)
+    func createUsersCellVM(addedUsers: RoomUserDataDictionary)
     func indexPathsForAddedUsers(_ users: RoomUserDataDictionary) -> [IndexPath]
     
     
@@ -150,5 +141,5 @@ protocol ReceiptWriteVMProtocol {
     
     
 // MARK: - 셀의 뷰모델 반환
-    func cellViewModel(at index: Int) -> ReceiptWriteCellVM
+    func usersCellViewModel(at index: Int) -> ReceiptWriteCellVM
 }

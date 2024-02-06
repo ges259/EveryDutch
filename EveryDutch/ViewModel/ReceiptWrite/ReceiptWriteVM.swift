@@ -9,14 +9,29 @@ import UIKit
 
 final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     
-    // MARK: - 모델
-    internal var cellViewModels: [ReceiptWriteCellVM] = [] {
+    // MARK: - 뷰 모델
+    private var usersCellViewModels: [ReceiptWriteCellVM] = [] {
         didSet {
             print("*************************")
-            print(self.cellViewModels.count)
+            print(self.usersCellViewModels.count)
             print("__________________________")
         }
     }
+    // MARK: - 뷰 모델
+    private var dataCellViewModels: [ReceiptWriteDataCellVM] = [] {
+        didSet {
+            print("*************************")
+            print(self.dataCellViewModels.count)
+            print("__________________________")
+        }
+    }
+    
+    
+    
+    
+    
+    
+    // MARK: - 모델
     private var roomDataManager: RoomDataManagerProtocol
     
     var date: Int?
@@ -138,15 +153,7 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     
     
     
-// MARK: - 기타
-    
-    
-    
-    // MARK: - 최대 글자 수
-    /// 최대 글자 수 :  12
-    let TF_MAX_COUNT: Int = 12
-    
-    // MARK: - 키보드 높이
+// MARK: - 키보드 높이
     var keyboardHeight: CGFloat = 291.31898
     
     
@@ -163,6 +170,9 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     // MARK: - 라이프사이클
     init(roomDataManager: RoomDataManagerProtocol) {
         self.roomDataManager = roomDataManager
+        
+        // 데이터 셀 모델 만들기
+        self.createDataCellVM()
     }
 }
 
@@ -333,39 +343,9 @@ extension ReceiptWriteVM {
 
 extension ReceiptWriteVM {
     
-    
     // MARK: - [저장] price(가격)
-    func savePriceText(text: String?) {
-        // 형식 제거
-        if let priceInt = NumberFormatter.removeFormat(
-            price: text) {
-            // price 값 설정
-            self.price = Int(priceInt)
-        } else {
-            self.price = nil
-        }
-    }
-    
-    
-    
-    // MARK: - [형식] '원' 형식 삭제
-    func removeWonFormat(priceText: String?) -> String? {
-        // '원' 형식을 삭제 후 리턴
-        return NumberFormatter.removeWon(price: priceText)
-    }
-    
-    // MARK: - [형식] 형식 유지하며 수정
-    func formatPriceForEditing(_ newText: String?) -> String? {
-        return NumberFormatter.formatStringChange(
-            price: newText)
-    }
-    
-    // MARK: - [형식] ',' 및 '원'형식 설정
-    var priceInfoTFText: String? {
-        return self.price == nil
-        ? nil
-        // formatNumberString() -> 10,000원 처럼 바꾸기
-        : NumberFormatter.formatString(price: self.price)
+    func savePriceText(price: Int) {
+        self.price = price
     }
     
     // MARK: - [형식] 남은 금액 레이블 텍스트 설정
@@ -384,20 +364,6 @@ extension ReceiptWriteVM {
 
 
 
-
-
-
-
-
-
-
-// MARK: - 메모 글자 수 표시
-
-extension ReceiptWriteVM {
-    func updateMemoCount(count: Int) -> String {
-        return "\(count) / \(self.TF_MAX_COUNT)"
-    }
-}
 
 
 
@@ -474,35 +440,11 @@ extension ReceiptWriteVM {
 
 extension ReceiptWriteVM {
     
-    // MARK: - 유저 추가, 셀의 뷰모델 생성
-    func addData(addedUsers: RoomUserDataDictionary) {
-        // 추가된 유저 처리
-        addedUsers.forEach { (userID, roomUser) in
-            if self.selectedUsers[userID] == nil {
-                // 셀의 뷰모델 생성
-                let newCellVM = ReceiptWriteCellVM(userID: userID,
-                                                   roomUsers: roomUser)
-                self.cellViewModels.append(newCellVM)
-                // 선택되었다고 표시
-                self.selectedUsers[userID] = roomUser
-            }
-        }
-    }
-    
     // MARK: - 추가될 셀의 IndexPath
     func indexPathsForAddedUsers(_ users: RoomUserDataDictionary) -> [IndexPath] {
-        let startIndex = self.cellViewModels.count - users.count
+        let startIndex = self.usersCellViewModels.count - users.count
         return (startIndex..<(startIndex + users.count)).map { IndexPath(row: $0, section: 0) }
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     // MARK: - 유저 삭제
     func deleteData(removedUsers: RoomUserDataDictionary) {
@@ -516,7 +458,7 @@ extension ReceiptWriteVM {
     func indexPathsForRemovedUsers(_ users: RoomUserDataDictionary) -> [IndexPath] {
         var indexPaths = [IndexPath]()
         users.keys.forEach { userID in
-            if let index = self.cellViewModels.firstIndex(where: { $0.userID == userID }) {
+            if let index = self.usersCellViewModels.firstIndex(where: { $0.userID == userID }) {
                 indexPaths.append(IndexPath(row: index, section: 0))
             }
         }
@@ -532,8 +474,8 @@ extension ReceiptWriteVM {
         // 선택된 상태에서 없애기
         self.selectedUsers.removeValue(forKey: userID)
         // 뷰모델 없애기
-        if let index = self.cellViewModels.firstIndex(where: { $0.userID == userID }) {
-            self.cellViewModels.remove(at: index)
+        if let index = self.usersCellViewModels.firstIndex(where: { $0.userID == userID }) {
+            self.usersCellViewModels.remove(at: index)
         }
     }
 }
@@ -547,12 +489,45 @@ extension ReceiptWriteVM {
 
 
 
+// MARK: - 셀의 뷰모델 생성
+
+extension ReceiptWriteVM {
+    
+    // MARK: - 유저 셀
+    func createUsersCellVM(addedUsers: RoomUserDataDictionary) {
+        // 추가된 유저 처리
+        addedUsers.forEach { (userID, roomUser) in
+            if self.selectedUsers[userID] == nil {
+                // 셀의 뷰모델 생성
+                let newCellVM = ReceiptWriteCellVM(userID: userID,
+                                                   roomUsers: roomUser)
+                self.usersCellViewModels.append(newCellVM)
+                // 선택되었다고 표시
+                self.selectedUsers[userID] = roomUser
+            }
+        }
+    }
+    
+    // MARK: - 데이터 셀
+    func createDataCellVM() {
+        
+        self.dataCellViewModels = self.receiptEnum.map { enumType in
+            ReceiptWriteDataCellVM(withReceiptEnum: enumType)
+        }
+    }
+}
+
+
 // MARK: - 셀 뷰모델 반환
 extension ReceiptWriteVM {
     /// cellViewModels 반환
     /// 테이블뷰 cellForRowAt에서 사용 됨
-    func cellViewModel(at index: Int) -> ReceiptWriteCellVM {
-        return self.cellViewModels[index]
+    func usersCellViewModel(at index: Int) -> ReceiptWriteCellVM {
+        return self.usersCellViewModels[index]
+    }
+    
+    func dataCellViewModel(at index: Int) -> ReceiptWriteDataCellVM {
+        return self.dataCellViewModels[index]
     }
 }
 

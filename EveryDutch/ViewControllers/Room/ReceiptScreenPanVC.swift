@@ -30,11 +30,11 @@ final class ReceiptScreenPanVC: UIViewController {
         view.dataSource = self
         
         view.register(
-            ReceiptUserCell.self,
+            ReceiptScreenUsersCell.self,
             forCellReuseIdentifier: Identifier.receiptUserCell)
         
         view.register(
-            ReceiptDataCell.self,
+            ReceiptScreenDataCell.self,
             forCellReuseIdentifier: Identifier.receiptDataCell)
         view.backgroundColor = .clear
         view.setRoundedCorners(.all, withCornerRadius: 10)
@@ -273,7 +273,7 @@ extension ReceiptScreenPanVC: UITableViewDataSource {
         if indexPath.section == 1 {
             let cell = tableView.dequeueReusableCell(
                 withIdentifier: Identifier.receiptUserCell,
-                for: indexPath) as! ReceiptUserCell
+                for: indexPath) as! ReceiptScreenUsersCell
             
             let cellViewModel = self.viewModel.cellViewModel(at: indexPath.row)
             
@@ -285,7 +285,7 @@ extension ReceiptScreenPanVC: UITableViewDataSource {
         } else {
             let cell = tableView.dequeueReusableCell(
                 withIdentifier: Identifier.receiptDataCell,
-                for: indexPath) as! ReceiptDataCell
+                for: indexPath) as! ReceiptScreenDataCell
             
             let receiptEnum = self.viewModel.getReceiptEnum(
                 index: indexPath.row)

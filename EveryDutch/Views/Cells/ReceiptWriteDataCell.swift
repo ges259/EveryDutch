@@ -12,7 +12,7 @@ final class ReceiptWriteDataCell: UITableViewCell {
     
     // MARK: - 레이아웃
     private lazy var cellStv: ReceiptLblStackView = ReceiptLblStackView(
-        receiptEnum: self.receiptEnum)
+        receiptEnum: self.viewModel?.getReceiptEnum ?? .time)
     
     
     
@@ -31,23 +31,21 @@ final class ReceiptWriteDataCell: UITableViewCell {
     
     
     private lazy var numOfCharLbl: CustomLabel = CustomLabel(
-        text: "0  / 12",
+        text: "0 / \(self.viewModel?.TF_MAX_COUNT ?? 12)",
         font: UIFont.systemFont(ofSize: 13))
-//    "0 / \(self.viewModel.TF_MAX_COUNT)"
     
     // MARK: - 프로퍼티
-    private var receiptEnum: ReceiptEnum = .time
-    
     weak var delegate: ReceiptWriteDataCellDelegate?
+    
+    private var viewModel: ReceiptWriteDataCellVMProtocol?
     
     
     
     
     
     // MARK: - 라이프사이클
-    // 설정 메서드 추가
-    func configure(withReceiptEnum receiptEnum: ReceiptEnum) {
-        self.receiptEnum = receiptEnum
+    func configureCell(viewModel: ReceiptWriteDataCellVMProtocol) {
+        self.viewModel = viewModel
         
         self.configureUI()
         self.configureAutoLayout()
@@ -83,7 +81,9 @@ extension ReceiptWriteDataCell {
     
     // MARK: - Enum에 따른 설정
     private func configureViewWithEnum() {
-        switch self.receiptEnum {
+        guard let receiptEnum = self.viewModel?.getReceiptEnum else { return }
+        
+        switch receiptEnum {
         case .time:
             self.configureLabel()
             self.configureTimeLblAction()
@@ -206,19 +206,21 @@ extension ReceiptWriteDataCell {
         guard let currentText = self.textField.text else { return }
 
         // 포매팅된 문자열로 텍스트 필드 업데이트
-        self.textField.text = self.formatPriceForEditing(currentText)
+        self.textField.text = self.viewModel?.formatPriceForEditing(currentText)
     }
     
     // MARK: - [액션] 메모 텍스트필드
     @objc private func memoInfoTFDidChanged() {
         // MARK: - Fix
-        guard let text = self.textField.text else { return }
-        if text.count > 12 {
+        guard let count = self.textField.text?.count else { return }
+        
+        if count > 12 {
             self.textField.deleteBackward()
 
         } else {
             // 레이블 업데이트
-            self.label.text = "\(text.count) / 12"
+            self.label.text = self.viewModel?.updateMemoCount(
+                count: count)
         }
     }
 }
@@ -242,11 +244,11 @@ extension ReceiptWriteDataCell: UITextFieldDelegate {
         // MARK: - Fix
         // 현재 enum이 '가격'일 때
         // textField가 빈칸이 아니라면,
-        guard self.receiptEnum == .price,
+        guard self.viewModel?.isTfBeginEditing ?? false,
               self.textField.text != "" else { return }
 
         // textField에 있는 '~원' 형식을 제거
-        self.textField.text = self.removeWonFormat(
+        self.textField.text = self.viewModel?.removeWonFormat(
             priceText: self.textField.text)
     }
     
@@ -257,10 +259,9 @@ extension ReceiptWriteDataCell: UITextFieldDelegate {
         let savedText = textField.text ?? ""
         // MARK: - Fix
         // 메모 텍스트필드일 때
-        if self.receiptEnum == .memo {
+        if self.viewModel?.isMemoType ?? false {
             // MARK: - memo
             self.delegate?.finishMemoTF(memo: savedText)
-            
             
         // 가격 텍스트필드 일때
         } else {
@@ -268,72 +269,21 @@ extension ReceiptWriteDataCell: UITextFieldDelegate {
             // 가격 레이블에 바뀐 가격을 ',' 및 '원'을 붙여 표시
             // 누적금액 레이블에 (지불금액 - 누적금액) 설정
             self.finishPriceTF(text: savedText)
-            // MARK: - price
         }
     }
     
     // MARK: - [저장] 가격 텍스트필드
     /// 가격 텍스트필드의 수정이 끝났을 때 호출되는 메서드
     private func finishPriceTF(text: String?) {
-        // 형식 제거
-        guard let priceString = NumberFormatter.removeFormat(price: text),
-              let priceInt = Int(priceString)
-        else { return }
+        
+        let priceInt = self.viewModel?.removeAllFormat(
+            priceText: text) ?? 0
         
         // MARK: - 뷰컨트롤러로 전달
         self.delegate?.finishPriceTF(
             price: priceInt)
         
-        // MARK: - [형식] ',' 및 '원'형식 설정
-        self.priceInfoTFText(price: priceInt)
+        // 텍스트필드에 ',' 및 '원'형식 설정
+        self.textField.text = self.viewModel?.priceInfoTFText(price: priceInt)
     }
-    
-    
-
-    
-    
-    
-    // MARK: - [저장] price(가격)
-    func savePriceText(text: String?) {
-
-    }
-    
-    
-    
-    // MARK: - [형식] '원' 형식 삭제
-    func removeWonFormat(priceText: String?) -> String? {
-        // '원' 형식을 삭제 후 리턴
-        return NumberFormatter.removeWon(price: priceText)
-    }
-    
-    // MARK: - [형식] 형식 유지하며 수정
-    func formatPriceForEditing(_ newText: String?) -> String? {
-        return NumberFormatter.formatStringChange(
-            price: newText)
-    }
-    
-    // MARK: - [형식] ',' 및 '원'형식 설정
-    private func priceInfoTFText(price: Int) {
-        // 가격 레이블에 바뀐 가격을 ',' 및 '원'을 붙여 표시
-        self.textField.text = NumberFormatter.formatString(
-            price: price)
-    }
-    
-    
-    
-    
-    // MARK: - [형식] 남은 금액 레이블 텍스트 설정
-//    var moneyCountLblText: String? {
-//        let price = self.calculateRemainingMoney
-//        return NumberFormatter.formatString(price: price)
-//    }
-//    
-//    // MARK: - 남은 금액 계산
-//    private var calculateRemainingMoney: Int {
-//        
-//        return 0
-////        let price = self.price ?? 0
-////        let total = price - self.cumulativeMoney
-////        return total
-//    }
 }
