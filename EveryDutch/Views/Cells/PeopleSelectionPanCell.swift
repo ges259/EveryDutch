@@ -11,13 +11,8 @@ import SnapKit
 final class PeopleSelectionPanCell: UITableViewCell {
     
     // MARK: - 레이아웃
-    private var cellStv: CellSelectionUIStv = CellSelectionUIStv(
+    lazy var cellStv: CellSelectionUIStv = CellSelectionUIStv(
         stvEnum: .peopleSelection)
-    
-    
-    
-    
-    
     
     
     
@@ -26,16 +21,11 @@ final class PeopleSelectionPanCell: UITableViewCell {
     // MARK: - 프로퍼티
     var cellIsSelected: Bool = false {
         didSet {
-            
             self.cellStv.isTappedView.isHidden = !self.cellIsSelected
-            
-            print("cellIsSelected")
-            print(self.cellIsSelected)
-            print(self.cellStv.isTappedView.isHidden)
         }
     }
     
-    private var isSingleMode: Bool = true
+    private var isSingleMode: Bool?
     
     
     
@@ -53,12 +43,11 @@ final class PeopleSelectionPanCell: UITableViewCell {
     override func setSelected(_ selected: Bool,
                               animated: Bool) {
         super.setSelected(selected, animated: animated)
+
         // 싱글 선택 모드라면.
-        guard self.isSingleMode else { return }
+        guard let _ = self.isSingleMode else { return }
         // 셀을 눌렀을 때, 해당 셀만 이미지 표시 (나머지는 이미지 숨기기)
-        self.cellStv.isTappedView.isHidden = selected
-        ? false
-        : true
+        self.cellStv.isTappedView.isHidden = !selected
     }
 }
 
@@ -100,11 +89,22 @@ extension PeopleSelectionPanCell {
                            user: RoomUsers) {
         // 모드 설정
         self.isSingleMode = isSingleMode
-        // 셀이 선택되었는지 확인
-        self.cellIsSelected = isSelected
+        
+        
+        
+        
         // 프로필 이미지 설정
         self.cellStv.profileImg.image = UIImage.person_Fill_Img
         // 이름 설정
         self.cellStv.userNameLbl.text = user.roomUserName
+        
+        // 셀이 선택되었는지 확인
+        DispatchQueue.main.async {
+            self.cellIsSelected = isSelected
+        }
+//
+        
+        
+        
     }
 }

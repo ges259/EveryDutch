@@ -444,8 +444,6 @@ extension ReceiptWriteVM {
     // MARK: - 선택된 유저의 이름
     func isPayerSelected(selectedUser: RoomUserDataDictionary) {
         self.payer = selectedUser
-        print(#function)
-//        return selectedUser.values.first?.roomUserName
     }
     
     var getSelectedUsers: String? {

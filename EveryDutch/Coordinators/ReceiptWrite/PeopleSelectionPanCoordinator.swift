@@ -27,9 +27,6 @@ final class PeopleSelectionPanCoordinator: Coordinator {
     
     // MARK: - Start - PeopleSelectionPanVC
     func start() {
-        print(#function)
-        print(self.selectedUsers)
-        
         let peopleSelectionPanVM = PeopleSelectionPanVM(
             selectedUsers: self.selectedUsers,
             roomDataManager: RoomDataManager.shared, 

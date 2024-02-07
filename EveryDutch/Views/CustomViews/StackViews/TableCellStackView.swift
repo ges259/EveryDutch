@@ -207,12 +207,14 @@ extension CellSelectionUIStv {
     private func configureStv() {
         self.spacing = 7
         self.axis = .horizontal
-        self.alignment = .fill
+        self.alignment = .center
         self.distribution = .fill
+        
+        self.isTappedView.isHidden = true
         
         self.userNameLbl.text = "dfkj;asdkldfs"
         self.rightView.setRoundedCorners(.all, withCornerRadius: 26 / 2)
-        self.isTappedView.setRoundedCorners(.all, withCornerRadius: 26 / 2)
+        self.isTappedView.setRoundedCorners(.all, withCornerRadius: 22.5 / 2)
     }
     
     // MARK: - 오토레이아웃 설정

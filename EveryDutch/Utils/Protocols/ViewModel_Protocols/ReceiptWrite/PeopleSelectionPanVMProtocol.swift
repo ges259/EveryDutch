@@ -15,6 +15,21 @@ protocol PeopleSelectionPanVMProtocol {
     var removedSelectedUsers: RoomUserDataDictionary { get }
 //    var usersKeyValueArray: [(key: String, value: RoomUsers)] { get }
     
+    func getSelectedUsersIndexPath() -> IndexPath?
+    
+    
+    var isFirst: Bool { get set }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     var bottomBtnClosure: (() -> Void)? { get set }
     

@@ -47,10 +47,7 @@ final class PeopleSelectionPanVM: PeopleSelectionPanVMProtocol  {
     
     
     
-    
-    
-    
-    
+    var isFirst: Bool = true
     
     
     // MARK: - 바텀 버튼 클로저
@@ -140,10 +137,25 @@ final class PeopleSelectionPanVM: PeopleSelectionPanVMProtocol  {
     }
     
     
+    func getSelectedUsersIndexPath() -> IndexPath? {
+        // 해당 키를 찾지 못한 경우 nil을 반환합니다.
+        guard let index = self.getIndex() else {
+            return nil
+        }
+        return IndexPath(row: index, section: 0)
+    }
     
     
-    
-    
+    private func getIndex() -> Int? {
+        // `selectedUsers`의 첫 번째 키를 가져옵니다.
+        guard let key = self.selectedUsers.keys.first else { return nil }
+        // `users` 딕셔너리에서 해당 키의 인덱스를 찾습니다.
+        if let index = Array(self.users.keys).firstIndex(of: key) {
+            // 찾은 인덱스로 `IndexPath`를 생성하여 반환합니다.
+            return index
+        }
+        return nil
+    }
     
     
     
@@ -155,9 +167,7 @@ final class PeopleSelectionPanVM: PeopleSelectionPanVMProtocol  {
         self.roomDataManager = roomDataManager
         self.peopleSelectionEnum = peopleSelectionEnum
         
-        print(#function)
         if let users = selectedUsers {
-            print(users)
             self.selectedUsers = users
         }
         self.users = roomDataManager.getRoomUsersDict

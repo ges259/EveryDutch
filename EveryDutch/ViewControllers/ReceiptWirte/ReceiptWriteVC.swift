@@ -398,8 +398,6 @@ extension ReceiptWriteVC {
     
     // MARK: - payer 액션
     private func payerInfoLblTapped() {
-        print(#function)
-        print(self.viewModel.payer)
         // 모든 키보드 내리기
         self.endEditing()
         // 화면 전환
@@ -629,7 +627,7 @@ extension ReceiptWriteVC {
     
     
     private func savePayer(_ addedUsers: RoomUserDataDictionary) {
-        self.viewModel.isPayerSelected(
+        let user = self.viewModel.isPayerSelected(
             selectedUser: addedUsers)
     }
 }

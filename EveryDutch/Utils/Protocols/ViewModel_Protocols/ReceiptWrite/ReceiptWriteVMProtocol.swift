@@ -8,7 +8,6 @@
 import UIKit
 
 protocol ReceiptWriteVMProtocol {
-
     var getSectionCount: Int { get }
     
     var getNumOfReceiptEnum: Int { get }

@@ -217,7 +217,21 @@ extension PeopleSelectionPanVC: UITableViewDelegate {
     
     // MARK: - 단일 선택 모드일 때
     private func singleModeDidSelectRowAt(index: Int) {
-        self.viewModel.singleModeSelectionUser(index: index)
+        self.viewModel.singleModeSelectionUser(
+            index: index)
+        
+        guard let indexPath = self.viewModel.getSelectedUsersIndexPath()
+        else { return }
+        
+        if let cell = self.peopleSelectionTableView.cellForRow(at: indexPath) as? PeopleSelectionPanCell {
+            
+            // 셀의 레이블에 새로운 텍스트를 설정합니다.
+            if self.viewModel
+                .isFirst {
+                cell.cellStv.isTappedView.isHidden = true
+                self.viewModel.isFirst.toggle()
+            }
+        }
     }
     
     // MARK: - 다중 선택 모드일 때
@@ -254,7 +268,8 @@ extension PeopleSelectionPanVC: UITableViewDataSource {
             withIdentifier: Identifier.peopleSelectionPanCell,
             for: indexPath) as! PeopleSelectionPanCell
         // 뷰모델에서 userID와 해당 RoomUsers 객체를 가져옴
-        let userEntry = self.viewModel.returnUserData(index: indexPath.row)
+        let userEntry = self.viewModel.returnUserData(
+            index: indexPath.row)
         // 셀이 선택된 상태인지 확인
         let isSelected = self.viewModel.getIdToRoomUser(
             usersID: userEntry.key)
@@ -268,6 +283,8 @@ extension PeopleSelectionPanVC: UITableViewDataSource {
                                isSelected: isSelected,
                                userID: userEntry.key,
                                user: userEntry.value)
+        
+        
         return cell
     }
 }
