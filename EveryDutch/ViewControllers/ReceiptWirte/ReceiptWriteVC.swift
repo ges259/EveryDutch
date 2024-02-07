@@ -152,7 +152,7 @@ final class ReceiptWriteVC: UIViewController {
         self.configureAction()      // 액션 설정
         self.configureGesture()     // 제스처 설정
         self.configureClosure()     // 클로저 설정
-        self.configureNotificatioon() // 노티피케인션 설정
+        self.configureNotification() // 노티피케이션 설정
         self.setupTimePicker()      // 타임 피커 초기 설정
     }
     init(viewModel: ReceiptWriteVMProtocol,
@@ -160,10 +160,6 @@ final class ReceiptWriteVC: UIViewController {
         self.viewModel = viewModel
         self.coordinator = coordinator
         super.init(nibName: nil, bundle: nil)
-    }
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -242,12 +238,12 @@ extension ReceiptWriteVC {
         self.timePicker.snp.makeConstraints { make in
             // 데이트 피커를 상위 뷰의 중앙에 위치시킵니다.
             make.centerX.equalToSuperview()
-            make.bottom.equalTo(self.tableView.snp.bottom)
+            make.bottom.equalTo(self.tableView.snp.top)
             // 데이트 피커의 너비와 높이를 100으로 설정합니다.
             make.height.width.equalTo(150)
         }
     }
-
+    
     // MARK: - 액션 설정
     private func configureAction() {
         // 뒤로가기 버튼
@@ -267,6 +263,11 @@ extension ReceiptWriteVC {
             self,
             action: #selector(self.bottomBtnTapped),
             for: .touchUpInside)
+        // 더치 버튼
+        self.dutchBtn.addTarget(
+            self, 
+            action: #selector(self.dutchBtnTapped),
+            for: .touchUpInside)
     }
     
     // MARK: - 제스처 설정
@@ -281,7 +282,7 @@ extension ReceiptWriteVC {
     }
     
     // MARK: - 노티피케이션 설정
-    private func configureNotificatioon() {
+    private func configureNotification() {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(self.keyboardWillShow),
@@ -293,17 +294,46 @@ extension ReceiptWriteVC {
             name: UIResponder.keyboardWillHideNotification,
             object: nil)
     }
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - 클로저 설정
+
+extension ReceiptWriteVC {
     
-    // MARK: - 클로저 설정
+    // MARK: - [공통]
     private func configureClosure() {
+        self.calculatePriceClosure()
+        self.debouncingClosure()
+        self.dutchBtnClosure()
+    }
+    
+    // MARK: - 금액 계산
+    private func calculatePriceClosure() {
         // 누적 금액 설정 클로저
         self.viewModel.calculatePriceClosure = { [weak self] total in
             self?.moneyCountLbl.text = total
         }
+    }
+    
+    // MARK: - 디바운싱
+    private func debouncingClosure() {
         // 키보드 디바운싱의 클로저
         self.viewModel.debouncingClosure = { [weak self] in
             self?.endEditing()
         }
+    }
+    
+    // MARK: - 더치 버튼
+    private func dutchBtnClosure() {
         // 더치 버튼을 누르면, 실행되는 클로저
             // 테이블뷰를 리로드,
             // 더치 모드(isDutchMode) 해제
@@ -317,8 +347,11 @@ extension ReceiptWriteVC {
                 // reloadData가 완료된 후에 호출될 코드
                 self.viewModel.isDutchedMode = false
             }
-            // 테이블뷰를 리로드함.
-            self.tableView.reloadData()
+            
+            let sectionIndex = IndexSet(integer: 1) // 섹션 인덱스 1을 나타냄
+            // 테이블뷰의 섹션2만 리로드함.
+            self.tableView.reloadSections(sectionIndex, with: .none)
+            
             // reloadData() 후에 layoutIfNeeded()를 호출하여 레이아웃 업데이트를 즉시 실행
             self.tableView.layoutIfNeeded()
             CATransaction.commit()
@@ -497,11 +530,36 @@ extension ReceiptWriteVC {
     
     
     
+
+
+
+
+// MARK: - [payer] 1명 선택
+
+extension ReceiptWriteVC {
+    
+    func changePayerLblData(addedUsers: RoomUserDataDictionary) {
+        self.savePayer(addedUsers)
+        self.updatePayerCell()
+    }
+    
+    // MARK: - payer 저장
+    private func savePayer(_ addedUsers: RoomUserDataDictionary) {
+        self.viewModel.isPayerSelected(
+            selectedUser: addedUsers)
+    }
+}
     
     
     
+
+
+
+
+
+
     
-// MARK: - PeopleSelectionVC 관련 코드
+// MARK: - [여러명] 관련 코드
 
 extension ReceiptWriteVC {
     
@@ -545,7 +603,7 @@ extension ReceiptWriteVC {
             // 테이블뷰에 특정 셀을 생성
             self.tableView.insertRows(
                 at: indexPaths,
-                with: .automatic)
+                with: .none)
         }
     }
     
@@ -561,7 +619,7 @@ extension ReceiptWriteVC {
             // 테이블뷰의 특정 셀을 제거
             self.tableView.deleteRows(
                 at: indexPaths,
-                with: .automatic)
+                with: .none)
         }
     }
     
@@ -590,10 +648,9 @@ extension ReceiptWriteVC {
         let payer = self.viewModel.getSelectedUsers
         let indexPath = self.viewModel.getPayerCellIndexPath
         
-        
-        if let cell = tableView.cellForRow(at: indexPath) as? ReceiptWriteDataCell {
+        if let cell = self.tableView.cellForRow(at: indexPath) as? ReceiptWriteDataCell {
             // 셀의 레이블에 새로운 텍스트를 설정합니다.
-            cell.label.text = payer
+            cell.setLabelText(text: payer)
         }
     }
     
@@ -601,9 +658,9 @@ extension ReceiptWriteVC {
     private func updateTimeCell(timeString: String) {
         let indexPath = self.viewModel.getTimeCellIndexPath
         
-        if let cell = tableView.cellForRow(at: indexPath) as? ReceiptWriteDataCell {
+        if let cell = self.tableView.cellForRow(at: indexPath) as? ReceiptWriteDataCell {
             // 셀의 레이블에 새로운 텍스트를 설정합니다.
-            cell.label.text = timeString
+            cell.setLabelText(text: timeString)
         }
     }
 }
@@ -617,45 +674,15 @@ extension ReceiptWriteVC {
 
 
 
-extension ReceiptWriteVC {
-    // MARK: - [payer] 1명 선택
-    func changePayerLblData(addedUsers: RoomUserDataDictionary) {
-        self.savePayer(addedUsers)
-        self.updatePayerCell()
-    }
-    
-    
-    
-    private func savePayer(_ addedUsers: RoomUserDataDictionary) {
-        let user = self.viewModel.isPayerSelected(
-            selectedUser: addedUsers)
-    }
-}
+// MARK: - [테이블뷰] 델리게이트
 
-
-
-
-
-
-
-
-
-
-// MARK: - 테이블뷰 델리게이트
 extension ReceiptWriteVC: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, 
+    
+    // MARK: - 셀의 높이
+    func tableView(_ tableView: UITableView,
                    heightForRowAt indexPath: IndexPath)
     -> CGFloat {
         return 45
-    }
-    
-    func tableView(_ tableView: UITableView,
-                   didSelectRowAt indexPath: IndexPath) {
-        
-        if indexPath.section == 1 {
-            self.scrollToTableViewCellBottom(
-                indexPath: indexPath)
-        }
     }
     
     // MARK: - 헤더뷰 설정
@@ -678,19 +705,28 @@ extension ReceiptWriteVC: UITableViewDelegate {
         return 70
     }
     
-    
-    
-    
+    // MARK: - 푸터뷰 설정
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         return section == 0
         ? nil
         : self.tableHeaderStv
     }
     
+    // MARK: - 푸터뷰 높이
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return section == 0
         ? 0
         : 45
+    }
+    
+    // MARK: - 눌렸을 때 스크롤
+    func tableView(_ tableView: UITableView,
+                   didSelectRowAt indexPath: IndexPath) {
+        
+        if indexPath.section == 1 {
+            self.scrollToTableViewCellBottom(
+                indexPath: indexPath)
+        }
     }
 }
 
@@ -698,7 +734,7 @@ extension ReceiptWriteVC: UITableViewDelegate {
 
 
 
-// MARK: - 테이블뷰 데이터소스
+// MARK: - [테이블뷰] 데이터소스
 
 extension ReceiptWriteVC: UITableViewDataSource {
     
@@ -717,48 +753,56 @@ extension ReceiptWriteVC: UITableViewDataSource {
         : self.viewModel.numOfUsers
     }
     
-    func tableView(_ tableView: UITableView, 
+    // MARK: - 셀 구성
+    func tableView(_ tableView: UITableView,
                    cellForRowAt indexPath: IndexPath)
     -> UITableViewCell {
         
         if indexPath.section == 0 {
-            let cell = tableView.dequeueReusableCell(
-                withIdentifier: Identifier.receiptWriteDataCell,
-                for: indexPath) as! ReceiptWriteDataCell
-            
-            let receiptEnum = self.viewModel.getReceiptEnum(
-                index: indexPath.row)
-            print(receiptEnum)
-            
-            cell.delegate = self
-            
-            let cellVM = ReceiptWriteDataCellVM(
-                withReceiptEnum: receiptEnum)
-            
-            cell.configureCell(viewModel: cellVM)
-            
-            return cell
-            
-            
-            
+            return self.setReceiptWriteDataCell(indexPath)
         } else {
-            
-            let cell = tableView.dequeueReusableCell(
-                withIdentifier: Identifier.receiptWriteUsersCell,
-                for: indexPath) as! ReceiptWriteUsersCell
-            
-            // 셀 뷰모델 만들기
-            let cellViewModel = self.viewModel.usersCellViewModel(at: indexPath.item)
-            // 셀의 뷰모델을 셀에 넣기
-            cell.configureCell(with: cellViewModel)
-            cell.delegate = self
-            
-            if self.viewModel.isDutchedMode {
-                cell.configureDutchBtn(price: self.viewModel.dutchedPrice)
-            }
-            return cell
+            return self.setReceiptWriteUsersCell(indexPath)
         }
     }
+    
+    // MARK: - [셀 구성] 데이터 셀
+    private func setReceiptWriteDataCell(_ indexPath: IndexPath) -> ReceiptWriteDataCell {
+        let cell = self.tableView.dequeueReusableCell(
+            withIdentifier: Identifier.receiptWriteDataCell,
+            for: indexPath) as! ReceiptWriteDataCell
+        
+        let receiptEnum = self.viewModel.getReceiptEnum(
+            index: indexPath.row)
+        
+        cell.delegate = self
+        
+        let cellVM = ReceiptWriteDataCellVM(
+            withReceiptEnum: receiptEnum)
+        
+        cell.configureCell(viewModel: cellVM)
+        
+        return cell
+    }
+    
+    // MARK: - [셀 구성] 유저 셀
+    private func setReceiptWriteUsersCell(_ indexPath: IndexPath) -> ReceiptWriteUsersCell{
+        let cell = tableView.dequeueReusableCell(
+            withIdentifier: Identifier.receiptWriteUsersCell,
+            for: indexPath) as! ReceiptWriteUsersCell
+        
+        // 셀 뷰모델 만들기
+        let cellViewModel = self.viewModel.usersCellViewModel(at: indexPath.item)
+        // 셀의 뷰모델을 셀에 넣기
+        cell.configureCell(with: cellViewModel)
+        cell.delegate = self
+        
+        if self.viewModel.isDutchedMode {
+            print(#function)
+            cell.configureDutchBtn(price: self.viewModel.dutchedPrice)
+        }
+        return cell
+    }
+    
 }
 
 
@@ -770,7 +814,7 @@ extension ReceiptWriteVC: UITableViewDataSource {
 
 
 
-// MARK: - 스크롤뷰 델리게이트
+// MARK: - [스크롤뷰] 델리게이트
 
 extension ReceiptWriteVC: UIScrollViewDelegate {
     
@@ -794,7 +838,7 @@ extension ReceiptWriteVC: UIScrollViewDelegate {
         }
     }
     
-    // MARK: - [계산] 셀의 오프셋
+    // MARK: - 셀의 오프셋
     /// 스크롤뷰의 콘텐츠 오프셋을 계산하고 업데이트
     /// - Parameters:
     ///   - indexPath: 선택한 셀의 'IndexPath'
@@ -808,7 +852,7 @@ extension ReceiptWriteVC: UIScrollViewDelegate {
         self.scrollView.setContentOffset(CGPoint(x: 0, y: offset), animated: true)
     }
     
-    // MARK: - [계산] 셀의 프레임
+    // MARK: - 셀의 프레임
     /// 스크롤뷰 내에서 선택한 셀의 프레임을 계산
     /// - Parameters:
     ///   - indexPath: 선택한 셀의 인덱스 패스
@@ -822,7 +866,7 @@ extension ReceiptWriteVC: UIScrollViewDelegate {
             to: self.scrollView)
     }
 
-    // MARK: - [계산] 스크롤뷰의 오프셋
+    // MARK: - 스크롤뷰의 오프셋
     /// 계산된 셀의 프레임을 바탕으로 스크롤뷰의 오프셋을 계산
     /// 셀의 하단이 키보드 위로 올라오도록 오프셋을 설정.
     /// - Parameter cellFrame: 스크롤뷰 내에서 셀의 프레임
@@ -881,7 +925,7 @@ extension ReceiptWriteVC: UIPickerViewDelegate {
     
     // MARK: - 형식
     func pickerView(_ pickerView: UIPickerView,
-                    titleForRow row: Int, 
+                    titleForRow row: Int,
                     forComponent component: Int)
     -> String? {
         // 두 자리 숫자 형식으로 반환
@@ -905,45 +949,24 @@ extension ReceiptWriteVC: UIPickerViewDelegate {
     
     // MARK: - 폰트
     func pickerView(_ pickerView: UIPickerView,
-                    viewForRow row: Int, 
+                    viewForRow row: Int,
                     forComponent component: Int,
-                    reusing view: UIView?) 
+                    reusing view: UIView?)
     -> UIView {
         // 재사용 가능한 뷰가 있으면 사용하고,
         var label: UILabel
         if let view = view as? UILabel {
             label = view
-        // 없으면 새로운 라벨을 생성
+            // 없으면 새로운 라벨을 생성
         } else {
             label = UILabel()
         }
-
+        
         label.textColor = .black
         label.textAlignment = .center
         label.font = UIFont.systemFont(ofSize: 18) // 폰트 크기를 24로 설정
         label.text = self.viewModel.timePickerFormat(row)
-        
         return label
-    }
-    
-    // MARK: - 타임피커 초기 설정
-    private func setupTimePicker() {
-        // 타임피커 레이블에 현재 시간(시,분)을 설정
-        let currentTime: [Int] = self.viewModel.getCurrentTime()
-        
-        // [타임 피커 내부 레이블] 설정
-        self.setTimePickerLbl(hour: currentTime[0],
-                              min: currentTime[1])
-        // [시간 레이블] 설정
-        self.setTimeInfoLblText(hour: currentTime[0],
-                                min: currentTime[1])
-    }
-    
-    // MARK: - [내부 레이블] 텍스트 설정
-    private func setTimePickerLbl(hour: Int, min: Int) {
-        // [타임피커 내부] 레이블 설정
-        self.timePicker.selectRow(hour, inComponent: 0, animated: false) // 시간
-        self.timePicker.selectRow(min, inComponent: 1, animated: false) // 분
     }
     
     // MARK: - [타임 레이블] 텍스트 설정
@@ -954,12 +977,18 @@ extension ReceiptWriteVC: UIPickerViewDelegate {
             minute: min)
         
         // 선택한 시간과 분을 이용하여 필요한 작업 수행
-        // 선택한 시간을 timeInfoLbl에 넣기
-        // MARK: - Fix
-//        self.timeInfoLbl.text = timeText
         self.updateTimeCell(timeString: timeText)
         // 뷰모델에 시간 저장
         self.viewModel.time = timeText
+    }
+    
+    // MARK: - 타임피커 초기 설정
+    private func setupTimePicker() {
+        // 타임피커 레이블에 현재 시간(시,분)을 설정
+        let currentTime: [Int] = self.viewModel.getCurrentTime()
+        // [타임피커 내부] 레이블 설정
+        self.timePicker.selectRow(currentTime[0], inComponent: 0, animated: false) // 시간
+        self.timePicker.selectRow(currentTime[1], inComponent: 1, animated: false) // 분
     }
 }
 
@@ -1019,26 +1048,27 @@ extension ReceiptWriteVC: ReceiptWriteTableDelegate {
 
 extension ReceiptWriteVC: ReceiptWriteDataCellDelegate {
     
-    
+    // MARK: - 시간 셀
     func timeLblTapped() {
         /// 타임 레이블을 누르면 '타임 피커'가 보이도록 설정
         self.dismissKeyboard()
         self.hideTimePicker(false)
     }
     
+    // MARK: - payer 셀
     func payerLblTapped() {
         self.payerInfoLblTapped()
     }
     
+    // MARK: - 가격 셀
     func finishPriceTF(price: Int) {
         // 뷰모델에 price값 저장
         self.viewModel.savePriceText(price: price)
-        
-        
         // 누적금액 레이블에 (지불금액 - 누적금액) 설정
         self.moneyCountLbl.text = self.viewModel.moneyCountLblText
     }
     
+    // MARK: - 메모 셀
     func finishMemoTF(memo: String) {
         self.viewModel.memo = memo
     }

@@ -10,14 +10,12 @@ import UIKit
 final class CardDecorationCell: UITableViewCell {
     
     // MARK: - 레이아웃
-    
-    
-    
-    // MARK: - 프로퍼티
     private var cellStv: CellSelectionUIStv = CellSelectionUIStv(
         stvEnum: .cardDecoration)
     
     
+    
+    // MARK: - 프로퍼티
     
     
     

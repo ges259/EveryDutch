@@ -10,13 +10,14 @@ import SnapKit
 
 final class ProfileCell: UITableViewCell {
     
-    
+    // MARK: - 레이아웃
     var detailLbl: CustomLabel = CustomLabel(
         leftInset: 20)
     
     var infoLbl: CustomLabel = CustomLabel(
         textAlignment: .right,
         rightInset: 20)
+    
     
     
     
@@ -48,7 +49,6 @@ extension ProfileCell {
     
     // MARK: - UI 설정
     private func configureUI() {
-        self.backgroundColor = .clear
         self.selectionStyle = .none
         self.separatorInset = .zero
         self.backgroundColor = .medium_Blue

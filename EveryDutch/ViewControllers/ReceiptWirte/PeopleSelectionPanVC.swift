@@ -210,9 +210,11 @@ extension PeopleSelectionPanVC: UITableViewDelegate {
         // 현재 모드 확인
         _ = self.viewModel.isSingleMode
         // 싱글 선택 모드라면
-        ? self.singleModeDidSelectRowAt(index: indexPath.row)
+        ? self.singleModeDidSelectRowAt(
+            index: indexPath.row)
         // 다중 선택 모두라면
-        : self.multipleModeDidSelectRowAt(indexPath: indexPath)
+        : self.multipleModeDidSelectRowAt(
+            indexPath: indexPath)
     }
     
     // MARK: - 단일 선택 모드일 때
@@ -233,6 +235,11 @@ extension PeopleSelectionPanVC: UITableViewDelegate {
             }
         }
     }
+    
+    
+    
+    
+    
     
     // MARK: - 다중 선택 모드일 때
     private func multipleModeDidSelectRowAt(indexPath: IndexPath) {

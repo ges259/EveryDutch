@@ -7,38 +7,6 @@
 
 import UIKit
 
-protocol ReceiptWriteDataCellVMProtocol {
-    
-    var getReceiptEnum: ReceiptEnum { get }
-    var TF_MAX_COUNT: Int { get }
-    func updateMemoCount(count: Int) -> String
-    
-    
-    var isTfBeginEditing: Bool { get }
-    var isMemoType: Bool { get }
-    func removeAllFormat(priceText: String?) -> Int
-    
-    func priceInfoTFText(price: Int) -> String?
-    
-    // MARK: - [저장] price(가격)
-    func savePriceText(text: String?)
-    
-    // MARK: - [형식] '원' 형식 삭제
-    func removeWonFormat(priceText: String?) -> String?
-    
-    // MARK: - [형식] 형식 유지하며 수정
-    func formatPriceForEditing(_ newText: String?) -> String?
-    
-}
-
-
-
-
-
-
-
-
-
 final class ReceiptWriteDataCellVM: ReceiptWriteDataCellVMProtocol {
     
     private var receiptEnum: ReceiptEnum
@@ -123,5 +91,19 @@ final class ReceiptWriteDataCellVM: ReceiptWriteDataCellVMProtocol {
     func formatPriceForEditing(_ newText: String?) -> String? {
         return NumberFormatter.formatStringChange(
             price: newText)
+    }
+    
+    
+    
+    // MARK: - 현재 시간 반환
+    func getCurrentTime() -> String {
+        let now = Date()
+        let calendar = Calendar.current
+        
+        let hour = calendar.component(.hour, from: now)
+        let minute = calendar.component(.minute, from: now)
+        
+        // 선택한 시간을 timeInfoLbl에 넣기
+        return "\(hour) : \(minute)"
     }
 }

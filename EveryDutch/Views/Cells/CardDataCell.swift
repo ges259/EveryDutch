@@ -62,7 +62,6 @@ extension CardDataCell {
     
     // MARK: - UI 설정
     private func configureUI() {
-        self.backgroundColor = .clear
         self.selectionStyle = .none
         self.separatorInset = .zero
         self.backgroundColor = .medium_Blue

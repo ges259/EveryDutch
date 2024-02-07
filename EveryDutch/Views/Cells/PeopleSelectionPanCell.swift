@@ -45,7 +45,8 @@ final class PeopleSelectionPanCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
 
         // 싱글 선택 모드라면.
-        guard let _ = self.isSingleMode else { return }
+        guard let mode = self.isSingleMode,
+              mode == true else { return }
         // 셀을 눌렀을 때, 해당 셀만 이미지 표시 (나머지는 이미지 숨기기)
         self.cellStv.isTappedView.isHidden = !selected
     }
@@ -102,9 +103,5 @@ extension PeopleSelectionPanCell {
         DispatchQueue.main.async {
             self.cellIsSelected = isSelected
         }
-//
-        
-        
-        
     }
 }

@@ -32,10 +32,17 @@ final class ReceiptWriteUsersCell: UITableViewCell {
         return tf
     }()
     
+    
+    
+    
 
     // MARK: - 프로퍼티
     var viewModel: ReceiptWriteCellVMProtocol?
     weak var delegate: ReceiptWriteTableDelegate?
+    
+    
+    
+    
     
     // MARK: - 라이프사이클
     override init(style: UITableViewCell.CellStyle, 
@@ -63,6 +70,15 @@ final class ReceiptWriteUsersCell: UITableViewCell {
         self.priceTf.text = ""
     }
 }
+
+
+
+
+
+
+
+
+
 
 // MARK: - 화면 설정
 

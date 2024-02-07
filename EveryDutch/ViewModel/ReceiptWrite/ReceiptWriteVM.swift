@@ -329,7 +329,9 @@ extension ReceiptWriteVM {
     func dutchBtnTapped() {
         // 현재 금액 옵셔널 바인딩,
         // + 현재 금액이 0원이 아니라면
-        guard let price = self.price, price != 0 else {
+        guard let price = self.price, 
+                price != 0,
+                self.selectedUsers.count != 0 else {
             // 현재 금액이 0원이라면 -> 0원으로 모두 맞춤
             self.cumulativeMoney = 0
             self.dutchBtnClosure?()
@@ -417,6 +419,7 @@ extension ReceiptWriteVM {
         return String(format: "%02d", row)
     }
     
+    // MARK: - 현재 시간 반환
     func getCurrentTime() -> [Int] {
         let now = Date()
         let calendar = Calendar.current
