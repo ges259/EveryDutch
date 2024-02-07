@@ -197,7 +197,7 @@ extension PeopleSelectionPanVC {
 
 extension PeopleSelectionPanVC: UITableViewDelegate {
     
-    // MARK: - 높이
+    // MARK: - 셀의 높이
     func tableView(_ tableView: UITableView,
                    heightForRowAt indexPath: IndexPath)
     -> CGFloat {
@@ -231,14 +231,22 @@ extension PeopleSelectionPanVC: UITableViewDelegate {
     }
 }
 
+
+
+
+
 // MARK: - 테이블뷰 데이터소스
+
 extension PeopleSelectionPanVC: UITableViewDataSource {
+    
+    // MARK: - 셀의 개수
     func tableView(_ tableView: UITableView,
                    numberOfRowsInSection section: Int)
     -> Int {
         return self.viewModel.numOfUsers
     }
     
+    // MARK: - 셀 구성
     func tableView(_ tableView: UITableView,
                    cellForRowAt indexPath: IndexPath)
     -> UITableViewCell {
@@ -250,6 +258,7 @@ extension PeopleSelectionPanVC: UITableViewDataSource {
         // 셀이 선택된 상태인지 확인
         let isSelected = self.viewModel.getIdToRoomUser(
             usersID: userEntry.key)
+        
         // 현재 모드 전달
         let mode = self.viewModel.isSingleMode
         

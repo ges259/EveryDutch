@@ -51,8 +51,10 @@ final class ReceiptWriteCoordinator: ReceiptWriteCoordProtocol {
     
     
     // MARK: - PeopleSelectionPanScreen
-    func peopleSelectionPanScreen(users: RoomUserDataDictionary?,
-                                  peopleSelectionEnum: PeopleSeelctionEnum?) {
+    func peopleSelectionPanScreen(
+        users: RoomUserDataDictionary?,
+        peopleSelectionEnum: PeopleSeelctionEnum?)
+    {
         // PeopleSelectionPanCoordinator 생성
         let peopleSelectionPanCoord = PeopleSelectionPanCoordinator(
             nav: self.modalNavController ?? self.nav)
@@ -104,8 +106,10 @@ final class ReceiptWriteCoordinator: ReceiptWriteCoordProtocol {
 // MARK: - PeopleSelection 델리게이트
 extension ReceiptWriteCoordinator: PeopleSelectionDelegate {
     
-    func multipleModeSelectedUsers(addedusers: RoomUserDataDictionary,
-                                   removedUsers: RoomUserDataDictionary) {
+    func multipleModeSelectedUsers(
+        addedusers: RoomUserDataDictionary,
+        removedUsers: RoomUserDataDictionary)
+    {
         if let receiptWriteVC = self.findReceiptWriteVC {
             receiptWriteVC.changeTableViewData(
                 addedUsers: addedusers,
@@ -113,7 +117,9 @@ extension ReceiptWriteCoordinator: PeopleSelectionDelegate {
         }
     }
     
-    func payerSelectedUser(addedUser: RoomUserDataDictionary) {
+    func payerSelectedUser(
+        addedUser: RoomUserDataDictionary)
+    {
         if let receiptWriteVC = self.findReceiptWriteVC {
             receiptWriteVC.changePayerLblData(addedUsers: addedUser)
         }

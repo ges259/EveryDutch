@@ -25,7 +25,7 @@ final class ReceiptWriteDataCell: UITableViewCell {
         return tf
     }()
     
-    private lazy var label: CustomLabel = CustomLabel(
+    lazy var label: CustomLabel = CustomLabel(
         backgroundColor: UIColor.normal_white,
         leftInset: 25)
     
@@ -62,14 +62,17 @@ extension ReceiptWriteDataCell {
         self.backgroundColor = .clear
         self.selectionStyle = .none
         self.separatorInset = .zero
-        self.backgroundColor = .medium_Blue
+        self.backgroundColor = .normal_white
+//        self.backgroundColor = .medium_Blue
+        
+        self.cellStv.backgroundColor = .medium_Blue
     }
     
     // MARK: - 오토레이아웃 설정
     private func configureAutoLayout() {
         self.addSubview(self.cellStv)
         self.cellStv.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(20)
+            make.leading.equalToSuperview()
             make.top.bottom.equalToSuperview()
             make.centerY.equalToSuperview()
         }
@@ -87,9 +90,14 @@ extension ReceiptWriteDataCell {
         case .time:
             self.configureLabel()
             self.configureTimeLblAction()
+            self.cellStv.setRoundedCorners(.rightTop, withCornerRadius: 10)
         case .payer:
             self.configureLabel()
             self.configurePayerLblAction()
+            self.cellStv.setRoundedCorners(.rightBottom, withCornerRadius: 10)
+            
+            self.setRoundedCorners(.bottom, withCornerRadius: 10)
+            
             break
         case .price:
             self.configureTextField()

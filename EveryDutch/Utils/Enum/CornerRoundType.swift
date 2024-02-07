@@ -14,7 +14,9 @@ enum CornerRoundType {
     case none
     case right
     case left
+    case leftTop
     case rightTop
+    case rightBottom
     
     var cornerMask: CACornerMask {
         switch self {
@@ -30,13 +32,20 @@ enum CornerRoundType {
                     .layerMinXMaxYCorner,
                     .layerMaxXMaxYCorner]
         case .right:
-            return [.layerMinXMinYCorner,
-                    .layerMinXMaxYCorner]
-        case .left:
             return [.layerMaxXMinYCorner,
                     .layerMaxXMaxYCorner]
-        case .rightTop:
+        case .left:
+            return [.layerMinXMinYCorner,
+                    .layerMinXMaxYCorner]
+            
+        case .leftTop:
             return [.layerMinXMinYCorner]
+            
+        case .rightTop:
+            return [.layerMaxXMinYCorner]
+        case .rightBottom:
+            return [.layerMaxXMaxYCorner]
+            
         case .none:
             return []
         }

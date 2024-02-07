@@ -75,14 +75,10 @@ final class ReceiptWriteVC: UIViewController {
     
     
     // MARK: - 유저 추가 버튼
-    private var addPersonBtn: UIButton = {
-        let btn = UIButton.btnWithTitle(
-            title: "✓ 계산할 사람 선택",
-            font: UIFont.systemFont(ofSize: 14),
-            backgroundColor: UIColor.deep_Blue)
-        btn.isHidden = true
-        return btn
-    }()
+    private var addPersonBtn: UIButton = UIButton.btnWithTitle(
+        title: "✓ 계산할 사람 선택",
+        font: UIFont.systemFont(ofSize: 14),
+        backgroundColor: UIColor.deep_Blue)
     
     
     
@@ -198,7 +194,7 @@ extension ReceiptWriteVC {
             view.setRoundedCorners(.all, withCornerRadius: 10)
         }
         
-        self.tableHeaderStv.setRoundedCorners(.top, withCornerRadius: 10)
+        self.tableHeaderStv.setRoundedCorners(.bottom, withCornerRadius: 10)
         
         self.topTotalStackView.setCustomSpacing(0, after: self.calendar)
     }
@@ -402,11 +398,13 @@ extension ReceiptWriteVC {
     
     // MARK: - payer 액션
     private func payerInfoLblTapped() {
+        print(#function)
+        print(self.viewModel.payer)
         // 모든 키보드 내리기
         self.endEditing()
         // 화면 전환
         self.coordinator.peopleSelectionPanScreen(
-            users: self.viewModel.selectedUsers,
+            users: self.viewModel.payer,
             peopleSelectionEnum: .singleSelection)
     }
     
@@ -509,7 +507,7 @@ extension ReceiptWriteVC {
 
 extension ReceiptWriteVC {
     
-    // MARK: - [PaymentDetails] 여러명 선택
+    // MARK: - 여러명 선택
     func changeTableViewData(
         addedUsers: RoomUserDataDictionary,
         removedUsers: RoomUserDataDictionary)
@@ -519,7 +517,7 @@ extension ReceiptWriteVC {
         self.updateTableViewCell(addedUsers: addedUsers,
                                  removedUsers: removedUsers)
         // 유저 삭제 또는 추가 후, 0명이면, 테이블 숨기기
-        self.tableViewIsHidden()
+//        self.tableViewIsHidden()
     }
     
     // MARK: - 테이블뷰 셀 업데이트
@@ -542,7 +540,8 @@ extension ReceiptWriteVC {
         if !addedUsers.isEmpty {
             // 주의 --- 순서를 바꾸면 안 됨.
             // 뷰모델에서 셀의 뷰모델을 생성
-            self.viewModel.createUsersCellVM(addedUsers: addedUsers)
+            self.viewModel.createUsersCellVM(
+                addedUsers: addedUsers)
             // 추가될 셀의 IndexPath를 계산합니다.
             let indexPaths = self.viewModel.indexPathsForAddedUsers(addedUsers)
             // 테이블뷰에 특정 셀을 생성
@@ -570,27 +569,68 @@ extension ReceiptWriteVC {
     
     // MARK: - 유저 수에 따라 테이블뷰 숨기기
     private func tableViewIsHidden() {
-        self.tableHeaderStv.isHidden = self.viewModel.tableIsHidden
+        // 0명이면, noDataView 띄우기
+//        self.tableHeaderStv.isHidden = self.viewModel.tableIsHidden
     }
 }
         
+
+
+
     
     
     
     
 
+
+// MARK: - 셀 업데이트
+
+extension ReceiptWriteVC {
+    
+    // MARK: - payer 셀
+    private func updatePayerCell() {
+        let payer = self.viewModel.getSelectedUsers
+        let indexPath = self.viewModel.getPayerCellIndexPath
+        
+        
+        if let cell = tableView.cellForRow(at: indexPath) as? ReceiptWriteDataCell {
+            // 셀의 레이블에 새로운 텍스트를 설정합니다.
+            cell.label.text = payer
+        }
+    }
+    
+    // MARK: - time 셀
+    private func updateTimeCell(timeString: String) {
+        let indexPath = self.viewModel.getTimeCellIndexPath
+        
+        if let cell = tableView.cellForRow(at: indexPath) as? ReceiptWriteDataCell {
+            // 셀의 레이블에 새로운 텍스트를 설정합니다.
+            cell.label.text = timeString
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
 extension ReceiptWriteVC {
     // MARK: - [payer] 1명 선택
     func changePayerLblData(addedUsers: RoomUserDataDictionary) {
-        // MARK: - Fix
-//        self.payerInfoLbl.text = 
-        
+        self.savePayer(addedUsers)
+        self.updatePayerCell()
+    }
+    
+    
+    
+    private func savePayer(_ addedUsers: RoomUserDataDictionary) {
         self.viewModel.isPayerSelected(
             selectedUser: addedUsers)
-        
-        // 이제, ReceiptEnum이 .payer인 것을 찾아서
-        // 그 셀의 레이블의 텍스트를 바꿔야 함
-        self.addPersonBtn.isHidden = false
     }
 }
 
@@ -625,15 +665,31 @@ extension ReceiptWriteVC: UITableViewDelegate {
     func tableView(_ tableView: UITableView,
                    viewForHeaderInSection section: Int)
     -> UIView? {
-        return section == 0
-        ? nil
-        : self.tableHeaderStv
+        let title = self.viewModel.getHeaderTitle(
+            section: section)
+        return TableHeaderView(
+            title: title,
+            tableHeaderEnum: .receiptWriteVC)
     }
+
     // MARK: - 헤더 높이
     /// 헤더의 높이를 설정합니다.
     func tableView(_ tableView: UITableView,
                    heightForHeaderInSection section: Int)
     -> CGFloat {
+        return 70
+    }
+    
+    
+    
+    
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        return section == 0
+        ? nil
+        : self.tableHeaderStv
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return section == 0
         ? 0
         : 45
@@ -903,6 +959,7 @@ extension ReceiptWriteVC: UIPickerViewDelegate {
         // 선택한 시간을 timeInfoLbl에 넣기
         // MARK: - Fix
 //        self.timeInfoLbl.text = timeText
+        self.updateTimeCell(timeString: timeText)
         // 뷰모델에 시간 저장
         self.viewModel.time = timeText
     }

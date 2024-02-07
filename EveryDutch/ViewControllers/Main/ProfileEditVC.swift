@@ -294,18 +294,15 @@ extension ProfileEditVC: UITableViewDelegate {
     private func createHeaderView(for section: Int) -> UIView {
         let title = self.viewModel.getHeaderTitle(
             section: section)
-        return TableHeaderView(title: title)
+        return TableHeaderView(
+            title: title,
+            tableHeaderEnum: .profileVC)
     }
     
     // MARK: - 푸터뷰 생성
-    private func createFooterView() -> UIView {
-        
-        
-        
+    private func createFooterView() -> UIView {   
         return TableFooterView()
     }
-    
-    
 }
 
 
@@ -375,6 +372,6 @@ extension ProfileEditVC: UITableViewDataSource {
     
     // MARK: - 셀의 모서리 설정
     private func firstCellSetCorner(cell: CardDataCell) {
-        cell.textField.setRoundedCorners(.rightTop, withCornerRadius: 12)
+        cell.textField.setRoundedCorners(.leftTop, withCornerRadius: 12)
     }
 }

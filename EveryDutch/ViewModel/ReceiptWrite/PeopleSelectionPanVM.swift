@@ -73,8 +73,10 @@ final class PeopleSelectionPanVM: PeopleSelectionPanVMProtocol  {
     func getIdToRoomUser(usersID: String) -> Bool {
         if self.addedUsers[usersID] != nil
             || self.selectedUsers[usersID] != nil {
+            
             return true
         }
+        
         return false
     }
     // MARK: - 바텀 버튼 isEnabled
@@ -153,7 +155,9 @@ final class PeopleSelectionPanVM: PeopleSelectionPanVMProtocol  {
         self.roomDataManager = roomDataManager
         self.peopleSelectionEnum = peopleSelectionEnum
         
+        print(#function)
         if let users = selectedUsers {
+            print(users)
             self.selectedUsers = users
         }
         self.users = roomDataManager.getRoomUsersDict

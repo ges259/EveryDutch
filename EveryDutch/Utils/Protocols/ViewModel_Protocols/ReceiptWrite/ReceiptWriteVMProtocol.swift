@@ -16,8 +16,11 @@ protocol ReceiptWriteVMProtocol {
     func getReceiptEnum(index: Int) -> ReceiptEnum
     
     
+    func getHeaderTitle(section: Int) -> String
     
     
+    var getTimeCellIndexPath: IndexPath { get }
+    var getPayerCellIndexPath: IndexPath { get }
     
     
     
@@ -134,10 +137,10 @@ protocol ReceiptWriteVMProtocol {
     
     
     // MARK: - 선택된 유저의 이름
-    func isPayerSelected(selectedUser: RoomUserDataDictionary) -> String?
+    func isPayerSelected(selectedUser: RoomUserDataDictionary)
     
     
-    
+    var getSelectedUsers: String? { get }
     
     
 // MARK: - 셀의 뷰모델 반환

@@ -12,7 +12,7 @@ final class PeopleSelectionPanCell: UITableViewCell {
     
     // MARK: - 레이아웃
     private var cellStv: CellSelectionUIStv = CellSelectionUIStv(
-        stvEnum: .cardDecoration)
+        stvEnum: .peopleSelection)
     
     
     
@@ -26,7 +26,12 @@ final class PeopleSelectionPanCell: UITableViewCell {
     // MARK: - 프로퍼티
     var cellIsSelected: Bool = false {
         didSet {
+            
             self.cellStv.isTappedView.isHidden = !self.cellIsSelected
+            
+            print("cellIsSelected")
+            print(self.cellIsSelected)
+            print(self.cellStv.isTappedView.isHidden)
         }
     }
     

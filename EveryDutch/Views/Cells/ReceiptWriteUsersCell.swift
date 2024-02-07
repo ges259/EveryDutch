@@ -73,6 +73,7 @@ extension ReceiptWriteUsersCell {
         self.backgroundColor = .clear
         self.selectionStyle = .none
         self.separatorInset = .zero
+        self.backgroundColor = .normal_white
         
         self.priceTf.layer.maskedCorners = [
             .layerMinXMinYCorner, // 좌상단

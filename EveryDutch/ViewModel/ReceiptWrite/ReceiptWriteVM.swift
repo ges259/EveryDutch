@@ -29,6 +29,31 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     
     
     
+    private var receiptWriteEnum: [ReceiptWriteEnum] = ReceiptWriteEnum.allCases
+    
+    func getHeaderTitle(section: Int) -> String {
+        return self.receiptWriteEnum[section].headerTitle
+    }
+    
+    
+    var getTimeCellIndexPath: IndexPath {
+        return self.findReceiptEnumIndex(
+            receiptEnum: .time)
+    }
+    var getPayerCellIndexPath: IndexPath {
+        return self.findReceiptEnumIndex(
+            receiptEnum: .payer)
+    }
+    
+    
+    private func findReceiptEnumIndex(receiptEnum: ReceiptEnum) -> IndexPath {
+        if let index = self.receiptEnum.firstIndex(of: receiptEnum) {
+            return IndexPath(row: index, section: 0)
+        }
+        return IndexPath(row: 0, section: 0)
+    }
+    
+    
     
     
     // MARK: - 모델
@@ -401,7 +426,6 @@ extension ReceiptWriteVM {
         
         return [hour, minute]
     }
-
 }
     
     
@@ -418,9 +442,14 @@ extension ReceiptWriteVM {
 extension ReceiptWriteVM {
     
     // MARK: - 선택된 유저의 이름
-    func isPayerSelected(selectedUser: RoomUserDataDictionary) -> String? {
+    func isPayerSelected(selectedUser: RoomUserDataDictionary) {
         self.payer = selectedUser
-        return selectedUser.values.first?.roomUserName
+        print(#function)
+//        return selectedUser.values.first?.roomUserName
+    }
+    
+    var getSelectedUsers: String? {
+        return self.payer?.values.first?.roomUserName
     }
 }
 
@@ -443,7 +472,7 @@ extension ReceiptWriteVM {
     // MARK: - 추가될 셀의 IndexPath
     func indexPathsForAddedUsers(_ users: RoomUserDataDictionary) -> [IndexPath] {
         let startIndex = self.usersCellViewModels.count - users.count
-        return (startIndex..<(startIndex + users.count)).map { IndexPath(row: $0, section: 0) }
+        return (startIndex..<(startIndex + users.count)).map { IndexPath(row: $0, section: 1) }
     }
     
     // MARK: - 유저 삭제
@@ -459,7 +488,7 @@ extension ReceiptWriteVM {
         var indexPaths = [IndexPath]()
         users.keys.forEach { userID in
             if let index = self.usersCellViewModels.firstIndex(where: { $0.userID == userID }) {
-                indexPaths.append(IndexPath(row: index, section: 0))
+                indexPaths.append(IndexPath(row: index, section: 1))
             }
         }
         return indexPaths
@@ -516,6 +545,14 @@ extension ReceiptWriteVM {
         }
     }
 }
+
+
+
+
+
+
+
+
 
 
 // MARK: - 셀 뷰모델 반환

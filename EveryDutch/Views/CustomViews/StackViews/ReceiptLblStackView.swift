@@ -9,6 +9,10 @@ import UIKit
 import SnapKit
 
 final class ReceiptLblStackView: UIStackView {
+    
+    private var imageContainerView: UIView = UIView.configureView(
+        color: UIColor.clear)
+    
     private var receiptImg: UIImageView = {
         let img = UIImageView()
         img.tintColor = UIColor.black
@@ -51,13 +55,16 @@ final class ReceiptLblStackView: UIStackView {
     
     
     private func configureCustomStackView() {
-        self.addArrangedSubview(self.receiptImg)
+        self.imageContainerView.addSubview(self.receiptImg)
+        self.addArrangedSubview(self.imageContainerView)
         self.addArrangedSubview(self.receiptDetailLbl)
         if self.addInfoLbl {
             self.addArrangedSubview(self.receiptInfoLbl)
         }
         
         self.receiptImg.snp.makeConstraints { make in
+            make.leading.equalToSuperview().inset(20)
+            make.top.trailing.bottom.equalToSuperview()
             make.width.height.equalTo(20)
         }
         self.receiptDetailLbl.snp.makeConstraints { make in

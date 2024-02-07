@@ -240,7 +240,9 @@ extension ProfileVC: UITableViewDelegate {
     /// 헤더 뷰를 생성합니다.
     private func createHeaderView(for section: Int) -> UIView {
         let title = self.viewModel.getHeaderTitle(section: section)
-        return TableHeaderView(title: title)
+        return TableHeaderView(
+            title: title,
+            tableHeaderEnum: .profileVC)
     }
     // MARK: - 푸터뷰 생성
     private func createFooterView() -> UIView {
