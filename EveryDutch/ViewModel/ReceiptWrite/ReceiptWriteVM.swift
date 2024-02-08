@@ -29,30 +29,7 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     
     
     
-    private var receiptWriteEnum: [ReceiptWriteEnum] = ReceiptWriteEnum.allCases
-    
-    func getHeaderTitle(section: Int) -> String {
-        return self.receiptWriteEnum[section].headerTitle
-    }
-    
-    
-    var getTimeCellIndexPath: IndexPath {
-        return self.findReceiptEnumIndex(
-            receiptEnum: .time)
-    }
-    var getPayerCellIndexPath: IndexPath {
-        return self.findReceiptEnumIndex(
-            receiptEnum: .payer)
-    }
-    
-    
-    private func findReceiptEnumIndex(receiptEnum: ReceiptEnum) -> IndexPath {
-        if let index = self.receiptEnum.firstIndex(of: receiptEnum) {
-            return IndexPath(row: index, section: 0)
-        }
-        return IndexPath(row: 0, section: 0)
-    }
-    
+
     
     
     
@@ -77,21 +54,7 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     
     
     
-    var getSectionCount: Int {
-        return 2
-    }
-    
-    private var receiptEnum: [ReceiptEnum] = [.time,
-                                              .memo,
-                                              .price,
-                                              .payer]
-    var getNumOfReceiptEnum: Int {
-        return self.receiptEnum.count
-    }
-    
-    func getReceiptEnum(index: Int) -> ReceiptEnum {
-        return self.receiptEnum[index]
-    }
+
     
     
     
@@ -121,7 +84,92 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     
     
     
-    // MARK: - 테이블뷰 개수
+// MARK: - [공통]
+    private var receiptWriteEnum: [ReceiptWriteEnum] = ReceiptWriteEnum.allCases
+    
+    // MARK: - 헤더 타이틀
+    func getHeaderTitle(section: Int) -> String {
+        return self.receiptWriteEnum[section].headerTitle
+    }
+    
+    // MARK: - 섹션의 개수
+    var getSectionCount: Int {
+        return self.receiptWriteEnum.count
+    }
+    
+    // MARK: - 첫 번째 셀 모서리
+    func isFistCell(_ receiptEnum: ReceiptEnum) -> Bool {
+        return receiptEnum == self.receiptEnum.first
+        ? true
+        : false
+    }
+    
+    // MARK: - 마지막 셀 모서리
+    func isLastCell(_ receiptEnum: ReceiptEnum) -> Bool {
+        return receiptEnum == self.receiptEnum.last
+        ? true
+        : false
+    }
+    
+    
+    
+// MARK: - [데이터 섹션]
+    private var receiptEnum: [ReceiptEnum] = [
+        .date, .time, .memo, .price, .payer]
+    
+    // MARK: - 데이터 셀 개수
+    var getNumOfReceiptEnum: Int {
+        return self.receiptEnum.count
+    }
+    
+    // MARK: - 데이터 셀 Enum
+    func getReceiptEnum(index: Int) -> ReceiptEnum {
+        return self.receiptEnum[index]
+    }
+    
+    
+    
+    
+    
+// MARK: - [셀 인덱스]
+    
+    
+    
+    // MARK: - 인덱스 리턴 함수
+    private func findReceiptEnumIndex(receiptEnum: ReceiptEnum) -> IndexPath {
+        if let index = self.receiptEnum.firstIndex(of: receiptEnum) {
+            return IndexPath(row: index, section: 0)
+        }
+        return IndexPath(row: 0, section: 0)
+    }
+    
+    // MARK: - 시간 셀
+    var getTimeCellIndexPath: IndexPath {
+        return self.findReceiptEnumIndex(
+            receiptEnum: .time)
+    }
+    
+    // MARK: - payer 셀
+    var getPayerCellIndexPath: IndexPath {
+        return self.findReceiptEnumIndex(
+            receiptEnum: .payer)
+    }
+    
+    // MARK: - 날짜 셀
+    var getDateCellIndexPath: IndexPath {
+        return self.findReceiptEnumIndex(
+            receiptEnum: .date)
+    }
+    
+    
+    
+    
+    
+// MARK: - [유저 섹션]
+    
+    
+    
+    // MARK: - 유저 섹션 개수
     var numOfUsers: Int {
         return self.selectedUsers.count
     }
@@ -184,6 +232,13 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     
     
     
+    
+    
+// MARK: - 날짜 저장
+    func saveCalenderDate(date: Date) {
+        let dateInt = Int(date.timeIntervalSince1970)
+        self.date = dateInt
+    }
     
     
     

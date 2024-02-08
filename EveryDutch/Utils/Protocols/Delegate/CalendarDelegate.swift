@@ -9,5 +9,5 @@ import Foundation
 
 
 protocol CalendarDelegate: AnyObject {
-    func didSelectDate(dateInt: Int)
+    func didSelectDate(date: Date)
 }

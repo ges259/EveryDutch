@@ -106,14 +106,12 @@ extension CustomCalendar: FSCalendarDelegate {
     func calendar(_ calendar: FSCalendar,
                   didSelect date: Date,
                   at monthPosition: FSCalendarMonthPosition) {
-        let dateInt = Int(date.timeIntervalSince1970)
-        
-        self.calendarDelegate?.didSelectDate(dateInt: dateInt)
+        self.calendarDelegate?.didSelectDate(date: date)
     }
     // MARK: - 캘린더 '월'이 바뀌었을 때
     // FSCalendarDelegate 메소드 구현
     func calendarCurrentPageDidChange(_ calendar: FSCalendar) {
-        updateCalendarHeader()
+        self.updateCalendarHeader()
     }
     
     // MARK: - 캘린더 헤더의 텍스트 설정
@@ -125,13 +123,12 @@ extension CustomCalendar: FSCalendarDelegate {
         let dateFormatter = DateFormatter()
         dateFormatter.locale = Locale(identifier: "ko_KR")
     
-        if currentPageYear == currentYear {
-            dateFormatter.dateFormat = "M월"
-        } else {
-            dateFormatter.dateFormat = "YYYY년 M월"
-        }
+        dateFormatter.dateFormat
+        = currentPageYear == currentYear
+        ? "M월"
+        : "YYYY년 M월"
 
         let formattedTitle = dateFormatter.string(from: currentPage)
-        customHeaderView.text = formattedTitle
+        self.customHeaderView.text = formattedTitle
     }
 }

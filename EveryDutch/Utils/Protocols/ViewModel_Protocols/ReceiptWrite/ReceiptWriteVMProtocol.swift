@@ -20,8 +20,11 @@ protocol ReceiptWriteVMProtocol {
     
     var getTimeCellIndexPath: IndexPath { get }
     var getPayerCellIndexPath: IndexPath { get }
+    func isFistCell(_ receiptEnum: ReceiptEnum) -> Bool
+    func isLastCell(_ receiptEnum: ReceiptEnum) -> Bool
     
-    
+    func saveCalenderDate(date: Date)
+    var getDateCellIndexPath: IndexPath { get }
     
     
     // MARK: - 모델

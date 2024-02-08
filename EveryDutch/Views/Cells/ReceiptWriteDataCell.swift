@@ -74,6 +74,11 @@ extension ReceiptWriteDataCell {
         self.label.textColor = UIColor.black
         self.label.text = text
     }
+    
+    // MARK: - 날짜 텍스트 설정
+    func setDateString(date: Date) {
+        self.configureDateString(date: date)
+    }
 }
 
 
@@ -94,12 +99,18 @@ extension ReceiptWriteDataCell {
         guard let receiptEnum = self.viewModel?.getReceiptEnum else { return }
         
         switch receiptEnum {
+        case .date:     self.configureDateUI()
         case .time:     self.configureTimeUI()
         case .payer:    self.configurePayerUI()
         case .price:    self.configurePriceUI()
         case .memo:     self.configureMemoUI()
-        case .payment_Method, .date: break
+        case .payment_Method: break
         }
+    }
+    
+    private func configureDateUI() {
+        self.configureLabelAutoLayout()
+        self.configureDateString()
     }
     
     // MARK: - 시간
@@ -155,21 +166,20 @@ extension ReceiptWriteDataCell {
         self.cellStv.backgroundColor = .medium_Blue
     }
     
+    // MARK: - 날짜
+    private func configureDateString(date: Date = Date()) {
+        self.label.text = Date.returnYearString(date: date)
+    }
+    
+    
     // MARK: - 시간
     private func configureTimeEnumUI() {
-        // 스택뷰의 모서리 설정
-        self.cellStv.setRoundedCorners(.rightTop, withCornerRadius: 10)
         // 레이블 텍스트 설정
         self.label.text = self.viewModel?.getCurrentTime()
     }
     
     // MARK: - payer
     private func configurePayerEnumUI() {
-        // 스택뷰의 모서리 설정
-        self.cellStv.setRoundedCorners(.rightBottom, withCornerRadius: 10)
-        // 셀의 모서리 설정
-        self.setRoundedCorners(.bottom, withCornerRadius: 10)
-        
         self.label.attributedText = NSAttributedString.configure(
             text: "계산한 사람을 설정해 주세요.",
             color: UIColor.placeholder_gray, 
@@ -179,6 +189,20 @@ extension ReceiptWriteDataCell {
     // MARK: - 가격
     private func configurePriceEnumUI() {
         self.textField.keyboardType = .numberPad
+    }
+    
+    
+    // MARK: - 첫 번째 셀
+    func configureFirstCell() {
+        // 스택뷰의 모서리 설정
+        self.cellStv.setRoundedCorners(.rightTop, withCornerRadius: 10)
+    }
+    // MARK: - 마지막 셀
+    func configureLastCell() {
+        // 스택뷰의 모서리 설정
+        self.cellStv.setRoundedCorners(.rightBottom, withCornerRadius: 10)
+        // 셀의 모서리 설정
+        self.setRoundedCorners(.bottom, withCornerRadius: 10)
     }
 }
 

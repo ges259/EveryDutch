@@ -31,6 +31,20 @@ extension Date {
         return dateArray
     }
     
+    static func returnYearString(date: Date = Date()) -> String {
+        // Int값으로 바꾸기
+//        let timeInteger = Int(date.timeIntervalSince1970)
+        
+        // Int 타입의 타임스탬프를 Date 객체로 변환합니다.
+//        let date = Date(timeIntervalSince1970: TimeInterval(timeInteger))
+        
+        // 날짜를 포맷하기 위한 DateFormatter를 생성합니다.
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy - MM - dd"
+        let dateStr = dateFormatter.string(from: date)
+        return dateStr
+    }
+    
     static func returnCurrenTime() -> String {
         let date = Date()
         let timeFormatter = DateFormatter()

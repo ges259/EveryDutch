@@ -643,11 +643,24 @@ extension ReceiptWriteVC {
 
 extension ReceiptWriteVC {
     
+    // MARK: - 날짜 셀
+    private func updateDateCell(_ date: Date) {
+        // 날짜 인덱스 가져오기
+        let indexPath = self.viewModel.getDateCellIndexPath
+        // 셀 가져오기
+        if let cell = self.tableView.cellForRow(at: indexPath) as? ReceiptWriteDataCell {
+            // 셀의 레이블에 새로운 텍스트를 설정합니다.
+            cell.setDateString(date: date)
+        }
+    }
+    
     // MARK: - payer 셀
     private func updatePayerCell() {
+        // payer 정보 가져오기
         let payer = self.viewModel.getSelectedUsers
+        // payer 인덱스패스 가져오기
         let indexPath = self.viewModel.getPayerCellIndexPath
-        
+        // 셀 가져오기
         if let cell = self.tableView.cellForRow(at: indexPath) as? ReceiptWriteDataCell {
             // 셀의 레이블에 새로운 텍스트를 설정합니다.
             cell.setLabelText(text: payer)
@@ -656,8 +669,9 @@ extension ReceiptWriteVC {
     
     // MARK: - time 셀
     private func updateTimeCell(timeString: String) {
+        // 시간 인덱스패스 가져오기
         let indexPath = self.viewModel.getTimeCellIndexPath
-        
+        // 셀 가져오기
         if let cell = self.tableView.cellForRow(at: indexPath) as? ReceiptWriteDataCell {
             // 셀의 레이블에 새로운 텍스트를 설정합니다.
             cell.setLabelText(text: timeString)
@@ -753,56 +767,93 @@ extension ReceiptWriteVC: UITableViewDataSource {
         : self.viewModel.numOfUsers
     }
     
-    // MARK: - 셀 구성
+    // MARK: - [셀 구성]
     func tableView(_ tableView: UITableView,
                    cellForRowAt indexPath: IndexPath)
     -> UITableViewCell {
-        
-        if indexPath.section == 0 {
-            return self.setReceiptWriteDataCell(indexPath)
-        } else {
-            return self.setReceiptWriteUsersCell(indexPath)
-        }
+        return indexPath.section == 0
+        ? self.setReceiptWriteDataCell(indexPath)
+        : self.setReceiptWriteUsersCell(indexPath)
     }
     
-    // MARK: - [셀 구성] 데이터 셀
+    
+    
+    
+    
+    // MARK: - [데이터 셀]
     private func setReceiptWriteDataCell(_ indexPath: IndexPath) -> ReceiptWriteDataCell {
         let cell = self.tableView.dequeueReusableCell(
             withIdentifier: Identifier.receiptWriteDataCell,
             for: indexPath) as! ReceiptWriteDataCell
-        
-        let receiptEnum = self.viewModel.getReceiptEnum(
-            index: indexPath.row)
-        
+        // 델리게이트 설정
         cell.delegate = self
         
-        let cellVM = ReceiptWriteDataCellVM(
-            withReceiptEnum: receiptEnum)
-        
-        cell.configureCell(viewModel: cellVM)
-        
+        // ReceiptEnum 타입 가져오기
+        let receiptEnum = self.viewModel.getReceiptEnum(
+            index: indexPath.row)
+
+        self.configureDataCellVM(
+            cell,
+            receiptEnum: receiptEnum)
+        self.configureDataCellCorner(
+            cell,
+            receiptEnum: receiptEnum)
         return cell
     }
     
-    // MARK: - [셀 구성] 유저 셀
+    // MARK: - 뷰모델 및 UI
+    private func configureDataCellVM(_ cell: ReceiptWriteDataCell, receiptEnum: ReceiptEnum) {
+        // 뷰모델 가져오기
+        let cellVM = ReceiptWriteDataCellVM(
+            withReceiptEnum: receiptEnum)
+        // 셀 UI설정
+        cell.configureCell(viewModel: cellVM)
+    }
+    
+    // MARK: - 모서리
+    private func configureDataCellCorner(_ cell: ReceiptWriteDataCell, receiptEnum: ReceiptEnum) {
+        // 첫 번째 셀이라면,
+        if self.viewModel.isFistCell(receiptEnum) {
+            cell.configureFirstCell()
+            
+            // 마지막 셀이라면,
+        } else if self.viewModel.isLastCell(receiptEnum) {
+            cell.configureLastCell()
+        }
+    }
+    
+    
+    
+    
+    
+    // MARK: - [유저 셀]
     private func setReceiptWriteUsersCell(_ indexPath: IndexPath) -> ReceiptWriteUsersCell{
         let cell = tableView.dequeueReusableCell(
             withIdentifier: Identifier.receiptWriteUsersCell,
             for: indexPath) as! ReceiptWriteUsersCell
-        
-        // 셀 뷰모델 만들기
-        let cellViewModel = self.viewModel.usersCellViewModel(at: indexPath.item)
-        // 셀의 뷰모델을 셀에 넣기
-        cell.configureCell(with: cellViewModel)
+        // 델리게이트 설정
         cell.delegate = self
-        
-        if self.viewModel.isDutchedMode {
-            print(#function)
-            cell.configureDutchBtn(price: self.viewModel.dutchedPrice)
-        }
+        self.configureUserCellVM(cell, index: indexPath.row)
+        self.configureUserCellDutchMode(cell)
         return cell
     }
     
+    // MARK: - 뷰모델
+    private func configureUserCellVM(_ cell: ReceiptWriteUsersCell, index: Int) {
+        // 셀 뷰모델 만들기
+        let cellVM = self.viewModel.usersCellViewModel(
+            at: index)
+        // 셀의 뷰모델을 셀에 넣기
+        cell.configureCell(with: cellVM)
+    }
+    
+    // MARK: - 더치 모드
+    private func configureUserCellDutchMode(_ cell: ReceiptWriteUsersCell) {
+        if self.viewModel.isDutchedMode {
+            cell.configureDutchBtn(
+                price: self.viewModel.dutchedPrice)
+        }
+    }
 }
 
 
@@ -1003,8 +1054,11 @@ extension ReceiptWriteVC: UIPickerViewDelegate {
 
 // MARK: - 캘린더 델리게이트
 extension ReceiptWriteVC: CalendarDelegate {
-    func didSelectDate(dateInt: Int) {
-        self.viewModel.date = dateInt
+    func didSelectDate(date: Date) {
+        // 날짜 저장
+        self.viewModel.saveCalenderDate(date: date)
+        // 셀 업데이트
+        self.updateDateCell(date)
     }
 }
 
