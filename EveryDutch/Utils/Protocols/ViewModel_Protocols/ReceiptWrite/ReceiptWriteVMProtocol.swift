@@ -14,6 +14,11 @@ protocol ReceiptWriteVMProtocol {
     
     func getReceiptEnum(index: Int) -> ReceiptEnum
     
+    func getFooterViewHeight(section: Int) -> CGFloat
+    var getNoDataViewIsHidden: Bool { get }
+    var dutchBtnBackgroundColor: UIColor { get }
+    
+    
     
     func getHeaderTitle(section: Int) -> String
     

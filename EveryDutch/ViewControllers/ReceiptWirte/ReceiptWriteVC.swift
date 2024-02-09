@@ -36,7 +36,7 @@ final class ReceiptWriteVC: UIViewController {
     }()
     
     
-    // MARK: - 테이블뷰 레이아웃
+    // MARK: - 테이블뷰 푸터뷰
     private var moneyCountLbl: CustomLabel = CustomLabel(
         text: "0원",
         backgroundColor: UIColor.normal_white,
@@ -45,14 +45,30 @@ final class ReceiptWriteVC: UIViewController {
     private var dutchBtn: UIButton = UIButton.btnWithTitle(
         title: "1 / n",
         font: UIFont.systemFont(ofSize: 13),
-        backgroundColor: UIColor.deep_Blue)
-    private lazy var tableHeaderStv: UIStackView = UIStackView.configureStv(
+        backgroundColor: UIColor.normal_white)
+    
+    private lazy var tableDutchFooterStv: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.moneyCountLbl,
                            self.dutchBtn],
         axis: .horizontal,
         spacing: 0,
         alignment: .fill,
         distribution: .fillEqually)
+    
+    
+    private var noDataView: NoDataView = NoDataView()
+    
+    private lazy var tableFooterTotalStv: UIStackView = UIStackView.configureStv(
+        arrangedSubviews: [self.noDataView,
+                           self.tableDutchFooterStv],
+        axis: .vertical,
+        spacing: 0,
+        alignment: .fill,
+        distribution: .fill)
+    
+    
+    
+    
     
     // MARK: - 테이블뷰
     private lazy var tableView: CustomTableView = {
@@ -83,7 +99,7 @@ final class ReceiptWriteVC: UIViewController {
     
     
     // MARK: - 토탈 스택뷰
-    private lazy var topTotalStackView: UIStackView = UIStackView.configureStv(
+    private lazy var totalStackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.calendar,
                            self.tableView,
                            self.addPersonBtn],
@@ -134,7 +150,7 @@ final class ReceiptWriteVC: UIViewController {
     
     private lazy var calendarHeight: CGFloat = (self.view.frame.width - 10) * 3 / 4
     
-    
+    private lazy var cardHeight = (self.view.frame.width - 20) * 1.8 / 3
     
     
     
@@ -190,16 +206,16 @@ extension ReceiptWriteVC {
             view.setRoundedCorners(.all, withCornerRadius: 10)
         }
         
-        self.tableHeaderStv.setRoundedCorners(.bottom, withCornerRadius: 10)
+        self.tableDutchFooterStv.setRoundedCorners(.bottom, withCornerRadius: 10)
         
-        self.topTotalStackView.setCustomSpacing(0, after: self.calendar)
+        self.totalStackView.setCustomSpacing(0, after: self.calendar)
     }
     
     // MARK: - 오토레이아웃 설정
     private func configureAutoLayout() {
         self.view.addSubview(self.scrollView)
         self.scrollView.addSubview(self.contentView)
-        self.contentView.addSubview(self.topTotalStackView)
+        self.contentView.addSubview(self.totalStackView)
         self.view.addSubview(self.bottomBtn)
         self.scrollView.addSubview(timePicker)
         
@@ -215,7 +231,7 @@ extension ReceiptWriteVC {
             make.width.equalTo(self.scrollView.frameLayoutGuide)
         }
         // 탑 토탈 스택뷰
-        self.topTotalStackView.snp.makeConstraints { make in
+        self.totalStackView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(2)
             make.leading.equalToSuperview().offset(10)
             make.trailing.equalToSuperview().offset(-10)
@@ -241,6 +257,10 @@ extension ReceiptWriteVC {
             make.bottom.equalTo(self.tableView.snp.top)
             // 데이트 피커의 너비와 높이를 100으로 설정합니다.
             make.height.width.equalTo(150)
+        }
+        // 방이 없을 때 나타나는 뷰
+        self.noDataView.snp.makeConstraints { make in
+            make.height.equalTo(self.cardHeight)
         }
     }
     
@@ -574,6 +594,8 @@ extension ReceiptWriteVC {
                                  removedUsers: removedUsers)
         // 유저 삭제 또는 추가 후, 0명이면, 테이블 숨기기
 //        self.tableViewIsHidden()
+        
+        
     }
     
     // MARK: - 테이블뷰 셀 업데이트
@@ -584,10 +606,22 @@ extension ReceiptWriteVC {
         // 테이블 뷰 한 번에 업데이트
         self.tableView.performBatchUpdates({
             // 셀을 제거
-            self.tableViewDeleteRows(removedUsers: removedUsers)
+            self.tableViewDeleteRows(
+                removedUsers: removedUsers)
             // 셀을 생성
             self.tableViewInsertRows(addedUsers: addedUsers)
+            // 테이블뷰의 푸터뷰를 업데이트
+            self.updateTableFooterView()
         })
+    }
+    
+    // MARK: - 테이블뷰 푸터뷰 업데이트
+    private func updateTableFooterView() {
+        self.noDataView.isHidden = self.viewModel.getNoDataViewIsHidden
+        
+        self.dutchBtn.backgroundColor = self.viewModel.dutchBtnBackgroundColor
+        self.tableView.beginUpdates()
+        self.tableView.endUpdates()
     }
     
     // MARK: - 셀 생성
@@ -723,14 +757,13 @@ extension ReceiptWriteVC: UITableViewDelegate {
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         return section == 0
         ? nil
-        : self.tableHeaderStv
+        : self.tableFooterTotalStv
     }
     
     // MARK: - 푸터뷰 높이
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return section == 0
-        ? 0
-        : 45
+        return self.viewModel.getFooterViewHeight(
+            section: section)
     }
     
     // MARK: - 눌렸을 때 스크롤

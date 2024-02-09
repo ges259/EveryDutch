@@ -55,6 +55,8 @@ extension ReceiptAPI {
             .child("version_ID_1")
             .child("receipt_ID_3")
             .setValue(dictionary) { error, ref in
+                
+                
             if let error = error {
                 print("Data could not be saved: \(error.localizedDescription)")
             } else {

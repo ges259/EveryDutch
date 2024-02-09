@@ -209,32 +209,6 @@ extension ProfileEditVC {
 
 
 
-// MARK: - 카드뷰 델리게이트
-//extension ProfileEditVC: CardTextDelegate {
-//    func firstStackViewTapped() {
-//        print(#function)
-//        self.delegate?.logout()
-//    }
-//    
-//    func secondStackViewTapped() {
-//        print(#function)
-////        self.coordinator?.d
-//    }
-//    
-//    func editBtnTapped() {
-//        print(#function)
-//    }
-//}
-
-
-
-
-
-
-
-
-
-
 // MARK: - 테이블뷰 델리게이트
 
 extension ProfileEditVC: UITableViewDelegate {

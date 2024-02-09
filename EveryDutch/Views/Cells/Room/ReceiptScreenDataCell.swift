@@ -60,7 +60,7 @@ extension ReceiptScreenDataCell {
     private func configureAutoLayout() {
         self.addSubview(self.cellStv)
         self.cellStv.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(20)
+            make.leading.equalToSuperview()
             make.trailing.equalToSuperview().offset(-20)
             make.centerY.equalToSuperview()
         }

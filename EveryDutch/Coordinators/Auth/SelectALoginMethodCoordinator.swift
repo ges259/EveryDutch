@@ -56,16 +56,6 @@ final class SelectALoginMethodCoordinator: SelectALoginMethodCoordProtocol {
     }
     
     
-    // MARK: - 로그인 화면
-//    func loginScreen() {
-//        let loginScreenCoordinator = LoginScreenCoordinator(
-//            nav: self.nav)
-//        self.childCoordinators.append(loginScreenCoordinator)
-//        loginScreenCoordinator.parentCoordinator = self
-//        loginScreenCoordinator.start()
-//        
-//    }
-    
     // MARK: - 메인 화면으로 이동
     func navigateToMain() {
         

@@ -15,6 +15,8 @@ final class ReceiptWriteDataCellVM: ReceiptWriteDataCellVMProtocol {
     let TF_MAX_COUNT: Int = 12
     
     
+    
+    // MARK: - 글자 수
     func updateMemoCount(count: Int) -> String {
         return "\(count) / \(self.TF_MAX_COUNT)"
     }
@@ -77,6 +79,8 @@ final class ReceiptWriteDataCellVM: ReceiptWriteDataCellVMProtocol {
         return NumberFormatter.removeWon(price: priceText)
     }
     
+    
+    // MARK: - 모든 형식 삭제
     func removeAllFormat(priceText: String?) -> Int {
         guard let priceString = NumberFormatter.removeFormat(price: priceText),
               let priceInt = Int(priceString)

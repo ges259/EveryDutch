@@ -108,6 +108,7 @@ extension ReceiptWriteDataCell {
         }
     }
     
+    // MARK: - 날짜
     private func configureDateUI() {
         self.configureLabelAutoLayout()
         self.configureDateString()
@@ -342,13 +343,12 @@ extension ReceiptWriteDataCell {
     @objc private func memoInfoTFDidChanged() {
         // MARK: - Fix
         guard let count = self.textField.text?.count else { return }
-        
         if count > 12 {
             self.textField.deleteBackward()
-
+            
         } else {
-            // 레이블 업데이트
-            self.label.text = self.viewModel?.updateMemoCount(
+            // 글자 수 레이블 업데이트
+            self.numOfCharLbl.text = self.viewModel?.updateMemoCount(
                 count: count)
         }
     }

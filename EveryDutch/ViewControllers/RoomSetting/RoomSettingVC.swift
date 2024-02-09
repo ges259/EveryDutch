@@ -221,7 +221,9 @@ extension RoomSettingVC {
     
     
     @objc private func roomSettingBtnTapped() {
-        self.coordinator.CardScreen()
+        // MARK: - Fix
+        // 방 설정 화면으로 이동
+//        self.coordinator.CardScreen()
     }
     @objc private func inviteBtnTapped() {
         self.coordinator.FindFriendsScreen()

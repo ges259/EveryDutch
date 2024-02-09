@@ -7,11 +7,6 @@
 
 import UIKit
 
-protocol AppCoordProtocol: Coordinator {
-    func mainScreen()
-    func selectALoginMethodScreen()
-}
-
 // MARK: - AppCoordinator
 final class AppCoordinator: AppCoordProtocol {
     
@@ -94,13 +89,15 @@ final class AppCoordinator: AppCoordProtocol {
     
     
     
-    
+    // MARK: - 스플레시 화면 제거
     private func transitionAndRemoveSplashVC() {
         self.transitionAndRemoveVC(
             from: self.nav,
             viewControllerType: SplashScreenVC.self)
     }
     
+    
+    // MARK: - didFinish
     func didFinish() {
         self.parentCoordinator?.removeChildCoordinator(child: self)
     }

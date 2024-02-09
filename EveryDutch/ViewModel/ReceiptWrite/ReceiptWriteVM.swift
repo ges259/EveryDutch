@@ -53,6 +53,30 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     private var isCheckSuccess = [Bool]()
     
     
+    var getNoDataViewIsHidden: Bool {
+        return !(self.selectedUsers.count == 0)
+    }
+    
+    var dutchBtnBackgroundColor: UIColor {
+        return self.selectedUsers.count == 0
+        ? UIColor.normal_white
+        : UIColor.deep_Blue
+    }
+    
+    
+    func getFooterViewHeight(section: Int) -> CGFloat {
+        return section == 0
+        ? 0
+        : self.userSectionHeight()
+    }
+    
+    private func userSectionHeight() -> CGFloat {
+        return self.selectedUsers.count == 0
+        ? 45 + 220
+        : 45
+    }
+    
+    
     
 
     
@@ -612,13 +636,17 @@ extension ReceiptWriteVM {
 
 
 // MARK: - 셀 뷰모델 반환
+
 extension ReceiptWriteVM {
+    
+    // MARK: - 유저 셀
     /// cellViewModels 반환
     /// 테이블뷰 cellForRowAt에서 사용 됨
     func usersCellViewModel(at index: Int) -> ReceiptWriteCellVM {
         return self.usersCellViewModels[index]
     }
     
+    // MARK: - 데이터 셀
     func dataCellViewModel(at index: Int) -> ReceiptWriteDataCellVM {
         return self.dataCellViewModels[index]
     }
