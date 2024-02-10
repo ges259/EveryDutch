@@ -37,7 +37,7 @@ final class ReceiptWriteUsersCell: UITableViewCell {
     
 
     // MARK: - 프로퍼티
-    var viewModel: ReceiptWriteCellVMProtocol?
+    var viewModel: ReceiptWriteUsersCellVMProtocol?
     weak var delegate: ReceiptWriteTableDelegate?
     
     
@@ -148,7 +148,7 @@ extension ReceiptWriteUsersCell {
     
     
     // MARK: - 셀 설정
-    func configureCell(with viewModel: ReceiptWriteCellVMProtocol) {
+    func configureCell(with viewModel: ReceiptWriteUsersCellVMProtocol) {
         self.viewModel = viewModel
         
         self.tableCellStackView.userNameLbl.text = viewModel.userName

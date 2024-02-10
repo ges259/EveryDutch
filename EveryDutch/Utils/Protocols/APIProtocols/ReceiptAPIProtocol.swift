@@ -12,7 +12,13 @@ protocol ReceiptAPIProtocol {
     
     
     
-    func createReceipt()
+    func createReceipt(roomData: [String],
+                       context: String?,
+                       date: Int,
+                       time: String,
+                       price: Int,
+                       payer: String,
+                       paymentDetails: [String: Int])
     
     func readReceipt(completion: @escaping ReceiptCompletion)
     

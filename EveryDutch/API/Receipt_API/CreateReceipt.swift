@@ -33,13 +33,44 @@ struct ReceiptAPI: ReceiptAPIProtocol {
 
 extension ReceiptAPI {
     
-    func createReceipt() {
+    func dd(roomData: [String],
+            context: String?,
+            date: Int,
+            time: String,
+            price: Int,
+            payer: String,
+            paymentDetails: [String: Int]) {
+        
+        /*
+         paymentMethod: Int,
+         type: Int
+         */
+    }
+    
+    func createReceipt(roomData: [String],
+                       context: String?,
+                       date: Int,
+                       time: String,
+                       price: Int,
+                       payer: String,
+                       paymentDetails: [String: Int]) {
+        // version_ID
+        // room_ID
+        
+//         context: String
+//         date: Int
+//         time: String
+//         price: Int
+//         payer: String
+//         paymentDetails: [:]
+//         paymentMethod
+//         type: Int
         
         // 현재 시간 설정
         let creationDate = Int(NSDate().timeIntervalSince1970)
         
         let dictionary: [String: Any] = [
-            "receiptID": "receiptID",
+//            "receiptID": "receiptID",
             "type": 0,
             "context": "맥도날드",
             "date": creationDate,

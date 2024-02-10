@@ -1104,33 +1104,6 @@ extension ReceiptWriteVC: CalendarDelegate {
 
 
 
-// MARK: - [유저 셀] 델리게이트
-
-extension ReceiptWriteVC: ReceiptWriteTableDelegate {
-    
-    // MARK: - [X버튼] 유저 삭제
-    func rightBtnTapped(user: RoomUserDataDictionary?) {
-        guard let user = user else { return }
-        self.changeTableViewData(addedUsers: [:],
-                                 removedUsers: user)
-    }
-    
-    // MARK: - [텍스트필드] 금액 재설정
-    func setprice(userID: String, price: Int?) {
-        self.viewModel.calculatePrice(userID: userID,
-                                      price: price)
-    }
-}
-
-
-
-
-
-
-
-
-
-
 // MARK: - [데이터 셀] 델리게이트
 
 extension ReceiptWriteVC: ReceiptWriteDataCellDelegate {
@@ -1158,5 +1131,32 @@ extension ReceiptWriteVC: ReceiptWriteDataCellDelegate {
     // MARK: - 메모 셀
     func finishMemoTF(memo: String) {
         self.viewModel.memo = memo
+    }
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - [유저 셀] 델리게이트
+
+extension ReceiptWriteVC: ReceiptWriteTableDelegate {
+    
+    // MARK: - [X버튼] 유저 삭제
+    func rightBtnTapped(user: RoomUserDataDictionary?) {
+        guard let user = user else { return }
+        self.changeTableViewData(addedUsers: [:],
+                                 removedUsers: user)
+    }
+    
+    // MARK: - [텍스트필드] 금액 재설정
+    func setprice(userID: String, price: Int?) {
+        self.viewModel.calculatePrice(userID: userID,
+                                      price: price)
     }
 }

@@ -7,7 +7,7 @@
 
 import UIKit
 
-protocol ReceiptWriteCellVMProtocol {
+protocol ReceiptWriteUsersCellVMProtocol {
     var userID: String { get }
     var profileImageURL: String { get }
     var userName: String { get }

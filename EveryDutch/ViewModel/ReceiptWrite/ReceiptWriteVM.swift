@@ -10,7 +10,7 @@ import UIKit
 final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     
     // MARK: - 뷰 모델
-    private var usersCellViewModels: [ReceiptWriteCellVM] = [] {
+    private var usersCellViewModels: [ReceiptWriteUsersCellVM] = [] {
         didSet {
             print("*************************")
             print(self.usersCellViewModels.count)
@@ -35,9 +35,10 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     
     // MARK: - 모델
     private var roomDataManager: RoomDataManagerProtocol
+    private var receiptAPI: ReceiptAPIProtocol
     
-    var date: Int?
-    var time: String?
+    var date: Int = Int(Date().timeIntervalSince1970)
+    var time: String = "00 : 00"
     var memo: String?
     var price: Int?
     var payer: RoomUserDataDictionary?
@@ -49,32 +50,13 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     var receiptDict = [String : Any?]()
     var validationDict = [String : Bool]()
     
-    
+    // 조건 확인
     private var isCheckSuccess = [Bool]()
     
     
-    var getNoDataViewIsHidden: Bool {
-        return !(self.selectedUsers.count == 0)
-    }
+
     
-    var dutchBtnBackgroundColor: UIColor {
-        return self.selectedUsers.count == 0
-        ? UIColor.normal_white
-        : UIColor.deep_Blue
-    }
-    
-    
-    func getFooterViewHeight(section: Int) -> CGFloat {
-        return section == 0
-        ? 0
-        : self.userSectionHeight()
-    }
-    
-    private func userSectionHeight() -> CGFloat {
-        return self.selectedUsers.count == 0
-        ? 45 + 220
-        : 45
-    }
+
     
     
     
@@ -205,8 +187,32 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
         : false
     }
     
+    // MARK: - 데이터 없을 때 뷰
+    var getNoDataViewIsHidden: Bool {
+        return !(self.selectedUsers.count == 0)
+    }
     
     
+    
+    
+    
+// MARK: - [푸터뷰]
+
+    
+    
+    // MARK: - 높이
+    func getFooterViewHeight(section: Int) -> CGFloat {
+        return section == 0
+        ? 0
+        : self.userSectionHeight()
+    }
+    
+    // MARK: - 유저 섹션
+    private func userSectionHeight() -> CGFloat {
+        return self.selectedUsers.count == 0
+        ? 45 + 220
+        : 45
+    }
     
     
 // MARK: - 누적 금액
@@ -246,7 +252,11 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     // MARK: - 더치 가격
     var dutchedPrice: Int = 0
     
-    
+    var dutchBtnBackgroundColor: UIColor {
+        return self.selectedUsers.count == 0
+        ? UIColor.normal_white
+        : UIColor.deep_Blue
+    }
     
     
     
@@ -272,8 +282,11 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     
     
     // MARK: - 라이프사이클
-    init(roomDataManager: RoomDataManagerProtocol) {
+    init(roomDataManager: RoomDataManagerProtocol,
+         receiptAPI: ReceiptAPIProtocol) {
         self.roomDataManager = roomDataManager
+        self.receiptAPI = receiptAPI
+        
         
         // 데이터 셀 모델 만들기
         self.createDataCellVM()
@@ -608,7 +621,7 @@ extension ReceiptWriteVM {
         addedUsers.forEach { (userID, roomUser) in
             if self.selectedUsers[userID] == nil {
                 // 셀의 뷰모델 생성
-                let newCellVM = ReceiptWriteCellVM(userID: userID,
+                let newCellVM = ReceiptWriteUsersCellVM(userID: userID,
                                                    roomUsers: roomUser)
                 self.usersCellViewModels.append(newCellVM)
                 // 선택되었다고 표시
@@ -642,7 +655,7 @@ extension ReceiptWriteVM {
     // MARK: - 유저 셀
     /// cellViewModels 반환
     /// 테이블뷰 cellForRowAt에서 사용 됨
-    func usersCellViewModel(at index: Int) -> ReceiptWriteCellVM {
+    func usersCellViewModel(at index: Int) -> ReceiptWriteUsersCellVM {
         return self.usersCellViewModels[index]
     }
     
@@ -667,16 +680,18 @@ extension ReceiptWriteVM {
     
     // MARK: - 레시피 작성 가능 여부
     func getCheckReceipt() -> Bool {
+        // 조건 리셋
         self.resetValidation()
-        // 1
-        self.checkField(.memo, value: self.memo)
-        self.checkField(.payer, value: self.payer)
-        self.checkField(.price, value: self.price)
-        self.checkField(.selectedUsers, value: self.selectedUsers,
-                        isEmpty: self.selectedUsers.isEmpty)
+        // 조건을 확인
+        self.checkValidation()
         
-        self.checkCumulativeMoney(.cumulativeMoney)
-        self.checkUsersPrice(.usersPriceZero)
+        if self.isCheckSuccess.contains(false) {
+            return false
+        } else {
+            
+        }
+        
+        
         
         return self.isCheckSuccess.contains(false)
         ? false
@@ -690,6 +705,17 @@ extension ReceiptWriteVM {
         self.isCheckSuccess.removeAll()
     }
     
+    // MARK: - 조건 확인
+    private func checkValidation() {
+        self.checkField(.memo, value: self.memo)
+        self.checkField(.payer, value: self.payer)
+        self.checkField(.price, value: self.price)
+        self.checkField(.selectedUsers, value: self.selectedUsers,
+                        isEmpty: self.selectedUsers.isEmpty)
+        
+        self.checkCumulativeMoney(.cumulativeMoney)
+        self.checkUsersPrice(.usersPriceZero)
+    }
     
     // MARK: - [체크]
     private func checkField<T>(_ receiptCheck: ReceiptCheck, 
@@ -730,5 +756,32 @@ extension ReceiptWriteVM {
     private func setFalse(_ receiptCheck: ReceiptCheck) {
         self.validationDict[receiptCheck.rawValue] = false
         self.isCheckSuccess.append(false)
+    }
+}
+
+
+
+
+
+
+
+
+
+
+extension ReceiptWriteVM {
+    private func createReceipt() {
+        guard let roomData = self.roomDataManager.getRoomData,
+                let price = price,
+              let payer = self.payer?.first?.key
+        else { return }
+        
+        self.receiptAPI.createReceipt(
+            roomData: roomData,
+            context: self.memo,
+            date: self.date,
+            time: self.time,
+            price: price,
+            payer: payer,
+            paymentDetails: self.usersMoneyDict)
     }
 }

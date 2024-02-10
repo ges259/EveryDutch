@@ -33,8 +33,8 @@ protocol ReceiptWriteVMProtocol {
     
     
     // MARK: - 모델
-    var date: Int? { get set }
-    var time: String? { get set }
+    var date: Int { get set }
+    var time: String { get set }
     var memo: String? { get set }
     var price: Int? { get set }
     var payer: RoomUserDataDictionary? { get }
@@ -151,5 +151,5 @@ protocol ReceiptWriteVMProtocol {
     
     
 // MARK: - 셀의 뷰모델 반환
-    func usersCellViewModel(at index: Int) -> ReceiptWriteCellVM
+    func usersCellViewModel(at index: Int) -> ReceiptWriteUsersCellVM
 }

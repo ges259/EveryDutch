@@ -32,7 +32,8 @@ final class ReceiptWriteCoordinator: ReceiptWriteCoordProtocol {
     // MARK: - Start - ReceiptWriteVC
     func start() {
         let receiptWriteVM = ReceiptWriteVM(
-            roomDataManager: RoomDataManager.shared)
+            roomDataManager: RoomDataManager.shared, 
+            receiptAPI: ReceiptAPI.shared)
         
         // SettlementVC 인스턴스 생성
         let receiptWriteVC = ReceiptWriteVC(
