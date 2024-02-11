@@ -7,18 +7,15 @@
 
 import Foundation
 protocol ReceiptAPIProtocol {
-    static var shared: ReceiptAPI { get }
+    static var shared: ReceiptAPIProtocol { get }
     typealias ReceiptCompletion = (Result<[Receipt], ErrorEnum>) -> Void
     
     
+    func createReceipt(versionID: String,
+                       dictionary: [String: Any?],
+                       completion: @escaping () -> Void)
     
-    func createReceipt(roomData: [String],
-                       context: String?,
-                       date: Int,
-                       time: String,
-                       price: Int,
-                       payer: String,
-                       paymentDetails: [String: Int])
+    
     
     func readReceipt(completion: @escaping ReceiptCompletion)
     

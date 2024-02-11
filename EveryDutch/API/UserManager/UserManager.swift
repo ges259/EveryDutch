@@ -38,16 +38,10 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     private var paybackData: Payback?
     
-    var getRoomData: [String]? {
-        guard let roomData = self.roomData else {
-            return nil
-        }
-        return [roomData.roomID, roomData.versionID]
+    
+    var getVersion: String? {
+        return self.roomData?.versionID
     }
-    
-    
-    
-    
     
     
     

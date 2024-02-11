@@ -29,6 +29,8 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     
     
     
+    
+    
 
     
     
@@ -37,8 +39,9 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     private var roomDataManager: RoomDataManagerProtocol
     private var receiptAPI: ReceiptAPIProtocol
     
-    var date: Int = Int(Date().timeIntervalSince1970)
-    var time: String = "00 : 00"
+    var date: Int = Int(NSDate().timeIntervalSince1970)
+    var time: String = Date.returnCurrenTime()
+    
     var memo: String?
     var price: Int?
     var payer: RoomUserDataDictionary?
@@ -54,13 +57,9 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     private var isCheckSuccess = [Bool]()
     
     
-
-    
-
     
     
     
-
     
     
     
@@ -678,84 +677,66 @@ extension ReceiptWriteVM {
 
 extension ReceiptWriteVM {
     
-    // MARK: - 레시피 작성 가능 여부
-    func getCheckReceipt() -> Bool {
-        // 조건 리셋
-        self.resetValidation()
-        // 조건을 확인
-        self.checkValidation()
+    // MARK: - 영수증 데이터 딕셔너리 생성 및 유효성 검사
+    func prepareReceiptDataAndValidate(completion: @escaping (Bool, [String: Any?]?) -> Void) {
+        // 영수증 데이터 딕셔너리 생성
+        let receiptData = self.makeDictionary()
+
+        // 딕셔너리 내에 nil 값이 있는지 확인
+        let hasNilValue = receiptData.contains { $0.value == nil }
         
-        if self.isCheckSuccess.contains(false) {
-            return false
+        // nil 값의 유무에 따라 적절한 completion 호출
+        if hasNilValue {
+            // 딕셔너리 내에 nil 값이 있다면 실패 처리
+            completion(false, receiptData)
         } else {
-            
-        }
-        
-        
-        
-        return self.isCheckSuccess.contains(false)
-        ? false
-        : true
-    }
-    
-    // MARK: - 확인 전 초기화 작업
-    private func resetValidation() {
-        self.receiptDict.removeAll()
-        self.validationDict.removeAll()
-        self.isCheckSuccess.removeAll()
-    }
-    
-    // MARK: - 조건 확인
-    private func checkValidation() {
-        self.checkField(.memo, value: self.memo)
-        self.checkField(.payer, value: self.payer)
-        self.checkField(.price, value: self.price)
-        self.checkField(.selectedUsers, value: self.selectedUsers,
-                        isEmpty: self.selectedUsers.isEmpty)
-        
-        self.checkCumulativeMoney(.cumulativeMoney)
-        self.checkUsersPrice(.usersPriceZero)
-    }
-    
-    // MARK: - [체크]
-    private func checkField<T>(_ receiptCheck: ReceiptCheck, 
-                               value: T?,
-                               isEmpty: Bool = false) {
-        if let value = value, !isEmpty {
-            self.setTrue(receiptCheck, value: value)
-        } else {
-            self.setFalse(receiptCheck)
-        }
-    }
-    
-    // MARK: - [남은금액] 0원인지 확인
-    private func checkCumulativeMoney(_ receiptCheck: ReceiptCheck) {
-        if self.price == nil
-            || self.calculateRemainingMoney != 0
-        {
-            self.setFalse(receiptCheck)
-        }
-    }
-    
-    // MARK: - 0원인 유저가 있는지 확인
-    private func checkUsersPrice(_ receiptCheck: ReceiptCheck) {
-        for (userID, _) in self.selectedUsers {
-            if self.usersMoneyDict[userID] == nil {
-                self.setFalse(receiptCheck)
-                break
+            // 딕셔너리가 유효하다면 영수증 생성 로직을 실행
+            self.createReceipt(dictionary: receiptData) {
+                // 영수증 생성 성공 후의 처리
+                completion(true, receiptData)
             }
         }
     }
     
-    // MARK: - 검사 통과
-    private func setTrue<T>(_ receiptCheck: ReceiptCheck, value: T?) {
-        self.receiptDict[receiptCheck.rawValue] = value
+    private func makeDictionary() -> [String: Any?] {
+        // payer가 올바른 String 타입인지 확인하고, 필요한 경우 변환
+        let payerValue = self.payer?.first?.key
+
+        return [
+            "type": 0,
+            "context": self.memo ?? nil,
+            "date": date,
+            "time": time,
+            "price": self.price ?? nil,
+            "payer": payerValue ?? nil,
+            "paymentMethod": self.calculatePaymentMethod() ?? nil,
+            "paymentDetails": self.toDictionary(self.usersMoneyDict)
+        ]
     }
     
-    // MARK: - 검사 통과 X
-    private func setFalse(_ receiptCheck: ReceiptCheck) {
-        self.validationDict[receiptCheck.rawValue] = false
-        self.isCheckSuccess.append(false)
+    // MARK: - 결제 세부 정보를 딕셔너리로 변환
+    private func toDictionary(_ paymentDetails: [String: Int]) -> [String: [String: Any]] {
+        return paymentDetails.reduce(into: [:]) { (result, pair) in
+            let (key, value) = pair
+            result[key] = ["pay": value,
+                           "done": false]
+        }
+    }
+    
+    // MARK: - 결제 방식 계산
+    private func calculatePaymentMethod() -> Int? {
+        
+        if self.usersMoneyDict.isEmpty {
+            return nil
+        }
+        
+        // paymentDetails 내의 모든 값이 동일한지 여부에 따라 결제 방식 결정
+        guard let firstValue = self.usersMoneyDict.values.first else {
+            return 1 // 딕셔너리가 비어있으면 기본값
+        }
+        
+        let isUniform = self.usersMoneyDict.values.allSatisfy { $0 == firstValue }
+        return isUniform ? 1 : 0
     }
 }
 
@@ -769,19 +750,12 @@ extension ReceiptWriteVM {
 
 
 extension ReceiptWriteVM {
-    private func createReceipt() {
-        guard let roomData = self.roomDataManager.getRoomData,
-                let price = price,
-              let payer = self.payer?.first?.key
-        else { return }
-        
+    private func createReceipt(dictionary: [String: Any?], completion: @escaping () -> Void) {
+        guard let versionID = self.roomDataManager.getVersion else { return }
         self.receiptAPI.createReceipt(
-            roomData: roomData,
-            context: self.memo,
-            date: self.date,
-            time: self.time,
-            price: price,
-            payer: payer,
-            paymentDetails: self.usersMoneyDict)
+            versionID: versionID,
+            dictionary: dictionary) {
+                completion()
+            }
     }
 }

@@ -19,6 +19,10 @@ struct RoomsAPI: RoomsAPIProtocol {
 
 extension RoomsAPI {
     
+    
+    
+    
+    
 }
 
 

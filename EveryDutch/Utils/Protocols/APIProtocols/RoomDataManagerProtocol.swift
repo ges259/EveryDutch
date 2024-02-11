@@ -10,7 +10,11 @@ import Foundation
 
 protocol RoomDataManagerProtocol {
     static var shared: RoomDataManagerProtocol { get }
-    var getRoomData: [String]? { get }
+    
+    
+    var getVersion: String? { get }
+    
+    
     var getNumOfRoomUsers: Int { get }
     func currentRooms(index: Int)
     var getRooms: [Rooms] { get }

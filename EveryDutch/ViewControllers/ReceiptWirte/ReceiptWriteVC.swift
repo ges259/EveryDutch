@@ -464,13 +464,19 @@ extension ReceiptWriteVC {
         // 모든 키보드 내리기
         self.endEditing()
         
-        _ = self.viewModel.getCheckReceipt()
-        // 영수증 작성 완료.
-            // 뒤로가기 + DB에 저장
-        ? self.coordinator.checkReceiptPanScreen(self.viewModel.validationDict)
-        // 영수증 작성 실패
-            // ReceiptCheckVC로 이동 + 데이터 전달
-        : self.coordinator.checkReceiptPanScreen(self.viewModel.validationDict)
+        self.viewModel.prepareReceiptDataAndValidate { [weak self] (bool, _) in
+            guard let self = self else { return }
+            // 영수증 작성 완료.
+                // 뒤로가기 + DB에 저장
+            if bool {
+                print(bool)
+                
+            // 영수증 작성 실패
+                // ReceiptCheckVC로 이동 + 데이터 전달
+            } else {
+                self.coordinator.checkReceiptPanScreen(self.viewModel.validationDict)
+            }
+        }
     }
 }
     
