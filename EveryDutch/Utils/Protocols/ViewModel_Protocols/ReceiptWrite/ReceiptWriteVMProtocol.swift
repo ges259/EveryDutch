@@ -118,8 +118,7 @@ protocol ReceiptWriteVMProtocol {
     var validationDict: [String : Bool] { get }
     
 //    func getCheckReceipt(completion: @escaping (Bool) -> Void)
-    func prepareReceiptDataAndValidate(completion: @escaping (Bool, [String: Any?]?) -> Void) 
-    
+    func prepareReceiptDataAndValidate(completion: @escaping (Bool, [String: Any?]) -> Void)
     
 // MARK: - [여러명] paymentDetails 선택
     

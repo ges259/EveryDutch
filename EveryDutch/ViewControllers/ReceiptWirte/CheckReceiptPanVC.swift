@@ -18,8 +18,23 @@ final class CheckReceiptPanVC: UIViewController {
         backgroundColor: UIColor.normal_white,
         textAlignment: .center)
     
-    private var whiteView: UIView = UIView.configureView(
-        color: UIColor.normal_white)
+//    private var whiteView: UIView = UIView.configureView(
+//        color: UIColor.normal_white)
+    
+    private lazy var tableView: CustomTableView = {
+        let view = CustomTableView()
+        view.delegate = self
+        view.dataSource = self
+        
+        view.register(
+            CheckReceiptPanCell.self,
+            forCellReuseIdentifier: Identifier.checkReceiptPanCell)
+        
+        
+        
+        return view
+    }()
+    
     
     private var bottomBtn: UIButton = UIButton.btnWithTitle(
         title: "확인",
@@ -28,7 +43,7 @@ final class CheckReceiptPanVC: UIViewController {
     
     private lazy var totalStackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.topLbl,
-                           self.whiteView,
+                           self.tableView,
                            self.bottomBtn],
         axis: .vertical,
         spacing: 4,
@@ -36,42 +51,26 @@ final class CheckReceiptPanVC: UIViewController {
         distribution: .fill)
     
     
-    // 레이블
-    private var memoCheckLbl: CustomLabel = CustomLabel(
-        text: ReceiptCheck.memo.description,
-        font: UIFont.systemFont(ofSize: 14))
-    private var priceCheckLbl: CustomLabel = CustomLabel(
-        text: ReceiptCheck.price.description,
-        font: UIFont.systemFont(ofSize: 14))
-    private var payerCheckLbl: CustomLabel = CustomLabel(
-        text: ReceiptCheck.payer.description,
-        font: UIFont.systemFont(ofSize: 14))
-    private var noUsersLbl: CustomLabel = CustomLabel(
-        text: ReceiptCheck.selectedUsers.description,
-        font: UIFont.systemFont(ofSize: 14))
-    private var zeroWonLbl: CustomLabel = CustomLabel(
-        text: ReceiptCheck.usersPriceZero.description,
-        font: UIFont.systemFont(ofSize: 14))
-    private var cumulativeMoneyLbl: CustomLabel = CustomLabel(
-        text: ReceiptCheck.cumulativeMoney.description,
-        font: UIFont.systemFont(ofSize: 14))
     
     
-    private lazy var labelStackView: UIStackView = UIStackView.configureStv(
-        arrangedSubviews: [self.memoCheckLbl,
-                           self.priceCheckLbl,
-                           self.payerCheckLbl,
-                           self.noUsersLbl,
-                           self.zeroWonLbl,
-                           self.cumulativeMoneyLbl],
-        axis: .vertical,
-        spacing: 23,
-        alignment: .fill,
-        distribution: .fillEqually)
+
+    
+    
+    
+    
     
     // MARK: - 프로퍼티
-    var coordinator: Coordinator
-    private var validationDict = [String: Bool]()
+    private var viewModel: CheckReceiptPanVMProtocol
+    private var coordinator: Coordinator
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     // MARK: - 라이프사이클
     override func viewDidLoad() {
@@ -81,10 +80,10 @@ final class CheckReceiptPanVC: UIViewController {
         self.configureAutoLayout()
         self.configureViewWithValidation()
     }
-    init(coordinator: Coordinator,
-         validationDict: [String: Bool]) {
+    init(viewModel: CheckReceiptPanVMProtocol,
+         coordinator: Coordinator) {
         self.coordinator = coordinator
-        self.validationDict = validationDict
+        self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
     }
     override func viewDidDisappear(_ animated: Bool) {
@@ -96,6 +95,15 @@ final class CheckReceiptPanVC: UIViewController {
     }
 }
 
+
+
+
+
+
+
+
+
+
 // MARK: - 화면 설정
 
 extension CheckReceiptPanVC {
@@ -106,17 +114,15 @@ extension CheckReceiptPanVC {
         self.view.backgroundColor = UIColor.deep_Blue
         // 모서리 설정
         [self.topLbl,
-         self.whiteView,
+         self.tableView,
          self.bottomBtn].forEach { view in
-            view.clipsToBounds = true
-            view.layer.cornerRadius = 10
+            view.setRoundedCorners(.all, withCornerRadius: 10)
         }
     }
     
     // MARK: - 오토레이아웃 설정
     private func configureAutoLayout() {
         self.view.addSubview(self.totalStackView)
-        self.whiteView.addSubview(self.labelStackView)
         
         // 전체 스택뷰 (상단 레이블, 레이블 스택뷰, 하단 버튼)
         self.totalStackView.snp.makeConstraints { make in
@@ -124,11 +130,6 @@ extension CheckReceiptPanVC {
             make.leading.equalToSuperview().offset(12)
             make.trailing.equalToSuperview().offset(-12)
             make.bottom.lessThanOrEqualToSuperview().offset(-10)
-        }
-        // 레이블들의 스택뷰
-        self.labelStackView.snp.makeConstraints { make in
-            make.top.leading.equalToSuperview().offset(15)
-            make.trailing.bottom.equalToSuperview().offset(-15)
         }
         // 상단 레이블
         self.topLbl.snp.makeConstraints { make in
@@ -143,21 +144,31 @@ extension CheckReceiptPanVC {
     // MARK: - 레이블 스택뷰 설정
     private func configureViewWithValidation() {
         // 레이블과 해당 ReceiptCheck를 연결
-        let labelValidationPairs: [(label: UILabel, check: ReceiptCheck)] = [
-            (self.memoCheckLbl, .memo),
-            (self.payerCheckLbl, .payer),
-            (self.priceCheckLbl, .price),
-            (self.noUsersLbl, .selectedUsers),
-            (self.zeroWonLbl, .usersPriceZero),
-            (self.cumulativeMoneyLbl, .cumulativeMoney)
-        ]
+//        let labelValidationPairs: [(label: UILabel, check: ReceiptCheck)] = [
+//            (self.memoCheckLbl, .memo),
+//            (self.payerCheckLbl, .payer),
+//            (self.priceCheckLbl, .price),
+//            (self.noUsersLbl, .selectedUsers),
+//            (self.zeroWonLbl, .usersPriceZero),
+//            (self.cumulativeMoneyLbl, .cumulativeMoney)
+//        ]
+//        
         
-        // 각 레이블의 숨김 여부를 설정
-        for (label, check) in labelValidationPairs {
-            label.isHidden = self.validationDict[check.rawValue] ?? true
-        }
+        // MARK: - Fix
+//        // 각 레이블의 숨김 여부를 설정
+//        for (label, check) in labelValidationPairs {
+//            label.isHidden = self.validationDict[check.rawValue] ?? true
+//        }
+        
+        
     }
 }
+
+
+
+
+
+
 
 
 
@@ -182,5 +193,50 @@ extension CheckReceiptPanVC: PanModalPresentable {
     }
     var cornerRadius: CGFloat {
         return 23
+    }
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - [테이블뷰] 델리게이트
+extension CheckReceiptPanVC: UITableViewDelegate {
+    
+    // MARK: - 셀의 높이
+    func tableView(_ tableView: UITableView,
+                   heightForRowAt indexPath: IndexPath)
+    -> CGFloat {
+        return 45
+    }
+}
+
+
+
+
+
+// MARK: - [테이블뷰] 데이터소스
+extension CheckReceiptPanVC: UITableViewDataSource {
+    func tableView(_ tableView: UITableView,
+                   numberOfRowsInSection section: Int)
+    -> Int {
+        self.viewModel.getNilValueArray
+    }
+    
+    func tableView(_ tableView: UITableView, 
+                   cellForRowAt indexPath: IndexPath)
+    -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(
+            withIdentifier: Identifier.checkReceiptPanCell,
+            for: indexPath) as! CheckReceiptPanCell
+        
+        cell.label.text = self.viewModel.getLabelText(index: indexPath.row)
+        
+        return cell
     }
 }

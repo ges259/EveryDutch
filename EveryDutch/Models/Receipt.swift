@@ -49,7 +49,7 @@ struct Receipt {
     private static func unpackPaymentDetails(
         from dictionary: [String: Any])
     -> [PaymentDetail] {
-        guard let detailsDict = dictionary[DatabaseConstants.paymenet_details] as? [String: [String: Any]] else {
+        guard let detailsDict = dictionary[DatabaseConstants.payment_details] as? [String: [String: Any]] else {
             return []
         }
         

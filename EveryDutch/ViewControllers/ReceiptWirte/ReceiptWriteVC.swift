@@ -464,7 +464,7 @@ extension ReceiptWriteVC {
         // 모든 키보드 내리기
         self.endEditing()
         
-        self.viewModel.prepareReceiptDataAndValidate { [weak self] (bool, _) in
+        self.viewModel.prepareReceiptDataAndValidate { [weak self] (bool, dict) in
             guard let self = self else { return }
             // 영수증 작성 완료.
                 // 뒤로가기 + DB에 저장
@@ -474,7 +474,7 @@ extension ReceiptWriteVC {
             // 영수증 작성 실패
                 // ReceiptCheckVC로 이동 + 데이터 전달
             } else {
-                self.coordinator.checkReceiptPanScreen(self.viewModel.validationDict)
+                self.coordinator.checkReceiptPanScreen(dict)
             }
         }
     }

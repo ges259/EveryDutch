@@ -214,6 +214,9 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     }
     
     
+    
+    
+    
 // MARK: - 누적 금액
     
     
@@ -463,7 +466,10 @@ extension ReceiptWriteVM {
     
     // MARK: - [저장] price(가격)
     func savePriceText(price: Int) {
-        self.price = price
+        
+        self.price = price == 0
+        ? nil
+        : price
     }
     
     // MARK: - [형식] 남은 금액 레이블 텍스트 설정
@@ -631,7 +637,6 @@ extension ReceiptWriteVM {
     
     // MARK: - 데이터 셀
     func createDataCellVM() {
-        
         self.dataCellViewModels = self.receiptEnum.map { enumType in
             ReceiptWriteDataCellVM(withReceiptEnum: enumType)
         }
@@ -678,45 +683,98 @@ extension ReceiptWriteVM {
 extension ReceiptWriteVM {
     
     // MARK: - 영수증 데이터 딕셔너리 생성 및 유효성 검사
-    func prepareReceiptDataAndValidate(completion: @escaping (Bool, [String: Any?]?) -> Void) {
+    func prepareReceiptDataAndValidate(completion: @escaping (Bool, [String: Any?]) -> Void) {
         // 영수증 데이터 딕셔너리 생성
-        let receiptData = self.makeDictionary()
-
+        self.validationData()
+        
         // 딕셔너리 내에 nil 값이 있는지 확인
-        let hasNilValue = receiptData.contains { $0.value == nil }
+        let hasNilValue = self.checkReceiptDictIsEmpty()
         
         // nil 값의 유무에 따라 적절한 completion 호출
         if hasNilValue {
             // 딕셔너리 내에 nil 값이 있다면 실패 처리
-            completion(false, receiptData)
+            completion(false, self.receiptDict)
+            
+            
         } else {
             // 딕셔너리가 유효하다면 영수증 생성 로직을 실행
-            self.createReceipt(dictionary: receiptData) {
+            self.createReceipt() { [weak self] in
+                guard let self = self else { return }
                 // 영수증 생성 성공 후의 처리
-                completion(true, receiptData)
+                completion(true, self.receiptDict)
             }
         }
     }
     
-    private func makeDictionary() -> [String: Any?] {
+    // MARK: - [조건 확인]
+    
+    
+    
+    // MARK: - 조건 확인
+    
+    private func validationData() {
+        self.makeDictionary()
+        self.checkUsersPrice()
+        self.checkCumulativeMoney()
+    }
+    
+    // MARK: - 딕셔너리 벨류에 빈칸 확인
+    private func checkReceiptDictIsEmpty() -> Bool {
+        return self.receiptDict.contains { $0.value as? String == "" }
+    }
+    
+    
+    
+    
+    
+    // MARK: - [조건]
+    
+    
+    
+    // MARK: - 남은금액이 0원인지 확인
+    private func checkCumulativeMoney() {
+        
+        if self.calculateRemainingMoney != 0 {
+            
+            self.receiptDict[DatabaseConstants.culmulative_money] = ""
+        }
+    }
+    
+    // MARK: - 0원인 유저가 있는지 확인
+    private func checkUsersPrice() {
+        for (userID, _) in self.selectedUsers {
+            if self.usersMoneyDict[userID] == nil {
+                //
+                self.receiptDict[DatabaseConstants.pay] = ""
+                break
+            }
+        }
+    }
+    
+    // MARK: - 딕셔너리 만들기
+    private func makeDictionary() {
         // payer가 올바른 String 타입인지 확인하고, 필요한 경우 변환
-        let payerValue = self.payer?.first?.key
-
-        return [
-            "type": 0,
-            "context": self.memo ?? nil,
-            "date": date,
-            "time": time,
-            "price": self.price ?? nil,
-            "payer": payerValue ?? nil,
-            "paymentMethod": self.calculatePaymentMethod() ?? nil,
-            "paymentDetails": self.toDictionary(self.usersMoneyDict)
+        let payerUserID = self.payer?.first?.key
+        
+        self.receiptDict = [
+            DatabaseConstants.type: 0,
+            DatabaseConstants.payment_method: self.calculatePaymentMethod(),
+            DatabaseConstants.date: date,
+            DatabaseConstants.time: time,
+            
+            DatabaseConstants.context: self.memo ?? "",
+            DatabaseConstants.price: self.price ?? "",
+            DatabaseConstants.payer: payerUserID ?? "",
+            DatabaseConstants.payment_details: self.toDictionary() ?? ""
         ]
     }
     
     // MARK: - 결제 세부 정보를 딕셔너리로 변환
-    private func toDictionary(_ paymentDetails: [String: Int]) -> [String: [String: Any]] {
-        return paymentDetails.reduce(into: [:]) { (result, pair) in
+    private func toDictionary() -> [String: [String: Any]]?  {
+        // 선택된 유저가 없다면 -> 리턴 nil
+        guard !self.selectedUsers.isEmpty else { return nil }
+        // 선택된 유저가 있다면 -> 정보 리턴
+        return self.usersMoneyDict.reduce(into: [:]) { (result, pair) in
             let (key, value) = pair
             result[key] = ["pay": value,
                            "done": false]
@@ -724,12 +782,7 @@ extension ReceiptWriteVM {
     }
     
     // MARK: - 결제 방식 계산
-    private func calculatePaymentMethod() -> Int? {
-        
-        if self.usersMoneyDict.isEmpty {
-            return nil
-        }
-        
+    private func calculatePaymentMethod() -> Int {
         // paymentDetails 내의 모든 값이 동일한지 여부에 따라 결제 방식 결정
         guard let firstValue = self.usersMoneyDict.values.first else {
             return 1 // 딕셔너리가 비어있으면 기본값
@@ -749,12 +802,16 @@ extension ReceiptWriteVM {
 
 
 
+// MARK: - API
+
 extension ReceiptWriteVM {
-    private func createReceipt(dictionary: [String: Any?], completion: @escaping () -> Void) {
+    
+    // MARK: - 영수증 API
+    private func createReceipt(completion: @escaping () -> Void) {
         guard let versionID = self.roomDataManager.getVersion else { return }
         self.receiptAPI.createReceipt(
             versionID: versionID,
-            dictionary: dictionary) {
+            dictionary: self.receiptDict) {
                 completion()
             }
     }

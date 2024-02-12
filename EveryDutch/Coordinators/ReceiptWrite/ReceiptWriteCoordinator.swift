@@ -74,7 +74,7 @@ final class ReceiptWriteCoordinator: ReceiptWriteCoordProtocol {
     
     
     // MARK: - CheckReceiptPanScreen
-    func checkReceiptPanScreen(_ validationDict: [String: Bool]) {
+    func checkReceiptPanScreen(_ validationDict: [String: Any?]) {
         // CheckReceiptCoordinator 생성
         let checkReceiptCoordinator = CheckReceiptCoordinator(
             nav: self.modalNavController ?? self.nav,

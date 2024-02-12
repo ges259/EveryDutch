@@ -13,19 +13,22 @@ final class CheckReceiptCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
     
     var nav: UINavigationController
-    private var validationDict = [String: Bool]()
+    private var validationDict = [String: Any?]()
     
     // 의존성 주입
     init(nav: UINavigationController,
-         validationDict: [String: Bool]) {
+         validationDict: [String: Any?]) {
         self.nav = nav
         self.validationDict = validationDict
     }
     
     func start() {
-        let checkReceiptPanVC = CheckReceiptPanVC(
-            coordinator: self,
+        let checkReceiptPanVM = CheckReceiptPanVM(
             validationDict: self.validationDict)
+        
+        let checkReceiptPanVC = CheckReceiptPanVC(
+            viewModel: checkReceiptPanVM,
+            coordinator: self)
         
         checkReceiptPanVC.modalPresentationStyle = .overFullScreen
         
@@ -34,7 +37,6 @@ final class CheckReceiptCoordinator: Coordinator {
     
     func didFinish() {
         self.parentCoordinator?.removeChildCoordinator(child: self)
-
     }
     deinit {
         print("\(#function)-----\(self)")

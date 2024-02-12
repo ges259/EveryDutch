@@ -38,8 +38,14 @@ extension DatabaseConstants {
     static let price: String = "price"
     static let payer: String = "payer"
     static let payment_method: String = "paymentMethod"
-    static let paymenet_details: String = "paymentDetails"
+    static let payment_details: String = "paymentDetails"
     
     static let pay: String = "pay"
     static let done: String = "done"
+    
+    
+    static let culmulative_money: String = "culmulativeMoney"
+    
+    
+    
 }

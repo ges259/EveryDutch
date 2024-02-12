@@ -385,11 +385,11 @@ extension ReceiptWriteDataCell: UITextFieldDelegate {
     /// 텍스트 필드 수정이 끝났을 때
     func textFieldDidEndEditing(_ textField: UITextField) {
         // 텍스트 필드의 현재 텍스트를 변수에 저장
-        let savedText = textField.text ?? ""
+        let savedText = textField.text
         // 메모 텍스트필드일 때
         if self.viewModel?.isMemoType ?? false {
-            // MARK: - memo
-            self.delegate?.finishMemoTF(memo: savedText)
+
+            self.finishMemoTF(text: savedText)
             
         // 가격 텍스트필드 일때
         } else {
@@ -399,6 +399,15 @@ extension ReceiptWriteDataCell: UITextFieldDelegate {
             self.finishPriceTF(text: savedText)
         }
     }
+    
+    // MARK: - [저장] 메모 텍스트필드
+    private func finishMemoTF(text: String?) {
+        if let text = text, 
+            text != "" {
+            self.delegate?.finishMemoTF(memo: text)
+        }
+    }
+    
     
     // MARK: - [저장] 가격 텍스트필드
     /// 가격 텍스트필드의 수정이 끝났을 때 호출되는 메서드

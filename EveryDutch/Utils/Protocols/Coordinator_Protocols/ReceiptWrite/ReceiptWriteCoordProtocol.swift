@@ -10,5 +10,5 @@ import Foundation
 protocol ReceiptWriteCoordProtocol: Coordinator {
     func peopleSelectionPanScreen(users: RoomUserDataDictionary?,
                                   peopleSelectionEnum: PeopleSeelctionEnum?)
-    func checkReceiptPanScreen(_ validationDict: [String: Bool])
+    func checkReceiptPanScreen(_ validationDict: [String: Any?])
 }
