@@ -39,15 +39,17 @@ final class RoomDataManager: RoomDataManagerProtocol {
     private var paybackData: Payback?
     
     
-    var getVersion: String? {
-        return self.roomData?.versionID
-    }
-    
-    
+
+
     
     // MARK: - 방의 개수
     var getNumOfRoomUsers: Int {
         return Array(self.roomUserDataDict.values).count
+    }
+    
+    // MARK: - 선택된 현재 방 저장
+    func currentRooms(index: Int) {
+        self.roomData = self.rooms?[index]
     }
     
     // MARK: - 방의 유저 데이터
@@ -61,19 +63,20 @@ final class RoomDataManager: RoomDataManagerProtocol {
     }
     
     
-    
+    // MARK: - 방 데이터 가져가기
     var getRooms: [Rooms] {
         guard let rooms = self.rooms else { return [] }
         return rooms
     }
     
-    // MARK: - 선택된 현재 방 저장
-    func currentRooms(index: Int) {
-        self.roomData = self.rooms?[index]
+    // MARK: - 방 ID
+    var getCurrentRoomsID: String? {
+        return self.roomData?.roomID
     }
     
-    private var getCurrentRoomsID: String? {
-        return self.roomData?.roomID
+    // MARK: - 버전 ID
+    var getVersion: String? {
+        return self.roomData?.versionID
     }
     
     

@@ -13,10 +13,22 @@ protocol ReceiptAPIProtocol {
     
     func createReceipt(versionID: String,
                        dictionary: [String: Any?],
+                       users: [String],
                        completion: @escaping () -> Void)
     
-    
+    func updateCumulativeMoney(versionID: String,
+                           usersMoneyDict: [String: Int],
+                           completion: @escaping (Result<(), ErrorEnum>) -> Void)
     
     func readReceipt(completion: @escaping ReceiptCompletion)
+    
+    
+    
+    func updatePayback(versionID: String,
+                       payerID: String,
+                       usersMoneyDict: [String: Int],
+                       completion: @escaping (Result<(), ErrorEnum>) -> Void)
+    
+    
     
 }

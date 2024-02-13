@@ -232,9 +232,7 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
         }
     }
 
-    
-    
-// MARK: - 선택된 유저
+    // MARK: - 선택된 유저 및 금액
     private var usersMoneyDict: [String : Int] = [:]
     
     
@@ -682,7 +680,7 @@ extension ReceiptWriteVM {
 
 extension ReceiptWriteVM {
     
-    // MARK: - 영수증 데이터 딕셔너리 생성 및 유효성 검사
+    // MARK: - 유효성 검사
     func prepareReceiptDataAndValidate(completion: @escaping (Bool, [String: Any?]) -> Void) {
         // 영수증 데이터 딕셔너리 생성
         self.validationData()
@@ -773,6 +771,7 @@ extension ReceiptWriteVM {
     private func toDictionary() -> [String: [String: Any]]?  {
         // 선택된 유저가 없다면 -> 리턴 nil
         guard !self.selectedUsers.isEmpty else { return nil }
+        
         // 선택된 유저가 있다면 -> 정보 리턴
         return self.usersMoneyDict.reduce(into: [:]) { (result, pair) in
             let (key, value) = pair
@@ -806,13 +805,71 @@ extension ReceiptWriteVM {
 
 extension ReceiptWriteVM {
     
-    // MARK: - 영수증 API
+    // MARK: - [생성] 영수증
     private func createReceipt(completion: @escaping () -> Void) {
         guard let versionID = self.roomDataManager.getVersion else { return }
         self.receiptAPI.createReceipt(
             versionID: versionID,
-            dictionary: self.receiptDict) {
-                completion()
+            dictionary: self.receiptDict, 
+            users: Array(self.usersMoneyDict.keys)) {
+                
+                self.updateCumulativeMoney {
+                    
+                    self.updatePayback {
+                        
+                        completion()
+                        
+                    }
+                }
+            }
+    }
+    
+    // MARK: - [업데이트] 누적 금액
+    private func updateCumulativeMoney(completion: @escaping () -> Void) {
+        guard let versionID = self.roomDataManager.getVersion else { return }
+        
+        self.receiptAPI.updateCumulativeMoney(
+            versionID: versionID,
+            usersMoneyDict: self.usersMoneyDict) { result in
+                switch result {
+                case .success():
+                    completion()
+                    print("*********************cumulative성공*********************")
+                    break
+                case .failure(_):
+                    print("*********************cumulative실패*********************")
+                    break
+                }
+            }
+        
+    }
+    
+    // MARK: - [업데이트] 페이백
+    private func updatePayback(completion: @escaping () -> Void) {
+        guard let versionID = self.roomDataManager.getVersion,
+              let payerID = self.payer?.keys.first else { return }
+        
+        
+        var paybackDict = self.usersMoneyDict
+        
+        // 포함되어있다면,
+        if paybackDict.keys.contains(payerID) {
+            paybackDict.removeValue(forKey: payerID)
+        }
+        
+        self.receiptAPI.updatePayback(
+            versionID: versionID,
+            payerID: payerID,
+            usersMoneyDict: paybackDict) { result in
+                switch result {
+                case .success():
+                    completion()
+                    print("*********************payback성공*********************")
+                    break
+                case .failure(_):
+                    print("*********************payback실패*********************")
+                    break
+                }
             }
     }
 }

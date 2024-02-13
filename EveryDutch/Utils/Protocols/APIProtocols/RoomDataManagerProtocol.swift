@@ -11,7 +11,7 @@ import Foundation
 protocol RoomDataManagerProtocol {
     static var shared: RoomDataManagerProtocol { get }
     
-    
+    var getCurrentRoomsID: String? { get }
     var getVersion: String? { get }
     
     
