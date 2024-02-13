@@ -21,6 +21,7 @@
 		5F0BCE3A2B53144A007A3564 /* ReceiptWriteUsersCellVMProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F0BCE392B53144A007A3564 /* ReceiptWriteUsersCellVMProtocol.swift */; };
 		5F17137E2B46A643006B3EBB /* Receipt_Enum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F17137D2B46A643006B3EBB /* Receipt_Enum.swift */; };
 		5F1713822B46D2E4006B3EBB /* ReceiptScreenPanCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F1713812B46D2E4006B3EBB /* ReceiptScreenPanCoordinator.swift */; };
+		5F2159262B7BC6CC0064A998 /* Typealias.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F2159252B7BC6CC0064A998 /* Typealias.swift */; };
 		5F23C20E2B4C04D600C7D6A3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5F23C20D2B4C04D600C7D6A3 /* GoogleService-Info.plist */; };
 		5F24ADB82B6EA42100843AA8 /* ReceiptScreenDataCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F24ADB72B6EA42100843AA8 /* ReceiptScreenDataCell.swift */; };
 		5F294B412B4D98C900396B6E /* Database_REF.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F294B402B4D98C900396B6E /* Database_REF.swift */; };
@@ -219,6 +220,7 @@
 		5F0BCE392B53144A007A3564 /* ReceiptWriteUsersCellVMProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptWriteUsersCellVMProtocol.swift; sourceTree = "<group>"; };
 		5F17137D2B46A643006B3EBB /* Receipt_Enum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Receipt_Enum.swift; sourceTree = "<group>"; };
 		5F1713812B46D2E4006B3EBB /* ReceiptScreenPanCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptScreenPanCoordinator.swift; sourceTree = "<group>"; };
+		5F2159252B7BC6CC0064A998 /* Typealias.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Typealias.swift; sourceTree = "<group>"; };
 		5F23C20D2B4C04D600C7D6A3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5F24ADB72B6EA42100843AA8 /* ReceiptScreenDataCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptScreenDataCell.swift; sourceTree = "<group>"; };
 		5F294B402B4D98C900396B6E /* Database_REF.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database_REF.swift; sourceTree = "<group>"; };
@@ -578,11 +580,11 @@
 		5F4FA7202B553B97009EE4F4 /* APIProtocols */ = {
 			isa = PBXGroup;
 			children = (
+				5F4FA7282B553F3E009EE4F4 /* RoomDataManagerProtocol.swift */,
 				5F4FA7222B553C00009EE4F4 /* UserAPIProtocol.swift */,
 				5F4FA71E2B553B79009EE4F4 /* RoomsAPIProtocol.swift */,
 				5F4FA7242B553C5B009EE4F4 /* ReceiptAPIProtocol.swift */,
 				5F4FA7262B553F13009EE4F4 /* VersionAPIProtocol.swift */,
-				5F4FA7282B553F3E009EE4F4 /* RoomDataManagerProtocol.swift */,
 			);
 			path = APIProtocols;
 			sourceTree = "<group>";
@@ -1114,6 +1116,7 @@
 				5FE3DEA92B39CB15008D58AE /* Identifier.swift */,
 				5F294B402B4D98C900396B6E /* Database_REF.swift */,
 				5F294B422B4DA4BE00396B6E /* DatabaseConstants.swift */,
+				5F2159252B7BC6CC0064A998 /* Typealias.swift */,
 			);
 			path = Constants;
 			sourceTree = "<group>";
@@ -1330,6 +1333,7 @@
 				5F079C182B48182700E42EF6 /* BottomButton.swift in Sources */,
 				5F02B5062B74294800069C2E /* CellSelectionUIStv.swift in Sources */,
 				5FE3DEBC2B39CB87008D58AE /* MainCoordinator.swift in Sources */,
+				5F2159262B7BC6CC0064A998 /* Typealias.swift in Sources */,
 				5F02B5082B742A0F00069C2E /* ReceiptWriteDataCellVMProtocol.swift in Sources */,
 				5F614B442B45944600EF35CE /* DeleteAccountPanVC.swift in Sources */,
 				5FC196BB2B629224005CC369 /* CheckUser.swift in Sources */,

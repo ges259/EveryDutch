@@ -10,13 +10,10 @@ import Foundation
 protocol RoomsAPIProtocol {
     static var shared: RoomsAPI { get }
     
-    typealias RoomsIDCompletion = (Result<[Rooms], ErrorEnum>) -> Void
-    typealias RoomUsersCompletion = (Result<[String: RoomUsers], ErrorEnum>) -> Void
-    typealias RoomMoneyDataCompletion = (Result<CumulativeAmountDictionary, ErrorEnum>) -> Void
-    typealias PaybackCompletion = (Result<Payback, ErrorEnum>) -> Void
+
     
-    func readRooms(completion: @escaping RoomsIDCompletion)
-    func readRoomUsers(roomID: String, completion: @escaping RoomUsersCompletion)
-    func readCumulativeAmount(completion: @escaping RoomMoneyDataCompletion)
-    func readPayback(completion: @escaping PaybackCompletion)
+    func readRooms(completion: @escaping Typealias.RoomsIDCompletion)
+    func readRoomUsers(roomID: String, completion: @escaping Typealias.RoomUsersCompletion)
+    func readCumulativeAmount(completion: @escaping Typealias.RoomMoneyDataCompletion)
+    func readPayback(completion: @escaping Typealias.PaybackCompletion)
 }

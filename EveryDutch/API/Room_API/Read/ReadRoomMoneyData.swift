@@ -13,12 +13,12 @@ import FirebaseDatabaseInternal
 
 extension RoomsAPI {
     
-    typealias RoomMoneyDataCompletion = (Result<CumulativeAmountDictionary, ErrorEnum>) -> Void
+
     
 
     
     func readCumulativeAmount(
-        completion: @escaping RoomMoneyDataCompletion)
+        completion: @escaping Typealias.RoomMoneyDataCompletion)
     {
         
         Cumulative_AMOUNT_REF
@@ -47,9 +47,8 @@ extension RoomsAPI {
     }
     
     
-    typealias PaybackCompletion = (Result<Payback, ErrorEnum>) -> Void
     
-    func readPayback(completion: @escaping PaybackCompletion) {
+    func readPayback(completion: @escaping Typealias.PaybackCompletion) {
         
         
         PAYBACK_REF

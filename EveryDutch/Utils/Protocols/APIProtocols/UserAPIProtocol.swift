@@ -10,8 +10,7 @@ import Foundation
 protocol UserAPIProtocol {
     static var shared: UserAPIProtocol { get }
     
-    // typealias
-    typealias UserCompletion = (Result<User, ErrorEnum>) -> Void
-    func readUser(uid: String, completion: @escaping UserCompletion)
+
+    func readUser(uid: String, completion: @escaping Typealias.UserCompletion)
     
 }

@@ -8,7 +8,7 @@
 import Foundation
 protocol ReceiptAPIProtocol {
     static var shared: ReceiptAPIProtocol { get }
-    typealias ReceiptCompletion = (Result<[Receipt], ErrorEnum>) -> Void
+    
     
     
     func createReceipt(versionID: String,
@@ -20,7 +20,7 @@ protocol ReceiptAPIProtocol {
                            usersMoneyDict: [String: Int],
                            completion: @escaping (Result<(), ErrorEnum>) -> Void)
     
-    func readReceipt(completion: @escaping ReceiptCompletion)
+    func readReceipt(completion: @escaping Typealias.ReceiptCompletion)
     
     
     

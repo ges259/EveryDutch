@@ -11,8 +11,7 @@ struct UserAPI: UserAPIProtocol {
     static let shared: UserAPIProtocol = UserAPI()
     private init() {}
     
-    // typealias
-    typealias UserCompletion = (Result<User, ErrorEnum>) -> Void
+
     
     
     

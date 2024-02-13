@@ -27,8 +27,6 @@ struct ReceiptAPI: ReceiptAPIProtocol {
     static let shared: ReceiptAPIProtocol = ReceiptAPI()
     private init() {}
     
-    
-    typealias ReceiptCompletion = (Result<[Receipt], ErrorEnum>) -> Void
 }
 
 
@@ -64,9 +62,9 @@ extension ReceiptAPI {
             }
         }
     }
-    // -NqXlbrhlMCBqQIyORD1
     
-    private func saveReceiptForUsers(receiptID: String, 
+    // MARK: - 유저의 영수증 저장
+    private func saveReceiptForUsers(receiptID: String,
                                      users: [String],
                                      completion: @escaping () -> Void) {
         let saveGroup = DispatchGroup()

@@ -7,9 +7,6 @@
 
 import UIKit
 
-typealias RoomUserDataDictionary = [String : RoomUsers]
-typealias CumulativeAmountDictionary = [String : CumulativeAmount]
-
 
 
 final class RoomDataManager: RoomDataManagerProtocol {

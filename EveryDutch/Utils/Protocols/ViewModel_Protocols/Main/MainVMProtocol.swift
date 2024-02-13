@@ -6,7 +6,7 @@
 //
 
 import UIKit
-typealias floatingType = (show: Bool, alpha: CGFloat)
+
 protocol MainVMProtocol {
 //    var rooms: [Rooms] { get }
     func itemTapped(index: Int)

@@ -14,9 +14,9 @@ import Firebase
     // user - 방 데이터 가져오기 ----- (Rooms_Thumbnail)
 extension RoomsAPI {
     
-    typealias RoomsIDCompletion = (Result<[Rooms], ErrorEnum>) -> Void
     
-    func readRooms(completion: @escaping RoomsIDCompletion) {
+    
+    func readRooms(completion: @escaping Typealias.RoomsIDCompletion) {
         
 //        guard let uid = Auth.auth().currentUser?.uid else { return }
         

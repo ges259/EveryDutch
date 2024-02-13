@@ -14,7 +14,7 @@ extension ReceiptAPI {
     
 
     // version_ID: String,
-    func readReceipt(completion: @escaping ReceiptCompletion) {
+    func readReceipt(completion: @escaping Typealias.ReceiptCompletion) {
         // MARK: - Fix
         RECEIPT_REF
             .child("version_ID_1")

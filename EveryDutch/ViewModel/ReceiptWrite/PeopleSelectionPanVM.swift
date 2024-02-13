@@ -15,8 +15,6 @@ final class PeopleSelectionPanVM: PeopleSelectionPanVMProtocol  {
     
     
     
-    typealias UserDataTuple = (key: String, value: RoomUsers)
-    
     // 딕셔너리의 key-value 쌍을 배열로 변환
     func returnUserData(index: Int) -> UserDataTuple {
         return Array(self.users)[index]

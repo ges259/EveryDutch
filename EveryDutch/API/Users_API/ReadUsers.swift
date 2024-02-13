@@ -23,7 +23,7 @@ import Firebase
 
 extension UserAPI {
     
-    func readUser(uid: String, completion: @escaping UserCompletion) {
+    func readUser(uid: String, completion: @escaping Typealias.UserCompletion) {
         
         // 유저데이터 가져오기
         USER_REF

@@ -13,12 +13,11 @@ import FirebaseDatabase
 
 extension RoomsAPI {
     
-    typealias RoomUsersCompletion = (Result<[String: RoomUsers], ErrorEnum>) -> Void
     
     
     func readRoomUsers(
         roomID: String = "room_ID_1",
-        completion: @escaping RoomUsersCompletion)
+        completion: @escaping Typealias.RoomUsersCompletion)
     {
         // 최종적으로 반환될 RoomUsers 배열
         var roomUsers = [String : RoomUsers]()
