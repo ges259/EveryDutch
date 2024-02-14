@@ -7,5 +7,6 @@
 
 import Foundation
 
-// type 변경
-// payment_details[done: Bool] - 변경
+// Update
+    // type 변경 ----- (Receipt)
+    // payment_details[done: Bool] 변경 ----- (Receipt)

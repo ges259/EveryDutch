@@ -18,7 +18,7 @@ protocol SettleMoneyRoomProtocol {
     
     
     var receiptChangedClosure: (() -> Void)? { get set }
-    var userChangedClosure: ((RoomUserDataDictionary) -> Void)? { get set }
+    var userChangedClosure: ((RoomUserDataDict) -> Void)? { get set }
     
     // MARK: - 탑뷰 크기 조절
     var initialHeight: CGFloat { get set }

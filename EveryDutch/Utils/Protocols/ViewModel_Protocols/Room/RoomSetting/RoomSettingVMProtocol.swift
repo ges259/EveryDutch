@@ -10,5 +10,5 @@ import Foundation
 protocol RoomSettingVMProtocol {
 //    var makeCellClosure: (([RoomUsers]) -> Void)? { get set }
     
-    func getUserData() -> RoomUserDataDictionary
+    func getUserData() -> RoomUserDataDict
 }

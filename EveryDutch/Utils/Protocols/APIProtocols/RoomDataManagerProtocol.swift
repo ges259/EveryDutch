@@ -19,7 +19,7 @@ protocol RoomDataManagerProtocol {
     func currentRooms(index: Int)
     var getRooms: [Rooms] { get }
     
-    var getRoomUsersDict: RoomUserDataDictionary { get }
+    var getRoomUsersDict: RoomUserDataDict { get }
     var getRoomName: String? { get }
 //    var getCumulativeAmountArray: CumulativeAmountDictionary { get }
     
@@ -29,7 +29,7 @@ protocol RoomDataManagerProtocol {
     func getIDToCumulativeAmount(userID: String) -> Int
     
     func loadRoomUsers(
-        completion: @escaping (RoomUserDataDictionary) -> Void)
+        completion: @escaping (RoomUserDataDict) -> Void)
     
     func loadCumulativeAmountData(
         completion: @escaping () -> Void) 

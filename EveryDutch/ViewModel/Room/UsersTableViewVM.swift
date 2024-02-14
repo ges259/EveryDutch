@@ -14,7 +14,7 @@ class UsersTableViewVM: UsersTableViewVMProtocol {
 
     var customTableEnum: UsersTableEnum
     
-    var users: RoomUserDataDictionary = [:]
+    var users: RoomUserDataDict = [:]
     
     var numbersOfUsers: Int {
         return self.cellViewModels.count

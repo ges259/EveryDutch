@@ -8,6 +8,6 @@
 import UIKit
 
 protocol ReceiptWriteTableDelegate: AnyObject {
-    func rightBtnTapped(user: RoomUserDataDictionary?)
+    func rightBtnTapped(user: RoomUserDataDict?)
     func setprice(userID: String, price: Int?)
 }

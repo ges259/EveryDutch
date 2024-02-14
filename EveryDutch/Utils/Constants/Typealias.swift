@@ -11,6 +11,12 @@ enum Typealias {
     // ReceiptAPI
     typealias ReceiptCompletion = (Result<[Receipt], ErrorEnum>) -> Void
     
+    typealias CreateReceiptCompletion = (Result<String, ErrorEnum>) -> Void
+    
+    typealias baseCompletion = (Result<(), ErrorEnum>) -> Void
+    
+    
+    
     // UserAPI
     typealias UserCompletion = (Result<User, ErrorEnum>) -> Void
     
@@ -28,7 +34,7 @@ enum Typealias {
 }
 
 // RoomDataManager
-typealias RoomUserDataDictionary = [String : RoomUsers]
+typealias RoomUserDataDict = [String : RoomUsers]
 typealias CumulativeAmountDictionary = [String : CumulativeAmount]
 
 // PeopleSelectionPanVM

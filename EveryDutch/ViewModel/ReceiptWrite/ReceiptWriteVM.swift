@@ -44,8 +44,8 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     
     var memo: String?
     var price: Int?
-    var payer: RoomUserDataDictionary?
-    var selectedUsers: RoomUserDataDictionary = [:]
+    var payer: RoomUserDataDict?
+    var selectedUsers: RoomUserDataDict = [:]
     
     
     // ********************************************
@@ -540,7 +540,7 @@ extension ReceiptWriteVM {
 extension ReceiptWriteVM {
     
     // MARK: - 선택된 유저의 이름
-    func isPayerSelected(selectedUser: RoomUserDataDictionary) {
+    func isPayerSelected(selectedUser: RoomUserDataDict) {
         self.payer = selectedUser
     }
     
@@ -566,13 +566,13 @@ extension ReceiptWriteVM {
 extension ReceiptWriteVM {
     
     // MARK: - 추가될 셀의 IndexPath
-    func indexPathsForAddedUsers(_ users: RoomUserDataDictionary) -> [IndexPath] {
+    func indexPathsForAddedUsers(_ users: RoomUserDataDict) -> [IndexPath] {
         let startIndex = self.usersCellViewModels.count - users.count
         return (startIndex..<(startIndex + users.count)).map { IndexPath(row: $0, section: 1) }
     }
     
     // MARK: - 유저 삭제
-    func deleteData(removedUsers: RoomUserDataDictionary) {
+    func deleteData(removedUsers: RoomUserDataDict) {
         // 제거된 유저 처리
         removedUsers.keys.forEach { userID in
             self.deleteCellVM(userID: userID)
@@ -580,7 +580,7 @@ extension ReceiptWriteVM {
     }
     
     // MARK: - 삭제 될 셀의 IndexPath
-    func indexPathsForRemovedUsers(_ users: RoomUserDataDictionary) -> [IndexPath] {
+    func indexPathsForRemovedUsers(_ users: RoomUserDataDict) -> [IndexPath] {
         var indexPaths = [IndexPath]()
         users.keys.forEach { userID in
             if let index = self.usersCellViewModels.firstIndex(where: { $0.userID == userID }) {
@@ -619,7 +619,7 @@ extension ReceiptWriteVM {
 extension ReceiptWriteVM {
     
     // MARK: - 유저 셀
-    func createUsersCellVM(addedUsers: RoomUserDataDictionary) {
+    func createUsersCellVM(addedUsers: RoomUserDataDict) {
         // 추가된 유저 처리
         addedUsers.forEach { (userID, roomUser) in
             if self.selectedUsers[userID] == nil {
@@ -695,11 +695,17 @@ extension ReceiptWriteVM {
             
             
         } else {
-            // 딕셔너리가 유효하다면 영수증 생성 로직을 실행
-            self.createReceipt() { [weak self] in
-                guard let self = self else { return }
-                // 영수증 생성 성공 후의 처리
-                completion(true, self.receiptDict)
+            
+            Task {
+                do {
+                    try await self.startReceiptAPI()
+                    // API 작업 성공, 성공 결과를 completion으로 전달
+                    completion(true, self.receiptDict)
+                } catch {
+                    // API 작업 실패, 실패 결과를 completion으로 전달
+                    print("API 작업 실패: \(error)")
+                    completion(false, self.receiptDict)
+                }
             }
         }
     }
@@ -803,73 +809,198 @@ extension ReceiptWriteVM {
 
 // MARK: - API
 
+//extension ReceiptWriteVM {
+//    
+//    private func startReceiptAPI(completion: @escaping () -> Void) {
+//        self.updateCumulativeMoney {
+//            
+//            self.updatePayback {
+//                
+//                self.createReceipt { receiptKey in
+//                    
+//                    self.createReceiptForUsers(receiptID: receiptKey) {
+//                        completion()
+//                    }
+//                }
+//            }
+//        }
+//    }
+//    
+//    
+//    
+//    // MARK: - [생성] 영수증
+//    private func createReceipt(completion: @escaping (String) -> Void) {
+//        guard let versionID = self.roomDataManager.getVersion else { return }
+//        
+//        
+//        self.receiptAPI.createReceipt(
+//            versionID: versionID,
+//            dictionary: self.receiptDict, 
+//            users: Array(self.usersMoneyDict.keys), 
+//            retryCount: 0) { [weak self] result in
+//                
+//                switch result {
+//                case .success(let receiptKey):
+//                    guard let self = self else { return }
+//                    
+//                    self.createReceiptForUsers(receiptID: receiptKey) {
+//                        completion(receiptKey)
+//                        
+//                    }
+//                    break
+//                    
+//                    
+//                    
+//                case .failure(_): break
+//                }
+//            }
+//    }
+//    
+//    private func createReceiptForUsers(receiptID: String,
+//                                       completion: @escaping () -> Void) {
+//        
+//    }
+//    
+//    
+//    // MARK: - [업데이트] 누적 금액
+//    private func updateCumulativeMoney(completion: @escaping () -> Void) {
+//        guard let versionID = self.roomDataManager.getVersion else { return }
+//        
+//        self.receiptAPI.updateCumulativeMoney(
+//            versionID: versionID,
+//            usersMoneyDict: self.usersMoneyDict, 
+//            retryCount: 0) { result in
+//                switch result {
+//                case .success():
+//                    completion()
+//                    print("*********************cumulative성공*********************")
+//                    break
+//                case .failure(_):
+//                    print("*********************cumulative실패*********************")
+//                    break
+//                }
+//            }
+//    }
+//    
+//    // MARK: - [업데이트] 페이백
+//    private func updatePayback(completion: @escaping () -> Void) {
+//        guard let versionID = self.roomDataManager.getVersion,
+//              let payerID = self.payer?.keys.first else { return }
+//        
+//        
+//        var paybackDict = self.usersMoneyDict
+//        
+//        // 포함되어있다면,
+//        if paybackDict.keys.contains(payerID) {
+//            paybackDict.removeValue(forKey: payerID)
+//        }
+//        
+//        self.receiptAPI.updatePayback(
+//            versionID: versionID,
+//            payerID: payerID,
+//            usersMoneyDict: paybackDict, 
+//            retryCount: 0) { result in
+//                switch result {
+//                case .success():
+//                    completion()
+//                    print("*********************payback성공*********************")
+//                    break
+//                case .failure(_):
+//                    print("*********************payback실패*********************")
+//                    break
+//                }
+//            }
+//    }
+//}
+//
+//
 extension ReceiptWriteVM {
     
-    // MARK: - [생성] 영수증
-    private func createReceipt(completion: @escaping () -> Void) {
-        guard let versionID = self.roomDataManager.getVersion else { return }
-        self.receiptAPI.createReceipt(
-            versionID: versionID,
-            dictionary: self.receiptDict, 
-            users: Array(self.usersMoneyDict.keys)) {
-                
-                self.updateCumulativeMoney {
-                    
-                    self.updatePayback {
-                        
-                        completion()
-                        
+    // 비동기 작업을 시작하는 함수
+    func startReceiptAPI() async throws {
+        let receiptKey = try await createReceipt()
+        try await createReceiptForUsers(receiptID: receiptKey)
+        try await updateCumulativeMoney()
+        try await updatePayback()
+    }
+    
+    // 영수증 생성
+    private func createReceipt() async throws -> String {
+        guard let versionID = self.roomDataManager.getVersion else { throw ErrorEnum.readError }
+        
+        return try await withCheckedThrowingContinuation { continuation in
+            self.receiptAPI.createReceipt(
+                versionID: versionID,
+                dictionary: self.receiptDict,
+                retryCount: 0) { result in
+                    switch result {
+                    case .success(let receiptKey):
+                        continuation.resume(returning: receiptKey)
+                    case .failure(let error):
+                        continuation.resume(throwing: error)
                     }
                 }
-            }
+        }
     }
     
-    // MARK: - [업데이트] 누적 금액
-    private func updateCumulativeMoney(completion: @escaping () -> Void) {
-        guard let versionID = self.roomDataManager.getVersion else { return }
-        
-        self.receiptAPI.updateCumulativeMoney(
-            versionID: versionID,
-            usersMoneyDict: self.usersMoneyDict) { result in
-                switch result {
-                case .success():
-                    completion()
-                    print("*********************cumulative성공*********************")
-                    break
-                case .failure(_):
-                    print("*********************cumulative실패*********************")
-                    break
+    // 유저별 영수증 생성
+    private func createReceiptForUsers(receiptID: String) async throws {
+        // 유저별 영수증 생성 로직 구현
+        // 예시 코드는 생략되었습니다.
+        return try await withCheckedThrowingContinuation { continuation in
+            self.receiptAPI.saveReceiptForUsers(
+                receiptID: receiptID,
+                users: Array(self.usersMoneyDict.keys),
+                retryCount: 0) { result in
+                    switch result {
+                    case .success():
+                        continuation.resume()
+                    case .failure(let error):
+                        continuation.resume(throwing: error)
+                    }
                 }
-            }
-        
+        }
     }
     
-    // MARK: - [업데이트] 페이백
-    private func updatePayback(completion: @escaping () -> Void) {
-        guard let versionID = self.roomDataManager.getVersion,
-              let payerID = self.payer?.keys.first else { return }
+    // 누적 금액 업데이트
+    private func updateCumulativeMoney() async throws {
+        guard let versionID = self.roomDataManager.getVersion else { throw ErrorEnum.readError }
         
+        return try await withCheckedThrowingContinuation { continuation in
+            self.receiptAPI.updateCumulativeMoney(
+                versionID: versionID,
+                usersMoneyDict: self.usersMoneyDict,
+                retryCount: 0) { result in
+                    switch result {
+                    case .success():
+                        continuation.resume()
+                    case .failure(let error):
+                        continuation.resume(throwing: error)
+                    }
+                }
+        }
+    }
+    
+    // 페이백 업데이트
+    private func updatePayback() async throws {
+        guard let versionID = self.roomDataManager.getVersion, let payerID = self.payer?.keys.first else { throw ErrorEnum.readError }
         
         var paybackDict = self.usersMoneyDict
+        paybackDict.removeValue(forKey: payerID)
         
-        // 포함되어있다면,
-        if paybackDict.keys.contains(payerID) {
-            paybackDict.removeValue(forKey: payerID)
-        }
-        
-        self.receiptAPI.updatePayback(
-            versionID: versionID,
-            payerID: payerID,
-            usersMoneyDict: paybackDict) { result in
+        return try await withCheckedThrowingContinuation { continuation in
+            self.receiptAPI.updatePayback(
+                versionID: versionID,
+                payerID: payerID, 
+                usersMoneyDict: paybackDict,
+                retryCount: 0) { result in
                 switch result {
                 case .success():
-                    completion()
-                    print("*********************payback성공*********************")
-                    break
-                case .failure(_):
-                    print("*********************payback실패*********************")
-                    break
+                    continuation.resume()
+                case .failure(let error):
+                    continuation.resume(throwing: error)
                 }
             }
+        }
     }
 }

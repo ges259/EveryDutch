@@ -10,13 +10,13 @@ import Foundation
 final class RoomSettingVM: RoomSettingVMProtocol {
     private var roomDataManager: RoomDataManagerProtocol
     
-    var users: RoomUserDataDictionary = [:]
+    var users: RoomUserDataDict = [:]
     
     init(roomDataManager: RoomDataManagerProtocol) {
         self.roomDataManager = roomDataManager
     }
     
-    func getUserData() -> RoomUserDataDictionary {
+    func getUserData() -> RoomUserDataDict {
         self.users = self.roomDataManager.getRoomUsersDict
         return self.users
     }

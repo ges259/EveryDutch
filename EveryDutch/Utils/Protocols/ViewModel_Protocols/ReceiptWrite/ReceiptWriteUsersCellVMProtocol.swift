@@ -12,7 +12,7 @@ protocol ReceiptWriteUsersCellVMProtocol {
     var profileImageURL: String { get }
     var userName: String { get }
     var profileImg: UIImage? { get }
-    var roomUserDataDictionary: RoomUserDataDictionary { get }
+    var roomUserDataDictionary: RoomUserDataDict { get }
     
     
     

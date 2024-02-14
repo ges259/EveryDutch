@@ -10,9 +10,9 @@ import UIKit
 
 protocol PeopleSelectionPanVMProtocol {
     var peopleSelectionEnum: PeopleSeelctionEnum? { get }
-    var selectedUsers: RoomUserDataDictionary { get }
-    var addedUsers: RoomUserDataDictionary { get }
-    var removedSelectedUsers: RoomUserDataDictionary { get }
+    var selectedUsers: RoomUserDataDict { get }
+    var addedUsers: RoomUserDataDict { get }
+    var removedSelectedUsers: RoomUserDataDict { get }
 //    var usersKeyValueArray: [(key: String, value: RoomUsers)] { get }
     
     func getSelectedUsersIndexPath() -> IndexPath?

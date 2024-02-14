@@ -53,7 +53,7 @@ final class ReceiptWriteCoordinator: ReceiptWriteCoordProtocol {
     
     // MARK: - PeopleSelectionPanScreen
     func peopleSelectionPanScreen(
-        users: RoomUserDataDictionary?,
+        users: RoomUserDataDict?,
         peopleSelectionEnum: PeopleSeelctionEnum?)
     {
         // PeopleSelectionPanCoordinator 생성
@@ -108,8 +108,8 @@ final class ReceiptWriteCoordinator: ReceiptWriteCoordProtocol {
 extension ReceiptWriteCoordinator: PeopleSelectionDelegate {
     
     func multipleModeSelectedUsers(
-        addedusers: RoomUserDataDictionary,
-        removedUsers: RoomUserDataDictionary)
+        addedusers: RoomUserDataDict,
+        removedUsers: RoomUserDataDict)
     {
         if let receiptWriteVC = self.findReceiptWriteVC {
             receiptWriteVC.changeTableViewData(
@@ -119,7 +119,7 @@ extension ReceiptWriteCoordinator: PeopleSelectionDelegate {
     }
     
     func payerSelectedUser(
-        addedUser: RoomUserDataDictionary)
+        addedUser: RoomUserDataDict)
     {
         if let receiptWriteVC = self.findReceiptWriteVC {
             receiptWriteVC.changePayerLblData(addedUsers: addedUser)

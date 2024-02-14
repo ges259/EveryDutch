@@ -15,7 +15,7 @@ final class PeopleSelectionPanCoordinator: Coordinator {
     var nav: UINavigationController
     // WriteScreen_Coordinator로 전달 됨.
     weak var delegate: PeopleSelectionDelegate?
-    var selectedUsers: RoomUserDataDictionary?
+    var selectedUsers: RoomUserDataDict?
     var peopleSelectionEnum: PeopleSeelctionEnum?
     
     // 의존성 주입
@@ -52,13 +52,13 @@ final class PeopleSelectionPanCoordinator: Coordinator {
 // MARK: - PeopleSelection 델리게이트
 extension PeopleSelectionPanCoordinator: PeopleSelectionDelegate {
     
-    func payerSelectedUser(addedUser: RoomUserDataDictionary) {
+    func payerSelectedUser(addedUser: RoomUserDataDict) {
         self.delegate?.payerSelectedUser(addedUser: addedUser)
     }
     
     func multipleModeSelectedUsers(
-        addedusers: RoomUserDataDictionary,
-        removedUsers: RoomUserDataDictionary)
+        addedusers: RoomUserDataDict,
+        removedUsers: RoomUserDataDict)
     {
         // Receipt_Write_Coordinator로 전달
         self.delegate?.multipleModeSelectedUsers(

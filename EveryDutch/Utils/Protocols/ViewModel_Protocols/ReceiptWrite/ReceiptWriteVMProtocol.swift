@@ -37,8 +37,8 @@ protocol ReceiptWriteVMProtocol {
     var time: String { get set }
     var memo: String? { get set }
     var price: Int? { get set }
-    var payer: RoomUserDataDictionary? { get }
-    var selectedUsers: RoomUserDataDictionary { get set }
+    var payer: RoomUserDataDict? { get }
+    var selectedUsers: RoomUserDataDict { get set }
     
     
     
@@ -125,13 +125,13 @@ protocol ReceiptWriteVMProtocol {
     
     
     // MARK: - 유저 추가
-    func createUsersCellVM(addedUsers: RoomUserDataDictionary)
-    func indexPathsForAddedUsers(_ users: RoomUserDataDictionary) -> [IndexPath]
+    func createUsersCellVM(addedUsers: RoomUserDataDict)
+    func indexPathsForAddedUsers(_ users: RoomUserDataDict) -> [IndexPath]
     
     
     // MARK: - 유저 삭제
-    func deleteData(removedUsers: RoomUserDataDictionary)
-    func indexPathsForRemovedUsers(_ users: RoomUserDataDictionary) -> [IndexPath]
+    func deleteData(removedUsers: RoomUserDataDict)
+    func indexPathsForRemovedUsers(_ users: RoomUserDataDict) -> [IndexPath]
     func deleteCellVM(userID: String?)
     
     
@@ -143,7 +143,7 @@ protocol ReceiptWriteVMProtocol {
     
     
     // MARK: - 선택된 유저의 이름
-    func isPayerSelected(selectedUser: RoomUserDataDictionary)
+    func isPayerSelected(selectedUser: RoomUserDataDict)
     
     
     var getSelectedUsers: String? { get }

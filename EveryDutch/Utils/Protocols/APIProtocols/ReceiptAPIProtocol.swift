@@ -11,24 +11,40 @@ protocol ReceiptAPIProtocol {
     
     
     
-    func createReceipt(versionID: String,
-                       dictionary: [String: Any?],
-                       users: [String],
-                       completion: @escaping () -> Void)
+    // MARK: - 영수증 만들기
+    func createReceipt(
+        versionID: String,
+        dictionary: [String: Any?],
+        retryCount: Int,
+        completion: @escaping Typealias.CreateReceiptCompletion)
+    
+    func saveReceiptForUsers(receiptID: String,
+                             users: [String],
+                             retryCount: Int,
+                             completion: @escaping Typealias.baseCompletion)
+    
     
     func updateCumulativeMoney(versionID: String,
-                           usersMoneyDict: [String: Int],
-                           completion: @escaping (Result<(), ErrorEnum>) -> Void)
+                               usersMoneyDict: [String: Int],
+                               retryCount: Int,
+                               completion: @escaping Typealias.baseCompletion)
     
-    func readReceipt(completion: @escaping Typealias.ReceiptCompletion)
+    
     
     
     
     func updatePayback(versionID: String,
                        payerID: String,
                        usersMoneyDict: [String: Int],
-                       completion: @escaping (Result<(), ErrorEnum>) -> Void)
+                       retryCount: Int,
+                       completion: @escaping Typealias.baseCompletion)
     
     
     
+    
+    
+    
+    
+    
+    func readReceipt(completion: @escaping Typealias.ReceiptCompletion)
 }

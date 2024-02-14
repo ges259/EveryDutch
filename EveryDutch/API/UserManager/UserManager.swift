@@ -30,7 +30,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
     private var rooms: [Rooms]?
     private var currentIndex: Int = 0
     
-    private var roomUserDataDict: RoomUserDataDictionary = [:]
+    private var roomUserDataDict: RoomUserDataDict = [:]
     private var cumulativeAmount: CumulativeAmountDictionary = [:]
     
     private var paybackData: Payback?
@@ -50,7 +50,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
     }
     
     // MARK: - 방의 유저 데이터
-    var getRoomUsersDict: RoomUserDataDictionary {
+    var getRoomUsersDict: RoomUserDataDict {
         return self.roomUserDataDict
     }
     
@@ -114,7 +114,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
     // 콜백 함수 만들기(completion)
     // SettlementMoneyRoomVM에서 호출 됨
     func loadRoomUsers(
-        completion: @escaping (RoomUserDataDictionary) -> Void)
+        completion: @escaping (RoomUserDataDict) -> Void)
     {
         // roomData 저장
         guard let roomID = self.roomData?.roomID else { return }

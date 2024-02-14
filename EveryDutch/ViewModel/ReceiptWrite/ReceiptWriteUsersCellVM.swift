@@ -12,7 +12,7 @@ struct ReceiptWriteUsersCellVM: ReceiptWriteUsersCellVMProtocol {
     var profileImageURL: String
     var userName: String
     
-    var roomUserDataDictionary: RoomUserDataDictionary = [:]
+    var roomUserDataDictionary: RoomUserDataDict = [:]
 
     
     

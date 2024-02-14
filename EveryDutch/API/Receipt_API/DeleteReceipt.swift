@@ -7,6 +7,7 @@
 
 import Foundation
 
-// 영수증 삭제
-    // User_Receipt에서 삭제
-    // Receipt에서 삭제
+// Delete
+    // 영수증 삭제
+        // User_Receipt에서 삭제
+        // Receipt에서 삭제

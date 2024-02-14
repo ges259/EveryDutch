@@ -10,7 +10,7 @@ import UIKit
 final class PeopleSelectionPanVM: PeopleSelectionPanVMProtocol  {
     
     private var roomDataManager: RoomDataManagerProtocol
-    private var users: RoomUserDataDictionary
+    private var users: RoomUserDataDict
     
     
     
@@ -23,19 +23,19 @@ final class PeopleSelectionPanVM: PeopleSelectionPanVMProtocol  {
     
     
     // MARK: - 선택된 유저
-    var selectedUsers: RoomUserDataDictionary = [:] {
+    var selectedUsers: RoomUserDataDict = [:] {
         didSet {
             print("selectedUsers --- \(selectedUsers)")
         }
     }
     
-    var addedUsers: RoomUserDataDictionary = [:] {
+    var addedUsers: RoomUserDataDict = [:] {
         didSet {
             print("addedUsers --- \(addedUsers)")
             self.bottomBtnClosure?()
         }
     }
-    var removedSelectedUsers: RoomUserDataDictionary = [:] {
+    var removedSelectedUsers: RoomUserDataDict = [:] {
         didSet {
             self.bottomBtnClosure?()
             print("removedSelectedUsers --- \(removedSelectedUsers)")
@@ -159,7 +159,7 @@ final class PeopleSelectionPanVM: PeopleSelectionPanVMProtocol  {
     
     
     // MARK: - 라이프 사이클
-    init(selectedUsers: RoomUserDataDictionary?,
+    init(selectedUsers: RoomUserDataDict?,
          roomDataManager: RoomDataManagerProtocol,
          peopleSelectionEnum: PeopleSeelctionEnum?) {
         self.roomDataManager = roomDataManager

@@ -8,7 +8,7 @@
 import Foundation
 
 protocol ReceiptWriteCoordProtocol: Coordinator {
-    func peopleSelectionPanScreen(users: RoomUserDataDictionary?,
+    func peopleSelectionPanScreen(users: RoomUserDataDict?,
                                   peopleSelectionEnum: PeopleSeelctionEnum?)
     func checkReceiptPanScreen(_ validationDict: [String: Any?])
 }

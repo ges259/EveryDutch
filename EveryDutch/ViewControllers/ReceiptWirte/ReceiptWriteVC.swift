@@ -565,13 +565,13 @@ extension ReceiptWriteVC {
 
 extension ReceiptWriteVC {
     
-    func changePayerLblData(addedUsers: RoomUserDataDictionary) {
+    func changePayerLblData(addedUsers: RoomUserDataDict) {
         self.savePayer(addedUsers)
         self.updatePayerCell()
     }
     
     // MARK: - payer 저장
-    private func savePayer(_ addedUsers: RoomUserDataDictionary) {
+    private func savePayer(_ addedUsers: RoomUserDataDict) {
         self.viewModel.isPayerSelected(
             selectedUser: addedUsers)
     }
@@ -592,8 +592,8 @@ extension ReceiptWriteVC {
     
     // MARK: - 여러명 선택
     func changeTableViewData(
-        addedUsers: RoomUserDataDictionary,
-        removedUsers: RoomUserDataDictionary)
+        addedUsers: RoomUserDataDict,
+        removedUsers: RoomUserDataDict)
     {
         
         // MARK: - 섹션 1에 업데이트를 해야 함
@@ -607,8 +607,8 @@ extension ReceiptWriteVC {
     
     // MARK: - 테이블뷰 셀 업데이트
     private func updateTableViewCell(
-        addedUsers: RoomUserDataDictionary,
-        removedUsers: RoomUserDataDictionary)
+        addedUsers: RoomUserDataDict,
+        removedUsers: RoomUserDataDict)
     {
         // 테이블 뷰 한 번에 업데이트
         self.tableView.performBatchUpdates({
@@ -632,7 +632,7 @@ extension ReceiptWriteVC {
     }
     
     // MARK: - 셀 생성
-    private func tableViewInsertRows(addedUsers: RoomUserDataDictionary) {
+    private func tableViewInsertRows(addedUsers: RoomUserDataDict) {
         // 생성할 유저가 있다면,
         if !addedUsers.isEmpty {
             // 주의 --- 순서를 바꾸면 안 됨.
@@ -649,7 +649,7 @@ extension ReceiptWriteVC {
     }
     
     // MARK: - 셀 삭제
-    private func tableViewDeleteRows(removedUsers: RoomUserDataDictionary) {
+    private func tableViewDeleteRows(removedUsers: RoomUserDataDict) {
         // 삭제할 유저가 있다면,
         if !removedUsers.isEmpty {
             // 주의 --- 순서를 바꾸면 안 됨.
@@ -1155,7 +1155,7 @@ extension ReceiptWriteVC: ReceiptWriteDataCellDelegate {
 extension ReceiptWriteVC: ReceiptWriteTableDelegate {
     
     // MARK: - [X버튼] 유저 삭제
-    func rightBtnTapped(user: RoomUserDataDictionary?) {
+    func rightBtnTapped(user: RoomUserDataDict?) {
         guard let user = user else { return }
         self.changeTableViewData(addedUsers: [:],
                                  removedUsers: user)

@@ -8,7 +8,8 @@
 import Foundation
 import FirebaseDatabaseInternal
 
-
+// Read
+    // Receipt에서 데이터 가져오기 ----- (Receipt)
 
 extension ReceiptAPI {
     
