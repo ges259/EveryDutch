@@ -844,7 +844,9 @@ extension ReceiptWriteVM {
     private func createReceiptForUsers(receiptID: String) async throws {
         // 유저별 영수증 생성 로직 구현
         // 예시 코드는 생략되었습니다.
-        return try await withCheckedThrowingContinuation { continuation in
+        return try await withCheckedThrowingContinuation { [weak self] continuation in
+            guard let self = self else { return }
+            
             self.receiptAPI.saveReceiptForUsers(
                 receiptID: receiptID,
                 users: Array(self.usersMoneyDict.keys),
@@ -863,7 +865,9 @@ extension ReceiptWriteVM {
     private func updateCumulativeMoney() async throws {
         guard let versionID = self.roomDataManager.getVersion else { throw ErrorEnum.readError }
         
-        return try await withCheckedThrowingContinuation { continuation in
+        return try await withCheckedThrowingContinuation { [weak self] continuation in
+            guard let self = self else { return }
+            
             self.receiptAPI.updateCumulativeMoney(
                 versionID: versionID,
                 usersMoneyDict: self.usersMoneyDict,
@@ -885,7 +889,9 @@ extension ReceiptWriteVM {
         var paybackDict = self.usersMoneyDict
         paybackDict.removeValue(forKey: payerID)
         
-        return try await withCheckedThrowingContinuation { continuation in
+        return try await withCheckedThrowingContinuation { [weak self]continuation in
+            guard let self = self else { return }
+            
             self.receiptAPI.updatePayback(
                 versionID: versionID,
                 payerID: payerID, 
