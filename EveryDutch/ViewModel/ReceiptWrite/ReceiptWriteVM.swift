@@ -809,113 +809,9 @@ extension ReceiptWriteVM {
 
 // MARK: - API
 
-//extension ReceiptWriteVM {
-//    
-//    private func startReceiptAPI(completion: @escaping () -> Void) {
-//        self.updateCumulativeMoney {
-//            
-//            self.updatePayback {
-//                
-//                self.createReceipt { receiptKey in
-//                    
-//                    self.createReceiptForUsers(receiptID: receiptKey) {
-//                        completion()
-//                    }
-//                }
-//            }
-//        }
-//    }
-//    
-//    
-//    
-//    // MARK: - [생성] 영수증
-//    private func createReceipt(completion: @escaping (String) -> Void) {
-//        guard let versionID = self.roomDataManager.getVersion else { return }
-//        
-//        
-//        self.receiptAPI.createReceipt(
-//            versionID: versionID,
-//            dictionary: self.receiptDict, 
-//            users: Array(self.usersMoneyDict.keys), 
-//            retryCount: 0) { [weak self] result in
-//                
-//                switch result {
-//                case .success(let receiptKey):
-//                    guard let self = self else { return }
-//                    
-//                    self.createReceiptForUsers(receiptID: receiptKey) {
-//                        completion(receiptKey)
-//                        
-//                    }
-//                    break
-//                    
-//                    
-//                    
-//                case .failure(_): break
-//                }
-//            }
-//    }
-//    
-//    private func createReceiptForUsers(receiptID: String,
-//                                       completion: @escaping () -> Void) {
-//        
-//    }
-//    
-//    
-//    // MARK: - [업데이트] 누적 금액
-//    private func updateCumulativeMoney(completion: @escaping () -> Void) {
-//        guard let versionID = self.roomDataManager.getVersion else { return }
-//        
-//        self.receiptAPI.updateCumulativeMoney(
-//            versionID: versionID,
-//            usersMoneyDict: self.usersMoneyDict, 
-//            retryCount: 0) { result in
-//                switch result {
-//                case .success():
-//                    completion()
-//                    print("*********************cumulative성공*********************")
-//                    break
-//                case .failure(_):
-//                    print("*********************cumulative실패*********************")
-//                    break
-//                }
-//            }
-//    }
-//    
-//    // MARK: - [업데이트] 페이백
-//    private func updatePayback(completion: @escaping () -> Void) {
-//        guard let versionID = self.roomDataManager.getVersion,
-//              let payerID = self.payer?.keys.first else { return }
-//        
-//        
-//        var paybackDict = self.usersMoneyDict
-//        
-//        // 포함되어있다면,
-//        if paybackDict.keys.contains(payerID) {
-//            paybackDict.removeValue(forKey: payerID)
-//        }
-//        
-//        self.receiptAPI.updatePayback(
-//            versionID: versionID,
-//            payerID: payerID,
-//            usersMoneyDict: paybackDict, 
-//            retryCount: 0) { result in
-//                switch result {
-//                case .success():
-//                    completion()
-//                    print("*********************payback성공*********************")
-//                    break
-//                case .failure(_):
-//                    print("*********************payback실패*********************")
-//                    break
-//                }
-//            }
-//    }
-//}
-//
-//
 extension ReceiptWriteVM {
     
+    // MARK: - 비동기 작업 시작
     // 비동기 작업을 시작하는 함수
     func startReceiptAPI() async throws {
         let receiptKey = try await createReceipt()
@@ -924,6 +820,7 @@ extension ReceiptWriteVM {
         try await updatePayback()
     }
     
+    // MARK: - 영수증 생성
     // 영수증 생성
     private func createReceipt() async throws -> String {
         guard let versionID = self.roomDataManager.getVersion else { throw ErrorEnum.readError }
@@ -943,7 +840,7 @@ extension ReceiptWriteVM {
         }
     }
     
-    // 유저별 영수증 생성
+    // MARK: - 유저별 영수증 생성
     private func createReceiptForUsers(receiptID: String) async throws {
         // 유저별 영수증 생성 로직 구현
         // 예시 코드는 생략되었습니다.
@@ -962,7 +859,7 @@ extension ReceiptWriteVM {
         }
     }
     
-    // 누적 금액 업데이트
+    // MARK: - 누적 금액 업데이트
     private func updateCumulativeMoney() async throws {
         guard let versionID = self.roomDataManager.getVersion else { throw ErrorEnum.readError }
         
@@ -981,7 +878,7 @@ extension ReceiptWriteVM {
         }
     }
     
-    // 페이백 업데이트
+    // MARK: - 페이백 업데이트
     private func updatePayback() async throws {
         guard let versionID = self.roomDataManager.getVersion, let payerID = self.payer?.keys.first else { throw ErrorEnum.readError }
         

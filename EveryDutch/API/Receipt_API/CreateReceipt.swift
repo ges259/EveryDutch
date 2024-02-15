@@ -12,7 +12,7 @@ import FirebaseDatabase
     // Receipt에 데이터 저장 ----- (Receipt)
     // 개인적으로 데이터 저장 ----- (User_Receipt)
 
-struct ReceiptAPI: ReceiptAPIProtocol {
+class ReceiptAPI: ReceiptAPIProtocol {
     static let shared: ReceiptAPIProtocol = ReceiptAPI()
     private init() {}
     
@@ -22,17 +22,19 @@ struct ReceiptAPI: ReceiptAPIProtocol {
 
 extension ReceiptAPI {
     // ************************************
+    // - 비동기 작업 순서
     // 1. 누적 금액 업데이트
     // 2. 페이백 업데이트
     // 3. 영수증 만들기
     // 4. 유저의 영수증 저장
     // ************************************
-    // versionID
-    // receiptID
+    // - 롤백을 위해 저장되는 데이터들
+    // versionID: String
+    // receiptID: String
+    // payerID: String// payerID: String
     // users: [String]
     // usersMoneyDict: [String: Int]
     // retryUsersMoneyDict: [String: Int]
-    // payerID
     // ************************************
     
     // MARK: - 영수증 만들기
@@ -159,7 +161,8 @@ extension ReceiptAPI {
         }
         
         group.notify(queue: .main) {
-            if !retryUsersMoneyDict.isEmpty && retryCount < maxRetryCount {
+            if !retryUsersMoneyDict.isEmpty 
+                && retryCount < self.maxRetryCount {
                 // 실패한 작업에 대해 재시도
                 DispatchQueue.main.asyncAfter(deadline: .now() + self.retryDelay) {
                     self.updateCumulativeMoney(
@@ -219,7 +222,8 @@ extension ReceiptAPI {
         }
         
         group.notify(queue: .main) {
-            if !retryUsersMoneyDict.isEmpty && retryCount < self.maxRetryCount {
+            if !retryUsersMoneyDict.isEmpty 
+                && retryCount < self.maxRetryCount {
                 // 실패한 작업에 대해 재시도
                 DispatchQueue.main.asyncAfter(deadline: .now() + self.retryDelay) {
                     self.updatePayback(
@@ -278,6 +282,7 @@ extension ReceiptAPI {
     private func rollBackReceipt(rollback: RollBackReceipt) {
         switch rollback {
         case .payback:
+            
             fallthrough
         case .cumulativeMoney:
             
@@ -418,6 +423,268 @@ extension ReceiptAPI {
         
         rollbackGroup.notify(queue: .main) {
             completion(rollbackSuccess)
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class RollbackDataManager {
+    static let shared = RollbackDataManager()
+    private init() {}
+    
+    
+    
+    
+    
+    private var versionID: String?
+    private var receiptID: String?
+    private var usersIDArray: [String]?
+    private var payerID: String?
+    private var savedCumulativeMoneyDict: [String: Int]?
+    private var savedPaybackDict: [String: Int]?
+    
+    
+    private var successCreateReceipt: Bool = false
+    private var successSaveReceipt: Bool = false
+    private var successCumulativeMoney: Bool = false
+    private var successPayback: Bool = false
+    
+    // ************************************
+    // - 비동기 작업 순서
+    // 1. 영수증 만들기
+    // 2. 유저의 영수증 저장
+    // 3. 누적 금액 업데이트
+    // 4. 페이백 업데이트
+    // ************************************
+    // - 롤백 작업 순서
+    // 1. 페이백 업데이트 => (versionID --- payerID --- savedPaybackDict)
+    // 2. 누적 금액 업데이트 => (versionID --- savedVumulativeMoneyDict)
+    // 3. 유저의 영수증 저장 => (versionID --- receiptID)
+    // 4. 영수증 만들기 => (usersIDArray --- receiptID)
+    // ************************************
+    
+    func setRollbackDataPayback(
+        payerID: String,
+        savedPaybackDict: [String: Int])
+    {
+        self.payerID = payerID
+        self.savedPaybackDict = savedPaybackDict
+        
+        self.successPayback = true
+    }
+    func setRollbackDataCumulativeMoney(
+        versionID: String,
+        savedCumulativeMoneyDict: [String: Int])
+    {
+        self.versionID = versionID
+        self.savedCumulativeMoneyDict = savedCumulativeMoneyDict
+        
+        self.successCumulativeMoney = true
+    }
+    func setRollbackDataSaveReceiptForUsers(usersIDArray: [String]) {
+        self.usersIDArray = usersIDArray
+        
+        self.successSaveReceipt = true
+    }
+    func setRollbackDataCreateReceipt(receiptID: String) {
+        self.receiptID = receiptID
+        
+        self.successCreateReceipt = true
+    }
+    
+    
+    func clearRollbackData() {
+        self.versionID = nil
+        self.receiptID = nil
+        self.payerID = nil
+        self.usersIDArray = nil
+        self.savedPaybackDict = nil
+        self.savedCumulativeMoneyDict = nil
+        
+        self.successCreateReceipt = false
+        self.successSaveReceipt = false
+        self.successCumulativeMoney = false
+        self.successPayback = false
+    }
+    
+    // 롤백을 시작하는 메서드
+    func startRollback() async throws {
+    }
+}
+
+
+
+extension RollbackDataManager {
+    
+    // MARK: - 페이백 롤백
+    private func rollbackPaybackData(completion: @escaping (Bool) -> Void) {
+        
+        guard self.successPayback,
+              let versionID = self.versionID,
+              let payerID = self.payerID,
+              let usersMoneyDict = self.savedPaybackDict else {
+            print("롤백 데이터 누락")
+            completion(false)
+            return
+        }
+        
+        
+        let rollbackGroup = DispatchGroup()
+        var rollbackSuccess = true
+        
+        for (userID, amountToSubtract) in usersMoneyDict {
+            rollbackGroup.enter()
+            PAYBACK_REF
+                .child(versionID)
+                .child(payerID)
+                .child(userID)
+                .runTransactionBlock(
+                    { (currentData: MutableData) -> TransactionResult in
+                        
+                        var currentAmount = currentData.value as? Int ?? 0
+                        currentAmount -= amountToSubtract
+                        currentData.value = currentAmount >= 0 ? currentAmount : 0
+                        return TransactionResult.success(withValue: currentData)
+                        
+                    }) { error, committed, _ in
+                        if let error = error {
+                            print("페이백 데이터 롤백 실패: \(userID), 오류: \(error.localizedDescription)")
+                            rollbackSuccess = false
+                        } else {
+                            print("페이백 데이터 롤백 성공: \(userID)")
+                        }
+                        rollbackGroup.leave()
+                    }
+        }
+        
+        rollbackGroup.notify(queue: .main) {
+            completion(rollbackSuccess)
+        }
+    }
+    
+    // MARK: - 누적금액 롤백
+    private func rollbackCumulativeMoneyData(completion: @escaping (Bool) -> Void) {
+        
+        guard self.successCumulativeMoney,
+              let versionID = self.versionID,
+              let usersMoneyDict = self.savedCumulativeMoneyDict
+        else {
+            print("롤백 데이터 누락")
+            completion(false)
+            return
+        }
+        
+        let rollbackGroup = DispatchGroup()
+        var rollbackSuccess = true
+        
+        for (userId, amountToSubtract) in usersMoneyDict {
+            rollbackGroup.enter()
+            Cumulative_AMOUNT_REF
+                .child(versionID)
+                .child(userId)
+                .runTransactionBlock(
+                    { (currentData: MutableData) -> TransactionResult in
+                        
+                        var value = currentData.value as? Int ?? 0
+                        value -= amountToSubtract
+                        currentData.value = value
+                        return TransactionResult.success(withValue: currentData)
+                    }) { error, _, _ in
+                        if let error = error {
+                            print("누적 금액 데이터 롤백 실패: \(userId), 오류: \(error.localizedDescription)")
+                            rollbackSuccess = false
+                        } else {
+                            print("누적 금액 데이터 롤백 성공: \(userId)")
+                        }
+                        rollbackGroup.leave()
+                    }
+        }
+        
+        rollbackGroup.notify(queue: .main) {
+            completion(rollbackSuccess)
+        }
+    }
+    
+    // MARK: - 유저 영수증 롤백
+    private func rollbackUsersReceiptData(completion: @escaping (Bool) -> Void) {
+        
+        guard self.successSaveReceipt,
+              let users = self.usersIDArray,
+              let receiptID = self.receiptID else {
+            print("롤백 데이터 누락")
+            completion(false)
+            return
+        }
+        
+        let rollbackGroup = DispatchGroup()
+        var rollbackSuccess = true
+
+        for userID in users {
+            rollbackGroup.enter()
+            USER_RECEIPTS_REF
+                .child(userID)
+                .child(receiptID)
+                .removeValue { error, _ in
+                    
+                if let error = error {
+                    print("사용자 영수증 데이터 롤백 실패: \(userID), 오류: \(error.localizedDescription)")
+                    rollbackSuccess = false
+                } else {
+                    print("사용자 영수증 데이터 롤백 성공: \(userID)")
+                }
+                rollbackGroup.leave()
+            }
+        }
+
+        rollbackGroup.notify(queue: .main) {
+            completion(rollbackSuccess)
+        }
+    }
+    
+    // MARK: - 영수증 생성 롤백
+    private func rollbackSaveReceiptData(completion: @escaping (Bool) -> Void) {
+        
+        guard self.successCreateReceipt,
+              let versionID = self.versionID,
+              let receiptID = self.receiptID else {
+            print("롤백 데이터 누락")
+            completion(false)
+            return
+        }
+        
+        RECEIPT_REF
+            .child(versionID)
+            .child(receiptID)
+            .removeValue { error, _ in
+                
+            if let error = error {
+                print("영수증 저장 데이터 롤백 실패: \(error.localizedDescription)")
+                completion(false)
+                
+            } else {
+                print("영수증 저장 데이터 롤백 성공")
+                completion(true)
+            }
         }
     }
 }
