@@ -8,7 +8,12 @@
 import Foundation
 import FirebaseDatabase
 import FirebaseAuth
-
+struct RollbackResult {
+    var success: Bool = true
+    var originalData: [String: Any] // 원래 데이터
+    var successData: [String: Any] // 성공한 데이터
+    var failedData: [String: Any] // 실패한 데이터
+}
 enum RollBackReceiptEnum {
     case payback
     case cumulativeMoney
@@ -154,7 +159,7 @@ class RollbackDataManager {
     // MARK: - 롤백 실패 시 로그 저장
     private func logRollbackFailure(
         rollbackType: RollBackReceiptEnum,
-        errorData: [String: Any],
+        errorData: RollbackResult,
         error: Error)
     {
         // 유저의 아이디 가져오기
@@ -182,13 +187,17 @@ class RollbackDataManager {
     
     // MARK: - 저장할 로그 리턴
     func returnErrorLog(rollbackType: RollBackReceiptEnum,
-                        errorData: [String: Any],
+                        errorData: RollbackResult,
                         error: Error) -> [String: Any] {
         
-        var errorDict: [String: Any?] = ["type" : rollbackType.description,
-                                         "versionID" : self.versionID,
-                                         "error" : error.localizedDescription,
-                                         "errorData" : errorData]
+        var errorDict: [String: Any] = [
+             "type": rollbackType.description,
+             "versionID": self.versionID ?? "",
+             "error": error.localizedDescription,
+             "originalData": errorData.originalData,
+             "successData": errorData.successData,
+             "failedData": errorData.failedData
+         ]
         
         switch rollbackType {
         case .payback:
@@ -226,227 +235,265 @@ extension RollbackDataManager {
     
     // MARK: - 페이백 롤백
     private func rollbackPaybackData() async throws {
-        // 필수 프로퍼티가 존재하는지 확인합니다.
-        // versionID, payerID, 및 usersMoneyDict가 모두 필요합니다.
-        guard let versionID = self.versionID,
-              let payerID = self.payerID,
-              let savedPaybackDict = self.savedPaybackDict else {
+        var rollbackResult = RollbackResult(
+            success: true,
+            originalData: savedPaybackDict ?? [:],
+            successData: [:],
+            failedData: [:])
+
+        guard let versionID = self.versionID, 
+                let payerID = self.payerID,
+              let savedPaybackDict = self.savedPaybackDict
+        else {
+            rollbackResult.success = false
             
-            // 하나라도 없다면, 롤백을 진행할 수 없으므로 readError를 던집니다.
             self.logRollbackFailure(
                 rollbackType: .payback,
-                errorData: self.savedPaybackDict ?? [:],
+                errorData: rollbackResult,
                 error: ErrorEnum.readError)
             throw ErrorEnum.readError
         }
-        
-        
-        
-        
-        // usersMoneyDict에 저장된 모든 사용자에 대해 반복합니다.
-        // userID는 사용자 식별자이고, amountToSubtract는 감소시킬 금액입니다.
+
         for (userID, amountToSubtract) in savedPaybackDict {
-            // Firebase Realtime Database의 경로를 구성합니다.
-            // versionID, payerID, 그리고 userID를 포함하는 경로입니다.
             let path = PAYBACK_REF
                 .child(versionID)
                 .child(payerID)
                 .child(userID)
             
-            // 비동기 작업을 위한 withCheckedThrowingContinuation을 사용합니다.
-            // 이는 비동기 작업의 결과를 처리하기 위한 방식입니다.
-            try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-                // Firebase의 트랜잭션 블록을 시작합니다.
-                // currentData는 현재 데이터베이스의 데이터 상태를 나타냅니다.
-                path.runTransactionBlock(
-                    { (currentData: MutableData) -> TransactionResult in
-                        // currentData의 값을 Int로 변환을 시도합니다.
-                        // 변환에 실패할 경우 nil이 될 것이므로, 0을 기본값으로 사용합니다.
-                        guard let currentAmount = currentData.value as? Int else {
-                            // Int로의 변환이 실패하면, 롤백 과정에 문제가 있음을 의미하므로,
-                            self.logRollbackFailure(
-                                rollbackType: .cumulativeMoney,
-                                errorData: savedPaybackDict,
-                                error: ErrorEnum.readError)
-                            
-                            // 에러를 던지고 트랜잭션을 중단합니다.
-                            continuation.resume(throwing: ErrorEnum.readError)
-                            return TransactionResult.abort()
-                        }
-                        
-                        // currentAmount에서 amountToSubtract를 빼서 새 금액을 계산합니다.
-                        let newAmount = currentAmount - amountToSubtract
-                        
-                        // 계산된 새 금액이 0 미만이면, 이는 잘못된 상태를 의미하므로,
-                        // 롤백 과정에 문제가 있다고 판단하고 에러를 던집니다.
-                        if newAmount < 0 {
-                            // Int로의 변환이 실패하면, 롤백 과정에 문제가 있음을 의미하므로,
-                            self.logRollbackFailure(
-                                rollbackType: .cumulativeMoney,
-                                errorData: savedPaybackDict,
-                                error: ErrorEnum.readError)
-                            continuation.resume(throwing: ErrorEnum.readError)
-                            return TransactionResult.abort()
-                        }
-                        
-                        // 계산된 새 금액이 유효하면, currentData의 값을 업데이트합니다.
-                        currentData.value = newAmount
-                        // 트랜잭션 성공 결과와 함께 업데이트된 값을 반환합니다.
-                        return TransactionResult.success(withValue: currentData)
-                        
-                    }, andCompletionBlock: { error, _, _ in
-                        // 트랜잭션이 완료된 후 실행됩니다.
-                        if let error = error {
-                            // Int로의 변환이 실패하면, 롤백 과정에 문제가 있음을 의미하므로,
-                            self.logRollbackFailure(
-                                rollbackType: .cumulativeMoney,
-                                errorData: savedPaybackDict,
-                                error: ErrorEnum.readError)
-                            // 에러가 발생했다면, 에러를 던집니다.
-                            continuation.resume(throwing: ErrorEnum.readError)
-                        } else {
-                            // 에러가 없다면, 작업이 성공적으로 완료되었음을 의미합니다.
-                            continuation.resume(returning: ())
-                        }
-                    })
+            let transactionResult = await performPaybackTransaction(
+                path: path,
+                amountToSubtract: amountToSubtract)
+
+            switch transactionResult {
+            case .success(let newAmount):
+                rollbackResult.successData[userID] = newAmount
+                
+            case .failure:
+                rollbackResult.failedData[userID] = amountToSubtract
+                rollbackResult.success = false
+            }
+        }
+
+        if !rollbackResult.success {
+            // 롤백 실패 정보 로깅
+            self.logRollbackFailure(
+                rollbackType: .payback,
+                errorData: rollbackResult,
+                error: ErrorEnum.readError)
+            throw ErrorEnum.readError
+        }
+    }
+    
+    
+    
+    // MARK: - 페이백 트랜잭션
+    private func performPaybackTransaction(
+        path: DatabaseReference, 
+        amountToSubtract: Int) async
+    -> Result<Int, Error> {
+        await withCheckedContinuation { continuation in
+            path.runTransactionBlock { (currentData: MutableData) -> TransactionResult in
+                // currentData.value를 Int로 안전하게 캐스팅
+                guard let currentValue = currentData.value as? Int else {
+                    // 캐스팅에 실패한 경우, 적절한 에러 반환
+                    continuation.resume(returning: .failure(ErrorEnum.readError)) // 실제 에러 타입에 맞게 수정
+                    return TransactionResult.abort()
+                }
+
+                let newValue = currentValue - amountToSubtract
+                // newValue가 유효한지 확인
+                if newValue < 0 {
+                    // newValue가 유효하지 않은 경우, 적절한 에러 반환
+                    continuation.resume(returning: .failure(ErrorEnum.readError)) // 실제 에러 타입에 맞게 수정
+                    return TransactionResult.abort()
+                }
+
+                // 업데이트된 값을 currentData에 할당
+                currentData.value = newValue
+                // 업데이트 성공을 반환
+                continuation.resume(returning: .success(newValue))
+                return TransactionResult.success(withValue: currentData)
             }
         }
     }
+    
+    
+    
+    
     
     // MARK: - 누적금액 롤백
     private func rollbackCumulativeMoneyData() async throws {
-        // 필요한 프로퍼티가 존재하는지 확인
-        guard let versionID = self.versionID,
-              let savedCumulativeMoneyDict = self.savedCumulativeMoneyDict else {
-            // Int로의 변환이 실패하면, 롤백 과정에 문제가 있음을 의미하므로,
+        var rollbackResult = RollbackResult(
+            success: true,
+            originalData: savedCumulativeMoneyDict ?? [:],
+            successData: [:],
+            failedData: [:])
+
+        guard let versionID = self.versionID, let savedCumulativeMoneyDict = self.savedCumulativeMoneyDict else {
+            rollbackResult.success = false
             self.logRollbackFailure(
                 rollbackType: .cumulativeMoney,
-                errorData: savedCumulativeMoneyDict ?? [:],
+                errorData: rollbackResult,
                 error: ErrorEnum.readError)
-            // 필요한 값이 없으면 에러를 던집니다.
             throw ErrorEnum.readError
         }
 
-        // 각 사용자의 누적 금액을 감소시키는 작업 실행
         for (userId, amountToSubtract) in savedCumulativeMoneyDict {
-            let path = Cumulative_AMOUNT_REF
-                .child(versionID)
-                .child(userId)
-            
-            // Firebase 트랜잭션을 이용하여 데이터를 안전하게 업데이트
-            try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-                path.runTransactionBlock(
-                    { (currentData: MutableData) -> TransactionResult in
-                        guard let currentAmount = currentData.value as? Int else {
-                            // currentData.value가 Int로 캐스팅되지 않으면 에러를 던집니다.
-                            self.logRollbackFailure(
-                                rollbackType: .cumulativeMoney,
-                                errorData: savedCumulativeMoneyDict,
-                                error: ErrorEnum.readError)
-                            continuation.resume(throwing: ErrorEnum.readError)
-                            return TransactionResult.abort()
-                        }
+            let path = Cumulative_AMOUNT_REF.child(versionID).child(userId)
+            let transactionResult = await performCumulativeMoneyTransaction(path: path, amountToSubtract: amountToSubtract)
 
-                        let newAmount = currentAmount - amountToSubtract
+            switch transactionResult {
+            case .success(let newAmount):
+                rollbackResult.successData[userId] = newAmount
+                
+            case .failure:
+                rollbackResult.failedData[userId] = amountToSubtract
+                rollbackResult.success = false
+            }
+        }
 
-                        // 계산된 새 금액이 0 미만이면, 에러를 던집니다.
-                        if newAmount < 0 {
-                            continuation.resume(throwing: ErrorEnum.readError)
-                            self.logRollbackFailure(
-                                rollbackType: .cumulativeMoney,
-                                errorData: savedCumulativeMoneyDict,
-                                error: ErrorEnum.readError)
-                            return TransactionResult.abort()
-                        }
+        if !rollbackResult.success {
+            // 롤백 실패 정보 로깅
+            self.logRollbackFailure(
+                rollbackType: .cumulativeMoney,
+                errorData: rollbackResult,
+                error: ErrorEnum.readError)
+            throw ErrorEnum.readError
+        }
+    }
+    
+    
+    
+    // MARK: - 누적금액 트랜잭션
+    private func performCumulativeMoneyTransaction(
+        path: DatabaseReference,
+        amountToSubtract: Int) async
+    -> Result<Int, Error> {
+        await withCheckedContinuation { continuation in
+            path.runTransactionBlock { (currentData: MutableData) -> TransactionResult in
+                // currentData.value가 Int로 캐스팅되지 않거나 nil인 경우 에러 처리
+                guard let currentValue = currentData.value as? Int else {
+                    continuation.resume(returning: .failure(ErrorEnum.readError)) // 적절한 에러 타입으로 교체해주세요
+                    return TransactionResult.abort()
+                }
 
-                        // 계산된 새 금액이 유효하면, currentData의 값을 업데이트합니다.
-                        currentData.value = newAmount
-                        return TransactionResult.success(withValue: currentData)
-                        
-                    }, andCompletionBlock: { error, _, _ in
-                        if let error = error {
-                            self.logRollbackFailure(
-                                rollbackType: .cumulativeMoney,
-                                errorData: savedCumulativeMoneyDict,
-                                error: ErrorEnum.readError)
-                            // 에러 발생 시, 에러를 던집니다.
-                            continuation.resume(throwing: ErrorEnum.readError)
-                        } else {
-                            // 성공적으로 완료되면, 계속 진행합니다.
-                            continuation.resume(returning: ())
-                        }
-                    })
+                let newValue = currentValue - amountToSubtract
+                // 새로운 값이 유효한지 확인
+                if newValue < 0 {
+                    continuation.resume(returning: .failure(ErrorEnum.readError)) // 적절한 에러 타입으로 교체해주세요
+                    return TransactionResult.abort()
+                }
+
+                // 새로운 값으로 업데이트
+                currentData.value = newValue
+                continuation.resume(returning: .success(newValue))
+                return TransactionResult.success(withValue: currentData)
             }
         }
     }
     
     
     
-
+    
+    
     // MARK: - 유저 영수증 롤백
     private func rollbackSaveUsersReceiptData() async throws {
-        // 필요한 프로퍼티가 존재하는지 확인
-        guard let usersIDArray = self.usersIDArray,
-              let receiptID = self.receiptID
-        else {
-            self.logRollbackFailure(
-                rollbackType: .saveReceipt,
-                errorData: [:],
-                error: ErrorEnum.readError)
-            // 필요한 값이 없으면 에러를 던집니다.
-            throw ErrorEnum.readError
-        }
-        
-        for userID in usersIDArray {
-            let path = USER_RECEIPTS_REF
-                .child(userID)
-                .child(receiptID)
-            
-            
-            do {
-                try await path.removeValue()
-                
-            } catch {
-                self.logRollbackFailure(
-                    rollbackType: .saveReceipt,
-                    errorData: ["userID": userID],
-                    error: error)
-                throw error
-            }
-        }
+        try await performGenericRollbackAction(
+            with: .saveReceipt, 
+            receiptID: self.receiptID,
+            usersIDArray: self.usersIDArray)
     }
-
+    
+    
+    
     // MARK: - 영수증 생성 롤백
     private func rollbackCreateReceiptData() async throws {
-        // 필요한 프로퍼티가 존재하는지 확인
-        guard let versionID = self.versionID,
-              let receiptID = self.receiptID
+        try await performGenericRollbackAction(
+            with: .createReceipt,
+            receiptID: self.receiptID)
+    }
+    
+    
+    
+    // MARK: - 범용 롤백 작업 실행 함수
+    // 범용 롤백 작업 실행 함수
+    private func performGenericRollbackAction(
+        with type: RollBackReceiptEnum,
+        receiptID: String?,
+        usersIDArray: [String]? = nil) async throws
+    {
+        
+        guard let receiptID = self.receiptID,
+              let versionID = self.versionID
         else {
+            throw ErrorEnum.readError // 적절한 에러 처리
+        }
+
+        var rollbackResult = RollbackResult(
+            success: true,
+            originalData: [:],
+            successData: [:],
+            failedData: [:])
+        
+        // SaveReceipt
+        if let usersIDArray = self.usersIDArray {
+            for userID in usersIDArray {
+                let path = USER_RECEIPTS_REF
+                    .child(userID)
+                    .child(receiptID)
+                
+                await performRollbackAction(path: path) { success in
+                    if !success {
+                        rollbackResult.failedData[userID] = false
+                        rollbackResult.success = false
+                    } else {
+                        rollbackResult.successData[userID] = true
+                    }
+                }
+            }
+            
+            
+            
+        // CreateReceipt
+        } else {
+            let path = RECEIPT_REF
+                .child(versionID)
+                .child(receiptID)
+            
+            await performRollbackAction(path: path) { success in
+                if !success {
+                    rollbackResult.failedData["receiptID"] = false
+                    rollbackResult.success = false
+                    
+                } else {
+                    rollbackResult.successData["receiptID"] = true
+                }
+            }
+        }
+
+        if !rollbackResult.success {
             self.logRollbackFailure(
-                rollbackType: .saveReceipt,
-                errorData: [:],
+                rollbackType: type,
+                errorData: rollbackResult, 
                 error: ErrorEnum.readError)
-            // 필요한 값이 없으면 에러를 던집니다.
+            
             throw ErrorEnum.readError
         }
-        
-        let path = RECEIPT_REF
-            .child(versionID)
-            .child(receiptID)
-        
-        
-        
-        // Firebase에서 해당 영수증 데이터를 삭제
+    }
+    
+    
+    
+    // MARK: - 공통 롤백
+    // 롤백 공통 함수를 사용하여 중복을 줄입니다.
+    private func performRollbackAction(
+        path: DatabaseReference,
+        completion: @escaping (Bool) -> Void) async
+    {
         do {
             try await path.removeValue()
+            completion(true)
         } catch {
-            self.logRollbackFailure(
-                rollbackType: .createReceipt,
-                errorData: [:],
-                error: error)
-            throw error
+            completion(false)
         }
-        
-        
     }
 }
