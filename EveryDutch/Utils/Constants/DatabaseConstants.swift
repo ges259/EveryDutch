@@ -42,10 +42,13 @@ extension DatabaseConstants {
     
     static let pay: String = "pay"
     static let done: String = "done"
-    
-    
-    static let culmulative_money: String = "culmulativeMoney"
-    
-    
-    
+}
+
+
+
+extension DatabaseConstants {
+    static let culmulative_money: String = "Cumulative_Amount"
+    static let payback: String = "Payback"
+    static let saveReceipt: String = "SaveReceipt"
+    static let createReceipt: String = "CreateReceipt"
 }

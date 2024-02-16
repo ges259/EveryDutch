@@ -8,8 +8,9 @@
 import Foundation
 
 enum ErrorEnum: Error {
+    // 이거를 사용해줘. 나중에 바꿀 거야.
     case readError
-    // 로그인 에러
+    
     case loginError
     
 }

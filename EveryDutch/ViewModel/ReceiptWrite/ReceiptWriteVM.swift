@@ -763,8 +763,8 @@ extension ReceiptWriteVM {
         self.receiptDict = [
             DatabaseConstants.type: 0,
             DatabaseConstants.payment_method: self.calculatePaymentMethod(),
-            DatabaseConstants.date: date,
-            DatabaseConstants.time: time,
+            DatabaseConstants.date: self.date,
+            DatabaseConstants.time: self.time,
             
             DatabaseConstants.context: self.memo ?? "",
             DatabaseConstants.price: self.price ?? "",

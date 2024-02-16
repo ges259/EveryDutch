@@ -40,3 +40,5 @@ let USER_RECEIPTS_REF = ref.child("User_Receipts")
 let VERSION_THUMBNAIL_REF = ref.child("Version_Thumbnail")
 
 
+// MARK: - Rollback_ERROR_API
+let Rollback_ERROR_REF = ref.child("Rollback_Error")

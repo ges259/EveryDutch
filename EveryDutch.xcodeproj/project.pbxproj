@@ -24,6 +24,7 @@
 		5F2159262B7BC6CC0064A998 /* Typealias.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F2159252B7BC6CC0064A998 /* Typealias.swift */; };
 		5F23C20E2B4C04D600C7D6A3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5F23C20D2B4C04D600C7D6A3 /* GoogleService-Info.plist */; };
 		5F24ADB82B6EA42100843AA8 /* ReceiptScreenDataCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F24ADB72B6EA42100843AA8 /* ReceiptScreenDataCell.swift */; };
+		5F26D8DD2B7F7BE600392470 /* RollbackReceipt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F26D8DC2B7F7BE600392470 /* RollbackReceipt.swift */; };
 		5F294B412B4D98C900396B6E /* Database_REF.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F294B402B4D98C900396B6E /* Database_REF.swift */; };
 		5F294B432B4DA4BE00396B6E /* DatabaseConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F294B422B4DA4BE00396B6E /* DatabaseConstants.swift */; };
 		5F294B452B4DA4E900396B6E /* APIError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F294B442B4DA4E900396B6E /* APIError.swift */; };
@@ -223,6 +224,7 @@
 		5F2159252B7BC6CC0064A998 /* Typealias.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Typealias.swift; sourceTree = "<group>"; };
 		5F23C20D2B4C04D600C7D6A3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5F24ADB72B6EA42100843AA8 /* ReceiptScreenDataCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptScreenDataCell.swift; sourceTree = "<group>"; };
+		5F26D8DC2B7F7BE600392470 /* RollbackReceipt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RollbackReceipt.swift; sourceTree = "<group>"; };
 		5F294B402B4D98C900396B6E /* Database_REF.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database_REF.swift; sourceTree = "<group>"; };
 		5F294B422B4DA4BE00396B6E /* DatabaseConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseConstants.swift; sourceTree = "<group>"; };
 		5F294B442B4DA4E900396B6E /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
@@ -861,6 +863,7 @@
 				5F8513CB2B4D5F1900A5B22D /* ReadReceipt.swift */,
 				5F8513DB2B4D67F600A5B22D /* UpdateReceipt.swift */,
 				5F8513E82B4D6EB900A5B22D /* DeleteReceipt.swift */,
+				5F26D8DC2B7F7BE600392470 /* RollbackReceipt.swift */,
 			);
 			path = Receipt_API;
 			sourceTree = "<group>";
@@ -1212,6 +1215,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5F26D8DD2B7F7BE600392470 /* RollbackReceipt.swift in Sources */,
 				5F729BFD2B6D291A00F3DDCA /* TableHeaderView.swift in Sources */,
 				5F614B3E2B45938D00EF35CE /* CheckReceiptPanVC.swift in Sources */,
 				5F58149C2B6FD79D00EA0BBA /* ReceiptWriteDataCell.swift in Sources */,

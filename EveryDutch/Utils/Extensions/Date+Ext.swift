@@ -54,4 +54,13 @@ extension Date {
     }
     
     
+    func returnErrorLogType() -> String {
+        // 현재 시간을 String타입으로 가져오기
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyyMMddHHmmss"
+        // 한국 시간대 지정
+        dateFormatter.timeZone = TimeZone(identifier: "Asia/Seoul")
+        return dateFormatter.string(from: Date())
+    }
+    
 }
