@@ -7,12 +7,45 @@
 
 import Foundation
 import FirebaseDatabase
+import FirebaseCrashlytics
+
+
+protocol CrashlyticsLoggable {
+    func logError(
+        _ error: Error,
+        withAdditionalInfo info: [String: Any],
+        functionName: String)
+}
+
+extension CrashlyticsLoggable {
+    func logError(
+        _ error: Error,
+        withAdditionalInfo info: [String: Any] = [:],
+        functionName: String = #function)
+    {
+        print("Error encountered: \(error.localizedDescription)")
+        
+        // 기본 오류 메시지 로그
+        Crashlytics
+            .crashlytics()
+            .log("Error in \(functionName): \(error.localizedDescription)")
+        
+        // 추가 정보 로그
+        info.forEach { key, value in
+            Crashlytics
+                .crashlytics()
+                .setCustomValue(value, forKey: key)
+        }
+    }
+}
+
+
 
 // Create
     // Receipt에 데이터 저장 ----- (Receipt)
     // 개인적으로 데이터 저장 ----- (User_Receipt)
 
-class ReceiptAPI: ReceiptAPIProtocol {
+class ReceiptAPI: ReceiptAPIProtocol, CrashlyticsLoggable {
     static let shared: ReceiptAPIProtocol = ReceiptAPI()
     private init() {}
     
@@ -20,7 +53,7 @@ class ReceiptAPI: ReceiptAPIProtocol {
     private let retryDelay = 2.0 // 재시도 간 지연 시간(초)
 }
 
-extension ReceiptAPI {
+
     // ************************************
     // - 비동기 작업 순서
     // 1. 누적 금액 업데이트
@@ -36,51 +69,77 @@ extension ReceiptAPI {
     // usersMoneyDict: [String: Int]
     // retryUsersMoneyDict: [String: Int]
     // ************************************
+
+
+extension ReceiptAPI {
+    
+    // MARK: - 공통 재시도 로직
+    private func retryWithDelay(
+        _ retryCount: Int,
+        operation: @escaping (Int) -> Void)
+    {
+        guard retryCount < self.maxRetryCount else { return }
+        
+        // 지수 백오프를 적용한 지연 시간 계산
+        let delay = pow(2.0, Double(retryCount)) * self.retryDelay
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+            operation(retryCount + 1)
+        }
+    }
     
     // MARK: - 영수증 만들기
     func createReceipt(
-        versionID: String,
+        versionID: String, 
         dictionary: [String: Any?],
         retryCount: Int = 0,
-        completion: @escaping Typealias.CreateReceiptCompletion)
+        completion: @escaping Typealias.CreateReceiptCompletion) 
     {
-            
-        let dict = dictionary.compactMapValues{ $0 }
+        // value에 nil이 있으면 삭제.
+        var dict = dictionary.compactMapValues { $0 }
         
-        RECEIPT_REF
+        // 경로 설정
+        let path = RECEIPT_REF
             .child(versionID)
             .childByAutoId()
-            .setValue(dict) { error, ref in
-                
-                if let _ = error {
-                    
-                    if retryCount < self.maxRetryCount {
-                        
-                        DispatchQueue.main.asyncAfter(deadline: .now() + self.retryDelay) {
-                            self.createReceipt(versionID: versionID,
-                                               dictionary: dictionary,
-                                               retryCount: retryCount + 1, 
-                                               completion: completion)
-                            
-                        }
-                        
-                    } else {
-                        completion(.failure(.readError))
+        
+        // 데이터 저장
+        path.setValue(dict) { [weak self] error, ref in
+            guard let self = self else { return }
+            
+            // 에러가 있다면
+            if let error = error {
+                // 재시도 (최대 3회)
+                if retryCount < self.maxRetryCount {
+                    self.retryWithDelay(retryCount) { newRetryCount in
+                        self.createReceipt(
+                            versionID: versionID,
+                            dictionary: dictionary, 
+                            retryCount: newRetryCount,
+                            completion: completion)
                     }
-                    
+                    // 3회 재시도를 해도, 에러인 상태일 때.
+                    // 로그 저장
                 } else {
-                    print("Data saved successfully!")
+                    // 버전 ID 로그 저장을 위해 딕셔너리에 추가
+                    dict["versionID"] = versionID
+                    // 로그 저장
+                    self.logError(
+                        error,
+                        withAdditionalInfo: dict,
+                        functionName: #function)
                     
-                    if let receiptKey = ref.key {
-                        completion(.success(receiptKey))
-                        return
-                        
-                    } else {
-                        
-                        
-                    }
+                    completion(.failure(.readError))
                 }
+                
+            } else if let receiptKey = ref.key {
+                completion(.success(receiptKey))
+                
+                
+            } else {
+                completion(.failure(.readError))
             }
+        }
     }
     
     // MARK: - 유저의 영수증 저장
@@ -92,39 +151,52 @@ extension ReceiptAPI {
     {
         let saveGroup = DispatchGroup()
         
-        for userID in users {
-            
+        // 성공한 데이터
+        var successData = [String]()
+        
+        users.forEach { userID in
             saveGroup.enter()
+            let path = USER_RECEIPTS_REF.child(userID)
             
-            USER_RECEIPTS_REF
-                .child(userID)
-                .updateChildValues([receiptID: true]) { error, _ in
-                    
-                    if let error = error {
-                        print("Error saving user receipt mapping: \(error.localizedDescription)")
-                        if retryCount < self.maxRetryCount {
-                            DispatchQueue.main.asyncAfter(deadline: .now() + self.retryDelay) {
-                                self.saveReceiptForUsers(
-                                    receiptID: receiptID,
-                                    users: users,
-                                    retryCount: retryCount + 1,
-                                    completion: completion)
-                                return
-                            }
+            path.updateChildValues([receiptID: true]) { [weak self] error, _ in
+                guard let self = self else { return }
+                
+                if let error = error {
+                    print("Error saving user receipt mapping: \(error.localizedDescription)")
+                    if retryCount < self.maxRetryCount {
+                        self.retryWithDelay(retryCount) { newRetryCount in
+                            self.saveReceiptForUsers(
+                                receiptID: receiptID,
+                                users: users,
+                                retryCount: newRetryCount,
+                                completion: completion)
                         }
+                        
+                    } else {
+                        
+                        let dict: [String: Any] = [
+                            "originalData": users,
+                            "successData": successData,
+                            "receiptID": receiptID]
+                        
+                        self.logError(
+                            error,
+                            withAdditionalInfo: dict,
+                            functionName: #function)
+                        
+                        completion(.failure(.readError))
                     }
-                    saveGroup.leave()
                 }
+                
+                successData.append(userID)
+                saveGroup.leave()
+            }
         }
         
         saveGroup.notify(queue: .main) {
-            print("All user receipt mappings saved successfully!")
             completion(.success(()))
         }
     }
-    
-    
-    
     
     // MARK: - 누적 금액 업데이트
     func updateCumulativeMoney(
@@ -133,56 +205,12 @@ extension ReceiptAPI {
         retryCount: Int = 0,
         completion: @escaping Typealias.baseCompletion)
     {
-        // 초기 시도에서 모든 사용자를 재시도 딕셔너리에 추가
-        var retryUsersMoneyDict = usersMoneyDict
-
-        let group = DispatchGroup()
-        
-        for (userId, amountToAdd) in usersMoneyDict {
-            group.enter()
-            
-            Cumulative_AMOUNT_REF
-                .child(versionID)
-                .child(userId)
-                .runTransactionBlock(
-                    { (currentData: MutableData) -> TransactionResult in
-                        var value = currentData.value as? Int ?? 0
-                        value += amountToAdd
-                        currentData.value = value
-                        
-                        return TransactionResult.success(withValue: currentData)
-                    }) { error, _, _ in
-                        if error == nil {
-                            // 에러가 없다면 성공적으로 저장됐으므로 재시도 딕셔너리에서 해당 사용자 삭제
-                            retryUsersMoneyDict.removeValue(forKey: userId)
-                        }
-                        group.leave()
-                    }
-        }
-        
-        group.notify(queue: .main) {
-            if !retryUsersMoneyDict.isEmpty 
-                && retryCount < self.maxRetryCount {
-                // 실패한 작업에 대해 재시도
-                DispatchQueue.main.asyncAfter(deadline: .now() + self.retryDelay) {
-                    self.updateCumulativeMoney(
-                        versionID: versionID,
-                        usersMoneyDict: retryUsersMoneyDict,
-                        retryCount: retryCount + 1,
-                        completion: completion
-                    )
-                }
-            } else if !retryUsersMoneyDict.isEmpty {
-                // 최대 재시도 횟수에 도달했으나 실패한 작업이 있는 경우
-                completion(.failure(.readError))
-            } else {
-                // 모든 작업이 성공적으로 완료됨
-                completion(.success(()))
-            }
-        }
+        self.performTransactionUpdate(
+            forRef: Cumulative_AMOUNT_REF.child(versionID),
+            withDict: usersMoneyDict,
+            retryCount: retryCount,
+            completion: completion)
     }
-    
-    
     
     // MARK: - 페이백 업데이트
     func updatePayback(
@@ -192,53 +220,81 @@ extension ReceiptAPI {
         retryCount: Int = 0,
         completion: @escaping Typealias.baseCompletion)
     {
-        // 초기 시도에서 모든 사용자를 재시도 딕셔너리에 추가
-        var retryUsersMoneyDict = usersMoneyDict
+        self.performTransactionUpdate(
+            forRef: PAYBACK_REF.child(versionID).child(payerID),
+            withDict: usersMoneyDict,
+            retryCount: retryCount,
+            completion: completion)
+    }
+    
+    // MARK: - 트랜잭션 업데이트를 위한 공통 함수
+    private func performTransactionUpdate(
+        forRef reference: DatabaseReference,
+        withDict usersMoneyDict: [String: Int],
+        retryCount: Int,
+        completion: @escaping Typealias.baseCompletion)
+    {
+        // 성공한 데이터를 하나씩 제거 (== 아직 저장되지 않은 데이터들.)
+        var retryDict = usersMoneyDict
         let group = DispatchGroup()
-
+        
         for (userID, amount) in usersMoneyDict {
             group.enter()
             
-            PAYBACK_REF
-                .child(versionID)
-                .child(payerID)
-                .child(userID)
-                .runTransactionBlock(
-                    { (currentData: MutableData) -> TransactionResult in
-                        var currentAmount = currentData.value as? Int ?? 0
-                        currentAmount += amount
-                        currentData.value = currentAmount
-                        return TransactionResult.success(withValue: currentData)
-                    }) { error, _, _ in
-                        if let error = error {
-                            print("Error updating payback for user \(userID): \(error.localizedDescription)")
-                            // 에러 발생 시에만 딕셔너리에 남겨둠
-                        } else {
-                            // 작업 성공 시 재시도 딕셔너리에서 해당 사용자 제거
-                            retryUsersMoneyDict.removeValue(forKey: userID)
-                        }
-                        group.leave()
+            let path = reference.child(userID)
+            path.runTransactionBlock(
+                { (currentData: MutableData) -> TransactionResult in
+                    
+                    var value = currentData.value as? Int ?? 0
+                    
+                    value += amount
+                    
+                    currentData.value = value
+                    
+                    return TransactionResult.success(withValue: currentData)
+                    
+                }) { [weak self] error, _, _ in
+                    
+                    
+                    // 에러가 있다면
+                    if let error = error {
+                        
+                        // 로그에 남길 실패한 userID 기록
+                        self?.logError(
+                            error,
+                            withAdditionalInfo: [
+                                "originalData": usersMoneyDict,
+                                "failedData": retryDict,
+                                "failedUserID": userID,
+                                "failedamount": amount],
+                            functionName: #function)
+                        
+                    // 에러가 없으면 성공으로 간주하고,
+                    } else {
+                        // retryDict에서 해당 사용자를 제거합니다.
+                        retryDict.removeValue(forKey: userID)
                     }
+                    group.leave()
+                }
         }
         
-        group.notify(queue: .main) {
-            if !retryUsersMoneyDict.isEmpty 
-                && retryCount < self.maxRetryCount {
-                // 실패한 작업에 대해 재시도
-                DispatchQueue.main.asyncAfter(deadline: .now() + self.retryDelay) {
-                    self.updatePayback(
-                        versionID: versionID,
-                        payerID: payerID,
-                        usersMoneyDict: retryUsersMoneyDict,
-                        retryCount: retryCount + 1,
-                        completion: completion
-                    )
+        group.notify(queue: .main) { [weak self] in
+            guard let self = self else { return }
+            
+            // retryDict에 남아 있는 항목이 있으면 재시도합니다.
+            if !retryDict.isEmpty
+                && retryCount >= self.maxRetryCount
+            {
+                
+                self.retryWithDelay(retryCount) { newRetryCount in
+                    self.performTransactionUpdate(
+                        forRef: reference,
+                        withDict: retryDict,
+                        retryCount: newRetryCount,
+                        completion: completion)
                 }
-            } else if !retryUsersMoneyDict.isEmpty {
-                // 최대 재시도 횟수에 도달했으나 여전히 실패한 작업이 있는 경우
-                completion(.failure(.readError))
             } else {
-                // 모든 작업이 성공적으로 완료됨
+                // 모든 항목이 성공적으로 처리되었으면, 성공을 반환합니다.
                 completion(.success(()))
             }
         }

@@ -13,4 +13,7 @@ enum ErrorEnum: Error {
     
     case loginError
     
+    
+    case receiptCreateError
+    
 }
