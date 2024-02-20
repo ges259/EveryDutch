@@ -204,6 +204,7 @@
 		5FFF66192B51B9BE000A5EC4 /* ReceiptWriteUsersCellVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFF66182B51B9BE000A5EC4 /* ReceiptWriteUsersCellVM.swift */; };
 		5FFF661B2B529E35000A5EC4 /* PeopleSelectionPanVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFF661A2B529E35000A5EC4 /* PeopleSelectionPanVM.swift */; };
 		5FFF661D2B52A087000A5EC4 /* PeopleSelectionPanVMProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFF661C2B52A087000A5EC4 /* PeopleSelectionPanVMProtocol.swift */; };
+		5FFFED052B83CAE50090542D /* CrashlyticsLoggable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFFED042B83CAE50090542D /* CrashlyticsLoggable.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -394,6 +395,7 @@
 		5FFF66182B51B9BE000A5EC4 /* ReceiptWriteUsersCellVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptWriteUsersCellVM.swift; sourceTree = "<group>"; };
 		5FFF661A2B529E35000A5EC4 /* PeopleSelectionPanVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleSelectionPanVM.swift; sourceTree = "<group>"; };
 		5FFF661C2B52A087000A5EC4 /* PeopleSelectionPanVMProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleSelectionPanVMProtocol.swift; sourceTree = "<group>"; };
+		5FFFED042B83CAE50090542D /* CrashlyticsLoggable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CrashlyticsLoggable.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -587,6 +589,7 @@
 				5F4FA71E2B553B79009EE4F4 /* RoomsAPIProtocol.swift */,
 				5F4FA7242B553C5B009EE4F4 /* ReceiptAPIProtocol.swift */,
 				5F4FA7262B553F13009EE4F4 /* VersionAPIProtocol.swift */,
+				5FFFED042B83CAE50090542D /* CrashlyticsLoggable.swift */,
 			);
 			path = APIProtocols;
 			sourceTree = "<group>";
@@ -1264,6 +1267,7 @@
 				5F8513E52B4D68B600A5B22D /* UpdateVersion.swift in Sources */,
 				5F6848802B441C260015BFCC /* SignUpScreenCoordProtocol.swift in Sources */,
 				5F3211AF2B50028B0027C8B3 /* UsersTableView.swift in Sources */,
+				5FFFED052B83CAE50090542D /* CrashlyticsLoggable.swift in Sources */,
 				5FE3DEC82B39CC2A008D58AE /* AppCoordinator.swift in Sources */,
 				5F6FDDE42B505DD000F09CCD /* ReceiptScreenPanCellVM.swift in Sources */,
 				5F5AFBCE2B493D2A00BBBB9D /* RoomSettingVMProtocol.swift in Sources */,

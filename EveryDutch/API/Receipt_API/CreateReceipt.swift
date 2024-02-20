@@ -7,39 +7,6 @@
 
 import Foundation
 import FirebaseDatabase
-import FirebaseCrashlytics
-
-
-protocol CrashlyticsLoggable {
-    func logError(
-        _ error: Error,
-        withAdditionalInfo info: [String: Any],
-        functionName: String)
-}
-
-extension CrashlyticsLoggable {
-    func logError(
-        _ error: Error,
-        withAdditionalInfo info: [String: Any] = [:],
-        functionName: String = #function)
-    {
-        print("Error encountered: \(error.localizedDescription)")
-        
-        // 기본 오류 메시지 로그
-        Crashlytics
-            .crashlytics()
-            .log("Error in \(functionName): \(error.localizedDescription)")
-        
-        // 추가 정보 로그
-        info.forEach { key, value in
-            Crashlytics
-                .crashlytics()
-                .setCustomValue(value, forKey: key)
-        }
-    }
-}
-
-
 
 // Create
     // Receipt에 데이터 저장 ----- (Receipt)
@@ -109,6 +76,7 @@ extension ReceiptAPI {
             
             // 에러가 있다면
             if let error = error {
+                
                 // 재시도 (최대 3회)
                 if retryCount < self.maxRetryCount {
                     self.retryWithDelay(retryCount) { newRetryCount in
@@ -162,7 +130,6 @@ extension ReceiptAPI {
                 guard let self = self else { return }
                 
                 if let error = error {
-                    print("Error saving user receipt mapping: \(error.localizedDescription)")
                     if retryCount < self.maxRetryCount {
                         self.retryWithDelay(retryCount) { newRetryCount in
                             self.saveReceiptForUsers(
@@ -239,49 +206,65 @@ extension ReceiptAPI {
         let group = DispatchGroup()
         
         for (userID, amount) in usersMoneyDict {
+            // 작업 시작을 그룹에 알림
             group.enter()
             
             let path = reference.child(userID)
-            path.runTransactionBlock(
-                { (currentData: MutableData) -> TransactionResult in
-                    
-                    var value = currentData.value as? Int ?? 0
-                    
-                    value += amount
-                    
-                    currentData.value = value
-                    
+            
+            path.runTransactionBlock( { (currentData: MutableData) -> TransactionResult in
+                // 현재 데이터를 Int로 변환 시도
+                if let value = currentData.value as? Int {
+                    // 새로운 금액 계산
+                    let newValue = value + amount
+                    // 데이터 업데이트
+                    currentData.value = newValue
+                    // 성공 결과 반환
                     return TransactionResult.success(withValue: currentData)
                     
-                }) { [weak self] error, _, _ in
-                    
-                    
-                    // 에러가 있다면
-                    if let error = error {
-                        
-                        // 로그에 남길 실패한 userID 기록
-                        self?.logError(
-                            error,
-                            withAdditionalInfo: [
-                                "originalData": usersMoneyDict,
-                                "failedData": retryDict,
-                                "failedUserID": userID,
-                                "failedamount": amount],
-                            functionName: #function)
-                        
-                    // 에러가 없으면 성공으로 간주하고,
-                    } else {
-                        // retryDict에서 해당 사용자를 제거합니다.
-                        retryDict.removeValue(forKey: userID)
-                    }
-                    group.leave()
+                } else {
+                    // 타입 캐스팅 실패 시, 에러 로그를 남기고 실패 반환
+                    let errorInfo: [String: Any] = [
+                        "userID": userID,
+                        "attemptedToAddAmount": amount,
+                        "existingValue": currentData.value ?? "nil"
+                    ]
+                    self.logError(
+                        ErrorEnum.readError,
+                        withAdditionalInfo: errorInfo,
+                        functionName: #function)
+                    return TransactionResult.abort()
                 }
+                
+            }) { [weak self] error, _, _ in
+                if let error = error {
+                    // 에러 발생 시 로깅
+                    let errorInfo: [String: Any] = [
+                        "originalData": usersMoneyDict,
+                        "failedData": retryDict,
+                        "failedUserID": userID,
+                        "failedamount": amount
+                    ]
+                    
+                    // 로그에 남길 실패한 userID 기록
+                    self?.logError(
+                        error,
+                        withAdditionalInfo: errorInfo,
+                        functionName: #function)
+                    
+                } else {
+                    // 성공 시, 처리된 항목 제거
+                    retryDict.removeValue(forKey: userID)
+                }
+                // 작업 완료를 그룹에 알림
+                group.leave()
+            }
         }
         
+        // 모든 작업 완료 후 실행될 코드
         group.notify(queue: .main) { [weak self] in
             guard let self = self else { return }
             
-            // retryDict에 남아 있는 항목이 있으면 재시도합니다.
+            // 재시도할 항목이 남아있고, 최대 재시도 횟수에 도달하지 않았다면 재시도
             if !retryDict.isEmpty
                 && retryCount >= self.maxRetryCount
             {
@@ -294,9 +277,16 @@ extension ReceiptAPI {
                         completion: completion)
                 }
             } else {
-                // 모든 항목이 성공적으로 처리되었으면, 성공을 반환합니다.
-                completion(.success(()))
-            }
-        }
-    }
+                // 모든 항목이 성공적으로 처리되었거나, 최대 재시도 횟수에 도달했다면
+                 if retryDict.isEmpty {
+                     // 성공 콜백 호출
+                     completion(.success(()))
+                     
+                 } else {
+                     // 실패한 항목이 남아있다면 실패 콜백 호출
+                     completion(.failure(.readError))
+                 }
+             }
+         }
+     }
 }
