@@ -8,15 +8,22 @@
 import UIKit
 import SnapKit
 
+enum NodataViewType {
+    case mainScreen
+    case versionScreen
+    case ReceiptWriteScreen
+}
+
+
 final class NoDataView: UIView {
     
     // MARK: - 레이아웃
     private var noDataImg: UIImageView = UIImageView()
     
-    private var noDataText: CustomLabel = {
-        let lbl = CustomLabel(
-            font: UIFont.systemFont(ofSize: 17),
-            textAlignment: .center)
+    private var noDataText: UILabel = {
+        let lbl = UILabel()
+        lbl.textAlignment = .center
+        lbl.font = UIFont.systemFont(ofSize: 17)
         lbl.numberOfLines = 2
         return lbl
     }()
@@ -37,10 +44,10 @@ final class NoDataView: UIView {
     
     
     // MARK: - 라이프사이클
-    override init(frame: CGRect) {
+    init(type: NodataViewType) {
         super.init(frame: .zero)
         
-        self.configureUI()
+        self.configureUIWithType(type: type)
         self.configureAutoLayout()
     }
     required init?(coder: NSCoder) {
@@ -53,14 +60,29 @@ final class NoDataView: UIView {
 extension NoDataView {
     
     // MARK: - UI 설정
-    private func configureUI() {
-        self.backgroundColor = UIColor.deep_Blue
-        self.noDataImg.tintColor = .normal_white
-        
-        
-        // MARK: - Fix
-        self.noDataImg.image = UIImage.plus_Circle_Img
-        self.noDataText.text = "채팅방이 아직 없습니다.\n+ 버튼을 눌러 생성해보세요!"
+    private func configureUIWithType(type: NodataViewType) {
+        switch type {
+        case .mainScreen:
+            self.isHidden = true
+            self.noDataImg.image = UIImage.plus_Circle_Img
+            self.noDataText.text = "채팅방이 아직 없습니다.\n+ 버튼을 눌러 생성해보세요!"
+            self.backgroundColor = UIColor.deep_Blue
+            self.noDataImg.tintColor = .normal_white
+            
+        case .versionScreen:
+            self.isHidden = true
+            self.noDataImg.image = UIImage.plus_Circle_Img
+            self.noDataText.text = "버전 정보가 없습니다.\n+ 정산 버튼을 눌러 버전을 생성해보세요!"
+            self.backgroundColor = UIColor.deep_Blue
+            self.noDataImg.tintColor = .normal_white
+            
+        case .ReceiptWriteScreen:
+            self.isHidden = false
+            self.noDataImg.image = UIImage.plus_Circle_Img
+            self.noDataText.text = "채팅방이 아직 없습니다.\n+ 버튼을 눌러 생성해보세요!"
+            self.backgroundColor = UIColor.normal_white
+            self.noDataImg.tintColor = .deep_Blue
+        }
     }
     
     // MARK: - 오토레이아웃 설정

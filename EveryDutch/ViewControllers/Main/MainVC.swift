@@ -35,11 +35,7 @@ final class MainVC: UIViewController {
         tintColor: UIColor.white,
         backgroundColor: UIColor.deep_Blue)
     
-    private var noDataView: NoDataView = {
-        let view = NoDataView()
-        view.isHidden = true
-        return view
-    }()
+    private var noDataView: NoDataView = NoDataView(type: .mainScreen)
     
     
     // 플로팅 버튼 레이아웃

@@ -56,7 +56,8 @@ final class ReceiptWriteVC: UIViewController {
         distribution: .fillEqually)
     
     
-    private var noDataView: NoDataView = NoDataView()
+    private var noDataView: NoDataView = NoDataView(
+        type: .ReceiptWriteScreen)
     
     private lazy var tableFooterTotalStv: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.noDataView,
@@ -257,10 +258,6 @@ extension ReceiptWriteVC {
             make.bottom.equalTo(self.tableView.snp.top)
             // 데이트 피커의 너비와 높이를 100으로 설정합니다.
             make.height.width.equalTo(150)
-        }
-        // 방이 없을 때 나타나는 뷰
-        self.noDataView.snp.makeConstraints { make in
-            make.height.equalTo(self.cardHeight)
         }
     }
     
@@ -586,27 +583,12 @@ extension ReceiptWriteVC {
 
 
     
-// MARK: - [여러명] 관련 코드
+// MARK: - [paymentDetail] 여러명 선택
 
 extension ReceiptWriteVC {
     
     // MARK: - 여러명 선택
     func changeTableViewData(
-        addedUsers: RoomUserDataDict,
-        removedUsers: RoomUserDataDict)
-    {
-        
-        // MARK: - 섹션 1에 업데이트를 해야 함
-        self.updateTableViewCell(addedUsers: addedUsers,
-                                 removedUsers: removedUsers)
-        // 유저 삭제 또는 추가 후, 0명이면, 테이블 숨기기
-//        self.tableViewIsHidden()
-        
-        
-    }
-    
-    // MARK: - 테이블뷰 셀 업데이트
-    private func updateTableViewCell(
         addedUsers: RoomUserDataDict,
         removedUsers: RoomUserDataDict)
     {
@@ -625,10 +607,15 @@ extension ReceiptWriteVC {
     // MARK: - 테이블뷰 푸터뷰 업데이트
     private func updateTableFooterView() {
         self.noDataView.isHidden = self.viewModel.getNoDataViewIsHidden
-        
         self.dutchBtn.backgroundColor = self.viewModel.dutchBtnBackgroundColor
-        self.tableView.beginUpdates()
-        self.tableView.endUpdates()
+        
+        // 레이아웃 업데이트를 위한 코드 추가
+        self.tableFooterTotalStv.layoutIfNeeded() // 스택 뷰의 레이아웃을 즉시 업데이트
+        
+        // 테이블 뷰 푸터 뷰의 크기를 동적으로 조정
+        let footerHeight = self.viewModel.getFooterViewHeight(section: 1) // 예시로 1번 섹션 사용
+        self.tableView.tableFooterView?.frame.size.height = footerHeight
+        self.tableView.tableFooterView = self.tableView.tableFooterView // 푸터 뷰 재설정으로 레이아웃 업데이트
     }
     
     // MARK: - 셀 생성
@@ -662,12 +649,6 @@ extension ReceiptWriteVC {
                 at: indexPaths,
                 with: .none)
         }
-    }
-    
-    // MARK: - 유저 수에 따라 테이블뷰 숨기기
-    private func tableViewIsHidden() {
-        // 0명이면, noDataView 띄우기
-//        self.tableHeaderStv.isHidden = self.viewModel.tableIsHidden
     }
 }
         
@@ -761,14 +742,21 @@ extension ReceiptWriteVC: UITableViewDelegate {
     }
     
     // MARK: - 푸터뷰 설정
-    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+    func tableView(_ tableView: UITableView, 
+                   viewForFooterInSection section: Int)
+    -> UIView? {
         return section == 0
         ? nil
         : self.tableFooterTotalStv
     }
     
     // MARK: - 푸터뷰 높이
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+    func tableView(_ tableView: UITableView, 
+                   heightForFooterInSection section: Int)
+    -> CGFloat {
+        print(#function)
+        print(self.viewModel.getFooterViewHeight(
+            section: section))
         return self.viewModel.getFooterViewHeight(
             section: section)
     }
