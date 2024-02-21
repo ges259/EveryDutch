@@ -272,6 +272,15 @@ extension ReceiptWriteDataCell {
 
 extension ReceiptWriteDataCell {
     
+    private func configureDateLblAction() {
+        // '계산한 사람' 레이블 제스처 생성
+        let dateGesture = UITapGestureRecognizer(
+            target: self,
+            action: #selector(self.dateInfoLblTapped))
+        self.label.isUserInteractionEnabled = true
+        self.label.addGestureRecognizer(dateGesture)
+    }
+    
     // MARK: - 가격 텍스트필드
     private func configurePriceTfAction() {
         self.textField.addTarget(
@@ -320,6 +329,11 @@ extension ReceiptWriteDataCell {
 // MARK: - [액션]
 
 extension ReceiptWriteDataCell {
+    
+    // MARK: - 날짜 레이블
+    @objc private func dateInfoLblTapped() {
+        self.delegate?.dateLblTapped()
+    }
     
     // MARK: - 시간 레이블
     @objc private func timeInfoLblTapped() {
@@ -370,6 +384,13 @@ extension ReceiptWriteDataCell: UITextFieldDelegate {
     // MARK: - 수정 시작 시
     /// priceInfoTF의 수정을 시작할 때 ',' 및 '원'을 제거하는 메서드
     func textFieldDidBeginEditing(_ textField: UITextField) {
+        // 텍스트필드가 눌렸다고 delegate 전달
+        _ = self.viewModel?.getReceiptEnum == .price
+        ? self.delegate?.priceTFTapped()
+        : self.delegate?.memoTFTapped()
+        
+        
+        
         // MARK: - Fix
         // 현재 enum이 '가격'일 때
         // textField가 빈칸이 아니라면,

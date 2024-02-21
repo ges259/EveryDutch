@@ -409,7 +409,7 @@ extension ReceiptWriteVC {
     // MARK: - 키보드가 내려갈 때
     @objc func keyboardWillHide() {
         // '테이블뷰 셀의 텍스트필드'를 수정하고 있다면,
-        if self.viewModel.isTableViewEditing {
+        if self.viewModel.isUserDataTableEditing {
             // -> 디바운싱 작업 실행
             // -> 0.05초 이후 실행
             self.viewModel.setDebouncing()
@@ -513,7 +513,9 @@ extension ReceiptWriteVC {
     /// - 활성화된 텍스트 입력 필드가 있을 경우, 키보드를 내림
     @objc private func endEditing() {
         // 뷰 모델의 테이블뷰 편집 상태를 확인
-        if !self.viewModel.isTableViewEditing {
+        // 확인하는 이유 -> 유저 셀에서 다른 유저 셀을 클릭하면, 키보드가 내려갔다가 올라옴.
+            // 그 현상을 방지하기 위해 편집 상태 확인
+        if !self.viewModel.isUserDataTableEditing {
             // 스크롤뷰의 contentInset이 변경된 경우, 기본값으로 재설정
             self.resetScrollViewInsets()
             // 타임피커가 표시된 경우, 숨김
@@ -754,21 +756,16 @@ extension ReceiptWriteVC: UITableViewDelegate {
     func tableView(_ tableView: UITableView, 
                    heightForFooterInSection section: Int)
     -> CGFloat {
-        print(#function)
-        print(self.viewModel.getFooterViewHeight(
-            section: section))
         return self.viewModel.getFooterViewHeight(
             section: section)
     }
     
     // MARK: - 눌렸을 때 스크롤
     func tableView(_ tableView: UITableView,
-                   didSelectRowAt indexPath: IndexPath) {
-        
-        if indexPath.section == 1 {
-            self.scrollToTableViewCellBottom(
-                indexPath: indexPath)
-        }
+                   didSelectRowAt indexPath: IndexPath)
+    {
+        self.scrollToTableViewCellBottom(
+            indexPath: indexPath)
     }
 }
 
@@ -898,75 +895,55 @@ extension ReceiptWriteVC: UITableViewDataSource {
 extension ReceiptWriteVC: UIScrollViewDelegate {
     
     // MARK: - 스크롤 시작 시
+    // 스크롤이 시작될 때 호출되는 메서드
     func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+        // 인터페이스 초기화 및 키보드 숨김 처리
         self.endEditing()
     }
     
     // MARK: - 셀 클릭 시 스크롤
-    /// 선택한 셀의 위치로 스크롤하는 별도의 메서드
-    /// - Parameter indexPath: 선택한 셀의 'IndexPath'
+    // 선택한 셀로 스크롤하는 메서드
     private func scrollToTableViewCellBottom(indexPath: IndexPath) {
-        // 테이블뷰 셀을
-            // 수정하고 있지 않다면 -> 선택한 셀의 위치로 자동 스크롤.
-            // 이미 수정하고 있다면 -> 아무 행동도 하지 않음
-        if !self.viewModel.isTableViewEditing {
-            // 스크롤 동작 중에는 디바운싱을 중지
-            self.viewModel.stopDebouncing()
-            // 스크롤뷰의 콘텐츠 오프셋을 업데이트하는 메서드를 호출
-            self.updateScrollViewContentOffset(for: indexPath)
-        }
+        // 테이블뷰가 현재 편집 중이 아닐 경우에만 스크롤을 수행합니다.
+        guard !self.viewModel.isUserDataTableEditing else { return }
+        // 스크롤 액션 동안 불필요한 업데이트를 방지하기 위해 디바운싱을 중지합니다.
+        self.viewModel.stopDebouncing()
+        // 스크롤뷰의 새로운 오프셋을 계산하여 업데이트합니다.
+        self.updateScrollViewContentOffset(for: indexPath)
     }
     
-    // MARK: - 셀의 오프셋
-    /// 스크롤뷰의 콘텐츠 오프셋을 계산하고 업데이트
-    /// - Parameters:
-    ///   - indexPath: 선택한 셀의 'IndexPath'
+    // MARK: - 셀의 오프셋 업데이트
+    // 스크롤뷰의 콘텐츠 오프셋을 계산하고 업데이트하는 메서드
     private func updateScrollViewContentOffset(for indexPath: IndexPath) {
-        // 스크롤뷰 내에서 셀의 프레임을 계산.
+        // 스크롤뷰 내에서 셀의 위치를 계산합니다.
         let cellFrame = self.calculateCellFrameInScrollView(for: indexPath)
-        // 계산된 프레임을 기반으로 스크롤뷰의 오프셋을 계산.
+        // 계산된 셀의 위치에 기반하여 스크롤뷰의 새로운 오프셋을 계산합니다.
         let offset = self.calculateScrollViewOffset(for: cellFrame)
-        
-        // 계산된 오프셋으로 스크롤뷰의 위치를 조정.
+        // 계산된 새로운 오프셋으로 스크롤뷰를 이동시킵니다.
         self.scrollView.setContentOffset(CGPoint(x: 0, y: offset), animated: true)
     }
     
-    // MARK: - 셀의 프레임
-    /// 스크롤뷰 내에서 선택한 셀의 프레임을 계산
-    /// - Parameters:
-    ///   - indexPath: 선택한 셀의 인덱스 패스
-    /// - Returns: 스크롤뷰 좌표계에서 셀의 프레임을 반환
+    // MARK: - 셀의 프레임 계산
+    // 스크롤뷰 내에서 선택한 셀의 프레임을 계산하는 메서드
     private func calculateCellFrameInScrollView(for indexPath: IndexPath) -> CGRect {
-        // 선택한 셀의 프레임을 테이블뷰의 좌표계로부터 가져옵니다.
+        // 테이블뷰에서 선택한 셀의 위치를 가져옵니다.
         let rectOfCellInTableView = self.tableView.rectForRow(at: indexPath)
-        // 가져온 프레임을 스크롤뷰의 좌표계로 변환합니다.
-        return self.tableView.convert(
-            rectOfCellInTableView,
-            to: self.scrollView)
+        // 선택한 셀의 위치(rect)를 테이블뷰의 좌표계에서 스크롤뷰의 좌표계로 변환합니다.
+        return self.tableView.convert(rectOfCellInTableView, to: self.scrollView)
     }
-
-    // MARK: - 스크롤뷰의 오프셋
-    /// 계산된 셀의 프레임을 바탕으로 스크롤뷰의 오프셋을 계산
-    /// 셀의 하단이 키보드 위로 올라오도록 오프셋을 설정.
-    /// - Parameter cellFrame: 스크롤뷰 내에서 셀의 프레임
-    /// - Returns: 새로운 스크롤뷰의 오프셋을 반환
+    
+    // MARK: - 스크롤뷰의 오프셋 계산
+    // 스크롤뷰의 새로운 오프셋을 계산하는 메서드
     private func calculateScrollViewOffset(for cellFrame: CGRect) -> CGFloat {
-        // 스크롤할 y축 오프셋 구하기
-        // = 셀의 하단 y위치
-        // + 셀의 높이
-        // + 키보드의 높이
-        // - 스크롤뷰의 높이
-        // - 여백(38)
-        let offset = cellFrame.origin.y
-        + cellFrame.size.height
-        + self.viewModel.keyboardHeight
-        - self.scrollView.frame.height
-        - 38
-        
-        // 스크롤 시 셀이 키보드에 가려지지 않도록,
-            // 하단에 키보드 높이만큼의 여백을 추가
-        self.scrollView.contentInset.bottom = self.viewModel.keyboardHeight
-        return offset
+        // 셀의 가장 아래 부분의 y 좌표를 계산합니다.
+        let cellBottomY = cellFrame.origin.y + cellFrame.height
+        // 스크롤뷰에서 키보드가 차지하는 영역을 제외한 가시 영역의 가장 아래 y 좌표를 계산합니다.
+        let visibleAreaBottomY = self.scrollView.bounds.height - self.viewModel.keyboardHeight
+        // 셀의 아래 부분이 키보드 위로 올라오도록 필요한 y축 오프셋을 계산합니다.
+        let offsetY = max(cellBottomY - visibleAreaBottomY, 0)
+        // 새로 계산된 오프셋이 현재 스크롤뷰의 오프셋보다 큰 경우에만 오프셋을 업데이트합니다.
+        // 이는 셀이 이미 키보드 위에 있을 경우 불필요한 스크롤을 방지합니다.
+        return max(self.scrollView.contentOffset.y, offsetY)
     }
 }
 
@@ -1103,6 +1080,11 @@ extension ReceiptWriteVC: CalendarDelegate {
 
 extension ReceiptWriteVC: ReceiptWriteDataCellDelegate {
     
+    // MARK: - 날짜 셀
+    func dateLblTapped() {
+        self.scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
+    }
+    
     // MARK: - 시간 셀
     func timeLblTapped() {
         /// 타임 레이블을 누르면 '타임 피커'가 보이도록 설정
@@ -1116,11 +1098,23 @@ extension ReceiptWriteVC: ReceiptWriteDataCellDelegate {
     }
     
     // MARK: - 가격 셀
+    func priceTFTapped() {
+        self.scrollToTableViewCellBottom(
+            indexPath: self.viewModel.getPriceCellIndexPath)
+    }
+    
+    // MARK: - 가격 셀
     func finishPriceTF(price: Int) {
         // 뷰모델에 price값 저장
         self.viewModel.savePriceText(price: price)
         // 누적금액 레이블에 (지불금액 - 누적금액) 설정
         self.moneyCountLbl.text = self.viewModel.moneyCountLblText
+    }
+    
+    // MARK: - 메모 셀
+    func memoTFTapped() {
+        self.scrollToTableViewCellBottom(
+            indexPath: self.viewModel.getMemoCellIndexPath)
     }
     
     // MARK: - 메모 셀
@@ -1145,12 +1139,17 @@ extension ReceiptWriteVC: ReceiptWriteTableDelegate {
     // MARK: - [X버튼] 유저 삭제
     func rightBtnTapped(user: RoomUserDataDict?) {
         guard let user = user else { return }
+        // 인터페이스 초기화 및 키보드 숨김 처리
+        self.view.endEditing(true)
+        
         self.changeTableViewData(addedUsers: [:],
                                  removedUsers: user)
     }
     
     // MARK: - [텍스트필드] 금액 재설정
-    func setprice(userID: String, price: Int?) {
+    func setprice(userID: String, 
+                  price: Int?)
+    {
         self.viewModel.calculatePrice(userID: userID,
                                       price: price)
     }

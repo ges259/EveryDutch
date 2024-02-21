@@ -75,7 +75,7 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     
     // MARK: - 테이블뷰가 수정 중인지 여부
     /// 테이블뷰 수정 중, endEditing(true)가 불리지 않게 하기 위한 메서드
-    var isTableViewEditing: Bool = false
+    var isUserDataTableEditing: Bool = false
     
     // MARK: - 디바운스 타이머
     /// 디바운스 타이머
@@ -166,7 +166,15 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
             receiptEnum: .date)
     }
     
+    var getPriceCellIndexPath: IndexPath {
+        return self.findReceiptEnumIndex(
+            receiptEnum: .price)
+    }
     
+    var getMemoCellIndexPath: IndexPath {
+        return self.findReceiptEnumIndex(
+            receiptEnum: .memo)
+    }
     
     
     
@@ -311,7 +319,7 @@ extension ReceiptWriteVM {
         // 이전에 설정된 타이머가 있으면 취소합니다.
         self.debounceTimer?.cancel()
         
-        self.isTableViewEditing = true
+        self.isUserDataTableEditing = true
 
     }
     
@@ -322,7 +330,7 @@ extension ReceiptWriteVM {
         
         // 새로운 타이머 작업을 생성합니다.
         let task = DispatchWorkItem { [weak self] in
-            self?.isTableViewEditing = false
+            self?.isUserDataTableEditing = false
             self?.debouncingClosure?()
         }
         

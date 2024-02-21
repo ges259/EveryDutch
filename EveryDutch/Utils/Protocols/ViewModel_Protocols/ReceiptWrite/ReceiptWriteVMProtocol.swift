@@ -25,6 +25,13 @@ protocol ReceiptWriteVMProtocol {
     
     var getTimeCellIndexPath: IndexPath { get }
     var getPayerCellIndexPath: IndexPath { get }
+    
+    var getPriceCellIndexPath: IndexPath { get }
+    
+    var getMemoCellIndexPath: IndexPath { get }
+    
+    
+    
     func isFistCell(_ receiptEnum: ReceiptEnum) -> Bool
     func isLastCell(_ receiptEnum: ReceiptEnum) -> Bool
     
@@ -46,7 +53,7 @@ protocol ReceiptWriteVMProtocol {
     /// 디바운싱 클로저
     var debouncingClosure: (() -> Void)? { get set }
     /// 테이블뷰가 수정중인지 여부
-    var isTableViewEditing: Bool { get }
+    var isUserDataTableEditing: Bool { get }
     
     /// 디바운싱 멈추기
     func setDebouncing()
