@@ -20,18 +20,21 @@ final class TableCellStackView: UIStackView {
     var userNameLbl: CustomLabel = CustomLabel(
         font: UIFont.systemFont(ofSize: 14))
     
-    lazy var priceLbl: CustomLabel = CustomLabel(
-        text: "0원",
-        backgroundColor: .medium_Blue,
-        topBottomInset: 4,
-        leftInset: 10,
-        rightInset: 10)
-    
-    
-    lazy var rightImg: UIImageView = {
-        let img = UIImageView()
-        img.tintColor = UIColor.black
-        return img
+    lazy var priceLbl: CustomLabel = {
+        let lbl = CustomLabel(
+            text: "0원",
+            backgroundColor: .medium_Blue,
+            topBottomInset: 4,
+            leftInset: 10,
+            rightInset: 10)
+        
+        // 허깅 설정
+        lbl.setContentHuggingPriority(
+            UILayoutPriority.defaultHigh,
+            for: .horizontal)
+        // 모서리 설정
+        lbl.setRoundedCorners(.all, withCornerRadius: 10)
+       return lbl
     }()
     
     
@@ -45,18 +48,15 @@ final class TableCellStackView: UIStackView {
     
     // MARK: - 프로퍼티
     private var priceLblInStackView: Bool = true
-    private var rightImgInStackView: Bool = false
+    
     
     
     
     // MARK: - 라이프사이클
-    init(priceLblInStackView: Bool = true,
-         rightImgInStackView: Bool) {
-        self.priceLblInStackView = priceLblInStackView
-        self.rightImgInStackView = rightImgInStackView
+    init() {
         super.init(frame: .zero)
         
-        self.configureUI()
+        self.configureStvUI()
         self.configureAutoLayout()
     }
     required init(coder: NSCoder) {
@@ -73,13 +73,12 @@ final class TableCellStackView: UIStackView {
 
 
 
-
 // MARK: - 화면 설정
 
 extension TableCellStackView {
     
     // MARK: - UI 설정
-    private func configureUI() {
+    private func configureStvUI() {
         self.spacing = 7
         self.axis = .horizontal
         self.alignment = .fill
@@ -89,41 +88,12 @@ extension TableCellStackView {
     // MARK: - 오토레이아웃 설정
     private func configureAutoLayout() {
         [self.profileImg,
-         self.userNameLbl].forEach { view in
+         self.userNameLbl,
+         self.priceLbl].forEach { view in
             self.addArrangedSubview(view)
         }
         self.profileImg.snp.makeConstraints { make in
             make.width.height.equalTo(21)
         }
-        
-        if self.priceLblInStackView {
-            self.configurePriceLabel()
-        }
-        if self.rightImgInStackView {
-            self.configureRightImage()
-        }
-    }
-    
-    
-    
-    
-    
-    
-    private func configureRightImage() {
-        self.addArrangedSubview(self.rightImg)
-        self.rightImg.snp.makeConstraints { make in
-            make.width.height.equalTo(21)
-        }
-    }
-    
-    private func configurePriceLabel() {
-        self.addArrangedSubview(self.priceLbl)
-        // 허깅 설정
-        self.priceLbl.setContentHuggingPriority(
-            UILayoutPriority.defaultHigh,
-            for: .horizontal)
-        
-        self.priceLbl.clipsToBounds = true
-        self.priceLbl.layer.cornerRadius = 10
     }
 }

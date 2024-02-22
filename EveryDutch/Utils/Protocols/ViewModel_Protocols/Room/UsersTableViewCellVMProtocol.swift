@@ -18,4 +18,8 @@ protocol UsersTableViewCellVMProtocol {
     var rightBtnImg: UIImage? { get }
     var paybackPrice: Int { get }
     
+    
+    
+    var isButtonExist: Bool { get }
+    var imgLeftAnchor: CGFloat { get }
 }

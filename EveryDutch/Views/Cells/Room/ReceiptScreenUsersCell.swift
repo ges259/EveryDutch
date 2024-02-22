@@ -11,8 +11,7 @@ import SnapKit
 final class ReceiptScreenUsersCell: UITableViewCell {
     
     // MARK: - 레이아웃
-    private var tableCellStackView: TableCellStackView = TableCellStackView(
-        rightImgInStackView: false)
+    private var tableCellStackView: TableCellStackView = TableCellStackView()
     
     private lazy var rightBtn: UIButton = UIButton.btnWithImg(
         image: .check_Square_Img,

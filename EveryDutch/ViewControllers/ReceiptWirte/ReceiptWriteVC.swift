@@ -826,8 +826,9 @@ extension ReceiptWriteVC: UITableViewDataSource {
         return cell
     }
     
-    // MARK: - 뷰모델 및 UI
-    private func configureDataCellVM(_ cell: ReceiptWriteDataCell, receiptEnum: ReceiptEnum) {
+    // MARK: - - 뷰모델 및 UI
+    private func configureDataCellVM(_ cell: ReceiptWriteDataCell,
+                                     receiptEnum: ReceiptEnum) {
         // 뷰모델 가져오기
         let cellVM = ReceiptWriteDataCellVM(
             withReceiptEnum: receiptEnum)
@@ -835,7 +836,7 @@ extension ReceiptWriteVC: UITableViewDataSource {
         cell.configureCell(viewModel: cellVM)
     }
     
-    // MARK: - 모서리
+    // MARK: - - 셀의 모서리 설정
     private func configureDataCellCorner(_ cell: ReceiptWriteDataCell, receiptEnum: ReceiptEnum) {
         // 첫 번째 셀이라면,
         if self.viewModel.isFistCell(receiptEnum) {
@@ -863,8 +864,9 @@ extension ReceiptWriteVC: UITableViewDataSource {
         return cell
     }
     
-    // MARK: - 뷰모델
-    private func configureUserCellVM(_ cell: ReceiptWriteUsersCell, index: Int) {
+    // MARK: - - 뷰모델
+    private func configureUserCellVM(_ cell: ReceiptWriteUsersCell,
+                                     index: Int) {
         // 셀 뷰모델 만들기
         let cellVM = self.viewModel.usersCellViewModel(
             at: index)
@@ -872,7 +874,7 @@ extension ReceiptWriteVC: UITableViewDataSource {
         cell.configureCell(with: cellVM)
     }
     
-    // MARK: - 더치 모드
+    // MARK: - - 더치 모드
     private func configureUserCellDutchMode(_ cell: ReceiptWriteUsersCell) {
         if self.viewModel.isDutchedMode {
             cell.configureDutchBtn(
@@ -904,45 +906,45 @@ extension ReceiptWriteVC: UIScrollViewDelegate {
     // MARK: - 셀 클릭 시 스크롤
     // 선택한 셀로 스크롤하는 메서드
     private func scrollToTableViewCellBottom(indexPath: IndexPath) {
-        // 테이블뷰가 현재 편집 중이 아닐 경우에만 스크롤을 수행합니다.
+        // 테이블뷰가 현재 편집 중이 아닐 경우에만 스크롤을 수행
         guard !self.viewModel.isUserDataTableEditing else { return }
-        // 스크롤 액션 동안 불필요한 업데이트를 방지하기 위해 디바운싱을 중지합니다.
+        // 스크롤 액션 동안 불필요한 업데이트를 방지하기 위해 디바운싱을 중지
         self.viewModel.stopDebouncing()
-        // 스크롤뷰의 새로운 오프셋을 계산하여 업데이트합니다.
+        // 스크롤뷰의 새로운 오프셋을 계산하여 업데이트
         self.updateScrollViewContentOffset(for: indexPath)
     }
     
     // MARK: - 셀의 오프셋 업데이트
     // 스크롤뷰의 콘텐츠 오프셋을 계산하고 업데이트하는 메서드
     private func updateScrollViewContentOffset(for indexPath: IndexPath) {
-        // 스크롤뷰 내에서 셀의 위치를 계산합니다.
+        // 스크롤뷰 내에서 셀의 위치를 계산
         let cellFrame = self.calculateCellFrameInScrollView(for: indexPath)
-        // 계산된 셀의 위치에 기반하여 스크롤뷰의 새로운 오프셋을 계산합니다.
+        // 계산된 셀의 위치에 기반하여 스크롤뷰의 새로운 오프셋을 계산
         let offset = self.calculateScrollViewOffset(for: cellFrame)
-        // 계산된 새로운 오프셋으로 스크롤뷰를 이동시킵니다.
+        // 계산된 새로운 오프셋으로 스크롤뷰를 이동
         self.scrollView.setContentOffset(CGPoint(x: 0, y: offset), animated: true)
     }
     
     // MARK: - 셀의 프레임 계산
     // 스크롤뷰 내에서 선택한 셀의 프레임을 계산하는 메서드
     private func calculateCellFrameInScrollView(for indexPath: IndexPath) -> CGRect {
-        // 테이블뷰에서 선택한 셀의 위치를 가져옵니다.
+        // 테이블뷰에서 선택한 셀의 위치를 가져옴
         let rectOfCellInTableView = self.tableView.rectForRow(at: indexPath)
-        // 선택한 셀의 위치(rect)를 테이블뷰의 좌표계에서 스크롤뷰의 좌표계로 변환합니다.
+        // 선택한 셀의 위치(rect)를 테이블뷰의 좌표계에서 스크롤뷰의 좌표계로 변환
         return self.tableView.convert(rectOfCellInTableView, to: self.scrollView)
     }
     
     // MARK: - 스크롤뷰의 오프셋 계산
     // 스크롤뷰의 새로운 오프셋을 계산하는 메서드
     private func calculateScrollViewOffset(for cellFrame: CGRect) -> CGFloat {
-        // 셀의 가장 아래 부분의 y 좌표를 계산합니다.
+        // 셀의 가장 아래 부분의 y 좌표를 계산
         let cellBottomY = cellFrame.origin.y + cellFrame.height
-        // 스크롤뷰에서 키보드가 차지하는 영역을 제외한 가시 영역의 가장 아래 y 좌표를 계산합니다.
+        // 스크롤뷰에서 키보드가 차지하는 영역을 제외한 가시 영역의 가장 아래 y 좌표를 계산
         let visibleAreaBottomY = self.scrollView.bounds.height - self.viewModel.keyboardHeight
-        // 셀의 아래 부분이 키보드 위로 올라오도록 필요한 y축 오프셋을 계산합니다.
+        // 셀의 아래 부분이 키보드 위로 올라오도록 필요한 y축 오프셋을 계산
         let offsetY = max(cellBottomY - visibleAreaBottomY, 0)
-        // 새로 계산된 오프셋이 현재 스크롤뷰의 오프셋보다 큰 경우에만 오프셋을 업데이트합니다.
-        // 이는 셀이 이미 키보드 위에 있을 경우 불필요한 스크롤을 방지합니다.
+        // 새로 계산된 오프셋이 현재 스크롤뷰의 오프셋보다 큰 경우에만 오프셋을 업데이트
+        // 이는 셀이 이미 키보드 위에 있을 경우 불필요한 스크롤을 방지
         return max(self.scrollView.contentOffset.y, offsetY)
     }
 }
@@ -965,6 +967,7 @@ extension ReceiptWriteVC: UIPickerViewDataSource {
         // 시간과 분을 위한 두 개의 컴포넌트
         return 2
     }
+    
     // MARK: - 최소 및 최대 숫자
     func pickerView(_ pickerView: UIPickerView,
                     numberOfRowsInComponent component: Int)

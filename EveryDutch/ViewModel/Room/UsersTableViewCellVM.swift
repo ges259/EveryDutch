@@ -51,15 +51,41 @@ struct UsersTableViewCellVM: UsersTableViewCellVMProtocol {
     }
     
     
+    
+// MARK: - [오른쪽 이미지]
+    
+    
+    
+    // MARK: - 이미지
     var rightBtnImg: UIImage? {
         switch self.customTableEnum {
         case .isSettleMoney:
             return UIImage.chevronRight
         case .isRoomSetting:
             return UIImage.gear_Fill_Img
-        // 없음
         case .isSettle:
-            return UIImage.Exit_Img
+            return nil
         }
     }
+    
+    // MARK: - 이미지 사용 여부
+    var isButtonExist: Bool {
+        switch self.customTableEnum {
+        case .isSettleMoney, .isRoomSetting:
+            return true
+        case .isSettle:
+            return false
+        }
+    }
+    
+    // MARK: - 이미지 왼쪽 Anchor
+    var imgLeftAnchor: CGFloat {
+        switch self.customTableEnum {
+        case .isSettleMoney, .isRoomSetting:
+            return -20
+        case .isSettle:
+            return -10
+        }
+    }
+    
 }

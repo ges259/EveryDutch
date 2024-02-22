@@ -10,19 +10,28 @@ import SnapKit
 
 final class UsersTableViewCell: UITableViewCell {
     
-    // MARK: - 레이아웃
-    private var tableCellStv: TableCellStackView = TableCellStackView(
-        rightImgInStackView: false)
+// MARK: - 레이아웃
     
     
-    private lazy var rightBtn: UIButton = UIButton.btnWithImg(
-        image: .check_Square_Img,
-        imageSize: 13)
+    
+    // MARK: - 스택뷰
+    private var tableCellStv: TableCellStackView = TableCellStackView()
+    
+    // MARK: - 오른쪽 이미지
+    private lazy var rightImg: UIImageView = {
+        let img = UIImageView()
+            img.tintColor = .black
+        img.contentMode = .scaleAspectFit
+        return img
+    }()
+    
+    
     
     
     
     // MARK: - 프로퍼티
     private var viewModel: UsersTableViewCellVMProtocol?
+    
     
     
     
@@ -64,122 +73,47 @@ extension UsersTableViewCell {
         // 뷰모델 저장
         self.viewModel = viewModel
         
-        // viewModel을 사용하여 셀의 뷰를 업데이트.
+        // viewModel을 사용하여 셀의 뷰를 업데이트
         guard let viewModel = viewModel else { return }
-        self.configureAutoLayout(viewModel: viewModel)
         
-        self.rightBtn.setImage(viewModel.rightBtnImg, for: .normal)
+        // 오토레이아웃 설정
+        self.configureStvAutoLayout(viewModel: viewModel)
+        // 버튼 설정
+        if viewModel.isButtonExist { self.configureLeftImage() }
+        // 스택뷰의 데이터 설정
+        self.setStackViewData(with: viewModel,
+                              firstBtnTapped: firstBtnTapped)
+    }
+    
+    // MARK: - 스택뷰 오토레이아웃
+    private func configureStvAutoLayout(viewModel: UsersTableViewCellVMProtocol) {
+        self.addSubview(self.tableCellStv)
+        self.tableCellStv.snp.makeConstraints { make in
+            make.leading.equalToSuperview().offset(20)
+            make.trailing.equalToSuperview().offset(viewModel.imgLeftAnchor)
+            make.centerY.equalToSuperview()
+        }
+    }
+    
+    // MARK: - 이미지 오토레이아웃
+    private func configureLeftImage() {
+        self.tableCellStv.addArrangedSubview(self.rightImg)
         
+        self.rightImg.image = self.viewModel?.rightBtnImg
+        
+        self.rightImg.snp.makeConstraints { make in
+            make.width.height.equalTo(21)
+        }
+    }
+    
+    // MARK: - 스택뷰 데이터 설정
+    private func setStackViewData(with viewModel: UsersTableViewCellVMProtocol,
+                                  firstBtnTapped: Bool) {
+        // 스택뷰 설정
         self.tableCellStv.userNameLbl.text = viewModel.userName
         self.tableCellStv.profileImg.image = viewModel.profileImg
         self.tableCellStv.priceLbl.text = firstBtnTapped
         ? "\(viewModel.cumulativeAmount)"
         : "\(viewModel.paybackPrice)"
     }
-    
-    // MARK: - 오토레이아웃 설정
-    private func configureAutoLayout(viewModel: UsersTableViewCellVMProtocol) {
-        
-        self.addSubview(self.tableCellStv)
-        switch viewModel.customTableEnum {
-        case .isSettleMoney:
-            self.configureSettleMoneyRoomVC()
-        case .isRoomSetting:
-            self.configureRoomSettingVC()
-        case .isSettle:
-            self.configureSettleVC()
-        }
-         
-    }
-    
-    
-    
-    private func configureSettleMoneyRoomVC() {
-        self.addSubview(self.rightBtn)
-        self.rightBtn.isUserInteractionEnabled = false
-        self.configureStvWithBtn()
-    }
-    private func configureRoomSettingVC() {
-        self.contentView.addSubview(self.rightBtn)
-        self.configureAction()
-        self.rightBtn.isUserInteractionEnabled = true
-        self.configureStvWithBtn()
-    }
-    private func configureSettleVC() {
-        self.tableCellStv.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(20)
-            make.trailing.equalToSuperview().offset(-20)
-            make.centerY.equalToSuperview()
-        }
-    }
-
-    
-    
-    
-    private func configureStvWithBtn() {
-        self.rightBtn.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().offset(-20)
-            make.centerY.equalToSuperview()
-            make.width.height.equalTo(21)
-        }
-        
-        self.tableCellStv.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(20)
-            make.trailing.equalTo(self.rightBtn.snp.leading).offset(-10)
-            make.centerY.equalToSuperview()
-        }
-    }
-    
-    
-}
-    
-
-
-
-
-
-
-
-    
-
-// MARK: - 상황에 따른 뷰 설정
-
-extension UsersTableViewCell {
-    
-
-    
-    // MARK: - 오른쪽 버튼 설정
-    private func configureRightBtn(_ viewModel: UsersTableViewCellVM) {
-
-
-       
-        
-    }
-}
-
-
-
-
-
-
-
-
-
-
-extension UsersTableViewCell {
-    // MARK: - 액션 설정
-    private func configureAction() {
-        self.rightBtn.addTarget(
-            self,
-            action: #selector(self.rightBtnTapped),
-            for: .touchUpInside)
-    }
-    
-    
-    
-    // MARK: - 버튼 액션 설정
-    @objc func rightBtnTapped() {
-        print(#function)
-    }
-
 }

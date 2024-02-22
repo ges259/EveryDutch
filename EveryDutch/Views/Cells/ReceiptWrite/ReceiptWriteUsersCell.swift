@@ -11,8 +11,7 @@ final class ReceiptWriteUsersCell: UITableViewCell {
     
     // MARK: - 레이아웃
     // 스택뷰(이미지, 이름, 가격레이블)
-    private var tableCellStackView: TableCellStackView = TableCellStackView(
-        rightImgInStackView: false)
+    private var tableCellStackView: TableCellStackView = TableCellStackView()
     /// 오른쪽 버튼
     private lazy var rightBtn: UIButton = UIButton.btnWithImg(
         image: .x_Mark_Img,
@@ -29,6 +28,8 @@ final class ReceiptWriteUsersCell: UITableViewCell {
         tf.isHidden = true
         tf.alpha = 0
         tf.delegate = self
+        // 좌상하단 모서리 설정
+        tf.setRoundedCorners(.left, withCornerRadius: 10)
         return tf
     }()
     
@@ -86,17 +87,9 @@ extension ReceiptWriteUsersCell {
     
     // MARK: - UI 설정
     private func configureUI() {
-        self.backgroundColor = .clear
         self.selectionStyle = .none
         self.separatorInset = .zero
         self.backgroundColor = .normal_white
-        
-        self.priceTf.layer.maskedCorners = [
-            .layerMinXMinYCorner, // 좌상단
-            .layerMinXMaxYCorner] // 좌하단
-        
-        self.priceTf.clipsToBounds = true
-        self.priceTf.layer.cornerRadius = 10
     }
     
     
@@ -110,7 +103,7 @@ extension ReceiptWriteUsersCell {
         self.rightBtn.snp.makeConstraints { make in
             make.trailing.equalToSuperview().offset(-20)
             make.centerY.equalToSuperview()
-            make.width.height.equalTo(21)
+            make.width.height.equalTo(30)
         }
         // 스택뷰(이미지, 이름, 가격레이블)
         self.tableCellStackView.snp.makeConstraints { make in
