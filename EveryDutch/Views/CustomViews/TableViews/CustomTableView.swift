@@ -35,6 +35,4 @@ class CustomTableView: UITableView {
         return CGSize(width: UIView.noIntrinsicMetric,
                       height: self.contentSize.height)
     }
-    
-    
 }

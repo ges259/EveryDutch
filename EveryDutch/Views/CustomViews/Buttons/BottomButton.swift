@@ -22,14 +22,9 @@ final class BottomButton: UIButton {
         // 버튼의 배경 설정
         self.backgroundColor = UIColor.deep_Blue
         // 모서리 설정 (상단)
-        self.clipsToBounds = true
-        self.layer.maskedCorners = [
-            .layerMinXMinYCorner,
-            .layerMaxXMinYCorner]
-        self.layer.cornerRadius = cornerRadius
-        
+        self.setRoundedCorners(.top, withCornerRadius: cornerRadius)
         // 그림자 설정
-        self.addShadow(shadowType: .all)
+        self.addShadow(shadowType: .top)
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

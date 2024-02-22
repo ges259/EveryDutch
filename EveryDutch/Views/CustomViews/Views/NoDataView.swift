@@ -8,12 +8,6 @@
 import UIKit
 import SnapKit
 
-enum NodataViewType {
-    case mainScreen
-    case versionScreen
-    case ReceiptWriteScreen
-}
-
 
 final class NoDataView: UIView {
     
@@ -55,34 +49,26 @@ final class NoDataView: UIView {
     }
 }
 
+
+
+
+
+
+
+
+
+
 // MARK: - 화면 설정
 
 extension NoDataView {
     
     // MARK: - UI 설정
     private func configureUIWithType(type: NodataViewType) {
-        switch type {
-        case .mainScreen:
-            self.isHidden = true
-            self.noDataImg.image = UIImage.plus_Circle_Img
-            self.noDataText.text = "채팅방이 아직 없습니다.\n+ 버튼을 눌러 생성해보세요!"
-            self.backgroundColor = UIColor.deep_Blue
-            self.noDataImg.tintColor = .normal_white
-            
-        case .versionScreen:
-            self.isHidden = true
-            self.noDataImg.image = UIImage.plus_Circle_Img
-            self.noDataText.text = "버전 정보가 없습니다.\n+ 정산 버튼을 눌러 버전을 생성해보세요!"
-            self.backgroundColor = UIColor.deep_Blue
-            self.noDataImg.tintColor = .normal_white
-            
-        case .ReceiptWriteScreen:
-            self.isHidden = false
-            self.noDataImg.image = UIImage.plus_Circle_Img
-            self.noDataText.text = "채팅방이 아직 없습니다.\n+ 버튼을 눌러 생성해보세요!"
-            self.backgroundColor = UIColor.normal_white
-            self.noDataImg.tintColor = .deep_Blue
-        }
+        self.backgroundColor = type.getBackgroundColor
+        self.isHidden = type.getIsHidden
+        self.noDataImg.image = type.getImg
+        self.noDataText.text = type.getText
+        self.noDataImg.tintColor = type.getTintColor
     }
     
     // MARK: - 오토레이아웃 설정

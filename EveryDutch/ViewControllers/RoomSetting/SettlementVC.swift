@@ -28,12 +28,6 @@ final class SettlementVC: UIViewController {
         backgroundColor: UIColor.medium_Blue,
         textAlignment: NSTextAlignment.center)
     
-    private var topLbl: CustomLabel = CustomLabel(
-        text: "누적 금액",
-        font: UIFont.boldSystemFont(ofSize: 15),
-        backgroundColor: UIColor.medium_Blue,
-        textAlignment: .center)
-    
     private var textField: InsetTextField = InsetTextField(
         backgroundColor: .normal_white,
         placeholerColor: .lightGray,
@@ -54,7 +48,6 @@ final class SettlementVC: UIViewController {
     private lazy var stackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.settlementNameLbl,
                            self.textField,
-                           self.topLbl,
                            self.usersTableView],
         axis: .vertical,
         spacing: 4,
@@ -63,9 +56,14 @@ final class SettlementVC: UIViewController {
     
     
     
+    
+    
     // MARK: - 프로퍼티
     var viewModel: SettlementVMProtocol
     var coordinator: SettlementCoordProtocol
+    
+    
+    
     
     
     // MARK: - 라이프사이클
@@ -75,7 +73,6 @@ final class SettlementVC: UIViewController {
         self.configureUI()
         self.configureAutoLayout()
         self.configureAction()
-        self.configureUserTableView()
     }
     init(viewModel: SettlementVMProtocol,
          coordinator: SettlementCoordProtocol) {
@@ -88,6 +85,15 @@ final class SettlementVC: UIViewController {
     }
 }
 
+
+
+
+
+
+
+
+
+
 // MARK: - 화면 설정
 
 extension SettlementVC {
@@ -97,13 +103,9 @@ extension SettlementVC {
         self.view.backgroundColor = .base_Blue
         
         [self.settlementNameLbl,
-         self.textField,
-         self.topLbl].forEach { view in
-            view.clipsToBounds = true
-            view.layer.cornerRadius = 10
+         self.textField].forEach { view in
+            view.setRoundedCorners(.all, withCornerRadius: 10)
         }
-        
-        self.usersTableView.usersTableView.isScrollEnabled = false
     }
     
     // MARK: - 오토레이아웃 설정
@@ -140,9 +142,6 @@ extension SettlementVC {
             make.bottom.leading.trailing.equalToSuperview()
             make.height.equalTo(UIDevice.current.bottomBtnHeight)
         }
-        self.topLbl.snp.makeConstraints { make in
-            make.height.equalTo(34)
-        }
         self.settlementNameLbl.snp.makeConstraints { make in
             make.height.equalTo(34)
         }
@@ -158,21 +157,18 @@ extension SettlementVC {
     // MARK: - 액션 설정
     private func configureAction() {
         // 버튼 생성
-        let backButton = UIBarButtonItem(image: .chevronLeft, style: .done, target: self, action: #selector(self.backButtonTapped))
+        let backButton = UIBarButtonItem(
+            image: .chevronLeft, 
+            style: .done,
+            target: self,
+            action: #selector(self.backButtonTapped))
         // 네비게이션 바의 왼쪽 아이템으로 설정
         self.navigationItem.leftBarButtonItem = backButton
     }
     
     
-    // MARK: - 테이블뷰 데이터 설정
-    private func configureUserTableView() {
-        self.usersTableView.viewModel.makeCellVM()
-        self.usersTableView.usersTableView.reloadData()
-    }
     
-    
-    
-    
+    // MARK: - 뒤로가기 버튼 액션
     @objc private func backButtonTapped() {
         self.coordinator.didFinish()
     }

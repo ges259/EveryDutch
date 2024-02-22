@@ -217,8 +217,7 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     // MARK: - 유저 섹션
     private func userSectionHeight() -> CGFloat {
         return self.selectedUsers.count == 0
-        ? 45 + 220
-//        ? 222
+        ? 45 + 225
         : 45
     }
     

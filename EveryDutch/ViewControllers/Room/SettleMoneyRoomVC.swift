@@ -290,8 +290,7 @@ extension SettleMoneyRoomVC {
         }
         // 데이터를 처음 가져왔을 때
         self.viewModel.fetchMoneyDataClosure = { [weak self] in
-            self?.usersTableView.viewModel.makeCellVM()
-            self?.usersTableView.usersTableView.reloadData()
+            self?.usersTableView.makeCellViewModel()
         }
     }
     

@@ -94,7 +94,6 @@ final class RoomSettingVC: UIViewController {
         self.configureUI()
         self.configureAutoLayout()
         self.configureAction()
-        self.configureUserTableView()
     }
     init(viewModel:RoomSettingVMProtocol,
          coordinator: RoomSettingCoordProtocol) {
@@ -115,22 +114,16 @@ extension RoomSettingVC {
     private func configureUI() {
         self.view.backgroundColor = UIColor.base_Blue
         
-        self.usersTableView.usersTableView.isScrollEnabled = false
-        
         [self.exitBtn,
          self.inviteBtn,
          self.roomSettingBtn,
          self.recordBtn,
          self.settlementBtn].forEach { btn in
-            btn.clipsToBounds = true
-            btn.layer.cornerRadius = 50 / 2
+            btn.setRoundedCorners(.all, withCornerRadius: 50 / 2)
         }
-        self.tabBarView.layer.maskedCorners = [
-            .layerMinXMinYCorner,
-            .layerMaxXMinYCorner]
-        self.tabBarView.layer.cornerRadius = 20
-        self.tabBarView.addShadow(shadowType: .all)
         
+        self.tabBarView.setRoundedCorners(.top, withCornerRadius: 20)
+        self.tabBarView.addShadow(shadowType: .all)
     }
     
     // MARK: - 오토레이아웃 설정
@@ -207,17 +200,6 @@ extension RoomSettingVC {
             action: #selector(self.roomSettingBtnTapped),
             for: .touchUpInside)
     }
-    
-    
-    // MARK: - 테이블뷰 데이터 설정
-    private func configureUserTableView() {
-        self.usersTableView.viewModel.makeCellVM()
-        self.usersTableView.usersTableView.reloadData()
-    }
-    
-    
-    
-    
     
     
     @objc private func roomSettingBtnTapped() {

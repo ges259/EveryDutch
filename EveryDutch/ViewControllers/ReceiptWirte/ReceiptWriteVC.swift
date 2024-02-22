@@ -249,7 +249,7 @@ extension ReceiptWriteVC {
         }
         // 사람 추가 버튼
         self.addPersonBtn.snp.makeConstraints { make in
-            make.height.equalTo(45)
+            make.height.equalTo(50)
         }
         // 데이트 피커 설정
         self.timePicker.snp.makeConstraints { make in
@@ -612,12 +612,14 @@ extension ReceiptWriteVC {
         self.dutchBtn.backgroundColor = self.viewModel.dutchBtnBackgroundColor
         
         // 레이아웃 업데이트를 위한 코드 추가
-        self.tableFooterTotalStv.layoutIfNeeded() // 스택 뷰의 레이아웃을 즉시 업데이트
+        // 스택 뷰의 레이아웃을 즉시 업데이트
+        self.tableFooterTotalStv.layoutIfNeeded()
         
         // 테이블 뷰 푸터 뷰의 크기를 동적으로 조정
-        let footerHeight = self.viewModel.getFooterViewHeight(section: 1) // 예시로 1번 섹션 사용
+        let footerHeight = self.viewModel.getFooterViewHeight(section: 1)
         self.tableView.tableFooterView?.frame.size.height = footerHeight
-        self.tableView.tableFooterView = self.tableView.tableFooterView // 푸터 뷰 재설정으로 레이아웃 업데이트
+        // 푸터 뷰 재설정으로 레이아웃 업데이트
+        self.tableView.tableFooterView = self.tableView.tableFooterView
     }
     
     // MARK: - 셀 생성
@@ -792,7 +794,7 @@ extension ReceiptWriteVC: UITableViewDataSource {
         : self.viewModel.numOfUsers
     }
     
-    // MARK: - [셀 구성]
+// MARK: - [셀 구성]
     func tableView(_ tableView: UITableView,
                    cellForRowAt indexPath: IndexPath)
     -> UITableViewCell {

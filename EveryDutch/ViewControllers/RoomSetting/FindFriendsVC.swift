@@ -88,9 +88,8 @@ extension FindFriendsVC {
         
         [self.searchBtn,
          self.inviteBtn].forEach { btn in
-            btn.clipsToBounds = true
-            btn.layer.cornerRadius = 10
-            btn.addShadow(shadowType: .card)
+            btn.setRoundedCorners(.all, withCornerRadius: 10)
+//            btn.addShadow(shadowType: .card)
         }
     }
     
@@ -138,10 +137,16 @@ extension FindFriendsVC {
     // MARK: - 액션 설정
     private func configureAction() {
         // 버튼 생성
-        let backButton = UIBarButtonItem(image: .chevronLeft, style: .done, target: self, action: #selector(self.backButtonTapped))
+        let backButton = UIBarButtonItem(
+            image: .chevronLeft, 
+            style: .done,
+            target: self,
+            action: #selector(self.backButtonTapped))
         // 네비게이션 바의 왼쪽 아이템으로 설정
         self.navigationItem.leftBarButtonItem = backButton
     }
+    
+    // MARK: - 뒤로가기 버튼 액션
     @objc private func backButtonTapped() {
         self.coordinator.didFinish()
     }

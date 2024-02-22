@@ -53,7 +53,7 @@ final class TableCellStackView: UIStackView {
     
     
     // MARK: - 라이프사이클
-    init() {
+    override init(frame: CGRect) {
         super.init(frame: .zero)
         
         self.configureStvUI()

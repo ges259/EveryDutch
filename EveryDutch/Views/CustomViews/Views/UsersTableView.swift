@@ -32,13 +32,15 @@ final class UsersTableView: UIView {
     
     
     // MARK: - 유저 테이블뷰
-    lazy var usersTableView: CustomTableView = {
+    private lazy var usersTableView: CustomTableView = {
         let view = CustomTableView()
         view.delegate = self
         view.dataSource = self
         view.register(
             UsersTableViewCell.self,
             forCellReuseIdentifier: Identifier.topViewTableViewCell)
+        
+        view.isScrollEnabled = self.viewModel.tableViewIsScrollEnabled
         return view
     }()
     
@@ -52,7 +54,7 @@ final class UsersTableView: UIView {
     
     
     // MARK: - 프로퍼티
-    var viewModel: UsersTableViewVMProtocol
+    private var viewModel: UsersTableViewVMProtocol
     
     
     
@@ -63,10 +65,9 @@ final class UsersTableView: UIView {
         self.viewModel = viewModel
         super.init(frame: .zero)
         
-        self.configureUI()
+        self.configureCornerRadius()
         self.configureAction()
         self.configureAutoLayout()
-        self.configureEnum(self.viewModel.customTableEnum)
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -87,13 +88,13 @@ final class UsersTableView: UIView {
 extension UsersTableView {
     
     // MARK: - UI설정
-    private func configureUI() {
-        
-        // 모서리 설정
-        self.firstBtn.layer.maskedCorners = [.layerMinXMinYCorner]
-        self.secondBtn.layer.maskedCorners = [.layerMaxXMinYCorner]
-        self.firstBtn.layer.cornerRadius = 10
-        self.secondBtn.layer.cornerRadius = 10
+    private func configureCornerRadius() {
+        // 뷰(self)의 모서리
+        self.setRoundedCorners(.all, withCornerRadius: 10)
+        // 첫 번째 버튼의 모서리
+        self.firstBtn.setRoundedCorners(.leftTop, withCornerRadius: 10)
+        // 두 번째 버튼의 모서리
+        self.secondBtn.setRoundedCorners(.rightTop, withCornerRadius: 10)
     }
     
     
@@ -115,28 +116,20 @@ extension UsersTableView {
     private func configureAction() {
         self.firstBtn.addTarget(
             self,
-            action: #selector(self.firstBtnTapped),
+            action: #selector(self.btnTapped),
             for: .touchUpInside)
         self.secondBtn.addTarget(
             self,
-            action: #selector(self.firstBtnTapped),
+            action: #selector(self.btnTapped),
             for: .touchUpInside)
     }
     
-    // MARK: - Enum에 따른 설정
-    private func configureEnum(_ customTableEnum: UsersTableEnum) {
-        switch customTableEnum {
-            // 상단 버튼
-        case .isRoomSetting, .isSettleMoney:
-            self.layer.maskedCorners = [.layerMinXMaxYCorner,
-                                        .layerMaxXMaxYCorner]
-            fallthrough
-            // 레이블
-        case .isSettle:
-            self.layer.cornerRadius = 10
-            self.clipsToBounds = true
-            break
-        }
+    
+    // MARK: - 셀 생성
+    /// SettleMoneyRoomVC에서 데이터를 받아온 시점에서 뷰모델을 만드는 함수
+    func makeCellViewModel() {
+        self.viewModel.makeCellVM()
+        self.usersTableView.reloadData()
     }
 }
     
@@ -154,11 +147,11 @@ extension UsersTableView {
 extension UsersTableView {
     
     // MARK: - 버튼 액션 메서드
-    @objc private func firstBtnTapped(_ sender: UIButton) {
+    @objc private func btnTapped(_ sender: UIButton) {
         // 현재 눌린 버튼이 어떤 버튼인지 알아내기
         let btnBoolean = sender == self.firstBtn
         // 눌린 버튼을 뷰모델에 저장
-        self.viewModel.firstBtnTapped = btnBoolean
+        self.viewModel.isFirstBtnTapped = btnBoolean
         // 버튼 색상을 바꾸기 위한 함수
         self.btnColorChange()
         // 테이블뷰 reload를 통해 - price의 정보 바꾸기
@@ -166,7 +159,7 @@ extension UsersTableView {
     }
     
     // MARK: - 버튼 색상 설정 메서드
-    func btnColorChange() {
+    private func btnColorChange() {
         // 버튼의 색상을 가져옮 (어떤 버튼이 눌렸는 지에 따라 다랄짐
         let btnColor = self.viewModel.getBtnColor
         // 버튼 색상 설정
@@ -218,7 +211,7 @@ extension UsersTableView: UITableViewDataSource {
             at: indexPath.item)
         
         cell.configureCell(with: cellViewModel,
-                           firstBtnTapped: self.viewModel.firstBtnTapped)
+                           firstBtnTapped: self.viewModel.isFirstBtnTapped)
         return cell
     }
 }

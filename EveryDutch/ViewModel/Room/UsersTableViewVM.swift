@@ -8,22 +8,17 @@
 import UIKit
 
 class UsersTableViewVM: UsersTableViewVMProtocol {
-    // 셀 데이터를 저장하는 배열
-    var cellViewModels: [UsersTableViewCellVM] = []
+    // MARK: - 프로퍼티
     
-
-    var customTableEnum: UsersTableEnum
     
-    var users: RoomUserDataDict = [:]
     
+    // MARK: - 유저 수
     var numbersOfUsers: Int {
         return self.cellViewModels.count
     }
-    // 계산하는 사람인지 판단
-    var isPayer: Bool = false
     
-    
-    var firstBtnTapped: Bool = true
+    // MARK: - 첫번째 사람인지 판단
+    var isFirstBtnTapped: Bool = true
     
     
     private let btnColorArray: [UIColor] = [
@@ -31,7 +26,7 @@ class UsersTableViewVM: UsersTableViewVMProtocol {
         .unselected_gray]
     
     var getBtnColor: [UIColor] {
-        let btnColor = self.firstBtnTapped
+        let btnColor = self.isFirstBtnTapped
         ? self.btnColorArray
         : self.btnColorArray.reversed()
         return btnColor
@@ -40,18 +35,74 @@ class UsersTableViewVM: UsersTableViewVMProtocol {
     
     
     
+    // MARK: - 모델
     
+    
+    
+    // MARK: - 룸 데이터 메니저
     private var roomDataManager: RoomDataManagerProtocol
-    // MARK: - Fix
+    
+    // MARK: - 셀의 뷰모델
+    // 셀 데이터를 저장하는 배열
+    var cellViewModels: [UsersTableViewCellVM] = []
+    
+    // MARK: - 열거형
+    var customTableEnum: UsersTableEnum
+    // MARK: - 유저 딕셔너리
+    var users: RoomUserDataDict = [:]
+    
+    
+    
+    
+    
+    // MARK: - 라이프사이클
     init(roomDataManager: RoomDataManagerProtocol,
          _ customTableEnum: UsersTableEnum) {
         self.roomDataManager = roomDataManager
         self.customTableEnum = customTableEnum
+        
+        if !(customTableEnum == .isSettleMoney) {
+            self.makeCellVM()
+        }
     }
+}
     
     
+ 
+
+
+
+
+
+
+
+extension UsersTableViewVM {
     
+    // MARK: - 테이블뷰 스크롤 여부
+    var tableViewIsScrollEnabled: Bool {
+        switch self.customTableEnum {
+        case .isSettleMoney, .isRoomSetting:
+            return false
+        case .isSettle:
+            return true
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - 셀의 뷰모델 설정
+
+extension UsersTableViewVM {
     
+    // MARK: - 셀 생성
     // moneyData: [CumulativeAmount]
     // 셀 가져와서 표시
     func makeCellVM() {
@@ -61,7 +112,7 @@ class UsersTableViewVM: UsersTableViewVMProtocol {
         // 셀 만들기 시작
         self.cellViewModels = users.map({ (userID, roomUser) in
             // -> 유저 아이디를 통해
-               // - 누적 금액을 가져옮
+            // - 누적 금액을 가져옮
             let cumulativeAmount = self.roomDataManager.getIDToCumulativeAmount(
                 userID: userID)
             // - payback을 가져옮
@@ -79,64 +130,22 @@ class UsersTableViewVM: UsersTableViewVMProtocol {
     
     // MARK: - 셀 업데이트
     // 사용자 입력 처리
-    func updatePrice(forCellAt index: Int,
-                     withPrice price: Int) {
-        guard index < cellViewModels.count else { return }
-        cellViewModels[index].cumulativeAmount = price
+    private func updatePrice(forCellAt index: Int,
+                             withPrice price: Int) {
+        guard index < self.cellViewModels.count else { return }
+        self.cellViewModels[index].cumulativeAmount = price
     }
     
     // MARK: - 셀 삭제
     // 셀 삭제 메서드
-    func deleteCell(at index: Int) {
-        guard index < cellViewModels.count else { return }
-        cellViewModels.remove(at: index)
+    private func deleteCell(at index: Int) {
+        guard index < self.cellViewModels.count else { return }
+        self.cellViewModels.remove(at: index)
     }
     
     // MARK: - 셀 뷰모델 설정
     // cellViewModels 반환
-     func cellViewModel(at index: Int) -> UsersTableViewCellVM {
-         return self.cellViewModels[index]
-     }
+    func cellViewModel(at index: Int) -> UsersTableViewCellVM {
+        return self.cellViewModels[index]
+    }
 }
-
-
-/*
- 
- // MARK: - 레이블 텍스트
- var topLblText: String? {
-     switch self.customTableEnum {
-     case .isReceiptScreen:
-         return "정산 내역"
-     case .isPeopleSelection:
-         return self.isPayer
-         ? "돈을 지불한 사람을 선택해 주세요."
-         : "계산한 사람을 모두 선택해 주세요."
-     case .isSettle:
-         return "누적 금액"
-     case .isSearch:
-         return "검색"
-     case .isSettleMoney, .isReceiptWrite, .isRoomSetting:
-         return nil
-     }
- }
- 
- 
- // MARK: - 상단 버튼 텍스트
- var btnTextArray: [String]? {
-     switch self.customTableEnum {
-     case .isSettleMoney, .isRoomSetting:
-         return ["누적 금액", "받아야 할 돈"]
-     case .isReceiptWrite:
-         return ["1 / n", "직접 입력"]
-     case .isReceiptScreen, .isPeopleSelection, .isSearch, .isSettle:
-         return nil
-     }
- }
- 
- // MARK: - 상단 버튼 색상
- var topLblBackgroundColor: UIColor {
-     return self.customTableEnum == .isSettle
-     ? UIColor.medium_Blue
-     : UIColor.normal_white
- }
- */

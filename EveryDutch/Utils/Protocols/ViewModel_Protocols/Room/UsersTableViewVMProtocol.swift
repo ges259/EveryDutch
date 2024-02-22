@@ -12,9 +12,10 @@ protocol UsersTableViewVMProtocol {
     
     var numbersOfUsers: Int { get }
     
-    var firstBtnTapped: Bool { get set }
+    var isFirstBtnTapped: Bool { get set }
     var getBtnColor: [UIColor] { get }
     
+    var tableViewIsScrollEnabled: Bool { get }
     
     func cellViewModel(at index: Int) -> UsersTableViewCellVM
     func makeCellVM()
