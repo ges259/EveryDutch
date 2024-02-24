@@ -7,13 +7,6 @@
 
 import Foundation
 
-//protocol CardTextDelegate: AnyObject {
-//    func firstStackViewTapped()
-//    func secondStackViewTapped()
-//    func editBtnTapped()
-//}
-
-
 protocol ReceiptWriteDataCellDelegate: AnyObject {
     func dateLblTapped()
     func timeLblTapped()

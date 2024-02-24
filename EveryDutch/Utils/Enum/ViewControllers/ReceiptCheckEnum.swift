@@ -15,6 +15,8 @@ enum ReceiptCheck: String, CustomStringConvertible {
     case selectedUsers
     case usersPriceZero
     case cumulativeMoney
+    
+    
     var description: String {
         switch self {
         case .memo: return "✓  메모을 작성해 주세요"

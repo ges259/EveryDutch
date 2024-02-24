@@ -7,7 +7,7 @@
 
 import UIKit
 
-protocol ReceiptScreenPanCellVMProtocol {
+protocol ReceiptScreenPanUsersCellVMProtocol {
     var pay: Int { get }
     var profileImg: UIImage? { get }
     var doneImg: UIImage? { get }

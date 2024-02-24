@@ -10,7 +10,7 @@ import UIKit
 struct ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
     
     // 정산내역 셀의 뷰모델
-    private var cellViewModels: [ReceiptScreenPanCellVM] = []
+    private var cellViewModels: [ReceiptScreenPanUsersCellVM] = []
     
     private var receipt: Receipt
     private var roomDataManager: RoomDataManagerProtocol
@@ -58,16 +58,20 @@ struct ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
     // MARK: - [영수증] 배열
     private let receiptCell: [ReceiptEnum] = ReceiptEnum.allCases
     
+    
+    // MARK: - 배열 반환
     func getReceiptEnum(index: Int) -> ReceiptEnum {
         return self.receiptCell[index]
     }
     
-    // MARK: - [영수증] 이미지 반환
+    
+    
+    // MARK: - 이미지 반환
     func getCellImg(section: Int) -> UIImage? {
         return self.receiptCell[section].img
     }
     
-    // MARK: - [영수증] 디테일 텍스트
+    // MARK: - 디테일 텍스트
     func getCellText(section: Int) -> String {
         return self.receiptCell[section].text
     }
@@ -140,7 +144,7 @@ struct ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
             let user = self.roomDataManager.getIdToRoomUser(
                 usersID: detail.userID)
             
-            return ReceiptScreenPanCellVM(
+            return ReceiptScreenPanUsersCellVM(
                 roomUser: user,
                 paymentDetail: detail)
         }
@@ -148,7 +152,7 @@ struct ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
     
     // MARK: - 셀 뷰모델 반환
     // cellViewModels 반환
-    func cellViewModel(at index: Int) -> ReceiptScreenPanCellVM {
+    func cellViewModel(at index: Int) -> ReceiptScreenPanUsersCellVM {
         return self.cellViewModels[index]
     }
 }

@@ -8,11 +8,6 @@
 import UIKit
 import SnapKit
 
-enum TableHeaderEnum {
-    case receiptWriteVC
-    case profileVC
-}
-
 final class TableHeaderView: UIView {
     
     // MARK: - 레이아웃
@@ -38,26 +33,21 @@ final class TableHeaderView: UIView {
     }
     
     
-    
+    // MARK: - 배경 색상 설정
     private func configureBackgroundColor(_ tableHeaderEnum: TableHeaderEnum) {
-        self.backgroundColor
-        = tableHeaderEnum == .receiptWriteVC
-        ? .normal_white
-        : .medium_Blue
+        self.backgroundColor = tableHeaderEnum.getBackgroundColor
     }
     
     // MARK: - 화면 설정
     private func configureUI(title: String?){
-        
         self.titleLbl.text = title
-        
         self.setRoundedCorners(.top, withCornerRadius: 10)
     }
     
     
     
     
-    
+    // MARK: - 오토레이아웃 설정
     private func configureAutoLayout() {
         self.addSubview(titleLbl)
         self.titleLbl.snp.makeConstraints { make in

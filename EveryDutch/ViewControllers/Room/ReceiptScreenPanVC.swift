@@ -210,7 +210,9 @@ extension ReceiptScreenPanVC: UITableViewDelegate {
         return view
     }
     
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, 
+                   willDisplay cell: UITableViewCell,
+                   forRowAt indexPath: IndexPath) {
         // 코너 둥글기 적용
         self.applyCornerRadiusForCell(cell,
                                       at: indexPath,
@@ -228,7 +230,7 @@ extension ReceiptScreenPanVC: UITableViewDelegate {
         let isLastIndex = indexPath.row == tableView.numberOfRows(inSection: indexPath.section) - 1
         
         
-        // 섹션 내의 첫 번째 셀인지, 마지막 셀인지, 또는 유일한 셀인지 확인합니다.
+        // 섹션 내의 첫 번째 셀인지, 마지막 셀인지, 또는 유일한 셀인지 확인
         if isFirstIndex
             && isLastIndex {
             // 섹션에 셀이 하나뿐인 경우
@@ -269,30 +271,33 @@ extension ReceiptScreenPanVC: UITableViewDataSource {
     func tableView(_ tableView: UITableView, 
                    cellForRowAt indexPath: IndexPath)
     -> UITableViewCell {
+        return indexPath.section == 0
+        ? self.makeDataCell(indexPath: indexPath)
+        : self.makeUsersCell(indexPath: indexPath)
+    }
+    
+    private func makeDataCell(indexPath: IndexPath) -> ReceiptScreenDataCell{
+        let cell = self.usersTableView.dequeueReusableCell(
+            withIdentifier: Identifier.receiptDataCell,
+            for: indexPath) as! ReceiptScreenDataCell
         
-        if indexPath.section == 1 {
-            let cell = tableView.dequeueReusableCell(
-                withIdentifier: Identifier.receiptUserCell,
-                for: indexPath) as! ReceiptScreenUsersCell
-            
-            let cellViewModel = self.viewModel.cellViewModel(at: indexPath.row)
-            
-            cell.configureCell(with: cellViewModel)
-            
-            return cell
-            
-            
-        } else {
-            let cell = tableView.dequeueReusableCell(
-                withIdentifier: Identifier.receiptDataCell,
-                for: indexPath) as! ReceiptScreenDataCell
-            
-            let receiptEnum = self.viewModel.getReceiptEnum(
-                index: indexPath.row)
-            cell.configure(withReceiptEnum: receiptEnum)
-            
-            return cell
-        }
+        let receiptEnum = self.viewModel.getReceiptEnum(
+            index: indexPath.row)
+        cell.configure(withReceiptEnum: receiptEnum)
+        
+        return cell
+    }
+    
+    private func makeUsersCell(indexPath: IndexPath) -> ReceiptScreenUsersCell {
+        let cell = self.usersTableView.dequeueReusableCell(
+            withIdentifier: Identifier.receiptUserCell,
+            for: indexPath) as! ReceiptScreenUsersCell
+        
+        let cellViewModel = self.viewModel.cellViewModel(at: indexPath.row)
+        
+        cell.configureCell(with: cellViewModel)
+        
+        return cell
     }
 }
 

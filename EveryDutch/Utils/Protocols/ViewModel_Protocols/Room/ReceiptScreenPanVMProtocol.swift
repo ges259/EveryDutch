@@ -16,7 +16,7 @@ protocol ReceiptScreenPanVMProtocol {
     var getPayMethod: String { get }
     
     
-    func cellViewModel(at index: Int) -> ReceiptScreenPanCellVM
+    func cellViewModel(at index: Int) -> ReceiptScreenPanUsersCellVM
     
     
     

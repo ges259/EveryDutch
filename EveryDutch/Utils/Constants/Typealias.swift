@@ -17,6 +17,7 @@ enum Typealias {
     
     
     
+    
     // UserAPI
     typealias UserCompletion = (Result<User, ErrorEnum>) -> Void
     
@@ -30,6 +31,10 @@ enum Typealias {
     
     // AuthAPIProtocol
     typealias AnoonymouslyCompletion = (Result<Void, ErrorEnum>) -> Void
+    
+    
+    // ReceiptWriteVM
+    typealias ValidationCompletion = (Result<[String: Any?], ErrorEnum>) -> Void
 
 }
 

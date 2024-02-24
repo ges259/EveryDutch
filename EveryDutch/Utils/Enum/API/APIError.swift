@@ -13,6 +13,6 @@ enum ErrorEnum: Error {
     case loginError
     case receiptCreateError
     
-    
-    
+    case receiptHasNilValue(_ receiptDict: [String: Any?])
+    case receiptAPIFailed(_ receiptDict: [String: Any?])
 }

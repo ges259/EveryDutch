@@ -16,6 +16,8 @@ class ReceiptAPI: ReceiptAPIProtocol, CrashlyticsLoggable {
     static let shared: ReceiptAPIProtocol = ReceiptAPI()
     private init() {}
     
+    private var retryDict: [String: Int] = [:]
+    
     private let maxRetryCount = 3 // 최대 재시도 횟수 설정
     private let retryDelay = 2.0 // 재시도 간 지연 시간(초)
 }
@@ -28,14 +30,6 @@ class ReceiptAPI: ReceiptAPIProtocol, CrashlyticsLoggable {
     // 3. 영수증 만들기
     // 4. 유저의 영수증 저장
     // ************************************
-    // - 롤백을 위해 저장되는 데이터들
-    // versionID: String
-    // receiptID: String
-    // payerID: String// payerID: String
-    // users: [String]
-    // usersMoneyDict: [String: Int]
-    // retryUsersMoneyDict: [String: Int]
-    // ************************************
 
 
 extension ReceiptAPI {
@@ -45,6 +39,8 @@ extension ReceiptAPI {
         _ retryCount: Int,
         operation: @escaping (Int) -> Void)
     {
+        print(#function)
+        print("????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????????")
         guard retryCount < self.maxRetryCount else { return }
         
         // 지수 백오프를 적용한 지연 시간 계산
@@ -195,98 +191,158 @@ extension ReceiptAPI {
     }
     
     // MARK: - 트랜잭션 업데이트를 위한 공통 함수
-    private func performTransactionUpdate(
+//    private func performTransactionUpdate2(
+//        forRef reference: DatabaseReference,
+//        withDict usersMoneyDict: [String: Int],
+//        retryCount: Int = 0,
+//        completion: @escaping Typealias.baseCompletion)
+//    {
+//        print("Transaction updates started.")
+//        var retryDict = usersMoneyDict
+//        let group = DispatchGroup()
+//
+//        for (userID, amount) in usersMoneyDict {
+//            group.enter()
+//
+//            let userRef = reference.child(userID)
+//            userRef.runTransactionBlock({ (currentData: MutableData) -> TransactionResult in
+//                if let value = currentData.value as? Double {
+//                    print("1")
+//                    let newValue = value + Double(amount)
+//                    currentData.value = newValue
+//                    return .success(withValue: currentData)
+//                } else if currentData.value is NSNull || currentData.value == nil {
+//                    print("2")
+//                    currentData.value = Double(amount)
+//                    return .success(withValue: currentData)
+//                } else {
+//                    print("--------------error1")
+//                    // 타입 캐스팅 실패 시, 에러 로그를 남기고 실패 반환
+//                    let errorInfo: [String: Any] = [
+//                        "userID": userID,
+//                        "attemptedToAddAmount": amount,
+//                        "existingValue": currentData.value ?? "nil"
+//                    ]
+//                    self.logError(
+//                        ErrorEnum.readError,
+//                        withAdditionalInfo: errorInfo,
+//                        functionName: #function)
+//                    return TransactionResult.abort()
+//                }
+//            }, andCompletionBlock: { [weak self] error, committed, _ in
+//                if let error = error {
+//                    print("3")
+//                    print("--------------error2")
+//                    // 에러 발생 시 로깅
+//                    let errorInfo: [String: Any] = [
+//                        "originalData": usersMoneyDict,
+//                        "failedData": retryDict,
+//                        "failedUserID": userID,
+//                        "failedamount": amount
+//                    ]
+//                    // 로그에 남길 실패한 userID 기록
+//                    self?.logError(
+//                        error,
+//                        withAdditionalInfo: errorInfo,
+//                        functionName: #function)
+//                    
+//                    retryDict[userID] = amount
+//                }
+//                if committed {
+//                    print("4")
+//                    retryDict.removeValue(forKey: userID)
+//                }
+//                print("5")
+//                group.leave()
+//            })
+//        }
+//
+//        group.notify(queue: .main) { [weak self] in
+//            if !retryDict.isEmpty && retryCount < (self?.maxRetryCount ?? 0) {
+//                self?.retryWithDelay(retryCount) {
+//                    self?.performTransactionUpdate(forRef: reference, withDict: retryDict, retryCount: $0, completion: completion)
+//                }
+//            } else {
+//                let result = retryDict.isEmpty ? Result.success(()) : Result.failure(ErrorEnum.readError)
+//                completion(result)
+//            }
+//        }
+//    }
+    
+    
+    
+    
+    func performTransactionUpdate(
         forRef reference: DatabaseReference,
         withDict usersMoneyDict: [String: Int],
-        retryCount: Int,
-        completion: @escaping Typealias.baseCompletion)
+        retryCount: Int = 0,
+        completion: @escaping (Result<Void, ErrorEnum>) -> Void)
     {
-        // 성공한 데이터를 하나씩 제거 (== 아직 저장되지 않은 데이터들.)
-        var retryDict = usersMoneyDict
+        print("Transaction updates started.")
+        self.retryDict = usersMoneyDict
         let group = DispatchGroup()
-        
+
         for (userID, amount) in usersMoneyDict {
-            // 작업 시작을 그룹에 알림
             group.enter()
-            
-            let path = reference.child(userID)
-            
-            path.runTransactionBlock( { (currentData: MutableData) -> TransactionResult in
-                // 현재 데이터를 Int로 변환 시도
-                if let value = currentData.value as? Int {
-                    // 새로운 금액 계산
-                    let newValue = value + amount
-                    // 데이터 업데이트
-                    currentData.value = newValue
-                    // 성공 결과 반환
-                    return TransactionResult.success(withValue: currentData)
-                    
-                } else {
-                    // 타입 캐스팅 실패 시, 에러 로그를 남기고 실패 반환
+            let userRef = reference.child(userID)
+            self.updateAmount(forUserRef: userRef,
+                         userID: userID,
+                         amount: amount,
+                         group: group)
+        }
+
+        group.notify(queue: .main) { [weak self] in
+            guard let self = self else { return }
+            if !self.retryDict.isEmpty && retryCount < self.maxRetryCount {
+                DispatchQueue.main.asyncAfter(deadline: .now() + self.retryDelay) {
+                    self.performTransactionUpdate(
+                        forRef: reference,
+                        withDict: self.retryDict,
+                        retryCount: retryCount + 1,
+                        completion: completion)
+                }
+                
+            } else if self.retryDict.isEmpty {
+                completion(.success(()))
+            } else {
+                // Define and use a specific error for max retry count exceeded
+                completion(.failure(.readError))
+            }
+        }
+    }
+
+    private func updateAmount(
+        forUserRef userRef: DatabaseReference,
+        userID: String,
+        amount: Int,
+        group: DispatchGroup)
+    {
+        userRef.runTransactionBlock(
+            { (currentData: MutableData) -> TransactionResult in
+                let currentValue = (currentData.value as? Double) ?? 0
+                let updatedValue = currentValue + Double(amount)
+                currentData.value = updatedValue
+                return TransactionResult.success(withValue: currentData)
+                
+            }) { [weak self] error, committed, _ in
+                guard let self = self else { return }
+                if committed {
+                    self.retryDict.removeValue(forKey: userID)
+                } else if let error = error {
+                    // 에러 발생 시 로깅
                     let errorInfo: [String: Any] = [
                         "userID": userID,
                         "attemptedToAddAmount": amount,
-                        "existingValue": currentData.value ?? "nil"
+                        "originalData": self.retryDict,
+                        "failedUserID": userID,
+                        "failedAmount": amount
                     ]
                     self.logError(
-                        ErrorEnum.readError,
-                        withAdditionalInfo: errorInfo,
-                        functionName: #function)
-                    return TransactionResult.abort()
-                }
-                
-            }) { [weak self] error, _, _ in
-                if let error = error {
-                    // 에러 발생 시 로깅
-                    let errorInfo: [String: Any] = [
-                        "originalData": usersMoneyDict,
-                        "failedData": retryDict,
-                        "failedUserID": userID,
-                        "failedamount": amount
-                    ]
-                    
-                    // 로그에 남길 실패한 userID 기록
-                    self?.logError(
                         error,
                         withAdditionalInfo: errorInfo,
                         functionName: #function)
-                    
-                } else {
-                    // 성공 시, 처리된 항목 제거
-                    retryDict.removeValue(forKey: userID)
                 }
-                // 작업 완료를 그룹에 알림
                 group.leave()
             }
-        }
-        
-        // 모든 작업 완료 후 실행될 코드
-        group.notify(queue: .main) { [weak self] in
-            guard let self = self else { return }
-            
-            // 재시도할 항목이 남아있고, 최대 재시도 횟수에 도달하지 않았다면 재시도
-            if !retryDict.isEmpty
-                && retryCount >= self.maxRetryCount
-            {
-                
-                self.retryWithDelay(retryCount) { newRetryCount in
-                    self.performTransactionUpdate(
-                        forRef: reference,
-                        withDict: retryDict,
-                        retryCount: newRetryCount,
-                        completion: completion)
-                }
-            } else {
-                // 모든 항목이 성공적으로 처리되었거나, 최대 재시도 횟수에 도달했다면
-                 if retryDict.isEmpty {
-                     // 성공 콜백 호출
-                     completion(.success(()))
-                     
-                 } else {
-                     // 실패한 항목이 남아있다면 실패 콜백 호출
-                     completion(.failure(.readError))
-                 }
-             }
-         }
-     }
+    }
 }

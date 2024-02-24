@@ -688,8 +688,11 @@ extension ReceiptWriteVM {
 
 extension ReceiptWriteVM {
     
+    
     // MARK: - 유효성 검사
-    func prepareReceiptDataAndValidate(completion: @escaping (Bool, [String: Any?]) -> Void) {
+    func prepareReceiptDataAndValidate(
+        completion: @escaping Typealias.ValidationCompletion)
+    {
         // 영수증 데이터 딕셔너리 생성
         self.validationData()
         
@@ -699,20 +702,18 @@ extension ReceiptWriteVM {
         // nil 값의 유무에 따라 적절한 completion 호출
         if hasNilValue {
             // 딕셔너리 내에 nil 값이 있다면 실패 처리
-            completion(false, self.receiptDict)
-            
+            completion(.failure(.receiptHasNilValue(self.receiptDict)))
             
         } else {
-            
             Task {
                 do {
                     try await self.startReceiptAPI()
                     // API 작업 성공, 성공 결과를 completion으로 전달
-                    completion(true, self.receiptDict)
+                    completion(.success(self.receiptDict))
                 } catch {
                     // API 작업 실패, 실패 결과를 completion으로 전달
                     print("API 작업 실패: \(error)")
-                    completion(false, self.receiptDict)
+                    completion(.failure(.receiptAPIFailed(self.receiptDict)))
                 }
             }
         }

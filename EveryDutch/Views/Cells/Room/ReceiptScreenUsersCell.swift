@@ -20,7 +20,7 @@ final class ReceiptScreenUsersCell: UITableViewCell {
     
     
     // MARK: - 프로퍼티
-    private var viewModel: ReceiptScreenPanCellVMProtocol?
+    private var viewModel: ReceiptScreenPanUsersCellVMProtocol?
     
     
     // MARK: - 라이프사이클
@@ -51,7 +51,7 @@ extension ReceiptScreenUsersCell {
         self.backgroundColor = .normal_white
     }
     
-    func configureCell(with viewModel: ReceiptScreenPanCellVMProtocol) {
+    func configureCell(with viewModel: ReceiptScreenPanUsersCellVMProtocol) {
         self.viewModel = viewModel
         
         self.tableCellStackView.userNameLbl.text = viewModel.userName
