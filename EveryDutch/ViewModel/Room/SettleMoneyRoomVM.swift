@@ -88,7 +88,7 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
     
     
     // MARK: - 클로저
-    var receiptChangedClosure: (() -> Void)?
+    var receiptChangedClosure: ((_ isFirst: Bool) -> Void)?
     var userChangedClosure: ((RoomUserDataDict) -> Void)?
     var fetchMoneyDataClosure: (() -> Void)?
     
@@ -103,9 +103,7 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
     private var roomDataManager: RoomDataManagerProtocol
     private var receiptAPI: ReceiptAPIProtocol
     /// 영수증 배열
-    var receipts: [Receipt] = [] {
-        didSet { self.receiptChangedClosure?() }
-    }
+    var receipts: [Receipt] = []
     
     
     
@@ -160,7 +158,7 @@ extension SettleMoneyRoomVM {
         self.receiptAPI.readReceipt { [weak self] result in
             switch result {
             case .success(let receipts):
-                self?.makeCell(receipts: receipts)
+                self?.makeCells(receipts: receipts)
                 break
                 // MARK: - Fix
             case .failure(_): break
@@ -182,24 +180,46 @@ extension SettleMoneyRoomVM {
 
 extension SettleMoneyRoomVM {
     
-    // MARK: - 셀 만들기
-    private func makeCell(receipts: [Receipt]) {
-        self.cellViewModels = receipts.map({ [weak self] receipt in
-            
-            let payer = receipt.payer
-            
-            let payerData = self?.roomDataManager.getIdToRoomUser(usersID: payer)
-            
-            return SettleMoneyTableViewCellVM(
-                payer: payerData?.roomUserName ?? "",
-                receiptData: receipt)
-        })
-        self.receipts = receipts
+    // MARK: - 셀 뷰모델 생성 및 업데이트
+    private func createCellViewModel(receipt: Receipt) -> SettleMoneyTableViewCellVM {
+        let payer = returnPayerData(payer: receipt.payer)
+        return SettleMoneyTableViewCellVM(payer: payer, receiptData: receipt)
+    }
+
+    // MARK: - 모든 셀 만들기
+    private func makeCells(receipts: [Receipt]) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            self.cellViewModels = receipts.map { self.createCellViewModel(receipt: $0) }
+            self.receipts = receipts
+            self.receiptChangedClosure?(true)
+        }
     }
     
-    // MARK: - 셀 뷰모델 설정
+    // MARK: - 새로운 셀 만들기
+    func createOneCell(receipt: Receipt) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            
+            self.receipts.insert(receipt, at: 0)
+            
+            let newCellVM = self.createCellViewModel(receipt: receipt)
+            self.cellViewModels.insert(newCellVM, at: 0)
+            self.receiptChangedClosure?(false)
+        }
+    }
+    
+    // MARK: - 셀 뷰모델 반환
     // cellViewModels 반환
     func cellViewModel(at index: Int) -> SettleMoneyTableViewCellVM {
         return self.cellViewModels[index]
+    }
+    
+    // MARK: - 유저 이름 반환
+    private func returnPayerData(payer: String) -> String {
+        // 유저 데이터 가져오기
+        let payerData = self.roomDataManager.getIdToRoomUser(usersID: payer)
+        // 유저 이름 반환
+        return payerData.roomUserName
     }
 }

@@ -688,7 +688,6 @@ extension ReceiptWriteVM {
 
 extension ReceiptWriteVM {
     
-    
     // MARK: - 유효성 검사
     func prepareReceiptDataAndValidate(
         completion: @escaping Typealias.ValidationCompletion)
@@ -708,8 +707,13 @@ extension ReceiptWriteVM {
             Task {
                 do {
                     try await self.startReceiptAPI()
+                    
+                    let dict = self.receiptDict.compactMapValues { $0 }
+                    
+                    let receipt = Receipt(dictionary: dict)
+                    
                     // API 작업 성공, 성공 결과를 completion으로 전달
-                    completion(.success(self.receiptDict))
+                    completion(.success(receipt))
                 } catch {
                     // API 작업 실패, 실패 결과를 completion으로 전달
                     print("API 작업 실패: \(error)")

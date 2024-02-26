@@ -17,7 +17,7 @@ protocol SettleMoneyRoomProtocol {
     var isTopViewBtnIsHidden: Bool { get }
     
     
-    var receiptChangedClosure: (() -> Void)? { get set }
+    var receiptChangedClosure: ((_ isFirst: Bool) -> Void)? { get set }
     var userChangedClosure: ((RoomUserDataDict) -> Void)? { get set }
     
     // MARK: - 탑뷰 크기 조절
@@ -35,4 +35,8 @@ protocol SettleMoneyRoomProtocol {
     var minHeight: CGFloat { get }
     var maxHeight: CGFloat { get }
     var isTopViewOpen: Bool { get set }
+    
+    
+    
+    func createOneCell(receipt: Receipt)
 }

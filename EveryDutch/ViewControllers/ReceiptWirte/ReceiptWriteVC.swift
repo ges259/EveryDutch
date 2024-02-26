@@ -466,9 +466,9 @@ extension ReceiptWriteVC {
             
             switch result {
             // 영수증 작성 완료. (DB에 저장 성공)
-            case .success(_):
+            case .success(let receipt):
                 // 이전화면(SettlementMoneyVC) 으로 이동
-                self.coordinator.didFinish()
+                self.coordinator.successMakeReceipt(receipt: receipt)
                 break
             
             // 영수증 작성 실패

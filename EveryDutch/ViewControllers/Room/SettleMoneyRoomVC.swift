@@ -285,8 +285,10 @@ extension SettleMoneyRoomVC {
     // MARK: - 클로저 설정
     private func configureClosure() {
         // 레시피를 가져왔을 때
-        self.viewModel.receiptChangedClosure = { [weak self] in
-            self?.receiptTableView.reloadData()
+        self.viewModel.receiptChangedClosure = { [weak self] isAll in
+            isAll
+            ? self?.receiptTableView.reloadData()
+            : self?.firstCellUpdate()
         }
         // 데이터를 처음 가져왔을 때
         self.viewModel.fetchMoneyDataClosure = { [weak self] in
@@ -507,5 +509,28 @@ extension SettleMoneyRoomVC {
             // topView 닫기
             self.closeTopView()
         }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - ReceiptWriteVC_Delegate
+extension SettleMoneyRoomVC {
+    func updateReceipt(with receipt: Receipt) {
+        self.viewModel.createOneCell(receipt: receipt)
+    }
+    
+    // MARK: - 첫 번째 셀 업데이트
+    func firstCellUpdate() {
+        self.receiptTableView.insertRows(
+            at: [IndexPath(row: 0, section: 0)],
+            with: .automatic)
     }
 }

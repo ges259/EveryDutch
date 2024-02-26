@@ -11,4 +11,5 @@ protocol ReceiptWriteCoordProtocol: Coordinator {
     func peopleSelectionPanScreen(users: RoomUserDataDict?,
                                   peopleSelectionEnum: PeopleSeelctionEnum?)
     func checkReceiptPanScreen(_ validationDict: [String: Any?])
+    func successMakeReceipt(receipt: Receipt)
 }

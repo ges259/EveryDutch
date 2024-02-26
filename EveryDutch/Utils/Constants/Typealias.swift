@@ -34,7 +34,7 @@ enum Typealias {
     
     
     // ReceiptWriteVM
-    typealias ValidationCompletion = (Result<[String: Any?], ErrorEnum>) -> Void
+    typealias ValidationCompletion = (Result<Receipt, ErrorEnum>) -> Void
 
 }
 

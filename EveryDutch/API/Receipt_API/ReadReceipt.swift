@@ -20,7 +20,7 @@ extension ReceiptAPI {
         RECEIPT_REF
             .child("version_ID_1")
             .queryOrdered(byChild: DatabaseConstants.date)
-            .queryLimited(toLast: 3)
+            .queryLimited(toLast: 8)
             .observeSingleEvent(of: .value) { snapshot in
                 
                 guard let allObjects = snapshot.children.allObjects as? [DataSnapshot] else { return }

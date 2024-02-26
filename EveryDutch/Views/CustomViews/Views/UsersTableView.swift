@@ -114,14 +114,13 @@ extension UsersTableView {
     
     // MARK: - 액션 설정
     private func configureAction() {
-        self.firstBtn.addTarget(
-            self,
-            action: #selector(self.btnTapped),
-            for: .touchUpInside)
-        self.secondBtn.addTarget(
-            self,
-            action: #selector(self.btnTapped),
-            for: .touchUpInside)
+        [self.firstBtn,
+         self.secondBtn].forEach { btn in
+            btn.addTarget(
+                self,
+                action: #selector(self.btnTapped),
+                for: .touchUpInside)
+        }
     }
     
     

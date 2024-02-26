@@ -53,6 +53,7 @@ final class SettleMoneyRoomCoordinator: SettleMoneyRoomCoordProtocol {
         let receiptWriteCoordinator = ReceiptWriteCoordinator(
             nav: self.nav)
         self.childCoordinators.append(receiptWriteCoordinator)
+        receiptWriteCoordinator.delegate = self
         receiptWriteCoordinator.parentCoordinator = self
         receiptWriteCoordinator.start()
     }
@@ -75,5 +76,19 @@ final class SettleMoneyRoomCoordinator: SettleMoneyRoomCoordProtocol {
     
     deinit {
         print("\(#function)-----\(self)")
+    }
+}
+
+
+extension SettleMoneyRoomCoordinator: ReceiptWriteDelegate {
+    func successReceipt(receipt: Receipt) {
+        DispatchQueue.main.async {
+            if let settleMoneyVC = self.nav
+                .viewControllers
+                .first(where: { $0 is SettleMoneyRoomVC }) as? SettleMoneyRoomVC
+            {
+                settleMoneyVC.updateReceipt(with: receipt)
+            }
+        }
     }
 }

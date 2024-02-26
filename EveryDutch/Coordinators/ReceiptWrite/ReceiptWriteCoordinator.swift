@@ -21,7 +21,7 @@ final class ReceiptWriteCoordinator: ReceiptWriteCoordProtocol {
     var nav: UINavigationController
     var modalNavController: UINavigationController?
     
-    
+    weak var delegate: ReceiptWriteDelegate?
     
     
     // 의존성 주입
@@ -95,6 +95,21 @@ final class ReceiptWriteCoordinator: ReceiptWriteCoordProtocol {
                 // 필요한 경우 여기에서 추가적인 정리 작업을 수행
                 // 자식 코디네이터를 부모의 배열에서 제거
                     // 즉, SettlementVC이 RoomSettingCoordinator의 childCoordinators 배열에서 제거
+                self.parentCoordinator?.removeChildCoordinator(child: self)
+            }
+        }
+    }
+    
+    
+    
+    func successMakeReceipt(receipt: Receipt) {
+        DispatchQueue.main.async {
+            // 현재 표시된 뷰 컨트롤러를 dismiss
+            self.modalNavController?.dismiss(animated: true) {
+                // 필요한 경우 여기에서 추가적인 정리 작업을 수행
+                // 자식 코디네이터를 부모의 배열에서 제거
+                // 즉, SettlementVC이 RoomSettingCoordinator의 childCoordinators 배열에서 제거
+                self.delegate?.successReceipt(receipt: receipt)
                 self.parentCoordinator?.removeChildCoordinator(child: self)
             }
         }
