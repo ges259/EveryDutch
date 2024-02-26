@@ -46,5 +46,6 @@ protocol ReceiptAPIProtocol {
     
     
     
-    func readReceipt(completion: @escaping Typealias.ReceiptCompletion)
+//    func readReceipt(completion: @escaping Typealias.ReceiptCompletion)
+    func readReceipt(versionID: String, completion: @escaping Typealias.ReceiptCompletion)
 }

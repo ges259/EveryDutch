@@ -26,7 +26,9 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     
     /// roomID / versionID / roomNam / roomImg
-    private var roomData: Rooms?
+    private var currentRoomData: Rooms?
+    
+    
     private var rooms: [Rooms]?
     private var currentIndex: Int = 0
     
@@ -44,21 +46,12 @@ final class RoomDataManager: RoomDataManagerProtocol {
         return Array(self.roomUserDataDict.values).count
     }
     
-    // MARK: - 선택된 현재 방 저장
-    func currentRooms(index: Int) {
-        self.roomData = self.rooms?[index]
-    }
+
     
     // MARK: - 방의 유저 데이터
     var getRoomUsersDict: RoomUserDataDict {
         return self.roomUserDataDict
     }
-    
-    // MARK: - 방의 이름
-    var getRoomName: String? {
-        return self.roomData?.roomID
-    }
-    
     
     // MARK: - 방 데이터 가져가기
     var getRooms: [Rooms] {
@@ -66,18 +59,35 @@ final class RoomDataManager: RoomDataManagerProtocol {
         return rooms
     }
     
+    
+    
+    
+    
+    
+    
+// MARK: - 현재 방 정보
+
+    
+    
+    // MARK: - 선택된 현재 방 저장
+    func saveCurrentRooms(index: Int) {
+        self.currentRoomData = self.rooms?[index]
+    }
+    
+    // MARK: - 방의 이름
+    var getCurrentRoomName: String? {
+        return self.currentRoomData?.roomID
+    }
+    
     // MARK: - 방 ID
     var getCurrentRoomsID: String? {
-        return self.roomData?.roomID
+        return self.currentRoomData?.roomID
     }
     
     // MARK: - 버전 ID
-    var getVersion: String? {
-        return self.roomData?.versionID
+    var getCurrentVersion: String? {
+        return self.currentRoomData?.versionID
     }
-    
-    
-    
     
     
     
@@ -110,6 +120,8 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     
     
+    
+    
     // MARK: - [API] 유저 데이터
     // 콜백 함수 만들기(completion)
     // SettlementMoneyRoomVM에서 호출 됨
@@ -117,7 +129,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
         completion: @escaping (RoomUserDataDict) -> Void)
     {
         // roomData 저장
-        guard let roomID = self.roomData?.roomID else { return }
+        guard let roomID = self.currentRoomData?.roomID else { return }
         
         // 데이터베이스나 네트워크에서 RoomUser 데이터를 가져오는 로직
         self.roomsAPI.readRoomUsers(
@@ -169,14 +181,17 @@ final class RoomDataManager: RoomDataManagerProtocol {
     // MARK: - [API] 방의 데이터
     func loadRooms(completion: @escaping () -> Void) {
         
-        self.roomsAPI.readRooms {[weak self] result in
+        self.roomsAPI.readRoomsID {[weak self] result in
             switch result {
             case .success(let rooms):
                 self?.rooms = rooms
+                print("loadRooms 성공")
                 completion()
                 break
                 // MARK: - Fix
-            case .failure(_): break
+            case .failure(_):
+                print("loadRooms 실패")
+                break
             }
         }
     }

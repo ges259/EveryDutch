@@ -12,7 +12,7 @@ protocol RoomsAPIProtocol {
     
 
     
-    func readRooms(completion: @escaping Typealias.RoomsIDCompletion)
+    func readRoomsID(completion: @escaping Typealias.RoomsIDCompletion)
     func readRoomUsers(roomID: String, completion: @escaping Typealias.RoomUsersCompletion)
     func readCumulativeAmount(completion: @escaping Typealias.RoomMoneyDataCompletion)
     func readPayback(completion: @escaping Typealias.PaybackCompletion)

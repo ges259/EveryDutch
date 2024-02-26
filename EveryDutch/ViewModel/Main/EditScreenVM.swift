@@ -7,15 +7,22 @@
 
 import UIKit
 
-final class ProfileEditVM: ProfileEditVMProtocol {
+final class EditScreenVM<Section: CellTitleProvider & CaseIterable> : ProfileEditVMProtocol {
+    
+    
+    
+    private let section: [Section]
     
     
     
     
-    
-    private let section: [profileEditEnum] = profileEditEnum.allCases
-    
-    
+    // MARK: - 라이프사이클
+    init() {
+        self.section = Array(Section.allCases)
+    }
+    deinit {
+        print("\(#function)-----\(self)")
+    }
     
     
     
@@ -53,25 +60,6 @@ final class ProfileEditVM: ProfileEditVMProtocol {
     }
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    // MARK: - 라이프사이클
-    init() {
-        
-    }
-    deinit {
-        print("\(#function)-----\(self)")
-    }
-    
-    
-    
-    
     var bottomBtn_Title: String? {
 //        switch self.profileEditEnum {
 //        case .profileEdit: return "완료"
@@ -80,11 +68,4 @@ final class ProfileEditVM: ProfileEditVMProtocol {
         
         return "완료"
     }
-    
-    
-    
-    
-    
-    
-    
 }

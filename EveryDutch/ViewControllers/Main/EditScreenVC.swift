@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-final class ProfileEditVC: UIViewController {
+final class EditScreenVC: UIViewController {
     
     // MARK: - 레이아웃
     /// 스크롤뷰
@@ -112,7 +112,7 @@ final class ProfileEditVC: UIViewController {
 
 // MARK: - 화면 설정
 
-extension ProfileEditVC {
+extension EditScreenVC {
     
     // MARK: - UI 설정
     private func configureUI() {
@@ -194,7 +194,7 @@ extension ProfileEditVC {
 
 
 // MARK: - 액션 메서드
-extension ProfileEditVC {
+extension EditScreenVC {
     @objc private func backButtonTapped() {
         self.coordinator.didFinish()
     }
@@ -211,7 +211,7 @@ extension ProfileEditVC {
 
 // MARK: - 테이블뷰 델리게이트
 
-extension ProfileEditVC: UITableViewDelegate {
+extension EditScreenVC: UITableViewDelegate {
     
     // MARK: - 셀의 높이
     /// 셀의 높이를 설정합니다.
@@ -290,7 +290,7 @@ extension ProfileEditVC: UITableViewDelegate {
 
 // MARK: - 테이블뷰 데이터소스
 
-extension ProfileEditVC: UITableViewDataSource {
+extension EditScreenVC: UITableViewDataSource {
     
     // MARK: - 섹션 수
     // 테이블 뷰의 섹션 수를 반환
@@ -310,39 +310,43 @@ extension ProfileEditVC: UITableViewDataSource {
     func tableView(_ tableView: UITableView,
                    cellForRowAt indexPath: IndexPath)
     -> UITableViewCell {
-        
-        if indexPath.section == 1 {
-            let cell = tableView.dequeueReusableCell(
-                withIdentifier: Identifier.cardDecorationCell,
-                for: indexPath) as! CardDecorationCell
-            
-            
-            let text = self.viewModel.getTableData(
-                section: indexPath.section,
-                index: indexPath.row)
-            cell.setDetailLbl(text: text)
-            
-            return cell
-            
-            
-        } else {
-            let cell = tableView.dequeueReusableCell(
-                withIdentifier: Identifier.cardDataCell,
-                for: indexPath) as! CardDataCell
-            // 첫 번째 셀이라면, 오른쪽 상단 모서리 설정
-            if indexPath.row == 0 {
-                self.firstCellSetCorner(cell: cell)
-            }
-            
-            let text = self.viewModel.getTableData(
-                section: indexPath.section,
-                index: indexPath.row)
-            cell.setDetailLbl(text: text)
-            
-            return cell
-        }
+        return indexPath.section == 0
+        ? self.configureDataCell(indexPath: indexPath)
+        : self.configureDecorationCell(indexPath: indexPath)
     }
     
+    // MARK: - 데이터 셀
+    private func configureDataCell(indexPath: IndexPath) -> CardDataCell {
+        let cell = tableView.dequeueReusableCell(
+            withIdentifier: Identifier.cardDataCell,
+            for: indexPath) as! CardDataCell
+        
+        // 첫 번째 셀이라면, 오른쪽 상단 모서리 설정
+        if indexPath.row == 0 { self.firstCellSetCorner(cell: cell) }
+        
+        // 셀의 텍스트 설정
+        let text = self.viewModel.getTableData(
+            section: indexPath.section,
+            index: indexPath.row)
+        cell.setDetailLbl(text: text)
+        
+        return cell
+    }
+    
+    // MARK: - 데코 셀
+    private func configureDecorationCell(indexPath: IndexPath) -> CardDecorationCell {
+        let cell = tableView.dequeueReusableCell(
+            withIdentifier: Identifier.cardDecorationCell,
+            for: indexPath) as! CardDecorationCell
+        
+        // 셀의 텍스트 설정
+        let text = self.viewModel.getTableData(
+            section: indexPath.section,
+            index: indexPath.row)
+        cell.setDetailLbl(text: text)
+        
+        return cell
+    }
     
     // MARK: - 셀의 모서리 설정
     private func firstCellSetCorner(cell: CardDataCell) {

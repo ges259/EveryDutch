@@ -79,20 +79,7 @@ final class MainCoordinator: MainCoordProtocol{
             settlementRoomCoordinator.start()
     }
     
-    // MARK: - 프로필 설정 화면
-    /// 플러스 버튼을 누르면 화면 이동
-    func profileEditScreen() {
-        // Main-Coordinator 생성
-        let profileEditVCCoordinator = ProfileEditVCCoordinator(
-            nav: self.nav)
-        // ***** 델리게이트 설정 *****
-        profileEditVCCoordinator.delegate = self
-        self.childCoordinators.append(profileEditVCCoordinator)
-        // 부모 코디네이터가 자신이라는 것을 명시 (뒤로가기 할 때 필요)
-        profileEditVCCoordinator.parentCoordinator = self
-        // 코디네이터에게 화면이동을 지시
-        profileEditVCCoordinator.start()
-    }
+
     
     // MARK: - 프로필 스크린
     func profileScreen() {
@@ -103,10 +90,44 @@ final class MainCoordinator: MainCoordProtocol{
         profileCoordinator.start()
     }
     
+    
+    // MARK: - 프로필 설정 화면
+    /// 플러스 버튼을 누르면 화면 이동
+    func profileEditScreen() {
+        // Main-Coordinator 생성
+        let editScreenVCCoordinator = EditScreenVCCoordinator(
+            nav: self.nav,
+            isProfileEdit: true)
+        self.moveToEditScreenVCCoord(to: editScreenVCCoordinator)
+    }
+    
     // MARK: - 방 생성 스크린
     func roomEditScreen() {
-        
+        // Main-Coordinator 생성
+        let editScreenVCCoordinator = EditScreenVCCoordinator(
+            nav: self.nav,
+            isProfileEdit: false)
+        self.moveToEditScreenVCCoord(to: editScreenVCCoordinator)
+
     }
+    
+    // MARK: - 수정 화면 이동
+    private func moveToEditScreenVCCoord(
+        to editScreenVCCoordinator: EditScreenVCCoordinator)
+    {
+        
+        // ***** 델리게이트 설정 *****
+        editScreenVCCoordinator.delegate = self
+        self.childCoordinators.append(editScreenVCCoordinator)
+        // 부모 코디네이터가 자신이라는 것을 명시 (뒤로가기 할 때 필요)
+        editScreenVCCoordinator.parentCoordinator = self
+        // 코디네이터에게 화면이동을 지시
+        editScreenVCCoordinator.start()
+    }
+    
+    
+    
+    
     
     
     

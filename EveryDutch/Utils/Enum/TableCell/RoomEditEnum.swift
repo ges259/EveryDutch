@@ -7,27 +7,4 @@
 
 import Foundation
 
-enum RoomEditEnum: CaseIterable, CellTitleProvider {
-    case roomData
-    case cardDecoration
-    
-    var headerTitle: String {
-        switch self {
-        case .roomData:
-            return "회원 정보"
-        case .cardDecoration:
-            return self.cardHeaderTitle
-        }
-    }
-    
-    var cellTitle: [String] {
-        switch self {
-        case .roomData:
-            return ["정산방 이름",
-                    "모임 이름",
-                    "총무 이름"]
-        case .cardDecoration:
-            return cardDecorationTitle
-        }
-    }
-}
+

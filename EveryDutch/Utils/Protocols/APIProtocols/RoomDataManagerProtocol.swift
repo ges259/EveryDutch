@@ -12,15 +12,15 @@ protocol RoomDataManagerProtocol {
     static var shared: RoomDataManagerProtocol { get }
     
     var getCurrentRoomsID: String? { get }
-    var getVersion: String? { get }
+    var getCurrentVersion: String? { get }
     
     
     var getNumOfRoomUsers: Int { get }
-    func currentRooms(index: Int)
+    func saveCurrentRooms(index: Int)
     var getRooms: [Rooms] { get }
     
     var getRoomUsersDict: RoomUserDataDict { get }
-    var getRoomName: String? { get }
+    var getCurrentRoomName: String? { get }
 //    var getCumulativeAmountArray: CumulativeAmountDictionary { get }
     
     func getIdToRoomUser(usersID: String) -> RoomUsers

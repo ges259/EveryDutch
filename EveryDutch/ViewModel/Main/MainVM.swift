@@ -62,8 +62,9 @@ final class MainVM: MainVMProtocol {
     
     
     // MARK: - 아이템이 눌렸을 때
+    // roomDataManager에 선택된(현재) 방 저장
     func itemTapped(index: Int) {
-        self.roomDataManager.currentRooms(index: index)
+        self.roomDataManager.saveCurrentRooms(index: index)
     }
     
     

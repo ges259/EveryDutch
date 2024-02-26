@@ -80,7 +80,7 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
     var navTitle: String? {
         return self.isSearchMode
         ? "검색"
-        : self.roomDataManager.getRoomName
+        : self.roomDataManager.getCurrentRoomName
     }
     
     
@@ -146,7 +146,6 @@ extension SettleMoneyRoomVM {
     /// RoomDataManager에서 RoomUsers데이터 가져오기
     private func getUsersData() {
         
-        // MARK: - Fix
         self.roomDataManager.loadRoomUsers() { [weak self] roomusers in
             // 영수증 가져오기
             self?.fetchReceipt()
@@ -155,15 +154,27 @@ extension SettleMoneyRoomVM {
     
     // MARK: - 영수증 데이터 가져오기
     private func fetchReceipt() {
-        self.receiptAPI.readReceipt { [weak self] result in
+        // MARK: - Fix
+        // 가져오기에 실패했을 때 코드 추가 필요
+        guard let versionID = self.roomDataManager.getCurrentVersion else { return }
+        
+        
+        self.receiptAPI.readReceipt(versionID: versionID) { [weak self] result in
+            guard let self = self else { return }
+            
             switch result {
             case .success(let receipts):
-                self?.makeCells(receipts: receipts)
+                self.makeCells(receipts: receipts)
+                self.observingReceipt(versionID: versionID)
                 break
                 // MARK: - Fix
             case .failure(_): break
             }
         }
+    }
+    
+    private func observingReceipt(versionID: String) {
+        
     }
 }
     

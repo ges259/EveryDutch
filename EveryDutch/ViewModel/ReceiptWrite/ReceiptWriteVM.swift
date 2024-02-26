@@ -836,7 +836,7 @@ extension ReceiptWriteVM {
     // MARK: - 영수증 생성
     // 영수증 생성
     private func createReceipt() async throws -> String {
-        guard let versionID = self.roomDataManager.getVersion else { throw ErrorEnum.readError }
+        guard let versionID = self.roomDataManager.getCurrentVersion else { throw ErrorEnum.readError }
         
         return try await withCheckedThrowingContinuation { continuation in
             self.receiptAPI.createReceipt(
@@ -876,7 +876,7 @@ extension ReceiptWriteVM {
     
     // MARK: - 누적 금액 업데이트
     private func updateCumulativeMoney() async throws {
-        guard let versionID = self.roomDataManager.getVersion else { throw ErrorEnum.readError }
+        guard let versionID = self.roomDataManager.getCurrentVersion else { throw ErrorEnum.readError }
         
         return try await withCheckedThrowingContinuation { [weak self] continuation in
             guard let self = self else { return }
@@ -897,7 +897,7 @@ extension ReceiptWriteVM {
     
     // MARK: - 페이백 업데이트
     private func updatePayback() async throws {
-        guard let versionID = self.roomDataManager.getVersion, let payerID = self.payer?.keys.first else { throw ErrorEnum.readError }
+        guard let versionID = self.roomDataManager.getCurrentVersion, let payerID = self.payer?.keys.first else { throw ErrorEnum.readError }
         
         var paybackDict = self.usersMoneyDict
         paybackDict.removeValue(forKey: payerID)
