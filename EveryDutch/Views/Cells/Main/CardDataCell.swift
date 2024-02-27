@@ -11,27 +11,22 @@ import SnapKit
 final class CardDataCell: UITableViewCell {
     
     // MARK: - 레이아웃
-    
-    
-    
-    // MARK: - 프로퍼티
     // 디테일 레이블
     private var detailLbl: CustomLabel = CustomLabel(
         leftInset: 20)
     // 텍스트 필드
-    var textField: InsetTextField = InsetTextField(
-        backgroundColor: .normal_white,
-        placeholerColor: .lightGray)
+    private lazy var textField: InsetTextField = {
+        let tf = InsetTextField(
+            backgroundColor: .normal_white,
+            placeholerColor: .lightGray)
+        tf.delegate = self
+        tf.isUserInteractionEnabled = true
+        return tf
+    }()
     
-    // 스택뷰
-    private lazy var totalStackView: UIStackView = UIStackView.configureStv(
-        arrangedSubviews: [self.detailLbl,
-                           self.textField],
-        axis: .horizontal,
-        spacing: 0,
-        alignment: .fill,
-        distribution: .fill)
     
+    
+    // MARK: - 프로퍼티
     
     
     
@@ -69,17 +64,56 @@ extension CardDataCell {
     
     // MARK: - 오토레이아웃 설정
     private func configureAutoLayout() {
-        self.addSubview(self.totalStackView)
+        self.addSubview(self.detailLbl)
+        self.contentView.addSubview(self.textField)
         
-        self.totalStackView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
         
         self.detailLbl.snp.makeConstraints { make in
+            make.top.bottom.leading.equalToSuperview()
             make.width.equalTo(90)
+        }
+        self.textField.snp.makeConstraints { make in
+            make.top.bottom.trailing.equalToSuperview()
+            make.leading.equalTo(self.detailLbl.snp.trailing)
         }
     }
     func setDetailLbl(text: String) {
         self.detailLbl.text = text
+    }
+}
+
+
+
+
+
+
+
+
+// MARK: - 함수
+extension CardDataCell {
+    func configureTextField(isFirst: Bool,
+                            placeholder: String) {
+        if isFirst { self.configureTextFieldCorner() }
+        
+        self.textField.attributedPlaceholder = self.setAttributedText(
+            placeholderText: placeholder)
+    }
+    private func configureTextFieldCorner() {
+        self.textField.setRoundedCorners(.leftTop, withCornerRadius: 12)
+    }
+}
+
+
+
+
+
+
+
+
+
+
+extension CardDataCell: UITextFieldDelegate {
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        print(#function)
     }
 }

@@ -12,10 +12,11 @@ final class EditScreenVC: UIViewController {
     
     // MARK: - 레이아웃
     /// 스크롤뷰
-    private var scrollView: UIScrollView = {
+    private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
             scrollView.showsVerticalScrollIndicator = false
             scrollView.alwaysBounceVertical = true
+        scrollView.delegate = self
         return scrollView
     }()
     /// 컨텐트뷰 ( - 스크롤뷰)
@@ -123,9 +124,10 @@ extension EditScreenVC {
         self.profileChangeBtn.setRoundedCorners(.bottom, withCornerRadius: 12)
         self.backgroundChangeBtn.setRoundedCorners(.bottom, withCornerRadius: 12)
         
-        
-        let btnTitle = self.viewModel.bottomBtn_Title
-        self.bottomBtn.setTitle(btnTitle, for: .normal)
+        // 하단 버튼 설정
+        self.bottomBtn.setTitle(self.viewModel.getBottomBtnTitle, for: .normal)
+        // 네비게이션 타이틀 설정
+        self.navigationItem.title = self.viewModel.getNavTitle
     }
     
     // MARK: - 오토레이아웃 설정
@@ -163,7 +165,6 @@ extension EditScreenVC {
             make.leading.trailing.equalTo(self.cardImgView)
             make.bottom.equalToSuperview().offset(-UIDevice.current.bottomBtnHeight - 10)
         }
-        
         // 바텀뷰
         self.bottomBtn.snp.makeConstraints { make in
             make.bottom.leading.trailing.equalToSuperview()
@@ -315,14 +316,19 @@ extension EditScreenVC: UITableViewDataSource {
         : self.configureDecorationCell(indexPath: indexPath)
     }
     
-    // MARK: - 데이터 셀
+    // MARK: - [데이터 셀]
     private func configureDataCell(indexPath: IndexPath) -> CardDataCell {
         let cell = tableView.dequeueReusableCell(
             withIdentifier: Identifier.cardDataCell,
             for: indexPath) as! CardDataCell
         
         // 첫 번째 셀이라면, 오른쪽 상단 모서리 설정
-        if indexPath.row == 0 { self.firstCellSetCorner(cell: cell) }
+        let isFirst = indexPath.row == 0
+        
+        let placeholder = self.viewModel.getPlaceholderTitle(
+            index: indexPath.row)
+        cell.configureTextField(isFirst: isFirst, 
+                                placeholder: placeholder)
         
         // 셀의 텍스트 설정
         let text = self.viewModel.getTableData(
@@ -333,7 +339,7 @@ extension EditScreenVC: UITableViewDataSource {
         return cell
     }
     
-    // MARK: - 데코 셀
+    // MARK: - [데코 셀]
     private func configureDecorationCell(indexPath: IndexPath) -> CardDecorationCell {
         let cell = tableView.dequeueReusableCell(
             withIdentifier: Identifier.cardDecorationCell,
@@ -347,9 +353,20 @@ extension EditScreenVC: UITableViewDataSource {
         
         return cell
     }
-    
-    // MARK: - 셀의 모서리 설정
-    private func firstCellSetCorner(cell: CardDataCell) {
-        cell.textField.setRoundedCorners(.leftTop, withCornerRadius: 12)
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - 스크롤뷰 델리게이트
+extension EditScreenVC: UIScrollViewDelegate {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        self.view.endEditing(true)
     }
 }

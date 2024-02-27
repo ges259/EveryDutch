@@ -162,7 +162,6 @@ extension ReceiptWriteDataCell {
         self.selectionStyle = .none
         self.separatorInset = .zero
         self.backgroundColor = .normal_white
-        //        self.backgroundColor = .medium_Blue
         
         self.cellStv.backgroundColor = .medium_Blue
     }

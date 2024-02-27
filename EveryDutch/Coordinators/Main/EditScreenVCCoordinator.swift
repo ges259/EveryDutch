@@ -22,16 +22,20 @@ final class EditScreenVCCoordinator: ProfileEditVCCoordProtocol {
     
     var nav: UINavigationController
     
-    var isProfileEdit: Bool
+    private var isProfileEdit: Bool
+    private var isMake: Bool
     
     
     
     
     // MARK: - 라이프사이클
     // 의존성 주입
-    init(nav: UINavigationController, isProfileEdit: Bool) {
+    init(nav: UINavigationController, 
+         isProfileEdit: Bool,
+         isMake: Bool)
+    {
         self.nav = nav
-        
+        self.isMake = isMake
         self.isProfileEdit = isProfileEdit
     }
     
@@ -48,7 +52,7 @@ final class EditScreenVCCoordinator: ProfileEditVCCoordProtocol {
     private func startProfileEdit() {
         self.moveToEditScreen {
             // ProfileEditEnum을 사용하여 ViewModel 생성
-            let profileEditVM = EditScreenVM<ProfileEditEnum>()
+            let profileEditVM = EditScreenVM<ProfileEditEnum>(isMake: self.isMake)
             return EditScreenVC(viewModel: profileEditVM, coordinator: self)
         }
     }
@@ -57,7 +61,7 @@ final class EditScreenVCCoordinator: ProfileEditVCCoordProtocol {
     private func startRoomEdit() {
         self.moveToEditScreen {
             // RoomEditEnum을 사용하여 ViewModel 생성
-            let roomEditVM = EditScreenVM<RoomEditEnum>()
+            let roomEditVM = EditScreenVM<RoomEditEnum>(isMake: self.isMake)
             return EditScreenVC(viewModel: roomEditVM, coordinator: self)
         }
     }

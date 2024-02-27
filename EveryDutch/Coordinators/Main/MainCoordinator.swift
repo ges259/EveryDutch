@@ -97,7 +97,8 @@ final class MainCoordinator: MainCoordProtocol{
         // Main-Coordinator 생성
         let editScreenVCCoordinator = EditScreenVCCoordinator(
             nav: self.nav,
-            isProfileEdit: true)
+            isProfileEdit: true, 
+            isMake: true)
         self.moveToEditScreenVCCoord(to: editScreenVCCoordinator)
     }
     
@@ -106,7 +107,8 @@ final class MainCoordinator: MainCoordProtocol{
         // Main-Coordinator 생성
         let editScreenVCCoordinator = EditScreenVCCoordinator(
             nav: self.nav,
-            isProfileEdit: false)
+            isProfileEdit: false, 
+            isMake: true)
         self.moveToEditScreenVCCoord(to: editScreenVCCoordinator)
 
     }

@@ -9,11 +9,11 @@ import Foundation
 
 protocol ProfileEditVMProtocol {
     
+    func getPlaceholderTitle(index: Int) -> String
     
+    var getBottomBtnTitle: String? { get }
     
-    var bottomBtn_Title: String? { get }
-    
-    
+    var getNavTitle: String? { get }
     
     
     

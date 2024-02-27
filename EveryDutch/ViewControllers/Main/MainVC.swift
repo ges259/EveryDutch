@@ -264,15 +264,16 @@ extension MainVC {
     // MARK: - 프로필 액션
     // 사람 이미지 버튼
     @objc private func profileScreenBtnTapped() {
-        self.coordinator.profileScreen()
+        
+        // MARK: - Fix
+//        self.coordinator.profileScreen()
+        self.coordinator.profileEditScreen()
     }
     
     // MARK: - 방 생성 액션
     // 플러스 버튼
     @objc private func makeRoomScreenBtnTapped() {
-        // MARK: - Fix
-        self.coordinator.profileEditScreen()
-//        self.coordinator.roomEditScreen()
+        self.coordinator.roomEditScreen()
     }
     
     // MARK: - 배경 액션
