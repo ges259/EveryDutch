@@ -49,7 +49,6 @@ extension CardDecorationCell {
     
     // MARK: - UI 설정
     private func configureUI() {
-        self.backgroundColor = .clear
         self.selectionStyle = .none
         self.separatorInset = .zero
         self.backgroundColor = .medium_Blue
@@ -69,7 +68,40 @@ extension CardDecorationCell {
     private func configureAction() {
         
     }
-    func setDetailLbl(text: String) {
-        self.cellStv.userNameLbl.text = text
+    
+    // MARK: - 레이블 설정
+    func setDetailLbl(type: EditCellType?,
+                      isLast: Bool) {
+        guard let type = type else { return }
+        self.cellStv.userNameLbl.text = type.getCellTitle
+        
+        if isLast { self.configureLastCell() }
+    }
+    
+    // MARK: - 마지막 셀 모서리 설정
+    private func configureLastCell() {
+        self.setRoundedCorners(.bottom, withCornerRadius: 12)
+    }
+}
+
+
+
+protocol CardDecorationCellVMProtocol {
+    var getUserName: String? { get }
+    
+}
+
+struct CardDecorationCellVM: CardDecorationCellVMProtocol {
+    
+    private let editCellType: EditCellType
+    
+    
+    init(editCellType: EditCellType) {
+        self.editCellType = editCellType
+        
+    }
+    
+    var getUserName: String? {
+        return self.editCellType.getCellTitle
     }
 }

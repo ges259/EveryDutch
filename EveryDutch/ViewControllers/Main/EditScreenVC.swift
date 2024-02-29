@@ -119,7 +119,7 @@ extension EditScreenVC {
     private func configureUI() {
         self.view.backgroundColor = UIColor.base_Blue
         
-        self.tableView.addShadow(shadowType: .card)
+//        self.tableView.addShadow(shadowType: .card)
         
         self.profileChangeBtn.setRoundedCorners(.bottom, withCornerRadius: 12)
         self.backgroundChangeBtn.setRoundedCorners(.bottom, withCornerRadius: 12)
@@ -219,7 +219,7 @@ extension EditScreenVC: UITableViewDelegate {
     func tableView(_ tableView: UITableView,
                    heightForRowAt indexPath: IndexPath)
     -> CGFloat {
-        return 50
+        return 55
     }
     
     // MARK: - 헤더뷰 설정
@@ -235,28 +235,8 @@ extension EditScreenVC: UITableViewDelegate {
     func tableView(_ tableView: UITableView,
                    heightForHeaderInSection section: Int)
     -> CGFloat {
-        return 70
+        return 65
     }
-    
-    // MARK: - 푸터뷰 설정
-    /// 푸터 뷰를 구성합니다. 특정 조건을 만족하는 섹션에만 푸터를 설정합니다.
-    func tableView(_ tableView: UITableView,
-                   viewForFooterInSection section: Int)
-    -> UIView? {
-        return section == 1
-        ? self.backgroundChangeBtn
-        : self.profileChangeBtn
-    }
-    
-    // MARK: - 푸터뷰 높이
-    /// 푸터의 높이를 설정합니다. 특정 조건을 만족할 때만 높이를 할당합니다.
-    func tableView(_ tableView: UITableView,
-                   heightForFooterInSection section: Int)
-    -> CGFloat {
-        return 50
-    }
-    
-    
     
     
     
@@ -272,11 +252,6 @@ extension EditScreenVC: UITableViewDelegate {
         return TableHeaderView(
             title: title,
             tableHeaderEnum: .profileVC)
-    }
-    
-    // MARK: - 푸터뷰 생성
-    private func createFooterView() -> UIView {   
-        return TableFooterView()
     }
 }
 
@@ -324,32 +299,30 @@ extension EditScreenVC: UITableViewDataSource {
         
         // 첫 번째 셀이라면, 오른쪽 상단 모서리 설정
         let isFirst = indexPath.row == 0
+        let isLast = self.viewModel.getLastCell(indexPath: indexPath)
         
-        let placeholder = self.viewModel.getPlaceholderTitle(
-            index: indexPath.row)
-        cell.configureTextField(isFirst: isFirst, 
-                                placeholder: placeholder)
-        
-        // 셀의 텍스트 설정
-        let text = self.viewModel.getTableData(
-            section: indexPath.section,
-            index: indexPath.row)
-        cell.setDetailLbl(text: text)
+        // 셀의 타입 가져오기
+        let type = self.viewModel.cellTypes(indexPath: indexPath)
+        // 셀의 텍스트 및 모서리 설정
+        cell.setDetailLbl(type: type,
+                          isFirst: isFirst, 
+                          isLast: isLast)
         
         return cell
     }
     
     // MARK: - [데코 셀]
-    private func configureDecorationCell(indexPath: IndexPath) -> CardDecorationCell {
+    private func configureDecorationCell(
+        indexPath: IndexPath)
+    -> CardDecorationCell {
         let cell = tableView.dequeueReusableCell(
             withIdentifier: Identifier.cardDecorationCell,
             for: indexPath) as! CardDecorationCell
-        
+        let isLast = self.viewModel.getLastCell(indexPath: indexPath)
+        // 셀의 타입 가져오기
+        let type = self.viewModel.cellTypes(indexPath: indexPath)
         // 셀의 텍스트 설정
-        let text = self.viewModel.getTableData(
-            section: indexPath.section,
-            index: indexPath.row)
-        cell.setDetailLbl(text: text)
+        cell.setDetailLbl(type: type, isLast: isLast)
         
         return cell
     }

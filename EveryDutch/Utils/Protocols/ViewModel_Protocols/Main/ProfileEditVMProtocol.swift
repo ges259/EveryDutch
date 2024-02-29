@@ -9,7 +9,7 @@ import Foundation
 
 protocol ProfileEditVMProtocol {
     
-    func getPlaceholderTitle(index: Int) -> String
+//    func getPlaceholderTitle(index: Int) -> String?
     
     var getBottomBtnTitle: String? { get }
     
@@ -26,6 +26,9 @@ protocol ProfileEditVMProtocol {
     // MARK: - 섹션 당 데이터 개수
     func getNumOfCell(section: Int) -> Int
     
-    // MARK: - 테이블 데이터
-    func getTableData(section: Int, index: Int) -> String
+    // MARK: - 셀에 사용할 타입 반환
+    func cellTypes(indexPath: IndexPath) -> EditCellType?
+    
+    
+    func getLastCell(indexPath: IndexPath) -> Bool
 }

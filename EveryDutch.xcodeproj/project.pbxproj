@@ -799,8 +799,6 @@
 			isa = PBXGroup;
 			children = (
 				5F5FC6132B6AA48400693E6F /* ProfileVCEnum.swift */,
-				5F46896A2B6E5482001352FA /* EditScreenEnum.swift */,
-				5F46896C2B6E5494001352FA /* RoomEditEnum.swift */,
 				5F02B5012B74290F00069C2E /* ReceiptWriteEnum.swift */,
 				5F02B5032B74293900069C2E /* CellSelectionUIStvEnum.swift */,
 			);
@@ -871,6 +869,15 @@
 				5F7DB59A2B5921E300E8C11F /* PeopleSeelctionEnum.swift */,
 			);
 			path = ViewControllers;
+			sourceTree = "<group>";
+		};
+		5F7FF0632B8FA12D005B315E /* EditScreenType */ = {
+			isa = PBXGroup;
+			children = (
+				5F46896A2B6E5482001352FA /* EditScreenEnum.swift */,
+				5F46896C2B6E5494001352FA /* RoomEditEnum.swift */,
+			);
+			path = EditScreenType;
 			sourceTree = "<group>";
 		};
 		5F8513D12B4D673000A5B22D /* Users_API */ = {
@@ -960,6 +967,7 @@
 		5F87DF282B3C95FD001D5B80 /* Enum */ = {
 			isa = PBXGroup;
 			children = (
+				5F7FF0632B8FA12D005B315E /* EditScreenType */,
 				5F7CC3302B87B03900236E84 /* ViewControllers */,
 				5F7CC32F2B87B00800236E84 /* CustomViews */,
 				5F7CC32E2B87AFA100236E84 /* Views */,

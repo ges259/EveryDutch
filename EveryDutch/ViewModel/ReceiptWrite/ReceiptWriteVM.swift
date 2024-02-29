@@ -90,6 +90,7 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     
     
 // MARK: - [공통]
+    
     private var receiptWriteEnum: [ReceiptWriteEnum] = ReceiptWriteEnum.allCases
     
     // MARK: - 헤더 타이틀
@@ -115,6 +116,7 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
         ? true
         : false
     }
+    
     
     
     
@@ -166,11 +168,13 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
             receiptEnum: .date)
     }
     
+    // MARK: - 가격 셀
     var getPriceCellIndexPath: IndexPath {
         return self.findReceiptEnumIndex(
             receiptEnum: .price)
     }
     
+    // MARK: - 메모 셀
     var getMemoCellIndexPath: IndexPath {
         return self.findReceiptEnumIndex(
             receiptEnum: .memo)

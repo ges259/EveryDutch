@@ -7,18 +7,25 @@
 
 import UIKit
 
-final class EditScreenVM<Section: CellTitleProvider & CaseIterable> : ProfileEditVMProtocol {
+final class EditScreenVM: ProfileEditVMProtocol {
     
+    private let sections: [EditScreenType]
+    private var cellTypesDictionary: [Int: [EditCellType]] = [:]
     
-    
-    private let section: [Section]
     private let isMake: Bool
     
     
+    
+    
     // MARK: - 라이프사이클
-    init(isMake: Bool) {
-        self.section = Array(Section.allCases)
+    init<T: EditScreenType & CaseIterable>(
+        isMake: Bool,
+        editScreenType: T.Type)
+    {
         self.isMake = isMake
+        self.sections = Array(editScreenType.allCases)
+        self.initializeCellTypes()
+        
     }
     deinit {
         print("\(#function)-----\(self)")
@@ -27,52 +34,84 @@ final class EditScreenVM<Section: CellTitleProvider & CaseIterable> : ProfileEdi
     
     
     
+    
+// MARK: - 타입
+    
+    
+    
+    // MARK: - 타입 설정
+    private func initializeCellTypes() {
+        self.sections.forEach { [weak self] section in
+            // 여기서는 section의 타입이 EditScreenType 프로토콜을 채택하는 enum이며,
+            // 각 enum은 Int 타입의 rawValue를 가진다고 가정합니다.
+            let sectionIndex = section.sectionIndex
+            self?.cellTypesDictionary[sectionIndex] = section.getAllOfCellType
+        }
+    }
+    
+    
+    // MARK: - 타입 반환
+    func cellTypes(indexPath: IndexPath) -> EditCellType? {
+        return self.cellTypesDictionary[indexPath.section]?[indexPath.row]
+    }
+    
+    
+    
+    
+    
+// MARK: - 섹션 설정
+    
+    
+    
     // MARK: - 섹션의 개수
     var getNumOfSection: Int {
-        return self.section.count
+        return self.sections.count
     }
     
     // MARK: - 헤더의 타이틀
     func getHeaderTitle(section: Int) -> String {
-        return self.section[section].getHeaderTitle
+        return self.sections[section].getHeaderTitle
     }
     
     // MARK: - 푸터뷰 높이
     func getFooterViewHeight(section: Int) -> CGFloat {
-        let tableData = self.section[section].getCellTitle
-        let count = tableData.count
-        // MARK: - Fix
-        // 코드 리팩토링이 필요할 듯.
-        // 개수로 하는 건 나중을 고려하지 않는 코드
-        return count < 3 ? 50 : 5
+        self.sections[section].footerViewHeight
     }
     
-    // MARK: - 섹션 당 데이터 개수
+    
+    
+// MARK: - 셀
+    
+    
+    
+    // MARK: - 셀 개수
     func getNumOfCell(section: Int) -> Int {
-        let tableData = self.section[section].getCellTitle
-        return tableData.count
+        return self.cellTypesDictionary[section]?.count ?? 0
+    }
+    func getLastCell(indexPath: IndexPath) -> Bool {
+        guard let count = self.cellTypesDictionary[indexPath.section]?.count else { return false }
+        
+        return (count - 1) == indexPath.row
+        ? true
+        : false
     }
     
-    // MARK: - 테이블 데이터
-    func getTableData(section: Int, 
-                      index: Int)
-    -> String {
-        let tableData: [String] = self.section[section].getCellTitle
-        return tableData[index]
-    }
+    
+    
+    
+    
+// MARK: - isMake사용
+// '생성'과 '수정'을 구분.
+    // isMake == true ----> 생성
+    // isMake == false ----> 수정
     
     // MARK: - 하단 버튼 타이틀
     var getBottomBtnTitle: String? {
-        return self.section.first?.getBottomBtnTitle(isMake: isMake)
+        return self.sections[0].bottomBtnTitle(isMake: self.isMake)
     }
     
     // MARK: - 네비게이션 타이틀
     var getNavTitle: String? {
-        return self.section.first?.getNavTitle(isMake: isMake)
-    }
-    
-    // MARK: - 플레이스 홀더 텍스트
-    func getPlaceholderTitle(index: Int) -> String {
-        return self.section.first?.getTextFieldPlaceholder(index: index) ?? ""
+        return self.sections[0].getNavTitle(isMake: self.isMake)
     }
 }

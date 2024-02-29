@@ -70,15 +70,12 @@ extension CardDataCell {
         
         self.detailLbl.snp.makeConstraints { make in
             make.top.bottom.leading.equalToSuperview()
-            make.width.equalTo(90)
+            make.width.equalTo(100)
         }
         self.textField.snp.makeConstraints { make in
             make.top.bottom.trailing.equalToSuperview()
             make.leading.equalTo(self.detailLbl.snp.trailing)
         }
-    }
-    func setDetailLbl(text: String) {
-        self.detailLbl.text = text
     }
 }
 
@@ -90,14 +87,33 @@ extension CardDataCell {
 
 
 // MARK: - 함수
+
 extension CardDataCell {
-    func configureTextField(isFirst: Bool,
-                            placeholder: String) {
+    
+    // MARK: - 셀의 텍스트 설정
+    func setDetailLbl(type: EditCellType?,
+                      isFirst: Bool,
+                      isLast: Bool)
+    {
+        
+        guard let type = type else { return }
+        
         if isFirst { self.configureTextFieldCorner() }
+        if isLast { self.configureLastCell() }
+        
+        self.detailLbl.text = type.getCellTitle
         
         self.textField.attributedPlaceholder = self.setAttributedText(
-            placeholderText: placeholder)
+            placeholderText: type.getTextFieldPlaceholder)
+        
     }
+    
+    // MARK: - 마지막 셀 모서리 설정
+    private func configureLastCell() {
+        self.setRoundedCorners(.bottom, withCornerRadius: 12)
+    }
+    
+    // MARK: - 셀의 모서리 설정
     private func configureTextFieldCorner() {
         self.textField.setRoundedCorners(.leftTop, withCornerRadius: 12)
     }
@@ -112,7 +128,11 @@ extension CardDataCell {
 
 
 
+// MARK: - 텍스트필드 델리게이트
+
 extension CardDataCell: UITextFieldDelegate {
+    
+    // MARK: - 수정 시작
     func textFieldDidBeginEditing(_ textField: UITextField) {
         print(#function)
     }
