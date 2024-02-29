@@ -14,6 +14,10 @@ final class EditScreenVM: ProfileEditVMProtocol {
     
     private let isMake: Bool
     
+    // MARK: - Fix
+    // 하단 주석 친 코드와 같이 데이터가 변경되면, 저장. ( 어떤 식으로 저장해야 할지는 좀 더 생각해 봐야 할 듯)
+//    private var changedData: [EditCellType.Type: Any] = [:]
+    
     
     
     
@@ -71,11 +75,6 @@ final class EditScreenVM: ProfileEditVMProtocol {
     // MARK: - 헤더의 타이틀
     func getHeaderTitle(section: Int) -> String {
         return self.sections[section].getHeaderTitle
-    }
-    
-    // MARK: - 푸터뷰 높이
-    func getFooterViewHeight(section: Int) -> CGFloat {
-        self.sections[section].footerViewHeight
     }
     
     

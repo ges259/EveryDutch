@@ -219,7 +219,7 @@ extension EditScreenVC: UITableViewDelegate {
     func tableView(_ tableView: UITableView,
                    heightForRowAt indexPath: IndexPath)
     -> CGFloat {
-        return 55
+        return 60
     }
     
     // MARK: - 헤더뷰 설정

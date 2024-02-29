@@ -570,9 +570,6 @@ extension ReceiptWriteVM {
 
 
 
-
-
-
 // MARK: - [여러명] paymentDetails 선택
 
 extension ReceiptWriteVM {

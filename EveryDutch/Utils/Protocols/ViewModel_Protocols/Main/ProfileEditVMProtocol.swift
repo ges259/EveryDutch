@@ -9,26 +9,28 @@ import Foundation
 
 protocol ProfileEditVMProtocol {
     
-//    func getPlaceholderTitle(index: Int) -> String?
-    
+    // MARK: - 하단 버튼 타이틀
     var getBottomBtnTitle: String? { get }
     
+    // MARK: - 네비게이션 타이틀
     var getNavTitle: String? { get }
     
     
     
+    
+    // MARK: - 섹션의 개수
     var getNumOfSection: Int { get }
     // MARK: - 헤더의 타이틀
     func getHeaderTitle(section: Int) -> String
     
-    // MARK: - 푸터뷰 높이
-    func getFooterViewHeight(section: Int) -> CGFloat
-    // MARK: - 섹션 당 데이터 개수
+    
+    
+    // MARK: - 셀의 개수
     func getNumOfCell(section: Int) -> Int
     
     // MARK: - 셀에 사용할 타입 반환
     func cellTypes(indexPath: IndexPath) -> EditCellType?
     
-    
+    // MARK: - 마지막 셀
     func getLastCell(indexPath: IndexPath) -> Bool
 }
