@@ -23,4 +23,11 @@ enum ImageCellType: Int, EditCellType, CaseIterable {
     var getTextFieldPlaceholder: String {
         return ""
     }
+    
+    var databaseString: String {
+        switch self {
+        case .profileImg: return DatabaseConstants.card_profile_image
+        case .backgroundImg: return DatabaseConstants.card_background_image
+        }
+    }
 }

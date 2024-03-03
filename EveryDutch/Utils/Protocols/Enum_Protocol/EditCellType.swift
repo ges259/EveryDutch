@@ -15,4 +15,6 @@ protocol EditCellType {
     
     // MARK: - 플레이스홀더 타이틀
     var getTextFieldPlaceholder: String { get }
+    
+    var databaseString: String { get }
 }

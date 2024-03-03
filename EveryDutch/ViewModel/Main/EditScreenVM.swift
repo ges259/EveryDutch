@@ -16,7 +16,7 @@ final class EditScreenVM: ProfileEditVMProtocol {
     
     // MARK: - Fix
     // 하단 주석 친 코드와 같이 데이터가 변경되면, 저장. ( 어떤 식으로 저장해야 할지는 좀 더 생각해 봐야 할 듯)
-//    private var changedData: [EditCellType.Type: Any] = [:]
+    private var changedData: [String: Any] = [:]
     
     
     
@@ -34,6 +34,8 @@ final class EditScreenVM: ProfileEditVMProtocol {
     deinit {
         print("\(#function)-----\(self)")
     }
+    
+    
     
     
     

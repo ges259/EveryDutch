@@ -26,4 +26,13 @@ enum DecorationCellType: Int, EditCellType, CaseIterable {
     var getTextFieldPlaceholder: String {
         return ""
     }
+    
+    var databaseString: String {
+        switch self {
+        case .blurEffect: return DatabaseConstants.blur_Effect
+        case .titleColor: return DatabaseConstants.title_Color
+        case .pointColor: return DatabaseConstants.point_Color
+        case .backgourndColor: return DatabaseConstants.background_Color
+        }
+    }
 }

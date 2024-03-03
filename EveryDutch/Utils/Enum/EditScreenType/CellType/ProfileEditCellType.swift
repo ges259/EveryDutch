@@ -27,4 +27,11 @@ enum ProfileEditCellType: Int, EditCellType, CaseIterable {
         case .personalID:   return "개인 ID를 설정해 주세요."
         }
     }
+    
+    var databaseString: String {
+        switch self {
+        case .nickName: return DatabaseConstants.user_name
+        case .personalID: return DatabaseConstants.personal_ID
+        }
+    }
 }

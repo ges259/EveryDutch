@@ -30,4 +30,12 @@ enum RoomEditCellType: Int, EditCellType, CaseIterable {
         case .ManagerName:  return "총무를 선택해 주세요."
         }
     }
+    
+    var databaseString: String {
+        switch self {
+        case .roomName: return DatabaseConstants.room_name
+        case .className: return DatabaseConstants.class_name
+        case .ManagerName: return DatabaseConstants.manager_name
+        }
+    }
 }

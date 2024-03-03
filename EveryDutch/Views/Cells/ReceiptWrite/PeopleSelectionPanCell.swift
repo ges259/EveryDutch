@@ -86,7 +86,6 @@ extension PeopleSelectionPanCell {
     // MARK: - 셀의 데이터 설정
     func configureCellData(isSingleMode: Bool,
                            isSelected: Bool,
-                           userID: String,
                            user: RoomUsers) {
         // 모드 설정
         self.isSingleMode = isSingleMode

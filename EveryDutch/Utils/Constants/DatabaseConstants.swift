@@ -26,6 +26,12 @@ extension DatabaseConstants {
     
     static let room_user_name: String = "room_user_name"
     static let room_user_image: String = "room_user_image"
+    
+    static let class_name: String = "class_name"
+    static let manager_name: String = "manager_name"
+    
+    static let card_profile_image: String = "card_profile_image"
+    static let card_background_image: String = "card_background_image"
 }
 
 
@@ -51,4 +57,15 @@ extension DatabaseConstants {
     static let payback: String = "Payback"
     static let saveReceipt: String = "SaveReceipt"
     static let createReceipt: String = "CreateReceipt"
+}
+
+
+
+
+extension DatabaseConstants {
+    static let blur_Effect: String = "blur_Effect"
+    static let title_Color: String = "title_Color"
+    static let point_Color: String = "point_Color"
+    static let background_Color: String = "background_Color"
+    
 }

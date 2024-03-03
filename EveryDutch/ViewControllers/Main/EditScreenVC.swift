@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import Photos
 
 final class EditScreenVC: UIViewController {
     
@@ -326,6 +327,121 @@ extension EditScreenVC: UITableViewDataSource {
         
         return cell
     }
+    
+    // MARK: - 셀을 눌렀을 때
+    func tableView(
+        _ tableView: UITableView,
+        didSelectRowAt indexPath: IndexPath)
+    {
+        let type = self.viewModel.cellTypes(indexPath: indexPath)
+        self.screenChange(type: type)
+    }
+    
+    private func screenChange(type: EditCellType?) {
+        switch type {
+        case let imageType as ImageCellType:
+            self.selectedImgTypeCell(type: imageType)
+            
+        case let decorationType as DecorationCellType:
+            self.selectedDecorationTypeCell(type: decorationType)
+            
+        default: break
+        }
+    }
+    
+    // MARK: - [이미지 섹션]
+    private func selectedImgTypeCell(type: ImageCellType) {
+        self.requestPhotoLibraryAccess()
+        
+        switch type {
+        case .profileImg: break
+        case .backgroundImg: break
+        }
+    }
+    
+    // MARK: - [데코 섹션]
+    private func selectedDecorationTypeCell(type: DecorationCellType) {
+        self.coordinator.colorPickerScreen()
+        switch type {
+        case .blurEffect: break
+        case .titleColor: break
+        case .pointColor: break
+        case .backgourndColor: break
+        }
+    }
+    
+    
+    
+    func requestPhotoLibraryAccess() {
+        // iOS 14 이상에서 사용할 수 있는 authorizationStatus(for:) 메서드 사용
+        let status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
+        switch status {
+            // .authorized == [전체 접근 허용]
+                // 사용자가 앱에 자신의 사진 라이브러리 전체에 대한 접근을 허용한 경우
+        case .authorized:
+            print("Authorized")
+            // 권한이 이미 있음
+            self.coordinator.imagePickerScreen()
+            
+            
+            // .limited == [접근 제한]
+                // 사용자가 앱에 사진 라이브러리의 전체 접근을 허용하지 않고,
+                // 대신 특정 사진이나 앨범에 대한 접근만을 허용한 경우
+        case .limited:
+            print("Limited Access")
+            self.photoAccess()
+            
+            
+            // .notDetermined == [접근 제한되지 않음]
+                // 사용자가 아직 앱에 대한 사진 라이브러리 접근 권한을 결정하지 않은 상태
+            // .denied == [접근 거부]
+                // 사용자가 앱의 사진 라이브러리 접근을 명시적으로 거부한 경우
+                // 사용자가 권한을 거부함. 설정으로 유도할 수 있음
+            // .restricted == [접근 불가]
+                // 부모의 제어 설정이나 기업 정책 등 외부 요인으로 인해 앱이 사진 라이브러리에 접근할 수 없는 경우
+        case .notDetermined, .denied, .restricted:
+            print(status)
+            self.showPhotoLibraryAccessDeniedAlert()
+            
+            
+        @unknown default: break
+        }
+    }
+    
+    private func photoAccess() {
+        print(#function)
+        // 권한 요청
+        PHPhotoLibrary.requestAuthorization { newStatus in
+            if newStatus == .authorized {
+                DispatchQueue.main.async {
+                    self.coordinator.imagePickerScreen()
+                }
+            }
+        }
+    }
+    
+    private func showPhotoLibraryAccessDeniedAlert() {
+        print(#function)
+        let alert = UIAlertController(
+            title: "사진 라이브러리 접근 권한 필요",
+            message: "앱에서 사진을 선택하기 위해서는 사진 라이브러리 접근 권한이 필요합니다. 설정에서 권한을 허용해주세요.",
+            preferredStyle: .alert)
+        
+        alert.addAction(UIAlertAction(title: "설정으로 이동", style: .default, handler: { _ in
+            // 사용자를 앱의 설정 화면으로 이동
+            guard let settingsUrl = URL(string: UIApplication.openSettingsURLString),
+                  UIApplication.shared.canOpenURL(settingsUrl) else {
+                return
+            }
+            UIApplication.shared.open(settingsUrl, options: [:])
+        }))
+        
+        alert.addAction(UIAlertAction(title: "취소", style: .cancel))
+        // 현재 화면에 알림 표시
+        DispatchQueue.main.async {
+            self.present(alert, animated: true)
+        }
+    }
 }
 
 
@@ -341,5 +457,32 @@ extension EditScreenVC: UITableViewDataSource {
 extension EditScreenVC: UIScrollViewDelegate {
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         self.view.endEditing(true)
+    }
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - 색상 선택 델리게이트
+extension EditScreenVC: ColorPickerDelegate {
+    func colorSelect(_ color: UIColor) {
+        print(color)
+        
+        self.view.backgroundColor = color
+    }
+}
+
+
+
+
+extension EditScreenVC: ImagePickerDelegate {
+    func imageSelect(image: UIImage?) {
+        print(#function)
     }
 }
