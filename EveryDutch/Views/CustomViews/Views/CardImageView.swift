@@ -36,6 +36,9 @@ final class CardImageView: UIView {
         return img
     }()
     
+    private var blurView: UIView = UIView.configureView(
+        color: .white.withAlphaComponent(0.38))
+    
     
     // MARK: - 프로퍼티
     
@@ -61,9 +64,10 @@ extension CardImageView {
     // MARK: - UI 설정
     private func configureUI() {
         
-        self.addShadow(shadowType: .card)
+//        self.addShadow(shadowType: .card)
         self.backgroundImg.setRoundedCorners(.all, withCornerRadius: 10)
-        
+        self.blurView.setRoundedCorners(.all, withCornerRadius: 10)
+        self.blurView.isHidden = true
         
         // MARK: - Fix
         self.titleLbl.text = "더치더치"
@@ -72,7 +76,6 @@ extension CardImageView {
         self.userImg.image = UIImage.person_Fill_Img
         self.arrowImg.image = UIImage.chevronLeft
         self.dutchImg.backgroundColor = .normal_white
-        
     }
     
     // MARK: - 오토레이아웃 설정
@@ -83,7 +86,8 @@ extension CardImageView {
          self.dutchImg,
          self.lineView,
          self.nameLbl,
-         self.userImg].forEach { view in
+         self.userImg,
+         self.blurView].forEach { view in
             self.addSubview(view)
         }
         
@@ -119,10 +123,37 @@ extension CardImageView {
             make.trailing.bottom.equalToSuperview().offset(-20)
             make.width.height.equalTo(30)
         }
+        self.blurView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
     }
     
     // MARK: - 액션 설정
     private func configureAction() {
         
+    }
+    
+    
+    func titleChange(color: UIColor) {
+        self.titleLbl.textColor = color
+    }
+    func pointChange(color: UIColor) {
+        self.lineView.backgroundColor = color
+        
+    }
+    func backgroundColorChange(color: UIColor) {
+        self.backgroundImg.backgroundColor = color
+    }
+    func backgroundImgChange(image: UIImage?) {
+        self.backgroundImg.image = image
+    }
+    func profileImgChange(image: UIImage?) {
+        self.userImg.image = image
+    }
+    
+    func blurViewIsHidden(_ isHidden: Bool) {
+        
+//        self.blurView.isHidden = isHidden
+        self.blurView.isHidden.toggle()
     }
 }

@@ -19,8 +19,13 @@ final class CellSelectionUIStv: UIStackView {
     var userNameLbl: CustomLabel = CustomLabel(
         font: UIFont.systemFont(ofSize: 14))
     
-    private var rightView: UIView = UIView.configureView(
-        color: UIColor.white)
+    var rightView: UIImageView = {
+        let img = UIImageView()
+        img.backgroundColor = .white
+        return img
+    }()
+//    .configureView(
+//        color: UIColor.white)
     
     var isTappedView: UIView = UIView.configureView(
         color: UIColor.deep_Blue)
@@ -96,6 +101,11 @@ extension CellSelectionUIStv {
         
         
         
+    }
+    
+    func isTapped(color: UIColor) {
+        self.isTappedView.isHidden = false
+        self.isTappedView.backgroundColor = color
     }
 }
 

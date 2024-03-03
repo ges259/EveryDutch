@@ -16,7 +16,11 @@ final class EditScreenVM: ProfileEditVMProtocol {
     
     // MARK: - Fix
     // 하단 주석 친 코드와 같이 데이터가 변경되면, 저장. ( 어떤 식으로 저장해야 할지는 좀 더 생각해 봐야 할 듯)
-    private var changedData: [String: Any] = [:]
+    private var changedData: [String: Any?] = [:] {
+        didSet {
+            dump(self.changedData)
+        }
+    }
     
     
     
@@ -34,6 +38,8 @@ final class EditScreenVM: ProfileEditVMProtocol {
     deinit {
         print("\(#function)-----\(self)")
     }
+    
+    var currentType: EditScreenType?
     
     
     
@@ -61,6 +67,57 @@ final class EditScreenVM: ProfileEditVMProtocol {
         return self.cellTypesDictionary[indexPath.section]?[indexPath.row]
     }
     
+    // MARK: - 인덱스 튜플
+    private var currentIndexTuple: (type: EditCellType,
+                                    indexPath: IndexPath)?
+    
+    // MARK: - 인덱스 반환
+    func saveChangedData<T: EditCellType>(cellType: T.Type,
+                                          data: Any?)
+    -> (type: T, indexPath: IndexPath)? {
+        
+        guard let tuple = self.currentIndexTuple,
+              let type = tuple.type as? T
+        else { return nil }
+        // 변경된 데이터 저장
+        self.saveChangedData(type: type,
+                             data: data)
+        
+        return (type: type, indexPath: tuple.indexPath)
+    }
+    
+    
+    
+    
+    func saveChangedData(type: EditCellType,
+                         data: Any?) {
+        self.changedData[type.databaseString] = data
+    }
+    
+    
+    // MARK: - 인덱스 및 타입 저장
+    func saveIndex(indexPath: IndexPath) -> EditCellType? {
+        guard let type = self.cellTypes(indexPath: indexPath) else {
+            return nil
+        }
+        
+        let indexPath = IndexPath(row: indexPath.row,
+                                  section: indexPath.section)
+        self.currentIndexTuple = (type: type,
+                                  indexPath: indexPath)
+        return type
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    // MARK: - 변경된 데이터 저장
+
     
     
     

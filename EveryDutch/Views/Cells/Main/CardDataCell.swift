@@ -27,8 +27,8 @@ final class CardDataCell: UITableViewCell {
     
     
     // MARK: - 프로퍼티
-    
-    
+    private var cellType: EditCellType?
+    weak var delegate: CardDataCellDelegate?
     
     // MARK: - 라이프사이클
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -97,6 +97,7 @@ extension CardDataCell {
     {
         
         guard let type = type else { return }
+        self.cellType = type
         
         if isFirst { self.configureTextFieldCorner() }
         if isLast { self.configureLastCell() }
@@ -136,4 +137,19 @@ extension CardDataCell: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
         print(#function)
     }
+    
+    // MARK: - 수정 끝
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        print(#function)
+        
+        guard let cellType = self.cellType,
+                let text = textField.text,
+                text !=  "" else { return }
+        
+        self.delegate?.textData(type: cellType, text: text)
+    }
+}
+
+protocol CardDataCellDelegate: AnyObject {
+    func textData(type: EditCellType, text: String)
 }

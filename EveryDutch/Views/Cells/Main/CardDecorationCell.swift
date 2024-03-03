@@ -82,6 +82,20 @@ extension CardDecorationCell {
     private func configureLastCell() {
         self.setRoundedCorners(.bottom, withCornerRadius: 12)
     }
+    
+    
+    func colorIsChanged(color: UIColor) {
+        self.cellStv.isTapped(color: color)
+    }
+    
+    
+    func imgIsChanged(image: UIImage?) {
+        self.cellStv.rightView.image = image
+    }
+    
+    func blurEffectIsHidden(_ isHidden: Bool) {
+        self.cellStv.isTappedView.isHidden.toggle()
+    }
 }
 
 
