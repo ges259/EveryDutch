@@ -25,6 +25,7 @@ final class EditScreenVM: ProfileEditVMProtocol {
     
     
     
+    
     // MARK: - 라이프사이클
     init<T: EditScreenType & CaseIterable>(
         isMake: Bool,
@@ -40,8 +41,6 @@ final class EditScreenVM: ProfileEditVMProtocol {
     }
     
     var currentType: EditScreenType?
-    
-    
     
     
     
@@ -72,16 +71,13 @@ final class EditScreenVM: ProfileEditVMProtocol {
                                     indexPath: IndexPath)?
     
     // MARK: - 인덱스 반환
-    func saveChangedData<T: EditCellType>(cellType: T.Type,
-                                          data: Any?)
+    func getCurrentCellType<T: EditCellType>(cellType: T.Type)
     -> (type: T, indexPath: IndexPath)? {
         
         guard let tuple = self.currentIndexTuple,
               let type = tuple.type as? T
         else { return nil }
-        // 변경된 데이터 저장
-        self.saveChangedData(type: type,
-                             data: data)
+        
         
         return (type: type, indexPath: tuple.indexPath)
     }
@@ -89,14 +85,23 @@ final class EditScreenVM: ProfileEditVMProtocol {
     
     
     
-    func saveChangedData(type: EditCellType,
-                         data: Any?) {
+    
+    
+    
+// MARK: - 데이터 저장
+    
+    
+    
+    // MARK: - 변경된 데이터 저장
+    // 변경된 데이터 저장
+    func saveChangedData<T: EditCellType>(type: T,
+                                          data: Any?) {
         self.changedData[type.databaseString] = data
     }
     
     
     // MARK: - 인덱스 및 타입 저장
-    func saveIndex(indexPath: IndexPath) -> EditCellType? {
+    func saveCurrentIndexAndType(indexPath: IndexPath) -> EditCellType? {
         guard let type = self.cellTypes(indexPath: indexPath) else {
             return nil
         }
@@ -108,16 +113,6 @@ final class EditScreenVM: ProfileEditVMProtocol {
         return type
     }
     
-    
-    
-    
-    
-    
-    
-    
-    
-    // MARK: - 변경된 데이터 저장
-
     
     
     
@@ -138,6 +133,8 @@ final class EditScreenVM: ProfileEditVMProtocol {
     
     
     
+    
+    
 // MARK: - 셀
     
     
@@ -146,6 +143,8 @@ final class EditScreenVM: ProfileEditVMProtocol {
     func getNumOfCell(section: Int) -> Int {
         return self.cellTypesDictionary[section]?.count ?? 0
     }
+    
+    // MARK: - 마지막 셀
     func getLastCell(indexPath: IndexPath) -> Bool {
         guard let count = self.cellTypesDictionary[indexPath.section]?.count else { return false }
         
@@ -171,5 +170,41 @@ final class EditScreenVM: ProfileEditVMProtocol {
     // MARK: - 네비게이션 타이틀
     var getNavTitle: String? {
         return self.sections[0].getNavTitle(isMake: self.isMake)
+    }
+}
+
+
+
+
+
+
+extension EditScreenVM {
+    func validation() -> Bool {
+        
+        if let type = self.sections.first {
+            if let type = type as? RoomEditEnum {
+                return self.roomValidation(type: RoomEditCellType.self)
+            }
+            
+            else if let type = type as? ProfileEditEnum {
+                return self.roomValidation(type: ProfileEditCellType.self)
+            }
+        }
+        return false
+    }
+    
+    
+    private func roomValidation<T: EditCellType & CaseIterable>(
+        type: T.Type) -> Bool
+    {
+        // type의 allCases를 통해 순환
+        for type in T.allCases {
+            // 특정 타입에 대한 데이터가 존재하지 않는 경우, 즉시 false 반환
+            if !self.changedData.keys.contains(type.databaseString) {
+                return false
+            }
+        }
+        // 모든 타입에 대한 데이터가 존재하는 경우, true 반환
+        return true
     }
 }

@@ -12,7 +12,7 @@ final class CheckReceiptPanCell: UITableViewCell {
     
     // MARK: - 레이아웃
     var label: CustomLabel = CustomLabel(
-        text: ReceiptCheck.memo.description,
+        text: "",
         font: UIFont.systemFont(ofSize: 14))
     
     

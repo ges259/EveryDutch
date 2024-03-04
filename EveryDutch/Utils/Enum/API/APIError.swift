@@ -15,4 +15,5 @@ enum ErrorEnum: Error {
     
     case receiptHasNilValue(_ receiptDict: [String: Any?])
     case receiptAPIFailed(_ receiptDict: [String: Any?])
+    case receiptCheckFailed(_ receiptDict: [ReceiptCheck])
 }

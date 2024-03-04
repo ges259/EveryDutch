@@ -7,14 +7,14 @@
 
 import Foundation
 
-enum ReceiptCheck: String, CustomStringConvertible {
+enum ReceiptCheck: String, CustomStringConvertible, CaseIterable {
     case memo
     case price
     case payer
     
-    case selectedUsers
-    case usersPriceZero
-    case cumulativeMoney
+    case payment_details
+    case culmulative_money
+    case pay
     
     
     var description: String {
@@ -23,13 +23,9 @@ enum ReceiptCheck: String, CustomStringConvertible {
         case .price:
             return "✓  가격을 설정해 주세요"
         case .payer: return "✓  계산한 사람을 설정해 주세요."
-        case .selectedUsers: return "✓  함께 계산한 사람을 모두 선택해 주세요."
-            
-            
-            
-            
-        case .cumulativeMoney: return "✓  금액이 맞지 않습니다. 정확히 입력해 주세요."
-        case .usersPriceZero: return "✓  0원으로 설정되어있는 사람이 있습니다."
+        case .payment_details: return "✓  함께 계산한 사람을 모두 선택해 주세요."
+        case .culmulative_money: return "✓  금액이 맞지 않습니다. 정확히 입력해 주세요."
+        case .pay: return "✓  0원으로 설정되어있는 사람이 있습니다."
         }
     }
 }

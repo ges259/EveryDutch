@@ -79,7 +79,7 @@ final class EditScreenVC: UIViewController {
     
     
     private lazy var cardHeight = (self.view.frame.width - 20) * 1.8 / 3
-    
+    private var boolean2: Bool = false
     
     
     
@@ -183,6 +183,10 @@ extension EditScreenVC {
             action: #selector(self.backButtonTapped))
         // 네비게이션 바의 왼쪽 아이템으로 설정
         self.navigationItem.leftBarButtonItem = backButton
+        self.bottomBtn.addTarget(
+            self,
+            action: #selector(self.bottomBtnTapped),
+            for: .touchUpInside)
     }
 }
 
@@ -196,9 +200,17 @@ extension EditScreenVC {
 
 
 // MARK: - 액션 메서드
+
 extension EditScreenVC {
+    
+    // MARK: - 뒤로가기 버튼
     @objc private func backButtonTapped() {
         self.coordinator.didFinish()
+    }
+    
+    // MARK: - 하단 버튼
+    @objc private func bottomBtnTapped() {
+        
     }
 }
 
@@ -277,7 +289,7 @@ extension EditScreenVC: UITableViewDataSource {
     
     // MARK: - 셀의 개수
     func tableView(_ tableView: UITableView,
-                   numberOfRowsInSection section: Int) 
+                   numberOfRowsInSection section: Int)
     -> Int {
         return self.viewModel.getNumOfCell(
             section: section)
@@ -306,7 +318,7 @@ extension EditScreenVC: UITableViewDataSource {
         let type = self.viewModel.cellTypes(indexPath: indexPath)
         // 셀의 텍스트 및 모서리 설정
         cell.setDetailLbl(type: type,
-                          isFirst: isFirst, 
+                          isFirst: isFirst,
                           isLast: isLast)
         cell.delegate = self
         
@@ -334,7 +346,7 @@ extension EditScreenVC: UITableViewDataSource {
         _ tableView: UITableView,
         didSelectRowAt indexPath: IndexPath)
     {
-        let type = self.viewModel.saveIndex(indexPath: indexPath)
+        let type = self.viewModel.saveCurrentIndexAndType(indexPath: indexPath)
         
         self.screenChange(type: type)
     }
@@ -367,38 +379,30 @@ extension EditScreenVC: UITableViewDataSource {
     private func selectedDecorationTypeCell(type: DecorationCellType) {
         
         switch type {
-        case .blurEffect: 
+        case .blurEffect:
             self.blurEffectChanged()
             break
-        case .titleColor, .pointColor, .backgourndColor:
+        case .titleColor, .pointColor, .backgroundColor:
             self.coordinator.colorPickerScreen()
             break
         }
     }
-    private func blurEffectChanged() {
-        guard let changedData = self.viewModel.saveChangedData(
-            cellType: DecorationCellType.self,
-            data: true)
-        else { return }
-        
-        if let cell = self.tableView.cellForRow(at: changedData.indexPath) as? CardDecorationCell {
-            cell.blurEffectIsHidden(true)
-        }
-        self.cardImgView.blurViewIsHidden(true)
-        
-        
-        
-//        // 데코 셀 변경
-//        self.decorationCellChange(type: changedData.type,
-//                                  indexPath: changedData.indexPath,
-//                                  color: .medium_Blue)
-//        // 카드 이미지 변경
-//        self.cardImgViewChangeColor(type: changedData.type,
-//                                    color: UIColor.medium_Blue)
-    }
+}
     
+
+
+
+
+
+
+
+
+
+// MARK: - 권한 설정
+
+extension EditScreenVC {
     
-    // MARK: - 이미지 권한
+    // MARK: - 이미지 권한 확인
     func requestPhotoLibraryAccess() {
         // iOS 14 이상에서 사용할 수 있는 authorizationStatus(for:) 메서드 사용
         let status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
@@ -435,6 +439,7 @@ extension EditScreenVC: UITableViewDataSource {
         }
     }
     
+    // MARK: - 권한 요청
     private func photoAccess() {
         print(#function)
         // 권한 요청
@@ -447,6 +452,7 @@ extension EditScreenVC: UITableViewDataSource {
         }
     }
     
+    // MARK: - 설정 얼럿창
     private func showPhotoLibraryAccessDeniedAlert() {
         print(#function)
         let alert = UIAlertController(
@@ -498,48 +504,87 @@ extension EditScreenVC: UIScrollViewDelegate {
 
 // MARK: - [데코] 색상 선택 델리게이트
 extension EditScreenVC: ColorPickerDelegate {
-    func colorSelect(_ color: UIColor) {
-        guard let changedData = self.viewModel.saveChangedData(
-            cellType: DecorationCellType.self,
-            data: color) 
-        else { return }
+    func decorationCellChange(_ data: Any) {
+        // 변경된 데이터와 타입을 저장하고 반환받기
+        guard let changedData = self.viewModel.getCurrentCellType(
+            cellType: DecorationCellType.self) else {
+            // 유효하지 않은 데이터 타입이거나 처리할 수 없는 경우 로그를 남기고 반환
+            print("Unable to process the data due to invalid type or other issue.")
+            return
+        }
         
-        
-        // 데코 셀 변경
-        self.decorationCellChange(type: changedData.type,
-                                  indexPath: changedData.indexPath,
-                                  color: color)
-        // 카드 이미지 변경
-        self.cardImgViewChangeColor(type: changedData.type,
-                                    color: color)
+        // Bool 타입으로 캐스팅 시도 및 blurEffect 타입 확인
+        switch changedData.type {
+        case .blurEffect:
+            if let isEnabled = data as? Bool {
+                self.viewModel.saveChangedData(type: changedData.type, data: isEnabled)
+                self.applyBlurEffectChange(isEnabled, indexPath: changedData.indexPath)
+                
+                // 데이터 타입이 예상과 다른 경우 처리
+            } else {
+                print("Expected Bool value for blurEffect, but received something else.")
+            }
+            
+        case .titleColor, .pointColor, .backgroundColor:
+            
+            // UIColor 타입으로 캐스팅 시도
+            if let color = data as? UIColor {
+                self.viewModel.saveChangedData(type: changedData.type, 
+                                               data: color)
+                // 색상 변경 로직 적용
+                self.decorationCellChange(indexPath: changedData.indexPath,
+                                          color: color)
+                self.cardImgViewChangeColor(type: changedData.type, 
+                                            color: color)
+                
+                // 데이터 타입이 예상과 다른 경우 처리
+            } else {
+                print("Expected UIColor value for \(changedData.type), but received something else.")
+            }
+        }
+    }
+
+    // MARK: - 블러 효과 변경 시
+    private func blurEffectChanged() {
+        // MARK: - Fix
+        print(self.boolean2)
+        self.decorationCellChange(self.boolean2)
+        self.boolean2.toggle()
     }
     
+    // MARK: - 블러 효과 변경 적용
+    // 블러 효과 변경 적용
+    private func applyBlurEffectChange(_ isEnabled: Bool, indexPath: IndexPath) {
+        // 블러 효과 적용 로직
+        if let cell = self.tableView.cellForRow(at: indexPath) as? CardDecorationCell {
+            cell.blurEffectIsHidden(isEnabled)
+        }
+        self.cardImgView.blurViewIsHidden(isEnabled)
+    }
+    
+
+    
     // MARK: - 카드 이미지 변경
-    private func cardImgViewChangeColor(type: DecorationCellType,
-                                        color: UIColor) {
+    // 카드 이미지 변경
+    private func cardImgViewChangeColor(type: DecorationCellType, color: UIColor) {
         switch type {
         case .titleColor:
             self.cardImgView.titleChange(color: color)
-            
         case .pointColor:
             self.cardImgView.pointChange(color: color)
-            
-        case .backgourndColor:
+        case .backgroundColor:
             self.cardImgView.backgroundColorChange(color: color)
-            
         case .blurEffect:
+            // blurEffect는 여기서 처리하지 않음
             break
         }
     }
     
     // MARK: - 셀 변경
-    private func decorationCellChange(type: DecorationCellType,
-                                      indexPath: IndexPath,
-                                      color: UIColor) {
+    // 셀 변경
+    private func decorationCellChange(indexPath: IndexPath, color: UIColor) {
         if let cell = self.tableView.cellForRow(at: indexPath) as? CardDecorationCell {
-            type != .blurEffect
-            ? cell.colorIsChanged(color: color)
-            : cell.blurEffectIsHidden(true)
+            cell.colorIsChanged(color: color)
         }
     }
 }
@@ -556,13 +601,16 @@ extension EditScreenVC: ColorPickerDelegate {
 // MARK: - [이미지] 선택 델리게이트
 extension EditScreenVC: ImagePickerDelegate {
     func imageSelect(image: UIImage?) {
-        
-        guard let changedData = self.viewModel.saveChangedData(
-            cellType: ImageCellType.self,
-            data: image)
-        else { return }
-        
-        
+        // 변경된 데이터와 타입을 저장하고 반환받기
+        guard let changedData = self.viewModel.getCurrentCellType(
+            cellType: ImageCellType.self) else {
+            // 유효하지 않은 데이터 타입이거나 처리할 수 없는 경우 로그를 남기고 반환
+            print("Unable to process the data due to invalid type or other issue.")
+            return
+        }
+        // 변경된 데이터 저장
+        self.viewModel.saveChangedData(type: changedData.type,
+                                       data: image)
         // 이미지 셀 변경
         self.imageCellChange(indexPath: changedData.indexPath,
                              image: image)

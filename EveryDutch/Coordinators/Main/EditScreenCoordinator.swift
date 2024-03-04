@@ -9,8 +9,14 @@ import UIKit
 
 
 protocol ColorPickerDelegate: AnyObject {
-    func colorSelect(_ color: UIColor)
+    func decorationCellChange(_ data: Any)
+    
 }
+
+
+
+
+
 
 protocol ImagePickerDelegate: AnyObject {
     func imageSelect(image: UIImage?)
@@ -151,7 +157,7 @@ extension EditScreenCoordinator: UIColorPickerViewControllerDelegate {
         _ viewController: UIColorPickerViewController)
     {
         if let color = self.selectedColor {
-            self.colorDelegate?.colorSelect(color)
+            self.colorDelegate?.decorationCellChange(color)
             self.selectedColor = nil
         }
         viewController.dismiss(animated: true)

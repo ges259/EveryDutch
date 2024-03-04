@@ -78,7 +78,6 @@ final class CheckReceiptPanVC: UIViewController {
         
         self.configureUI()
         self.configureAutoLayout()
-        self.configureViewWithValidation()
     }
     init(viewModel: CheckReceiptPanVMProtocol,
          coordinator: Coordinator) {
@@ -139,28 +138,6 @@ extension CheckReceiptPanVC {
         self.bottomBtn.snp.makeConstraints { make in
             make.height.equalTo(55)
         }
-    }
-    
-    // MARK: - 레이블 스택뷰 설정
-    private func configureViewWithValidation() {
-        // 레이블과 해당 ReceiptCheck를 연결
-//        let labelValidationPairs: [(label: UILabel, check: ReceiptCheck)] = [
-//            (self.memoCheckLbl, .memo),
-//            (self.payerCheckLbl, .payer),
-//            (self.priceCheckLbl, .price),
-//            (self.noUsersLbl, .selectedUsers),
-//            (self.zeroWonLbl, .usersPriceZero),
-//            (self.cumulativeMoneyLbl, .cumulativeMoney)
-//        ]
-//        
-        
-        // MARK: - Fix
-//        // 각 레이블의 숨김 여부를 설정
-//        for (label, check) in labelValidationPairs {
-//            label.isHidden = self.validationDict[check.rawValue] ?? true
-//        }
-        
-        
     }
 }
 

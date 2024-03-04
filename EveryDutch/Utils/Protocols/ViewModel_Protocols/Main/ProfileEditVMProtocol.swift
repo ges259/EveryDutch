@@ -15,15 +15,17 @@ protocol ProfileEditVMProtocol {
     // MARK: - 네비게이션 타이틀
     var getNavTitle: String? { get }
     
-    func saveIndex(indexPath: IndexPath) -> EditCellType? 
+    func saveCurrentIndexAndType(indexPath: IndexPath) -> EditCellType? 
 //    var getCurrentIndex: (type: EditCellType,
 //                          indexPath: IndexPath)?{ get }
     
-    func saveChangedData(type: EditCellType,
+    func saveChangedData<T: EditCellType>(type: T,
                          data: Any?)
-    func saveChangedData<T: EditCellType>(
-        cellType: T.Type,
-        data: Any?)
+    
+    
+    
+    func getCurrentCellType<T: EditCellType>(
+        cellType: T.Type)
     -> (type: T,
         indexPath: IndexPath)?
     

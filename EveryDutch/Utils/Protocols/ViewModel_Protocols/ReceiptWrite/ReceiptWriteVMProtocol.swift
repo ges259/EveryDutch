@@ -122,7 +122,7 @@ protocol ReceiptWriteVMProtocol {
     
     // MARK: - 레시피 체크
     var receiptDict: [String : Any?] { get }
-    var validationDict: [String : Bool] { get }
+    
     
 //    func getCheckReceipt(completion: @escaping (Bool) -> Void)
 //    func prepareReceiptDataAndValidate(completion: @escaping (Bool, [String: Any?]) -> Void)
