@@ -210,7 +210,7 @@ extension EditScreenVC {
     
     // MARK: - 하단 버튼
     @objc private func bottomBtnTapped() {
-        
+        print(self.viewModel.validation())
     }
 }
 

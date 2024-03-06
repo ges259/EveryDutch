@@ -7,22 +7,19 @@
 
 import Foundation
 
-
-
-
-
 struct RoomsAPI: RoomsAPIProtocol {
-    static let shared: RoomsAPI = RoomsAPI()
+    static let shared: RoomsAPIProtocol = RoomsAPI()
     private init() {}
 }
 
 
 extension RoomsAPI {
-    
-    
-    
-    
-    
+    func createScreen(dict: [String: Any]) {
+        
+    }
+    func updateScreen(dict: [String: Any]) {
+        
+    }
 }
 
 

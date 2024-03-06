@@ -111,6 +111,7 @@
 		5F729BFD2B6D291A00F3DDCA /* TableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F729BFC2B6D291A00F3DDCA /* TableHeaderView.swift */; };
 		5F729BFF2B6D293500F3DDCA /* TableFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F729BFE2B6D293500F3DDCA /* TableFooterView.swift */; };
 		5F729C012B6D42A900F3DDCA /* CardDataCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F729C002B6D42A900F3DDCA /* CardDataCell.swift */; };
+		5F7A49242B97D07C002CB7A8 /* EditScreenAPIType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7A49232B97D07C002CB7A8 /* EditScreenAPIType.swift */; };
 		5F7B9FDA2B6917B1006917E6 /* RoomEditVMProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7B9FD92B6917B1006917E6 /* RoomEditVMProtocol.swift */; };
 		5F7CC32C2B87ACDA00236E84 /* TableHeaderEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7CC32B2B87ACDA00236E84 /* TableHeaderEnum.swift */; };
 		5F7DB59B2B5921E300E8C11F /* PeopleSeelctionEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7DB59A2B5921E300E8C11F /* PeopleSeelctionEnum.swift */; };
@@ -306,6 +307,7 @@
 		5F729BFC2B6D291A00F3DDCA /* TableHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableHeaderView.swift; sourceTree = "<group>"; };
 		5F729BFE2B6D293500F3DDCA /* TableFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableFooterView.swift; sourceTree = "<group>"; };
 		5F729C002B6D42A900F3DDCA /* CardDataCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardDataCell.swift; sourceTree = "<group>"; };
+		5F7A49232B97D07C002CB7A8 /* EditScreenAPIType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditScreenAPIType.swift; sourceTree = "<group>"; };
 		5F7B9FD92B6917B1006917E6 /* RoomEditVMProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomEditVMProtocol.swift; sourceTree = "<group>"; };
 		5F7CC32B2B87ACDA00236E84 /* TableHeaderEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableHeaderEnum.swift; sourceTree = "<group>"; };
 		5F7DB59A2B5921E300E8C11F /* PeopleSeelctionEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeopleSeelctionEnum.swift; sourceTree = "<group>"; };
@@ -628,6 +630,7 @@
 				5F4FA7242B553C5B009EE4F4 /* ReceiptAPIProtocol.swift */,
 				5F4FA7262B553F13009EE4F4 /* VersionAPIProtocol.swift */,
 				5FFFED042B83CAE50090542D /* CrashlyticsLoggable.swift */,
+				5F7A49232B97D07C002CB7A8 /* EditScreenAPIType.swift */,
 			);
 			path = APIProtocols;
 			sourceTree = "<group>";
@@ -1354,6 +1357,7 @@
 				5F8513EB2B4D705D00A5B22D /* CreateRooms.swift in Sources */,
 				5F68487E2B441BCA0015BFCC /* LoginScreenCoordinator.swift in Sources */,
 				5FE3DED82B39F8F3008D58AE /* InsetTextField.swift in Sources */,
+				5F7A49242B97D07C002CB7A8 /* EditScreenAPIType.swift in Sources */,
 				5FB4F7082B433DEF002F6CF3 /* EditScreenVC.swift in Sources */,
 				5FE3DEDB2B39FA22008D58AE /* NSAttributedString+Ext.swift in Sources */,
 				5F8513D02B4D5F9B00A5B22D /* UpdateMoneyData.swift in Sources */,

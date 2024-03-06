@@ -44,4 +44,11 @@ protocol ProfileEditVMProtocol {
     
     // MARK: - 마지막 셀
     func getLastCell(indexPath: IndexPath) -> Bool
+    
+    
+    
+    
+    
+    
+    func validation() -> Bool
 }

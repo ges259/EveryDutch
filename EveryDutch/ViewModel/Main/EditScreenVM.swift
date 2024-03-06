@@ -22,19 +22,21 @@ final class EditScreenVM: ProfileEditVMProtocol {
         }
     }
     
+    private let api: EditScreenAPIType
     
     
     
     
     // MARK: - 라이프사이클
     init<T: EditScreenType & CaseIterable>(
-        isMake: Bool,
-        editScreenType: T.Type)
+        editScreenType: T.Type,
+        editScreenApiType: EditScreenAPIType,
+        isMake: Bool)
     {
         self.isMake = isMake
+        self.api = editScreenApiType
         self.sections = Array(editScreenType.allCases)
         self.initializeCellTypes()
-        
     }
     deinit {
         print("\(#function)-----\(self)")
@@ -178,15 +180,18 @@ final class EditScreenVM: ProfileEditVMProtocol {
 
 
 
+
+
+// MARK: - 조건 검사
 extension EditScreenVM {
     func validation() -> Bool {
         
         if let type = self.sections.first {
-            if let type = type as? RoomEditEnum {
+            if type is RoomEditEnum {
                 return self.roomValidation(type: RoomEditCellType.self)
             }
             
-            else if let type = type as? ProfileEditEnum {
+            else if type is ProfileEditEnum {
                 return self.roomValidation(type: ProfileEditCellType.self)
             }
         }
@@ -206,5 +211,26 @@ extension EditScreenVM {
         }
         // 모든 타입에 대한 데이터가 존재하는 경우, true 반환
         return true
+    }
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - API
+extension EditScreenVM {
+    private func createRoom() {
+        let dict = self.changedData.compactMapValues { $0 }
+        self.api.createScreen(dict: dict)
+    }
+    
+    private func createUser() {
+        
     }
 }

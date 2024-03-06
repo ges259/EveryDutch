@@ -74,8 +74,9 @@ final class EditScreenCoordinator: NSObject, ProfileEditVCCoordProtocol {
     private func startProfileEdit() {
         self.moveToEditScreen {
             // ProfileEditEnum을 사용하여 ViewModel 생성
-            let profileEditVM = EditScreenVM(isMake: self.isMake,
-                                             editScreenType: ProfileEditEnum.self)
+            let profileEditVM = EditScreenVM(editScreenType: ProfileEditEnum.self,
+                                             editScreenApiType: UserAPI.shared,
+                                             isMake: self.isMake)
             return EditScreenVC(viewModel: profileEditVM, coordinator: self)
         }
     }
@@ -84,8 +85,9 @@ final class EditScreenCoordinator: NSObject, ProfileEditVCCoordProtocol {
     private func startRoomEdit() {
         self.moveToEditScreen {
             // RoomEditEnum을 사용하여 ViewModel 생성
-            let roomEditVM = EditScreenVM(isMake: self.isMake,
-                                          editScreenType: RoomEditEnum.self)
+            let roomEditVM = EditScreenVM(editScreenType: RoomEditEnum.self,
+                                          editScreenApiType: RoomsAPI.shared,
+                                          isMake: self.isMake)
             return EditScreenVC(viewModel: roomEditVM, coordinator: self)
         }
     }

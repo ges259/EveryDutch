@@ -7,8 +7,8 @@
 
 import Foundation
 
-protocol RoomsAPIProtocol {
-    static var shared: RoomsAPI { get }
+protocol RoomsAPIProtocol: EditScreenAPIType {
+    static var shared: RoomsAPIProtocol { get }
     
 
     

@@ -7,7 +7,12 @@
 
 import Foundation
 
-enum ReceiptCheck: String, CustomStringConvertible, CaseIterable {
+protocol ReceiptCheckType {
+    var cellTitle: String { get }
+}
+
+
+enum ReceiptCheck: CaseIterable, ReceiptCheckType {
     case memo
     case price
     case payer
@@ -17,7 +22,7 @@ enum ReceiptCheck: String, CustomStringConvertible, CaseIterable {
     case pay
     
     
-    var description: String {
+    var cellTitle: String {
         switch self {
         case .memo: return "✓  메모을 작성해 주세요"
         case .price:

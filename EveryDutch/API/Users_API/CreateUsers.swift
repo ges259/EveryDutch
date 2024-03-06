@@ -13,7 +13,12 @@ struct UserAPI: UserAPIProtocol {
     
 
     
-    
+    func createScreen(dict: [String: Any]) {
+        
+    }
+    func updateScreen(dict: [String: Any]) {
+        
+    }
     
     
     

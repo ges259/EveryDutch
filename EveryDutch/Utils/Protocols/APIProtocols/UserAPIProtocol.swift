@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol UserAPIProtocol {
+protocol UserAPIProtocol: EditScreenAPIType {
     static var shared: UserAPIProtocol { get }
     
 
