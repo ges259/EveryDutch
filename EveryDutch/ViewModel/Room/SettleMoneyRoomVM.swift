@@ -137,9 +137,7 @@ extension SettleMoneyRoomVM {
     
     // MARK: - 누적 금액 및 페이백 데이터 API
     private func fetchRoomMoneyData() {
-        self.roomDataManager.loadPaybackData { [weak self] in
-            self?.fetchMoneyDataClosure?()
-        }
+        
     }
     
     // MARK: - 유져 + 레시피 가져오기
@@ -149,6 +147,9 @@ extension SettleMoneyRoomVM {
         self.roomDataManager.loadRoomUsers() { [weak self] roomusers in
             // 영수증 가져오기
             self?.fetchReceipt()
+            self?.roomDataManager.loadPaybackData { [weak self] in
+                self?.fetchMoneyDataClosure?()
+            }
         }
     }
     

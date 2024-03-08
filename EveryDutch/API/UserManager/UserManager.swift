@@ -136,12 +136,15 @@ final class RoomDataManager: RoomDataManagerProtocol {
             roomID: roomID) { [weak self] result in
                 switch result {
                 case .success(let users):
+                    print("users 성공")
                     // [String : RoomUsers] 딕셔너리 저장
                     self?.roomUserDataDict = users
                     completion(users)
                     break
                     // MARK: - Fix
-                case .failure(_): break
+                case .failure(_):
+                    print("users 실패")
+                    break
                 }
             }
     }
@@ -153,10 +156,14 @@ final class RoomDataManager: RoomDataManagerProtocol {
         self.roomsAPI.readCumulativeAmount { [weak self] data in
             switch data {
             case .success(let moneyData):
+                print("cumulativeMoney 성공")
                 self?.cumulativeAmount = moneyData
                 completion()
             // MARK: - Fix
-            case .failure(_): break
+            case .failure(_):
+                print("cumulativeMoney 실패")
+                completion()
+                break
             }
         }
     }
@@ -166,15 +173,25 @@ final class RoomDataManager: RoomDataManagerProtocol {
         self.roomsAPI.readPayback { [weak self] paybackData in
             switch paybackData {
             case .success(let data):
+                print("payback 성공")
                 self?.paybackData = data
                 self?.loadCumulativeAmountData {
+                    print("cumulativeMoney 시작")
                     completion()
                 }
                 break
                 // MARK: - Fix
-            case .failure(_): break
+            case .failure(_):
+                self?.loadCumulativeAmountData {
+                    print("cumulativeMoney 시작")
+                    completion()
+                }
+                print("payback 실패")
+                break
             }
         }
+        
+
     }
     
     

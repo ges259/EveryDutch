@@ -46,18 +46,21 @@ extension RoomsAPI {
             self.updateRoomThumbnail(with: roomID, data: dict) { result in
                 switch result {
                 case .success:
-                    self.addUserToRoom(with: versionID, 
+                    self.addUserToRoom(with: roomID,
                                        uid: uid,
                                        completion: completion)
-                case .failure(let error):
+                case .failure(_):
                     completion(.failure(.loginError))
                 }
             }
         }
     }
 
+//    omHrkfozD7P4czislrBnQK4MZdk1
     private func updateRoomThumbnail(with roomID: String, data: [String: Any], completion: @escaping (Result<Void, ErrorEnum>) -> Void) {
-        ROOMS_THUMBNAIL_REF.child(roomID).updateChildValues(data) { error, _ in
+        ROOMS_THUMBNAIL_REF
+            .child(roomID)
+            .updateChildValues(data) { error, _ in
             if let error = error {
                 self.handleFirebaseError(error, completion: completion)
                 return
@@ -66,14 +69,16 @@ extension RoomsAPI {
         }
     }
 
-    private func addUserToRoom(with versionID: String, uid: String, completion: @escaping (Result<Void, ErrorEnum>) -> Void) {
-        ROOM_USERS_REF.child(versionID).updateChildValues([uid: true]) { error, _ in
-            if let error = error {
-                self.handleFirebaseError(error, completion: completion)
-                return
+    private func addUserToRoom(with roomID: String, uid: String, completion: @escaping (Result<Void, ErrorEnum>) -> Void) {
+        ROOM_USERS_REF
+            .child(roomID)
+            .updateChildValues([uid: true]) { error, _ in
+                if let error = error {
+                    self.handleFirebaseError(error, completion: completion)
+                    return
+                }
+                completion(.success(()))
             }
-            completion(.success(()))
-        }
     }
 
     private func handleFirebaseError(_ error: Error, completion: @escaping (Result<Void, ErrorEnum>) -> Void) {

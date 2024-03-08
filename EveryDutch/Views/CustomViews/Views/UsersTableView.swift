@@ -155,6 +155,8 @@ extension UsersTableView {
         self.btnColorChange()
         // 테이블뷰 reload를 통해 - price의 정보 바꾸기
         self.usersTableView.reloadData()
+        
+        print(self.viewModel.numbersOfUsers)
     }
     
     // MARK: - 버튼 색상 설정 메서드
@@ -196,6 +198,8 @@ extension UsersTableView: UITableViewDataSource {
     func tableView(_ tableView: UITableView,
                    numberOfRowsInSection section: Int)
     -> Int {
+        print(#function)
+        print(self.viewModel.numbersOfUsers)
         return self.viewModel.numbersOfUsers
     }
     

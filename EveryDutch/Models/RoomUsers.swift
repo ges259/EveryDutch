@@ -14,7 +14,7 @@ struct RoomUsers {
     
     init(dictionary: [String: Any]) {
         
-        self.roomUserName = dictionary[DatabaseConstants.room_user_name] as? String ?? ""
-        self.roomUserImg = dictionary[DatabaseConstants.room_user_image] as? String ?? ""
+        self.roomUserName = dictionary[DatabaseConstants.user_name] as? String ?? ""
+        self.roomUserImg = dictionary[DatabaseConstants.user_image] as? String ?? ""
     }
 }

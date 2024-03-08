@@ -8,13 +8,11 @@
 import UIKit
 
 struct User {
-    var email: String
     var personalID: String
     var userName: String
     var userProfile: String
     
     init(dictionary: [String: Any]) {
-        self.email = dictionary[DatabaseConstants.email] as? String ?? ""
         self.personalID = dictionary[DatabaseConstants.personal_ID] as? String ?? ""
         self.userName = dictionary[DatabaseConstants.user_name] as? String ?? ""
         self.userProfile = dictionary[DatabaseConstants.user_image] as? String ?? ""

@@ -18,6 +18,7 @@ extension RoomsAPI {
 
     
     func readCumulativeAmount(
+//        versionID: String,
         completion: @escaping Typealias.RoomMoneyDataCompletion)
     {
         
@@ -48,7 +49,10 @@ extension RoomsAPI {
     
     
     
-    func readPayback(completion: @escaping Typealias.PaybackCompletion) {
+    func readPayback(
+//        versionID: String,
+        completion: @escaping Typealias.PaybackCompletion)
+    {
         
         
         PAYBACK_REF

@@ -19,9 +19,7 @@ let USER_REF = ref.child("Users")
 // Room_ID
 let ROOMS_ID_REF = ref.child("Rooms_ID")
 // Rooms_Thumbnail
-// MARK: - Fix
 let ROOMS_THUMBNAIL_REF = ref.child("Rooms_Thumbnail")
-//let ROOMS_THUMBNAIL_REF = ref.child("Rooms")
 // Room_users
 let ROOM_USERS_REF = ref.child("Room_Users")
 // Room_Money_Data

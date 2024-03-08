@@ -106,11 +106,13 @@ extension UsersTableViewVM {
     // moneyData: [CumulativeAmount]
     // 셀 가져와서 표시
     func makeCellVM() {
+        print(#function)
         // 유저를 가져옮
         let users = self.roomDataManager.getRoomUsersDict
-        
+        print("1")
         // 셀 만들기 시작
         self.cellViewModels = users.map({ (userID, roomUser) in
+            print("2")
             // -> 유저 아이디를 통해
             // - 누적 금액을 가져옮
             let cumulativeAmount = self.roomDataManager.getIDToCumulativeAmount(
@@ -118,6 +120,13 @@ extension UsersTableViewVM {
             // - payback을 가져옮
             let paybackPrice = self.roomDataManager.getIDToPayback(
                 userID: userID)
+            
+            print(UsersTableViewCellVM(
+                userID: userID,
+                moneyData: cumulativeAmount,
+                paybackPrice: paybackPrice,
+                roomUsers: roomUser,
+                customTableEnum: self.customTableEnum))
             // 셀 만들기
             return UsersTableViewCellVM(
                 userID: userID,
