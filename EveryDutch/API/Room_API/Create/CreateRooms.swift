@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import FirebaseAuth
+import FirebaseDatabaseInternal
 
 struct RoomsAPI: RoomsAPIProtocol {
     static let shared: RoomsAPIProtocol = RoomsAPI()
@@ -14,9 +16,79 @@ struct RoomsAPI: RoomsAPIProtocol {
 
 
 extension RoomsAPI {
-    func createScreen(dict: [String: Any]) {
+    
+    func createScreen(
+        dict: [String: Any],
+        completion: @escaping (Result<Void, ErrorEnum>) -> Void)
+    {
+        guard let uid = Auth.auth().currentUser?.uid else {
+            completion(.failure(.readError))
+            return
+        }
         
+        let roomRef = ROOMS_ID_REF.child(uid).childByAutoId()
+        
+        let versionID = "\(Int(Date().timeIntervalSince1970))"
+        
+        roomRef.setValue(versionID) { error, snapshot in
+            
+            
+            if let error = error {
+                self.handleFirebaseError(error, completion: completion)
+                return
+            }
+            
+            guard let roomID = snapshot.key else {
+                completion(.failure(.readError))
+                return
+            }
+            
+            self.updateRoomThumbnail(with: roomID, data: dict) { result in
+                switch result {
+                case .success:
+                    self.addUserToRoom(with: versionID, 
+                                       uid: uid,
+                                       completion: completion)
+                case .failure(let error):
+                    completion(.failure(.loginError))
+                }
+            }
+        }
     }
+
+    private func updateRoomThumbnail(with roomID: String, data: [String: Any], completion: @escaping (Result<Void, ErrorEnum>) -> Void) {
+        ROOMS_THUMBNAIL_REF.child(roomID).updateChildValues(data) { error, _ in
+            if let error = error {
+                self.handleFirebaseError(error, completion: completion)
+                return
+            }
+            completion(.success(()))
+        }
+    }
+
+    private func addUserToRoom(with versionID: String, uid: String, completion: @escaping (Result<Void, ErrorEnum>) -> Void) {
+        ROOM_USERS_REF.child(versionID).updateChildValues([uid: true]) { error, _ in
+            if let error = error {
+                self.handleFirebaseError(error, completion: completion)
+                return
+            }
+            completion(.success(()))
+        }
+    }
+
+    private func handleFirebaseError(_ error: Error, completion: @escaping (Result<Void, ErrorEnum>) -> Void) {
+        print("Firebase error: \(error.localizedDescription)")
+        completion(.failure(.readError))
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
     func updateScreen(dict: [String: Any]) {
         
     }

@@ -188,11 +188,22 @@ extension EditScreenVM {
         
         if let type = self.sections.first {
             if type is RoomEditEnum {
-                return self.roomValidation(type: RoomEditCellType.self)
+                if self.roomValidation(type: RoomEditCellType.self) {
+                    print("validation 성공")
+                    
+                    self.createRoom()
+                } else {
+                    print("validation 실패")
+                }
             }
             
             else if type is ProfileEditEnum {
-                return self.roomValidation(type: ProfileEditCellType.self)
+                if self.roomValidation(type: ProfileEditCellType.self) {
+                    print("validation 성공")
+                    self.createRoom()
+                } else {
+                    print("validation 실패")
+                }
             }
         }
         return false
@@ -227,7 +238,11 @@ extension EditScreenVM {
 extension EditScreenVM {
     private func createRoom() {
         let dict = self.changedData.compactMapValues { $0 }
-        self.api.createScreen(dict: dict)
+        
+        // MARK: - Fix
+        self.api.createScreen(dict: dict) { result in
+            print("끝")
+        }
     }
     
     private func createUser() {

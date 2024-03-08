@@ -22,6 +22,7 @@ enum Typealias {
     typealias UserCompletion = (Result<User, ErrorEnum>) -> Void
     
     // RoomsAPI
+    typealias RoomCompletion = (Result<Rooms, ErrorEnum>) -> Void
     typealias RoomsIDCompletion = (Result<[Rooms], ErrorEnum>) -> Void
     typealias RoomUsersCompletion = (Result<[String: RoomUsers], ErrorEnum>) -> Void
     typealias RoomMoneyDataCompletion = (Result<CumulativeAmountDictionary, ErrorEnum>) -> Void

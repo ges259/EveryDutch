@@ -32,15 +32,20 @@ final class SplashScreenVM: SplashScreenVMProtocol {
     
     // MARK: - 로그인 여부 확인
     func checkLogin(completion: @escaping (Bool) -> Void) {
+        
+        print("1")
         self.authAPI.checkLogin { result in
             switch result {
             case .success(_):
+                print("2")
                 self.fetchRoomsData {
+                    print("3")
                     completion(true)
                 }
                 break
                 
             case .failure(_):
+                print("-1")
                 completion(false)
                 break
             }
@@ -49,6 +54,7 @@ final class SplashScreenVM: SplashScreenVMProtocol {
     
     
     func fetchRoomsData(completion: @escaping () -> Void) {
+        print("4")
         self.roomDataManager.loadRooms {
             completion()
         }

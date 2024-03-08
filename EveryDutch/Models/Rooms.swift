@@ -13,10 +13,10 @@ struct Rooms {
     var roomName: String
     var roomImg: String
     
-    init(roomID: String, versionID: String, dictionary: [String: String]) {
+    init(roomID: String, versionID: String, dictionary: [String: Any]) {
         self.roomID = roomID
         self.versionID = versionID
-        self.roomName = dictionary[DatabaseConstants.room_name] ?? ""
-        self.roomImg = dictionary[DatabaseConstants.room_image] ?? ""
+        self.roomName = dictionary[DatabaseConstants.room_name] as? String ?? ""
+        self.roomImg = dictionary[DatabaseConstants.room_image] as? String ?? ""
     }
 }

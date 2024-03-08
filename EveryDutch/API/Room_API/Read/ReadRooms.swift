@@ -56,7 +56,7 @@ extension RoomsAPI {
                         // 작업이 끝나면 DispatchGroup에 작업 완료를 알림
                         defer { dispatchGroup.leave() }
                         
-                        guard let roomInfo = snapshot.value as? [String: String] else {
+                        guard let roomInfo = snapshot.value as? [String: Any] else {
                             // 썸네일 정보가 예상된 형식이 아니라면 continue로 다음 반복 진행
                             // 실패한 케이스에 대한 별도의 에러 처리를 여기서 할 수 있음
                             completion(.failure(.readError))
