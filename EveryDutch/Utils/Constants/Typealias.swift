@@ -24,7 +24,7 @@ enum Typealias {
     // RoomsAPI
     typealias RoomCompletion = (Result<Rooms, ErrorEnum>) -> Void
     typealias RoomsIDCompletion = (Result<[Rooms], ErrorEnum>) -> Void
-    typealias RoomUsersCompletion = (Result<[String: RoomUsers], ErrorEnum>) -> Void
+    typealias RoomUsersCompletion = (Result<[String: User], ErrorEnum>) -> Void
     typealias RoomMoneyDataCompletion = (Result<CumulativeAmountDictionary, ErrorEnum>) -> Void
     typealias PaybackCompletion = (Result<Payback, ErrorEnum>) -> Void
     
@@ -40,9 +40,9 @@ enum Typealias {
 }
 
 // RoomDataManager
-typealias RoomUserDataDict = [String : RoomUsers]
+typealias RoomUserDataDict = [String : User]
 typealias CumulativeAmountDictionary = [String : CumulativeAmount]
 
 // PeopleSelectionPanVM
-typealias UserDataTuple = (key: String, value: RoomUsers)
+typealias UserDataTuple = (key: String, value: User)
 typealias floatingType = (show: Bool, alpha: CGFloat)

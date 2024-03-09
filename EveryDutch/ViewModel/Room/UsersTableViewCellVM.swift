@@ -24,15 +24,15 @@ struct UsersTableViewCellVM: UsersTableViewCellVMProtocol {
     init(userID: String,
          moneyData : Int,
          paybackPrice: Int,
-         roomUsers: RoomUsers,
+         roomUsers: User,
          customTableEnum: UsersTableEnum) {
         self.userID = userID
         self.cumulativeAmount = moneyData
         
         self.paybackPrice = paybackPrice
         
-        self.profileImageURL = roomUsers.roomUserImg
-        self.userName = roomUsers.roomUserName
+        self.profileImageURL = roomUsers.userProfile
+        self.userName = roomUsers.userName
         
         self.customTableEnum = customTableEnum
     }

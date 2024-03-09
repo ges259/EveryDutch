@@ -17,9 +17,10 @@ struct RoomsAPI: RoomsAPIProtocol {
 
 extension RoomsAPI {
     
-    func createScreen(
+    
+    func createData(
         dict: [String: Any],
-        completion: @escaping (Result<Void, ErrorEnum>) -> Void)
+        completion: @escaping (Result<Rooms?, ErrorEnum>) -> Void)
     {
         guard let uid = Auth.auth().currentUser?.uid else {
             completion(.failure(.readError))
@@ -32,9 +33,8 @@ extension RoomsAPI {
         
         roomRef.setValue(versionID) { error, snapshot in
             
-            
-            if let error = error {
-                self.handleFirebaseError(error, completion: completion)
+            if let _ = error {
+                completion(.failure(.readError))
                 return
             }
             
@@ -43,58 +43,66 @@ extension RoomsAPI {
                 return
             }
             
-            self.updateRoomThumbnail(with: roomID, data: dict) { result in
+            self.addUserToRoom(with: roomID,
+                               uid: uid) { result in
                 switch result {
-                case .success:
-                    self.addUserToRoom(with: roomID,
-                                       uid: uid,
-                                       completion: completion)
+                case .success():
+                    self.updateRoomThumbnail(with: roomID, 
+                                             data: dict) { result in
+                        switch result {
+                        case .success:
+                            let rooms = Rooms(roomID: roomID,
+                                              versionID: versionID,
+                                              dictionary: dict)
+                            completion(.success(rooms))
+                            
+                            
+                        case .failure(_):
+                            completion(.failure(.loginError))
+                        }
+                    }
                 case .failure(_):
                     completion(.failure(.loginError))
                 }
             }
         }
     }
-
-//    omHrkfozD7P4czislrBnQK4MZdk1
-    private func updateRoomThumbnail(with roomID: String, data: [String: Any], completion: @escaping (Result<Void, ErrorEnum>) -> Void) {
+    
+    // MARK: - 방 정보 생성
+    private func updateRoomThumbnail(
+        with roomID: String, 
+        data: [String: Any],
+        completion: @escaping (Result<Void, ErrorEnum>) -> Void) 
+    {
         ROOMS_THUMBNAIL_REF
             .child(roomID)
             .updateChildValues(data) { error, _ in
             if let error = error {
-                self.handleFirebaseError(error, completion: completion)
+                completion(.failure(.readError))
                 return
             }
             completion(.success(()))
         }
     }
-
-    private func addUserToRoom(with roomID: String, uid: String, completion: @escaping (Result<Void, ErrorEnum>) -> Void) {
+    
+    // MARK: - 유저 생성
+    private func addUserToRoom(
+        with roomID: String, 
+        uid: String,
+        completion: @escaping (Result<Void, ErrorEnum>) -> Void) 
+    {
         ROOM_USERS_REF
             .child(roomID)
             .updateChildValues([uid: true]) { error, _ in
                 if let error = error {
-                    self.handleFirebaseError(error, completion: completion)
+                    completion(.failure(.readError))
                     return
                 }
                 completion(.success(()))
             }
     }
-
-    private func handleFirebaseError(_ error: Error, completion: @escaping (Result<Void, ErrorEnum>) -> Void) {
-        print("Firebase error: \(error.localizedDescription)")
-        completion(.failure(.readError))
-    }
     
-    
-    
-    
-    
-    
-    
-    
-    
-    func updateScreen(dict: [String: Any]) {
+    func updateData(dict: [String: Any]) {
         
     }
 }

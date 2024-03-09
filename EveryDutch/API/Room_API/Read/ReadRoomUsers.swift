@@ -23,7 +23,7 @@ extension RoomsAPI {
     {
         // 최종적으로 반환될 RoomUsers 배열
         
-        var roomUsers = [String : RoomUsers]()
+        var roomUsers = [String : User]()
         
         let saveGroup = DispatchGroup()
         
@@ -53,7 +53,7 @@ extension RoomsAPI {
                             }
                             print("성공3")
                             print(valueData)
-                            let roomUser = RoomUsers(dictionary: valueData)
+                            let roomUser = User(dictionary: valueData)
                             roomUsers[key] = roomUser
                             saveGroup.leave()
                         }

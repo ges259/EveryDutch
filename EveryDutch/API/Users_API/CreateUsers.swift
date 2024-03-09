@@ -13,13 +13,13 @@ struct UserAPI: UserAPIProtocol {
     
 
     
-    func createScreen(
+    func createData(
         dict: [String: Any],
-        completion: @escaping (Result<Void, ErrorEnum>) -> Void)
+        completion: @escaping (Result<Rooms?, ErrorEnum>) -> Void)
     {
         
     }
-    func updateScreen(dict: [String: Any]) {
+    func updateData(dict: [String: Any]) {
         
     }
     

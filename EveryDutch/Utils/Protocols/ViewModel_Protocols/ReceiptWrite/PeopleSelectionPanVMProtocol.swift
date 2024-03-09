@@ -47,7 +47,7 @@ protocol PeopleSelectionPanVMProtocol {
     
     var bottomBtnText: String { get }
     
-    func returnUserData(index: Int) -> (key: String, value: RoomUsers)
+    func returnUserData(index: Int) -> (key: String, value: User)
     
     
     func multipleModeSelectedUsers(index: Int)

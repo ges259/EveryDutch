@@ -26,10 +26,10 @@ struct ReceiptWriteUsersCellVM: ReceiptWriteUsersCellVMProtocol {
     
     // MARK: - 라이프사이클
     init(userID: String,
-         roomUsers: RoomUsers) {
+         roomUsers: User) {
         self.userID = userID
-        self.profileImageURL = roomUsers.roomUserImg
-        self.userName = roomUsers.roomUserName
+        self.profileImageURL = roomUsers.userProfile
+        self.userName = roomUsers.userName
         
         self.roomUserDataDictionary = [userID: roomUsers]
     }

@@ -13,11 +13,11 @@ final class CheckReceiptCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
     
     var nav: UINavigationController
-    private var validationDict = [String: Any?]()
+    private var validationDict = [ReceiptCheck]()
     
     // 의존성 주입
     init(nav: UINavigationController,
-         validationDict: [String: Any?]) {
+         validationDict: [ReceiptCheck]) {
         self.nav = nav
         self.validationDict = validationDict
     }

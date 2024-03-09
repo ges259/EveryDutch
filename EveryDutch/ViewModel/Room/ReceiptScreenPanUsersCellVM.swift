@@ -17,15 +17,15 @@ struct ReceiptScreenPanUsersCellVM: ReceiptScreenPanUsersCellVMProtocol {
     var image: String
     
     
-    init(roomUser: RoomUsers,
+    init(roomUser: User,
          paymentDetail: PaymentDetail) {
         self.done = paymentDetail.done
         self.pay = paymentDetail.pay
         self.userID = paymentDetail.userID
         
         
-        self.userName = roomUser.roomUserName
-        self.image = paymentDetail.userImg
+        self.userName = roomUser.userName
+        self.image = roomUser.userProfile
         
         
         // MARK: - Fix

@@ -7,7 +7,7 @@
 
 import UIKit
 
-struct ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
+final class ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
     
     // 정산내역 셀의 뷰모델
     private var cellViewModels: [ReceiptScreenPanUsersCellVM] = []
@@ -37,7 +37,7 @@ struct ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
         let payer = self.receipt.payer
         let payerName = self.roomDataManager.getIdToRoomUser(
             usersID: payer)
-        return payerName.roomUserName
+        return payerName.userName
     }
     
     var getPayMethod: String {
@@ -101,9 +101,9 @@ struct ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
     
     // MARK: - [공통] 헤더 타이틀
     func getHeaderTitle(section: Int) -> String {
-        return section == 1
-        ? "정산 내역"
-        : "영수증"
+        return section == 0
+        ? "영수증"
+        : "정산 내역"
     }
     
     
@@ -118,7 +118,32 @@ struct ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
         self.receipt = receipt
         self.roomDataManager = roomDataManager
         
-        self.makeCells()
+        self.makeUserCells()
+    }
+    
+    
+    
+    func getDataCellTitle(index: Int) -> String? {
+        switch index {
+        case 0: 
+            return self.receipt.context
+        case 1:
+            return self.receipt.date
+        case 2:
+            return self.receipt.time
+        case 3:
+            return NumberFormatter.formatStringChange(
+                price: "\(self.receipt.price)")
+        case 4:
+            let user = self.roomDataManager.getIdToRoomUser(usersID: self.receipt.payer)
+            return user.userName
+        case 5:
+            let details = self.receipt.paymentDetails
+            
+            return "\(self.receipt.paymentMethod)" // Fix
+        default:
+            return ""
+        }
     }
     
     
@@ -126,12 +151,8 @@ struct ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
     
     
     
-    
-    
-    
-    
     // MARK: - 셀 생성
-    mutating func makeCells() {
+    private func makeUserCells() {
         // Receipt에서 PaymentDetails 가져오기
         let paymentDetails = receipt.paymentDetails
         

@@ -103,9 +103,9 @@ final class RoomDataManager: RoomDataManagerProtocol {
     }
     
     // MARK: - RoomUsers 정보
-    func getIdToRoomUser(usersID: String) -> RoomUsers {
+    func getIdToRoomUser(usersID: String) -> User {
         return self.roomUserDataDict[usersID]
-        ?? RoomUsers(dictionary: [:])
+        ?? User(dictionary: [:])
     }
     
     // MARK: - 페이백 값
@@ -176,22 +176,20 @@ final class RoomDataManager: RoomDataManagerProtocol {
                 print("payback 성공")
                 self?.paybackData = data
                 self?.loadCumulativeAmountData {
-                    print("cumulativeMoney 시작")
+                    print("cumulativeMoney 성공")
                     completion()
                 }
                 break
                 // MARK: - Fix
             case .failure(_):
                 self?.loadCumulativeAmountData {
-                    print("cumulativeMoney 시작")
+                    print("cumulativeMoney 실패")
                     completion()
                 }
                 print("payback 실패")
                 break
             }
         }
-        
-
     }
     
     

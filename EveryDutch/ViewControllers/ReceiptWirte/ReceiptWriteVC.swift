@@ -474,14 +474,8 @@ extension ReceiptWriteVC {
             // 영수증 작성 실패
             case .failure(let errorEnum):
                 switch errorEnum {
-                // 영수증 정보 중, nil값이 있다면
-                case .receiptHasNilValue(receiptDict: let dict):
-                    // ReceiptCheckVC로 이동 + 데이터 전달
+                case .receiptCheckFailed(let dict):
                     self.coordinator.checkReceiptPanScreen(dict)
-                    break
-                // 데이터베이스에 저장 실패
-                case .receiptAPIFailed(receiptDict: _):
-                    
                     break
                     
                 default: break

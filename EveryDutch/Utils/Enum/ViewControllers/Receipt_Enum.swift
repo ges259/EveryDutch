@@ -36,4 +36,15 @@ enum ReceiptEnum: CaseIterable {
         case .payment_Method: return "정산"
         }
     }
+    
+    var databaseString: String {
+        switch self {
+        case .memo:             return DatabaseConstants.context
+        case .date:             return DatabaseConstants.date
+        case .time:             return DatabaseConstants.time
+        case .price:            return DatabaseConstants.price
+        case .payer:            return DatabaseConstants.pay
+        case .payment_Method:   return DatabaseConstants.payment_method
+        }
+    }
 }

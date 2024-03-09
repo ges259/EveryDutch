@@ -276,6 +276,7 @@ extension ReceiptScreenPanVC: UITableViewDataSource {
         : self.makeUsersCell(indexPath: indexPath)
     }
     
+    // MARK: - [데이터 셀]
     private func makeDataCell(indexPath: IndexPath) -> ReceiptScreenDataCell{
         let cell = self.usersTableView.dequeueReusableCell(
             withIdentifier: Identifier.receiptDataCell,
@@ -284,10 +285,11 @@ extension ReceiptScreenPanVC: UITableViewDataSource {
         let receiptEnum = self.viewModel.getReceiptEnum(
             index: indexPath.row)
         cell.configure(withReceiptEnum: receiptEnum)
-        
+        cell.configureText(text: self.viewModel.getDataCellTitle(index: indexPath.row))
         return cell
     }
     
+    // MARK: - [유저 셀]
     private func makeUsersCell(indexPath: IndexPath) -> ReceiptScreenUsersCell {
         let cell = self.usersTableView.dequeueReusableCell(
             withIdentifier: Identifier.receiptUserCell,

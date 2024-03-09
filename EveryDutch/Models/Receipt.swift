@@ -25,25 +25,17 @@ struct Receipt {
         self.paymentMethod = dictionary[DatabaseConstants.payment_method] as? Int ?? 0
         
         // 날짜 및 시간 설정을 별도의 함수로 추출
-        let dateArray = Receipt.unpackDateAndTime(from: dictionary)
-        self.date = dateArray[0]
-        self.time = dateArray[1]
+        let timeInteger = dictionary[DatabaseConstants.date] as? Int ?? 0
+        let date = Date(timeIntervalSince1970: TimeInterval(timeInteger))
+        
+        self.date = Date.returnYearString(date: date)
+        
+        self.time = dictionary[DatabaseConstants.time] as? String ?? ""
 
         // paymentDetails 설정을 별도의 함수로 추출
         self.paymentDetails = Receipt.unpackPaymentDetails(from: dictionary)
     }
     
-    // MARK: - 시간 및 날짜 설정
-    private static func unpackDateAndTime(
-        from dictionary: [String: Any])
-    -> [String] {
-        if let timestamp = dictionary[DatabaseConstants.date] as? Int {
-            let dateComponents = Date.IntegerToString(timestamp)
-            
-            return dateComponents
-        }
-        return []
-    }
     
     // MARK: - PaymentDetails 설정
     private static func unpackPaymentDetails(
@@ -59,12 +51,4 @@ struct Receipt {
             return PaymentDetail(userID: userID, pay: pay, done: done)
         }
     }
-}
-// 지불 세부 정보를 위한 내부 구조체
-struct PaymentDetail: Codable {
-    var userID: String
-    var pay: Int
-    var done: Bool
-    var userName: String = ""
-    var userImg: String = ""
 }

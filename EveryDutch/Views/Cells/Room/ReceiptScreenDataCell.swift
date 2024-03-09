@@ -68,6 +68,9 @@ extension ReceiptScreenDataCell {
     
     // MARK: - 액션 설정
     private func configureAction() {
-        self.cellStv.receiptInfoLbl.text = "fasdkllf;asdl"
+//        self.cellStv.receiptInfoLbl.text = "fasdkllf;asdl"
+    }
+    func configureText(text: String?) {
+        self.cellStv.receiptInfoLbl.text = text
     }
 }

@@ -555,7 +555,7 @@ extension ReceiptWriteVM {
     }
     
     var getSelectedUsers: String? {
-        return self.payer?.values.first?.roomUserName
+        return self.payer?.values.first?.userName
     }
 }
 
@@ -711,8 +711,9 @@ extension ReceiptWriteVM {
                         completion(.failure(.receiptAPIFailed(self.receiptDict)))
                     }
                 }
-                
                 break
+                
+                
             case .failure(let failedData):
                 switch failedData {
                 case .receiptCheckFailed(let validationResults):
@@ -724,89 +725,23 @@ extension ReceiptWriteVM {
                 }
             }
         }
-        
-        
-        
-//        // 딕셔너리 내에 nil 값이 있는지 확인
-//        let hasNilValue = self.checkReceiptDictIsEmpty()
-//        
-//        // nil 값의 유무에 따라 적절한 completion 호출
-//        if hasNilValue {
-//            // 딕셔너리 내에 nil 값이 있다면 실패 처리
-//            completion(.failure(.receiptHasNilValue(self.receiptDict)))
-//            
-//        } else {
-//
-//        }
     }
     
     // MARK: - [조건 확인]
     
     
     
-    // MARK: - 조건 확인
-    
-//    private func validationData() {
-//        self.makeDictionary()
-//        self.checkUsersPrice()
-//        self.checkCumulativeMoney()
-//    }
-    
-    // MARK: - 딕셔너리 벨류에 빈칸 확인
-    private func checkReceiptDictIsEmpty() -> Bool {
-        return self.receiptDict.contains { $0.value as? String == "" }
-    }
-    
-    
-    
-    
-    
-    // MARK: - [조건]
-    
-    
-    
-    // MARK: - 남은금액이 0원인지 확인
-    private func checkCumulativeMoney() {
-        
-        if self.calculateRemainingMoney != 0 {
-            
-            self.receiptDict[DatabaseConstants.culmulative_money] = ""
-        }
-    }
-    
-    // MARK: - 0원인 유저가 있는지 확인
-    private func checkUsersPrice() {
-        for (userID, _) in self.selectedUsers {
-            if self.usersMoneyDict[userID] == nil {
-                //
-                self.receiptDict[DatabaseConstants.pay] = ""
-                break
-            }
-        }
-    }
-    
     // MARK: - 딕셔너리 만들기
     private func makeDictionary() {
-        // payer가 올바른 String 타입인지 확인하고, 필요한 경우 변환
-        let payerUserID = self.payer?.first?.key
-        
-        self.receiptDict = [
-            DatabaseConstants.type: 0,
-            DatabaseConstants.payment_method: self.calculatePaymentMethod(),
-            DatabaseConstants.date: self.date,
-            DatabaseConstants.time: self.time,
-            
-            
-            DatabaseConstants.context: self.memo ?? "",
-            DatabaseConstants.price: self.price ?? "",
-            DatabaseConstants.payer: payerUserID ?? "",
-            DatabaseConstants.payment_details: self.toDictionary() ?? ""
-        ]
+        self.receiptDict[DatabaseConstants.type] = 0
+        self.receiptDict[DatabaseConstants.payment_method] = self.calculatePaymentMethod()
+        self.receiptDict[DatabaseConstants.date] = self.date
+        self.receiptDict[DatabaseConstants.time] = self.time
     }
     
     // MARK: - 결제 세부 정보를 딕셔너리로 변환
     private func toDictionary() -> [String: [String: Any]]?  {
-        // 선택된 유저가 없다면 -> 리턴 nilㅗ
+        // 선택된 유저가 없다면 -> 리턴 nil
         guard !self.selectedUsers.isEmpty else { return nil }
         
         // 선택된 유저가 있다면 -> 정보 리턴
@@ -881,83 +816,17 @@ extension ReceiptWriteVM {
         // 유효성 검사 결과에 따른 처리
         // 비어있다면 -> validation 성공
         if validationResults.isEmpty {
-            // MARK: - Fix
+            print("유효성 검사 성공")
+            self.makeDictionary()
             // 빈칸이 있는지 다시 확인
             completion(.success(()))
         }
         // 비어있지 않다면 -> validation 실패
         else {
+            print("유효성 검사 실패")
             completion(.failure(.receiptCheckFailed(validationResults)))
         }
-        
     }
-    
-//    func validationData(
-//        completion: @escaping (Result<Receipt, ErrorEnum>) -> Void)
-//    {
-//        // 초기 영수증 데이터 딕셔너리 생성
-//        self.receiptDict.removeAll() // 기존 데이터가 있다면 초기화
-//        var validationResults: [ReceiptCheck] = []
-//
-//        // 각 필드를 순회하며 유효성 검사 수행
-//        for check in ReceiptCheck.allCases {
-//            switch check {
-//            case .memo:
-//                if let memo = self.memo, !memo.isEmpty {
-//                    self.receiptDict[DatabaseConstants.context] = memo
-//                } else {
-//                    validationResults.append(.memo)
-//                }
-//            case .price:
-//                if let price = self.price, price != 0 {
-//                    self.receiptDict[DatabaseConstants.price] = price
-//                } else {
-//                    validationResults.append(.price)
-//                }
-//            case .payer:
-//                if let payer = self.payer, !payer.isEmpty {
-//                    self.receiptDict[DatabaseConstants.payer] = payer.keys.first
-//                } else {
-//                    validationResults.append(.payer)
-//                }
-//            case .payment_details:
-//                let details = self.toDictionary()
-//                if let details = details, !details.isEmpty {
-//                    self.receiptDict[DatabaseConstants.payment_details] = details
-//                } else {
-//                    validationResults.append(.payment_details)
-//                }
-//            case .culmulative_money:
-//                if self.calculateRemainingMoney == 0 {
-//                    // 이 케이스는 기존 로직에 따라 항상 통과하므로 별도의 저장 로직은 필요 없음
-//                } else {
-//                    validationResults.append(.culmulative_money)
-//                }
-//            case .pay:
-//                let hasZeroPriceUser = self.selectedUsers.contains { self.usersMoneyDict[$0.key] == 0 }
-//                if hasZeroPriceUser {
-//                    validationResults.append(.pay)
-//                }
-//            }
-//        }
-//        
-//        // 유효성 검사 결과에 따른 처리
-//        if validationResults.isEmpty {
-//            Task {
-//                do {
-//                    try await self.startReceiptAPI()
-//                    let dict = self.receiptDict.compactMapValues { $0 }
-//                    let receipt = Receipt(dictionary: dict)
-//                    completion(.success(receipt))
-//                } catch {
-//                    completion(.failure(.receiptAPIFailed(self.receiptDict)))
-//                }
-//            }
-//        } else {
-//            // 유효성 검사 실패 시, 실패한 필드들의 목록을 반환
-//            completion(.failure(.receiptCheckFailed(validationResults)))
-//        }
-//    }
 }
 
 
@@ -1056,16 +925,16 @@ extension ReceiptWriteVM {
             
             self.receiptAPI.updatePayback(
                 versionID: versionID,
-                payerID: payerID, 
+                payerID: payerID,
                 usersMoneyDict: paybackDict,
                 retryCount: 0) { result in
-                switch result {
-                case .success():
-                    continuation.resume()
-                case .failure(let error):
-                    continuation.resume(throwing: error)
+                    switch result {
+                    case .success():
+                        continuation.resume()
+                    case .failure(let error):
+                        continuation.resume(throwing: error)
+                    }
                 }
-            }
         }
     }
 }

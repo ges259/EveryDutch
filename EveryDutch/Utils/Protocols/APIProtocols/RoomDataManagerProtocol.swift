@@ -23,7 +23,7 @@ protocol RoomDataManagerProtocol {
     var getCurrentRoomName: String? { get }
 //    var getCumulativeAmountArray: CumulativeAmountDictionary { get }
     
-    func getIdToRoomUser(usersID: String) -> RoomUsers
+    func getIdToRoomUser(usersID: String) -> User
     func getIDToPayback(userID: String) -> Int
 
     func getIDToCumulativeAmount(userID: String) -> Int

@@ -15,9 +15,9 @@ protocol ProfileEditVMProtocol {
     // MARK: - 네비게이션 타이틀
     var getNavTitle: String? { get }
     
-    func saveCurrentIndexAndType(indexPath: IndexPath) -> EditCellType? 
-//    var getCurrentIndex: (type: EditCellType,
-//                          indexPath: IndexPath)?{ get }
+    func saveCurrentIndexAndType(indexPath: IndexPath) -> EditCellType?
+    
+    
     
     func saveChangedData<T: EditCellType>(type: T,
                          data: Any?)
@@ -49,6 +49,6 @@ protocol ProfileEditVMProtocol {
     
     
     
-    
-    func validation() -> Bool
+    // MARK: - 조건
+    func validation(completion: @escaping Typealias.RoomCompletion)
 }

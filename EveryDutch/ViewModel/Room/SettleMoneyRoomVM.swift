@@ -232,6 +232,6 @@ extension SettleMoneyRoomVM {
         // 유저 데이터 가져오기
         let payerData = self.roomDataManager.getIdToRoomUser(usersID: payer)
         // 유저 이름 반환
-        return payerData.roomUserName
+        return payerData.userName
     }
 }

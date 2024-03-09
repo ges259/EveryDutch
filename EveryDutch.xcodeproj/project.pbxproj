@@ -121,7 +121,6 @@
 		5F80EA932B67DF8100BD8D0C /* SplashScreenVMProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F80EA922B67DF8100BD8D0C /* SplashScreenVMProtocol.swift */; };
 		5F80EA952B67DF9E00BD8D0C /* SelectALoginMethodVMProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F80EA942B67DF9E00BD8D0C /* SelectALoginMethodVMProtocol.swift */; };
 		5F8513BC2B4D2FE700A5B22D /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F8513BB2B4D2FE700A5B22D /* User.swift */; };
-		5F8513C02B4D301C00A5B22D /* RoomUsers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F8513BF2B4D301C00A5B22D /* RoomUsers.swift */; };
 		5F8513C22B4D303900A5B22D /* Receipt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F8513C12B4D303900A5B22D /* Receipt.swift */; };
 		5F8513C42B4D306A00A5B22D /* CumulativeAmount.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F8513C32B4D306A00A5B22D /* CumulativeAmount.swift */; };
 		5F8513C62B4D307F00A5B22D /* VersionThumbnail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F8513C52B4D307F00A5B22D /* VersionThumbnail.swift */; };
@@ -147,6 +146,7 @@
 		5F8513F92B4D7FA200A5B22D /* CreateUsers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F8513F82B4D7FA200A5B22D /* CreateUsers.swift */; };
 		5F8513FB2B4D7FAD00A5B22D /* DeleteUsers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F8513FA2B4D7FAD00A5B22D /* DeleteUsers.swift */; };
 		5F8513FD2B4D800000A5B22D /* DeleteVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F8513FC2B4D800000A5B22D /* DeleteVersion.swift */; };
+		5F864E752B9CDD95007AEA3B /* PaymentDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F864E742B9CDD95007AEA3B /* PaymentDetail.swift */; };
 		5F87DF2A2B3C999D001D5B80 /* RoomSettingCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F87DF292B3C999D001D5B80 /* RoomSettingCoordinator.swift */; };
 		5F87DF2C2B3C99A3001D5B80 /* RoomSettingCoordProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F87DF2B2B3C99A3001D5B80 /* RoomSettingCoordProtocol.swift */; };
 		5F903E672B3B412A005DE55E /* SettlementTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F903E662B3B412A005DE55E /* SettlementTableViewCell.swift */; };
@@ -317,7 +317,6 @@
 		5F80EA922B67DF8100BD8D0C /* SplashScreenVMProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenVMProtocol.swift; sourceTree = "<group>"; };
 		5F80EA942B67DF9E00BD8D0C /* SelectALoginMethodVMProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectALoginMethodVMProtocol.swift; sourceTree = "<group>"; };
 		5F8513BB2B4D2FE700A5B22D /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
-		5F8513BF2B4D301C00A5B22D /* RoomUsers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomUsers.swift; sourceTree = "<group>"; };
 		5F8513C12B4D303900A5B22D /* Receipt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Receipt.swift; sourceTree = "<group>"; };
 		5F8513C32B4D306A00A5B22D /* CumulativeAmount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CumulativeAmount.swift; sourceTree = "<group>"; };
 		5F8513C52B4D307F00A5B22D /* VersionThumbnail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VersionThumbnail.swift; sourceTree = "<group>"; };
@@ -343,6 +342,7 @@
 		5F8513F82B4D7FA200A5B22D /* CreateUsers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreateUsers.swift; sourceTree = "<group>"; };
 		5F8513FA2B4D7FAD00A5B22D /* DeleteUsers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteUsers.swift; sourceTree = "<group>"; };
 		5F8513FC2B4D800000A5B22D /* DeleteVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteVersion.swift; sourceTree = "<group>"; };
+		5F864E742B9CDD95007AEA3B /* PaymentDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentDetail.swift; sourceTree = "<group>"; };
 		5F87DF292B3C999D001D5B80 /* RoomSettingCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomSettingCoordinator.swift; sourceTree = "<group>"; };
 		5F87DF2B2B3C99A3001D5B80 /* RoomSettingCoordProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomSettingCoordProtocol.swift; sourceTree = "<group>"; };
 		5F903E662B3B412A005DE55E /* SettlementTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettlementTableViewCell.swift; sourceTree = "<group>"; };
@@ -1123,12 +1123,12 @@
 			isa = PBXGroup;
 			children = (
 				5F8513BB2B4D2FE700A5B22D /* User.swift */,
+				5F8513C72B4D309600A5B22D /* Rooms.swift */,
 				5F8513C12B4D303900A5B22D /* Receipt.swift */,
 				5F8513C52B4D307F00A5B22D /* VersionThumbnail.swift */,
-				5F8513C72B4D309600A5B22D /* Rooms.swift */,
-				5F8513BF2B4D301C00A5B22D /* RoomUsers.swift */,
 				5F8513C32B4D306A00A5B22D /* CumulativeAmount.swift */,
 				5F630ADB2B559A96008F9CBD /* Payback.swift */,
+				5F864E742B9CDD95007AEA3B /* PaymentDetail.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1447,6 +1447,7 @@
 				5F8513CE2B4D5F3D00A5B22D /* ReadRooms.swift in Sources */,
 				5FE3DE912B39CA9B008D58AE /* SceneDelegate.swift in Sources */,
 				5F8513E02B4D686600A5B22D /* UpdateRooms.swift in Sources */,
+				5F864E752B9CDD95007AEA3B /* PaymentDetail.swift in Sources */,
 				5FB4F6FE2B433DE6002F6CF3 /* FindFriendsVC.swift in Sources */,
 				5F9905072B4ABAD400DB9747 /* UsersTableViewCellVM.swift in Sources */,
 				5F7B9FDA2B6917B1006917E6 /* RoomEditVMProtocol.swift in Sources */,
@@ -1475,7 +1476,6 @@
 				5FB4F70B2B433DEF002F6CF3 /* RoomSettingVC.swift in Sources */,
 				5F46896D2B6E5494001352FA /* RoomEditEnum.swift in Sources */,
 				5FFF661B2B529E35000A5EC4 /* PeopleSelectionPanVM.swift in Sources */,
-				5F8513C02B4D301C00A5B22D /* RoomUsers.swift in Sources */,
 				5F0C46352B910F01009E9920 /* ImageCellType.swift in Sources */,
 				5F294B432B4DA4BE00396B6E /* DatabaseConstants.swift in Sources */,
 				5FFF66172B51B378000A5EC4 /* TableCellStackView.swift in Sources */,

@@ -8,7 +8,8 @@
 import Foundation
 
 protocol EditScreenAPIType {
-    func createScreen(dict: [String: Any],
-                      completion: @escaping (Result<Void, ErrorEnum>) -> Void)
-    func updateScreen(dict: [String: Any])
+    func createData(
+        dict: [String: Any],
+        completion: @escaping (Result<Rooms?, ErrorEnum>) -> Void)
+    func updateData(dict: [String: Any])
 }
