@@ -16,7 +16,7 @@ extension ReceiptAPI {
     // version_ID: String,
     func readReceipt(
         versionID: String,
-        completion: @escaping Typealias.ReceiptCompletion)
+        completion: @escaping Typealias.ReceiptArrayCompletion)
     {
         
         RECEIPT_REF
@@ -43,49 +43,49 @@ extension ReceiptAPI {
     
     
     
-    func observingReceipt_Added(
-        versionID: String,
-        completion: @escaping Typealias.ValidationCompletion)
-    {
-        
-        RECEIPT_REF
-            .child(versionID)
-            .observe(.childAdded) { snapshot in
-                guard let allObjects = snapshot.children.allObjects as? [DataSnapshot] else { return }
-                
-                if let dict = snapshot.value as? [String: Any] {
-                    let receipt = Receipt(dictionary: dict)
-                    completion(.success(receipt))
-                }
-            }
-    }
-    func observingReceipt_changed(
-        versionID: String,
-        completion: @escaping Typealias.ValidationCompletion)
-    {
-        RECEIPT_REF
-            .child(versionID)
-            .observe(.childChanged) { snapshot in
-                guard let allObjects = snapshot.children.allObjects as? [DataSnapshot] else { return }
-                
-                
-                
-            }
-    }
-    func observingReceipt_removed(
-        versionID: String,
-        completion: @escaping Typealias.ValidationCompletion)
-    {
-        RECEIPT_REF
-            .child(versionID)
-            .observe(.childRemoved) { snapshot in
-                guard let allObjects = snapshot.children.allObjects as? [DataSnapshot] else { return }
-                
-                
-                
-            }
-    }
-    
-    
+//    func observingReceipt_Added(
+//        versionID: String,
+//        completion: @escaping Typealias.ReceiptCompletion)
+//    {
+//        
+//        RECEIPT_REF
+//            .child(versionID)
+//            .observe(.childAdded) { snapshot in
+//                guard let allObjects = snapshot.children.allObjects as? [DataSnapshot] else { return }
+//                
+//                if let dict = snapshot.value as? [String: Any] {
+//                    let receipt = Receipt(dictionary: dict)
+//                    completion(.success(receipt))
+//                }
+//            }
+//    }
+//    func observingReceipt_changed(
+//        versionID: String,
+//        completion: @escaping Typealias.ReceiptCompletion)
+//    {
+//        RECEIPT_REF
+//            .child(versionID)
+//            .observe(.childChanged) { snapshot in
+//                guard let allObjects = snapshot.children.allObjects as? [DataSnapshot] else { return }
+//                
+//                
+//                
+//            }
+//    }
+//    func observingReceipt_removed(
+//        versionID: String,
+//        completion: @escaping Typealias.ReceiptCompletion)
+//    {
+//        RECEIPT_REF
+//            .child(versionID)
+//            .observe(.childRemoved) { snapshot in
+//                guard let allObjects = snapshot.children.allObjects as? [DataSnapshot] else { return }
+//                
+//                
+//                
+//            }
+//    }
+//    
+//    
 }
                 

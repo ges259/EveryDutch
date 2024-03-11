@@ -15,9 +15,9 @@ protocol AuthAPIProtocol {
     
     
     
-    func checkLogin(completion: @escaping Typealias.AnoonymouslyCompletion)
+    func checkLogin(completion: @escaping Typealias.VoidCompletion)
     
-    func signInAnonymously(completion: @escaping Typealias.AnoonymouslyCompletion)
+    func signInAnonymously(completion: @escaping Typealias.VoidCompletion)
 }
 
 
@@ -28,7 +28,7 @@ final class AuthAPI: AuthAPIProtocol {
     
     
     // MARK: - 로그인 여부 확인
-    func checkLogin(completion: @escaping Typealias.AnoonymouslyCompletion) {
+    func checkLogin(completion: @escaping Typealias.VoidCompletion) {
         // 이미 로그인된 상태라면,
         if let _ = Auth.auth().currentUser {
             completion(.success(()))
@@ -41,7 +41,7 @@ final class AuthAPI: AuthAPIProtocol {
     }
     
     // MARK: - 익명 회원가입
-    func signInAnonymously(completion: @escaping Typealias.AnoonymouslyCompletion) {
+    func signInAnonymously(completion: @escaping Typealias.VoidCompletion) {
         // 익명 로그인 만들기.
         Auth.auth().signInAnonymously { authResult, error in
             // 에러가 떴다면,

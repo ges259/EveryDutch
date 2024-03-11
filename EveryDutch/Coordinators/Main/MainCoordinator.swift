@@ -91,7 +91,7 @@ final class MainCoordinator: MainCoordProtocol{
     }
     
     
-    // MARK: - 프로필 설정 화면
+    // MARK: - 화면 수정 화면
     /// 플러스 버튼을 누르면 화면 이동
     func profileEditScreen() {
         // Main-Coordinator 생성
@@ -99,6 +99,7 @@ final class MainCoordinator: MainCoordProtocol{
             nav: self.nav,
             isProfileEdit: true, 
             isMake: true)
+        editScreenVCCoordinator.editScreenDelegate = self
         self.moveToEditScreenVCCoord(to: editScreenVCCoordinator)
     }
     
@@ -119,7 +120,7 @@ final class MainCoordinator: MainCoordProtocol{
     {
         
         // ***** 델리게이트 설정 *****
-        editScreenVCCoordinator.cardScreenDelegate = self
+        editScreenVCCoordinator.editScreenDelegate = self
         self.childCoordinators.append(editScreenVCCoordinator)
         // 부모 코디네이터가 자신이라는 것을 명시 (뒤로가기 할 때 필요)
         editScreenVCCoordinator.parentCoordinator = self
@@ -170,9 +171,34 @@ final class MainCoordinator: MainCoordProtocol{
 
 
 
+// MARK: - EditScreenDelegate 델리게이트
+extension MainCoordinator: EditScreenDelegate {
 
-extension MainCoordinator: CardScreenDelegate {
-    func logout() {
-        self.selectALgoinMethodScreen()
+    func makeRoom(room: Rooms) {
+        print(#function)
+        print("1")
+        if let mainVC = self.findMainVC {
+            print("2")
+            mainVC.makeRoom(room: room)
+        }
+    }
+    func makeUser() {
+        
+    }
+    
+    // 공통된 ReceiptWriteVC 찾기 로직
+    private var findMainVC: MainVC? {
+        return self.nav
+            .viewControllers
+            .first(where: { $0 is MainVC }) as? MainVC
     }
 }
+
+
+
+
+
+
+//    func logout() {
+//        self.selectALgoinMethodScreen()
+//    }

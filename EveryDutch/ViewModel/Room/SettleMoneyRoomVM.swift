@@ -140,15 +140,21 @@ extension SettleMoneyRoomVM {
         
     }
     
-    // MARK: - 유져 + 레시피 가져오기
+    // MARK: - 유져 + 페이벡 + 누적 금액
     /// RoomDataManager에서 RoomUsers데이터 가져오기
     private func getUsersData() {
         
         self.roomDataManager.loadRoomUsers() { [weak self] roomusers in
             // 영수증 가져오기
             self?.fetchReceipt()
-            self?.roomDataManager.loadPaybackData { [weak self] in
-                self?.fetchMoneyDataClosure?()
+            self?.roomDataManager.loadPaybackData { [weak self] result in
+                switch result {
+                    
+                case .success():
+                    self?.fetchMoneyDataClosure?()
+                case .failure(_):
+                    print(#function)
+                }
             }
         }
     }

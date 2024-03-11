@@ -7,6 +7,8 @@
 
 import Foundation
 
-protocol CardScreenDelegate: AnyObject {
-    func logout()
+protocol EditScreenDelegate: AnyObject {
+//    func logout()
+    func makeRoom(room: Rooms)
+    func makeUser()
 }

@@ -121,6 +121,9 @@ final class ReceiptWriteCoordinator: ReceiptWriteCoordProtocol {
 }
 
 
+
+
+
 // MARK: - PeopleSelection 델리게이트
 extension ReceiptWriteCoordinator: PeopleSelectionDelegate {
     

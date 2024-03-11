@@ -8,6 +8,6 @@
 import Foundation
 
 protocol SplashScreenVMProtocol {    
-    func checkLogin(completion: @escaping (Bool) -> Void)
+    func checkLogin(completion: @escaping (Result<(),ErrorEnum>) -> Void)
     
 }

@@ -20,43 +20,23 @@ final class SplashScreenVM: SplashScreenVMProtocol {
         self.authAPI = authAPI
         self.roomDataManager = roomDataManager
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    // MARK: - 로그인 여부 확인
-    func checkLogin(completion: @escaping (Bool) -> Void) {
-        
-        print("1")
-        self.authAPI.checkLogin { result in
-            switch result {
-            case .success(_):
-                print("2")
-                self.fetchRoomsData {
-                    print("3")
-                    completion(true)
-                }
-                break
-                
-            case .failure(_):
-                print("-1")
-                completion(false)
-                break
-            }
-        }
+    deinit {
+        print("deinit --- \(#function)-----\(self)")
     }
     
     
-    func fetchRoomsData(completion: @escaping () -> Void) {
-        print("4")
-        self.roomDataManager.loadRooms {
-            completion()
+    // MARK: - 로그인 여부 확인
+    func checkLogin(completion: @escaping (Result<(),ErrorEnum>) -> Void) {
+        self.authAPI.checkLogin { result in
+            switch result {
+            case .success():
+                self.roomDataManager.loadRooms(completion: completion)
+                break
+                
+            case .failure(let errorEnum):
+                completion(.failure(errorEnum))
+                break
+            }
         }
     }
 }

@@ -11,4 +11,7 @@ protocol ProfileEditVCCoordProtocol: Coordinator {
     
     func colorPickerScreen()
     func imagePickerScreen()
+    
+    
+    func makeRoom(room: Rooms)
 }

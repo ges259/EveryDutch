@@ -34,7 +34,7 @@ final class EditScreenCoordinator: NSObject, ProfileEditVCCoordProtocol {
         }
     }
     // MainCoordinator에서 설정
-    weak var cardScreenDelegate: CardScreenDelegate?
+    weak var editScreenDelegate: EditScreenDelegate?
     private weak var colorDelegate: ColorPickerDelegate?
     private weak var imageDelegate: ImagePickerDelegate?
     
@@ -137,12 +137,23 @@ final class EditScreenCoordinator: NSObject, ProfileEditVCCoordProtocol {
 
 
 // MARK: - CardScreenDelegate
-extension EditScreenCoordinator: CardScreenDelegate {
-    /// CardScreenVC에서 delegate.logout()을 호출 시 실행 됨.
-    func logout() {
+extension EditScreenCoordinator: EditScreenDelegate {
+    func makeRoom(room: Rooms) {
+        print(#function)
         self.didFinish()
-        self.cardScreenDelegate?.logout()
+        self.editScreenDelegate?.makeRoom(room: room)
     }
+    
+    func makeUser() {
+        self.didFinish()
+        self.editScreenDelegate?.makeUser()
+    }
+    
+    /// CardScreenVC에서 delegate.logout()을 호출 시 실행 됨.
+//    func logout() {
+//        self.didFinish()
+//        self.editScreenDelegate?.logout()
+//    }
 }
 
 
@@ -150,7 +161,7 @@ extension EditScreenCoordinator: CardScreenDelegate {
 
 
 
-// MARK: - UIColorPickerViewControllerDelegate
+// MARK: - 색상 선택 델리게이트
 
 extension EditScreenCoordinator: UIColorPickerViewControllerDelegate {
     
@@ -177,8 +188,8 @@ extension EditScreenCoordinator: UIColorPickerViewControllerDelegate {
 
 
 
-
-extension EditScreenCoordinator: 
+// MARK: - 이미지 선택 델리게이트
+extension EditScreenCoordinator:
     UIImagePickerControllerDelegate,
     UINavigationControllerDelegate
 {

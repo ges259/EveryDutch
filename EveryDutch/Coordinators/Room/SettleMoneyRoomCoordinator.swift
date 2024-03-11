@@ -80,6 +80,10 @@ final class SettleMoneyRoomCoordinator: SettleMoneyRoomCoordProtocol {
 }
 
 
+
+
+
+// MARK: - 레시피 작성 델리게이트
 extension SettleMoneyRoomCoordinator: ReceiptWriteDelegate {
     func successReceipt(receipt: Receipt) {
         DispatchQueue.main.async {

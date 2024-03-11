@@ -28,12 +28,19 @@ protocol RoomDataManagerProtocol {
 
     func getIDToCumulativeAmount(userID: String) -> Int
     
+    
+    
+    
     func loadRoomUsers(
-        completion: @escaping (RoomUserDataDict) -> Void)
+        completion: @escaping (Result<RoomUserDataDict, ErrorEnum>) -> Void)
     
     func loadCumulativeAmountData(
-        completion: @escaping () -> Void) 
-    func loadPaybackData(completion: @escaping () -> Void)
+        completion: @escaping Typealias.VoidCompletion) 
+    func loadPaybackData(completion: @escaping Typealias.VoidCompletion)
     
-    func loadRooms(completion: @escaping () -> Void)
+    func loadRooms(completion: @escaping Typealias.VoidCompletion)
+    
+    
+    
+    func addedRoom(room: Rooms) 
 }

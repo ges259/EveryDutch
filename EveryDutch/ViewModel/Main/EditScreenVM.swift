@@ -186,17 +186,19 @@ final class EditScreenVM: ProfileEditVMProtocol {
 
 extension EditScreenVM {
     
-    func validation(completion: @escaping Typealias.RoomCompletion) {
+    func validation(completion: @escaping (Result<Rooms?, ErrorEnum>) -> Void) {
         
         if let type = self.sections.first {
             if type is RoomEditEnum {
                 if self.roomValidation(type: RoomEditCellType.self) {
                     print("validation 성공")
                     
-                    self.createRoom { result in
-                        
-                    }
+                    self.createRoom(completion: completion)
+                    
+                    
+                    
                 } else {
+                    completion(.failure(.readError))
                     print("validation 실패")
                 }
             }
@@ -204,10 +206,10 @@ extension EditScreenVM {
             else if type is ProfileEditEnum {
                 if self.roomValidation(type: ProfileEditCellType.self) {
                     print("validation 성공")
-                    self.createRoom { result in
-                        
-                    }
+                    self.createRoom(completion: completion)
+                    
                 } else {
+                    completion(.failure(.readError))
                     print("validation 실패")
                 }
             }

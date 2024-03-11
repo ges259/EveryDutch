@@ -64,7 +64,15 @@ final class RoomSettingCoordinator: RoomSettingCoordProtocol{
     }
 }
 
-extension RoomSettingCoordinator: CardScreenDelegate {
+extension RoomSettingCoordinator: EditScreenDelegate {
+    func makeRoom(room: Rooms) {
+        
+    }
+    
+    func makeUser() {
+        
+    }
+    
     func logout() {
         print(#function)
     }

@@ -689,7 +689,7 @@ extension ReceiptWriteVM {
     
     // MARK: - 유효성 검사
     func prepareReceiptDataAndValidate(
-        completion: @escaping Typealias.ValidationCompletion)
+        completion: @escaping Typealias.ReceiptCompletion)
     {
         // 영수증 데이터 딕셔너리 생성
         self.validationData { result in

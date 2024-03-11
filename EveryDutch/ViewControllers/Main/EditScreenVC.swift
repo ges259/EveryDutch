@@ -74,7 +74,7 @@ final class EditScreenVC: UIViewController {
     private var viewModel: ProfileEditVMProtocol
     private var coordinator: ProfileEditVCCoordProtocol
     /// CardScreenCoordinator로 전달 됨
-    weak var delegate: CardScreenDelegate?
+    weak var delegate: EditScreenDelegate?
     
     
     
@@ -210,7 +210,16 @@ extension EditScreenVC {
     
     // MARK: - 하단 버튼
     @objc private func bottomBtnTapped() {
-        print(self.viewModel.validation())
+        self.viewModel.validation { result in
+            switch result {
+            case .success(let data):
+                guard let data = data else { return }
+                self.coordinator.makeRoom(room: data)
+                break
+            case .failure(_):
+                break
+            }
+        }
     }
 }
 

@@ -46,10 +46,15 @@ class SplashScreenVC: UIViewController {
     
     // MARK: - 로그인 확인
     private func checkLogin() {
-        self.viewModel.checkLogin { [weak self] bool in
-            _ = bool
-            ? self?.goToMainScreen()
-            : self?.goToLoginScreen()
+        self.viewModel.checkLogin { [weak self] result in
+            
+            switch result {
+            case .success():
+                self?.goToMainScreen()
+                
+            case .failure(_):
+                self?.goToLoginScreen()
+            }
         }
     }
     

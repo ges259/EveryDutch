@@ -10,7 +10,7 @@ import UIKit
 protocol MainVMProtocol {
 //    var rooms: [Rooms] { get }
     func itemTapped(index: Int)
-    
+    func addedRoom(room: Rooms) -> IndexPath 
     
 //    var isFloatingShow: Bool { get set }
     var getSpinRotation: CGAffineTransform { get }

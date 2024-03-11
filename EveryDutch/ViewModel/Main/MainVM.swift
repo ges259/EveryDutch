@@ -31,11 +31,15 @@ final class MainVM: MainVMProtocol {
     // MARK: - 컬렉션뷰 클로저
     var collectionVeiwReloadClousure: (() -> Void)?
     
+//    var addedRoomClousure: ((IndexPath) -> Void)?
     
     
     
-    
-    
+    func addedRoom(room: Rooms) -> IndexPath {
+        self.makeOneCellViewModel(room: room)
+        
+        return IndexPath(item: 0, section: 0)
+    }
     
     
     
@@ -47,6 +51,9 @@ final class MainVM: MainVMProtocol {
     
     
     var roomDataManager: RoomDataManagerProtocol
+    
+    
+    
     
     // MARK: - 라이프 사이클
     init(roomDataManager: RoomDataManagerProtocol) {
@@ -139,7 +146,7 @@ extension MainVM {
     // MARK: - [API] 방의 데이터
     private func getRoomsData() {
         self.rooms = self.roomDataManager.getRooms
-        self.makeCellViewModel()
+        self.makeCellsViewModel()
     }
 }
     
@@ -157,13 +164,24 @@ extension MainVM {
 extension MainVM {
     
     // MARK: - 셀의 데이터 만들기
-    private func makeCellViewModel() {
+    private func makeCellsViewModel() {
         // 예시 데이터 로드
         self.cellViewModels = self.rooms.map {
-            MainCollectionViewCellVM(title: $0.roomName,
-                                     imgUrl: $0.roomImg )
+            MainCollectionViewCellVM(
+                title: $0.roomName,
+                imgUrl: $0.roomImg )
         }
         self.collectionVeiwReloadClousure?()
+    }
+    
+    // MARK: - 새로운 셀 추가
+    private func makeOneCellViewModel(room: Rooms) {
+        
+        let cellVM = MainCollectionViewCellVM(
+            title: room.roomName,
+            imgUrl: room.roomImg)
+        self.cellViewModels.insert(cellVM, at: 0)
+        self.roomDataManager.addedRoom(room: room)
     }
     
     

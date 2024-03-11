@@ -15,8 +15,6 @@ import FirebaseAuth
 
 extension RoomsAPI {
     
-    
-    
     func readRoomUsers(
         roomID: String,
         completion: @escaping Typealias.RoomUsersCompletion)
@@ -32,35 +30,27 @@ extension RoomsAPI {
             .observeSingleEvent(of: DataEventType.value) { snapshot in
                 
                 guard let value = snapshot.value as? [String: Bool] else {
-                    print("실패1")
                     completion(.failure(.readError))
                     return
                 }
-                print("성공1")
+                
                 for (key, _) in value {
                     saveGroup.enter()
                     
-                    print("성공2")
-                    print(key)
                     USER_REF
                         .child(key)
                         .observeSingleEvent(of: .value) { snapshot in
                             
                             guard let valueData = snapshot.value as? [String: Any] else {
-                                print("실패2")
                                 completion(.failure(.readError))
                                 return
                             }
-                            print("성공3")
-                            print(valueData)
                             let roomUser = User(dictionary: valueData)
                             roomUsers[key] = roomUser
                             saveGroup.leave()
                         }
                 }
                 saveGroup.notify(queue: .main) {
-                    print("끝")
-                    print(roomUsers)
                     completion(.success(roomUsers))
                 }
             }

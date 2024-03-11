@@ -9,11 +9,11 @@ import Foundation
 
 enum Typealias {
     // ReceiptAPI
-    typealias ReceiptCompletion = (Result<[Receipt], ErrorEnum>) -> Void
+    typealias ReceiptArrayCompletion = (Result<[Receipt], ErrorEnum>) -> Void
     
     typealias CreateReceiptCompletion = (Result<String, ErrorEnum>) -> Void
     
-    typealias baseCompletion = (Result<(), ErrorEnum>) -> Void
+    
     
     
     
@@ -31,13 +31,14 @@ enum Typealias {
     
     
     // AuthAPIProtocol
-    typealias AnoonymouslyCompletion = (Result<Void, ErrorEnum>) -> Void
-    
+    typealias VoidCompletion = (Result<Void, ErrorEnum>) -> Void
+    typealias baseCompletion = (Result<(), ErrorEnum>) -> Void
     
     // ReceiptWriteVM
-    typealias ValidationCompletion = (Result<Receipt, ErrorEnum>) -> Void
-
+    typealias ReceiptCompletion = (Result<Receipt, ErrorEnum>) -> Void
 }
+
+
 
 // RoomDataManager
 typealias RoomUserDataDict = [String : User]

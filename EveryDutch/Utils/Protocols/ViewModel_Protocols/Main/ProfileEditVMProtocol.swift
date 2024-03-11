@@ -50,5 +50,5 @@ protocol ProfileEditVMProtocol {
     
     
     // MARK: - 조건
-    func validation(completion: @escaping Typealias.RoomCompletion)
+    func validation(completion: @escaping (Result<Rooms?, ErrorEnum>) -> Void)
 }

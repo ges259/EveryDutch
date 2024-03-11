@@ -417,10 +417,22 @@ extension MainVC: UICollectionViewDataSource {
 
 // MARK: - 카트 스크린 델리게이트
 
-extension MainVC: CardScreenDelegate {
-    
-    // MARK: - 로그아웃
-    func logout() {
-        self.coordinator.selectALgoinMethodScreen()
+//extension MainVC: EditScreenDelegate {
+extension MainVC {
+    func makeRoom(room: Rooms) {
+        print(#function)
+        let indexPath = self.viewModel.addedRoom(room: room)
+        
+        self.collectionView.insertItems(at: [indexPath])
     }
+    
+    func makeUser() {
+        
+    }
+    
+    
+//    // MARK: - 로그아웃
+//    func logout() {
+//        self.coordinator.selectALgoinMethodScreen()
+//    }
 }

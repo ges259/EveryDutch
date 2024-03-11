@@ -59,7 +59,10 @@ final class RoomDataManager: RoomDataManagerProtocol {
         return rooms
     }
     
-    
+    // MARK: - 방 데이터 추가
+    func addedRoom(room: Rooms) {
+        self.rooms?.insert(room, at: 0)
+    }
     
     
     
@@ -126,7 +129,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
     // 콜백 함수 만들기(completion)
     // SettlementMoneyRoomVM에서 호출 됨
     func loadRoomUsers(
-        completion: @escaping (RoomUserDataDict) -> Void)
+        completion: @escaping (Result<RoomUserDataDict, ErrorEnum>) -> Void)
     {
         // roomData 저장
         guard let roomID = self.currentRoomData?.roomID else { return }
@@ -139,11 +142,12 @@ final class RoomDataManager: RoomDataManagerProtocol {
                     print("users 성공")
                     // [String : RoomUsers] 딕셔너리 저장
                     self?.roomUserDataDict = users
-                    completion(users)
+                    completion(.success(users))
                     break
                     // MARK: - Fix
-                case .failure(_):
+                case .failure(let errorEnum):
                     print("users 실패")
+                    completion(.failure(errorEnum))
                     break
                 }
             }
@@ -151,40 +155,53 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     // MARK: - [API] 누적 금액 데이터
     func loadCumulativeAmountData(
-        completion: @escaping () -> Void)
+        completion: @escaping Typealias.VoidCompletion)
     {
-        self.roomsAPI.readCumulativeAmount { [weak self] data in
+        
+        guard let versionID = self.getCurrentVersion else {
+            print(#function)
+            return
+        }
+        
+        self.roomsAPI.readCumulativeAmount(versionID: versionID) { [weak self] data in
             switch data {
             case .success(let moneyData):
                 print("cumulativeMoney 성공")
                 self?.cumulativeAmount = moneyData
-                completion()
+                completion(.success(()))
             // MARK: - Fix
-            case .failure(_):
+            case .failure(let errorEnum):
                 print("cumulativeMoney 실패")
-                completion()
+                completion(.failure(errorEnum))
                 break
             }
         }
     }
     
     // MARK: - [API] 페이백 데이터
-    func loadPaybackData(completion: @escaping () -> Void) {
-        self.roomsAPI.readPayback { [weak self] paybackData in
+    func loadPaybackData(
+        completion: @escaping Typealias.VoidCompletion)
+    {
+        guard let versionID = self.getCurrentVersion else {
+            print(#function)
+            return
+        }
+        
+        self.roomsAPI.readPayback(versionID: versionID) { [weak self] paybackData in
             switch paybackData {
             case .success(let data):
                 print("payback 성공")
                 self?.paybackData = data
-                self?.loadCumulativeAmountData {
+                self?.loadCumulativeAmountData {_ in 
                     print("cumulativeMoney 성공")
-                    completion()
+                    completion(.success(()))
                 }
                 break
                 // MARK: - Fix
-            case .failure(_):
-                self?.loadCumulativeAmountData {
+            case .failure(let errorEnum):
+                self?.loadCumulativeAmountData {_ in
                     print("cumulativeMoney 실패")
-                    completion()
+                    completion(.failure(errorEnum))
                 }
                 print("payback 실패")
                 break
@@ -193,18 +210,31 @@ final class RoomDataManager: RoomDataManagerProtocol {
     }
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     // MARK: - [API] 방의 데이터
-    func loadRooms(completion: @escaping () -> Void) {
-        
+    func loadRooms(completion: @escaping Typealias.VoidCompletion) {
         self.roomsAPI.readRoomsID {[weak self] result in
             switch result {
             case .success(let rooms):
                 self?.rooms = rooms
                 print("loadRooms 성공")
-                completion()
+                completion(.success(()))
                 break
                 // MARK: - Fix
             case .failure(_):
+                completion(.failure(.readError))
                 print("loadRooms 실패")
                 break
             }

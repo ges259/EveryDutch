@@ -18,12 +18,12 @@ extension RoomsAPI {
 
     
     func readCumulativeAmount(
-//        versionID: String,
+        versionID: String,
         completion: @escaping Typealias.RoomMoneyDataCompletion)
     {
         
         Cumulative_AMOUNT_REF
-            .child("version_ID_1")
+            .child(versionID)
             .observeSingleEvent(of: .value) { snapshot in
                 
                 guard let value = snapshot.value as? [String: Int] else {
@@ -35,13 +35,10 @@ extension RoomsAPI {
                 
                 
                 for (userID, amount) in value {
-                        
                     let moneyData = CumulativeAmount(
                         amount: amount)
-                    
                     cumulativeAmounts[userID] = moneyData
                 }
-                
                 // 결과적으로 생성된 CumulativeAmount 배열
                 completion(.success(cumulativeAmounts))
             }
@@ -50,13 +47,14 @@ extension RoomsAPI {
     
     
     func readPayback(
-//        versionID: String,
+        versionID: String,
         completion: @escaping Typealias.PaybackCompletion)
     {
         
         
+        
         PAYBACK_REF
-            .child("version_ID_1")
+            .child(versionID)
             .child("qqqqqq")
             .observeSingleEvent(of: .value, with: { snapshot in
                 
