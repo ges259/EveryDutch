@@ -109,7 +109,7 @@ extension ReceiptAPI {
         receiptID: String,
         users: [String],
         retryCount: Int = 0,
-        completion: @escaping Typealias.baseCompletion)
+        completion: @escaping Typealias.VoidCompletion)
     {
         let saveGroup = DispatchGroup()
         
@@ -164,7 +164,7 @@ extension ReceiptAPI {
         versionID: String,
         usersMoneyDict: [String: Int],
         retryCount: Int = 0,
-        completion: @escaping Typealias.baseCompletion)
+        completion: @escaping Typealias.VoidCompletion)
     {
         self.performTransactionUpdate(
             forRef: Cumulative_AMOUNT_REF.child(versionID),
@@ -179,7 +179,7 @@ extension ReceiptAPI {
         payerID: String,
         usersMoneyDict: [String: Int],
         retryCount: Int = 0,
-        completion: @escaping Typealias.baseCompletion)
+        completion: @escaping Typealias.VoidCompletion)
     {
         self.performTransactionUpdate(
             forRef: PAYBACK_REF.child(versionID).child(payerID),

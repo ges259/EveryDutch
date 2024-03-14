@@ -8,9 +8,12 @@
 import Foundation
 
 protocol UserAPIProtocol: EditScreenAPIType {
-    static var shared: UserAPIProtocol { get }
+    
     
 
     func readUser(uid: String, completion: @escaping Typealias.UserCompletion)
     
+    func searchUser(
+        _ userID: String,
+        completion: @escaping Typealias.UserCompletion)
 }

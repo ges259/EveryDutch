@@ -9,19 +9,6 @@ import Foundation
 import FirebaseAuth
 import Firebase
 
-protocol AuthAPIProtocol {
-
-    static var shared: AuthAPIProtocol { get }
-    
-    
-    
-    func checkLogin(completion: @escaping Typealias.VoidCompletion)
-    
-    func signInAnonymously(completion: @escaping Typealias.VoidCompletion)
-}
-
-
-
 final class AuthAPI: AuthAPIProtocol {
     static let shared: AuthAPIProtocol = AuthAPI()
     private init() {}

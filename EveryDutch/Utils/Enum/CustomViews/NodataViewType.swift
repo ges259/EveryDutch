@@ -11,6 +11,8 @@ enum NodataViewType {
     case mainScreen
     case versionScreen
     case ReceiptWriteScreen
+    case findFriendsScreen
+    case cantFindFriendScreen
     
     var getImg: UIImage? {
         switch self {
@@ -19,6 +21,10 @@ enum NodataViewType {
         case .versionScreen:
             return UIImage.plus_Circle_Img
         case .ReceiptWriteScreen:
+            return UIImage.plus_Circle_Img
+        case .findFriendsScreen:
+            return UIImage.plus_Circle_Img
+        case .cantFindFriendScreen:
             return UIImage.plus_Circle_Img
         }
     }
@@ -31,14 +37,19 @@ enum NodataViewType {
             return "버전 정보가 없습니다.\n+ 정산 버튼을 눌러 버전을 생성해보세요!"
         case .ReceiptWriteScreen:
             return "채팅방이 아직 없습니다.\n+ 버튼을 눌러 생성해보세요!"
+        case .findFriendsScreen: 
+            return "채팅방이 아직 없습니다.\n+ 버튼을 눌러 생성해보세요!"
+        case .cantFindFriendScreen:
+            return "채팅방이 아직 없습니다.\n+ 버튼을 눌러 생성해보세요!"
         }
     }
+    
     var getTintColor: UIColor {
         switch self {
         case .mainScreen, .versionScreen:
             return .normal_white
             
-        case .ReceiptWriteScreen:
+        case .ReceiptWriteScreen, .findFriendsScreen, .cantFindFriendScreen:
             return .deep_Blue
         }
     }
@@ -48,7 +59,7 @@ enum NodataViewType {
         case .mainScreen, .versionScreen:
             return .deep_Blue
         
-        case .ReceiptWriteScreen:
+        case .ReceiptWriteScreen, .findFriendsScreen, .cantFindFriendScreen:
             return .normal_white
         }
     }
@@ -58,7 +69,7 @@ enum NodataViewType {
         case .mainScreen, .versionScreen:
             return true
             
-        case .ReceiptWriteScreen:
+        case .ReceiptWriteScreen,.findFriendsScreen, .cantFindFriendScreen:
             return false
         }
     }

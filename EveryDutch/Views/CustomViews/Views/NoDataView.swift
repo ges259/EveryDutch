@@ -63,7 +63,7 @@ final class NoDataView: UIView {
 extension NoDataView {
     
     // MARK: - UI 설정
-    private func configureUIWithType(type: NodataViewType) {
+    func configureUIWithType(type: NodataViewType) {
         self.backgroundColor = type.getBackgroundColor
         self.isHidden = type.getIsHidden
         self.noDataImg.image = type.getImg

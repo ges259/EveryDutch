@@ -118,7 +118,6 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
         // api호출
         // 영수증 가져오기
         self.getUsersData()
-        self.fetchRoomMoneyData()
     }
 }
     
@@ -135,26 +134,28 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
 
 extension SettleMoneyRoomVM {
     
-    // MARK: - 누적 금액 및 페이백 데이터 API
-    private func fetchRoomMoneyData() {
-        
-    }
-    
-    // MARK: - 유져 + 페이벡 + 누적 금액
+    // MARK: - 유져 데이터
     /// RoomDataManager에서 RoomUsers데이터 가져오기
     private func getUsersData() {
         
         self.roomDataManager.loadRoomUsers() { [weak self] roomusers in
             // 영수증 가져오기
             self?.fetchReceipt()
-            self?.roomDataManager.loadPaybackData { [weak self] result in
-                switch result {
-                    
-                case .success():
-                    self?.fetchMoneyDataClosure?()
-                case .failure(_):
-                    print(#function)
-                }
+            // 돈 관련 데이터 가져오기 (페이백, 누적 금액)
+            self?.getRoomMoneyData()
+        }
+    }
+    // MARK: - 페이벡 + 누적 금액 (돈 관련)
+    private func getRoomMoneyData() {
+        self.roomDataManager.loadFinancialData { result in
+            self.fetchMoneyDataClosure?()
+            switch result {
+            case .success(): 
+                break
+            case .failure(_):
+                // MARK: - Fix
+                // 유저에게 알리기.
+                break
             }
         }
     }

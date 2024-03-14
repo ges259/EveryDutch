@@ -26,8 +26,12 @@ final class FindFriendsCoordinator: Coordinator {
     }
     
     func start() {
+        let findFriendsVM = FindFriendsVM(
+            userAPI: UserAPI.shared)
         // FindFriendsVC 인스턴스 생성
-        let findFriendsVC = FindFriendsVC(coordinator: self)
+        let findFriendsVC = FindFriendsVC(
+            coordinator: self,
+            viewModel: findFriendsVM)
         self.nav.pushViewController(findFriendsVC, animated: true)
     }
     

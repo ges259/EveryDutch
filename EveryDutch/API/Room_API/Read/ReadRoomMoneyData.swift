@@ -6,16 +6,13 @@
 //
 
 import Foundation
+import FirebaseAuth
 import FirebaseDatabaseInternal
 
 // 방에 들어섰을 때
     // 방 유저 데이터 가져오기 ----- (Room_Users)
 
 extension RoomsAPI {
-    
-
-    
-
     
     func readCumulativeAmount(
         versionID: String,
@@ -26,6 +23,12 @@ extension RoomsAPI {
             .child(versionID)
             .observeSingleEvent(of: .value) { snapshot in
                 
+                // 데이터가 존재하지 않는 경우
+                guard snapshot.exists() else {
+                    // 빈 배열로 성공 응답
+                    completion(.success([:]))
+                    return
+                }
                 guard let value = snapshot.value as? [String: Int] else {
                     // 데이터를 가져오는데 실패한 경우, 에러와 함께 완료 핸들러를 호출
                     completion(.failure(.readError))
@@ -51,12 +54,22 @@ extension RoomsAPI {
         completion: @escaping Typealias.PaybackCompletion)
     {
         
-        
+        guard let uid = Auth.auth().currentUser?.uid else { return }
         
         PAYBACK_REF
             .child(versionID)
-            .child("qqqqqq")
+            .child(uid)
             .observeSingleEvent(of: .value, with: { snapshot in
+                
+                // 데이터가 존재하지 않는 경우
+                guard snapshot.exists() else {
+                    let payback = Payback(
+                        userID: uid,
+                        payback: [:])
+                    // 빈 배열로 성공 응답
+                    completion(.success(payback))
+                    return
+                }
                 
                 guard let value = snapshot.value as? [String: Int] else {
                     // 데이터를 가져오는데 실패한 경우, 에러와 함께 완료 핸들러를 호출
@@ -65,7 +78,7 @@ extension RoomsAPI {
                 }
                 
                 let payback = Payback(
-                    userID: "qqqqqq",
+                    userID: uid,
                     payback: value)
                 
                 // 완료 핸들러에 성공 결과 전달

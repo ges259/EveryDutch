@@ -32,7 +32,7 @@ enum Typealias {
     
     // AuthAPIProtocol
     typealias VoidCompletion = (Result<Void, ErrorEnum>) -> Void
-    typealias baseCompletion = (Result<(), ErrorEnum>) -> Void
+    
     
     // ReceiptWriteVM
     typealias ReceiptCompletion = (Result<Receipt, ErrorEnum>) -> Void

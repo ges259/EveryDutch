@@ -7,7 +7,7 @@
 
 import Foundation
 protocol ReceiptAPIProtocol {
-    static var shared: ReceiptAPIProtocol { get }
+    
     
     
     
@@ -21,13 +21,13 @@ protocol ReceiptAPIProtocol {
     func saveReceiptForUsers(receiptID: String,
                              users: [String],
                              retryCount: Int,
-                             completion: @escaping Typealias.baseCompletion)
+                             completion: @escaping Typealias.VoidCompletion)
     
     
     func updateCumulativeMoney(versionID: String,
                                usersMoneyDict: [String: Int],
                                retryCount: Int,
-                               completion: @escaping Typealias.baseCompletion)
+                               completion: @escaping Typealias.VoidCompletion)
     
     
     
@@ -37,7 +37,7 @@ protocol ReceiptAPIProtocol {
                        payerID: String,
                        usersMoneyDict: [String: Int],
                        retryCount: Int,
-                       completion: @escaping Typealias.baseCompletion)
+                       completion: @escaping Typealias.VoidCompletion)
     
     
     

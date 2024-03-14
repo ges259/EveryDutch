@@ -115,21 +115,26 @@ final class RoomDataManager: RoomDataManagerProtocol {
     func getIDToPayback(userID: String) -> Int {
         return self.paybackData?.payback[userID] ?? 0
     }
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - [API]
+
+extension RoomDataManager {
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    // MARK: - [API] 유저 데이터
+    // MARK: - 유저 데이터
     // 콜백 함수 만들기(completion)
     // SettlementMoneyRoomVM에서 호출 됨
     func loadRoomUsers(
-        completion: @escaping (Result<RoomUserDataDict, ErrorEnum>) -> Void)
+        completion: @escaping Typealias.VoidCompletion)
     {
         // roomData 저장
         guard let roomID = self.currentRoomData?.roomID else { return }
@@ -142,7 +147,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
                     print("users 성공")
                     // [String : RoomUsers] 딕셔너리 저장
                     self?.roomUserDataDict = users
-                    completion(.success(users))
+                    completion(.success(()))
                     break
                     // MARK: - Fix
                 case .failure(let errorEnum):
@@ -153,13 +158,48 @@ final class RoomDataManager: RoomDataManagerProtocol {
             }
     }
     
-    // MARK: - [API] 누적 금액 데이터
-    func loadCumulativeAmountData(
+    
+    
+    
+    
+    
+    // 두 데이터 로드 작업을 실행하고 모두 완료되면 콜백을 호출
+    func loadFinancialData(completion: @escaping Typealias.VoidCompletion) {
+        let dispatchGroup = DispatchGroup()
+        var errors: [ErrorEnum] = [] // 오류를 저장할 배열
+
+        dispatchGroup.enter()
+        loadPaybackData { result in
+            if case .failure(let error) = result {
+                errors.append(error)
+            }
+            dispatchGroup.leave()
+        }
+
+        dispatchGroup.enter()
+        loadCumulativeAmountData { result in
+            if case .failure(let error) = result {
+                errors.append(error)
+            }
+            dispatchGroup.leave()
+        }
+
+        dispatchGroup.notify(queue: .main) {
+            if errors.isEmpty {
+                completion(.success(())) // 모든 작업이 성공적으로 완료됨
+            } else {
+                completion(.failure(errors.first ?? .readError)) // 첫 번째 오류를 반환
+            }
+        }
+    }
+    
+    // MARK: - 누적 금액 데이터
+    private func loadCumulativeAmountData(
         completion: @escaping Typealias.VoidCompletion)
     {
         
         guard let versionID = self.getCurrentVersion else {
-            print(#function)
+            completion(.failure(.readError))
             return
         }
         
@@ -169,6 +209,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
                 print("cumulativeMoney 성공")
                 self?.cumulativeAmount = moneyData
                 completion(.success(()))
+                
             // MARK: - Fix
             case .failure(let errorEnum):
                 print("cumulativeMoney 실패")
@@ -178,12 +219,12 @@ final class RoomDataManager: RoomDataManagerProtocol {
         }
     }
     
-    // MARK: - [API] 페이백 데이터
-    func loadPaybackData(
+    // MARK: - 페이백 데이터
+    private func loadPaybackData(
         completion: @escaping Typealias.VoidCompletion)
     {
         guard let versionID = self.getCurrentVersion else {
-            print(#function)
+            completion(.failure(.readError))
             return
         }
         
@@ -192,18 +233,14 @@ final class RoomDataManager: RoomDataManagerProtocol {
             case .success(let data):
                 print("payback 성공")
                 self?.paybackData = data
-                self?.loadCumulativeAmountData {_ in 
-                    print("cumulativeMoney 성공")
-                    completion(.success(()))
-                }
+                completion(.success(()))
                 break
+                
+                
                 // MARK: - Fix
             case .failure(let errorEnum):
-                self?.loadCumulativeAmountData {_ in
-                    print("cumulativeMoney 실패")
-                    completion(.failure(errorEnum))
-                }
                 print("payback 실패")
+                completion(.failure(errorEnum))
                 break
             }
         }
@@ -223,7 +260,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     
     
-    // MARK: - [API] 방의 데이터
+    // MARK: - 방의 데이터
     func loadRooms(completion: @escaping Typealias.VoidCompletion) {
         self.roomsAPI.readRoomsID {[weak self] result in
             switch result {

@@ -8,7 +8,7 @@
 import Foundation
 
 protocol RoomsAPIProtocol: EditScreenAPIType {
-    static var shared: RoomsAPIProtocol { get }
+    
     
 
     

@@ -9,7 +9,7 @@ import Foundation
 
 
 protocol RoomDataManagerProtocol {
-    static var shared: RoomDataManagerProtocol { get }
+    
     
     var getCurrentRoomsID: String? { get }
     var getCurrentVersion: String? { get }
@@ -29,14 +29,14 @@ protocol RoomDataManagerProtocol {
     func getIDToCumulativeAmount(userID: String) -> Int
     
     
-    
+    func loadFinancialData(completion: @escaping Typealias.VoidCompletion)
     
     func loadRoomUsers(
-        completion: @escaping (Result<RoomUserDataDict, ErrorEnum>) -> Void)
+        completion: @escaping Typealias.VoidCompletion)
     
-    func loadCumulativeAmountData(
-        completion: @escaping Typealias.VoidCompletion) 
-    func loadPaybackData(completion: @escaping Typealias.VoidCompletion)
+//    func loadCumulativeAmountData(
+//        completion: @escaping Typealias.VoidCompletion) 
+//    func loadPaybackData(completion: @escaping Typealias.VoidCompletion)
     
     func loadRooms(completion: @escaping Typealias.VoidCompletion)
     

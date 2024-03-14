@@ -134,12 +134,11 @@ extension CardImageView {
     }
     
     
-    func titleChange(color: UIColor) {
+    func titleColorChange(color: UIColor) {
         self.titleLbl.textColor = color
     }
-    func pointChange(color: UIColor) {
+    func pointColorChange(color: UIColor) {
         self.lineView.backgroundColor = color
-        
     }
     func backgroundColorChange(color: UIColor) {
         self.backgroundImg.backgroundColor = color
@@ -150,10 +149,15 @@ extension CardImageView {
     func profileImgChange(image: UIImage?) {
         self.userImg.image = image
     }
-    
     func blurViewIsHidden(_ isHidden: Bool) {
-        
+    // MARK: - Fix
 //        self.blurView.isHidden = isHidden
         self.blurView.isHidden.toggle()
+    }
+    
+    
+    func configureUserData(data userData: User) {
+        self.titleLbl.text = userData.userName
+        self.nameLbl.text = userData.personalID
     }
 }

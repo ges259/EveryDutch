@@ -578,9 +578,9 @@ extension EditScreenVC: ColorPickerDelegate {
     private func cardImgViewChangeColor(type: DecorationCellType, color: UIColor) {
         switch type {
         case .titleColor:
-            self.cardImgView.titleChange(color: color)
+            self.cardImgView.titleColorChange(color: color)
         case .pointColor:
-            self.cardImgView.pointChange(color: color)
+            self.cardImgView.pointColorChange(color: color)
         case .backgroundColor:
             self.cardImgView.backgroundColorChange(color: color)
         case .blurEffect:

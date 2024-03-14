@@ -23,7 +23,6 @@ let ROOMS_THUMBNAIL_REF = ref.child("Rooms_Thumbnail")
 // Room_users
 let ROOM_USERS_REF = ref.child("Room_Users")
 // Room_Money_Data
-//let ROOM_MONEY_DATA_REF = ref.child("Room_Money_Data")
 let PAYBACK_REF = ref.child("Payback")
 let Cumulative_AMOUNT_REF = ref.child("Cumulative_Amount")
 
