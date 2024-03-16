@@ -12,4 +12,6 @@ protocol FindFriendsVMProtocol {
     var searchFailedClosure: (() -> Void)? { get set }
     
     func searchUser(text: String?)
+    
+    func inviteUser()
 }

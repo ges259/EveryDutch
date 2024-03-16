@@ -20,7 +20,6 @@ extension RoomsAPI {
         completion: @escaping Typealias.RoomUsersCompletion)
     {
         // 최종적으로 반환될 RoomUsers 배열
-        
         var roomUsers = [String : User]()
         
         let saveGroup = DispatchGroup()

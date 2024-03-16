@@ -14,7 +14,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
         roomsAPI: RoomsAPI.shared)
     
     
-    var roomsAPI: RoomsAPIProtocol
+    private var roomsAPI: RoomsAPIProtocol
     
     
     // MARK: - 라이프사이클

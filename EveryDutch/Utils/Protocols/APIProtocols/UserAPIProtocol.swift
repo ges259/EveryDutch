@@ -11,9 +11,9 @@ protocol UserAPIProtocol: EditScreenAPIType {
     
     
 
-    func readUser(uid: String, completion: @escaping Typealias.UserCompletion)
+    func readUser(uid: String, completion: @escaping Typealias.RoomUsersCompletion)
     
     func searchUser(
         _ userID: String,
-        completion: @escaping Typealias.UserCompletion)
+        completion: @escaping Typealias.RoomUsersCompletion)
 }

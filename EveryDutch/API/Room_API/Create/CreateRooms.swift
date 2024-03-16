@@ -9,7 +9,7 @@ import Foundation
 import FirebaseAuth
 import FirebaseDatabaseInternal
 
-struct RoomsAPI: RoomsAPIProtocol {
+final class RoomsAPI: RoomsAPIProtocol {
     static let shared: RoomsAPIProtocol = RoomsAPI()
     private init() {}
 }
@@ -17,7 +17,7 @@ struct RoomsAPI: RoomsAPIProtocol {
 
 extension RoomsAPI {
     
-    
+    // MARK: - ROOMS_ID 생성
     func createData(
         dict: [String: Any],
         completion: @escaping (Result<Rooms?, ErrorEnum>) -> Void)
@@ -77,7 +77,7 @@ extension RoomsAPI {
         ROOMS_THUMBNAIL_REF
             .child(roomID)
             .updateChildValues(data) { error, _ in
-            if let error = error {
+            if let _ = error {
                 completion(.failure(.readError))
                 return
             }
@@ -94,7 +94,7 @@ extension RoomsAPI {
         ROOM_USERS_REF
             .child(roomID)
             .updateChildValues([uid: true]) { error, _ in
-                if let error = error {
+                if let _ = error {
                     completion(.failure(.readError))
                     return
                 }

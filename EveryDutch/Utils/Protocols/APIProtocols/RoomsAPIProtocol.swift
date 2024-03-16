@@ -20,4 +20,12 @@ protocol RoomsAPIProtocol: EditScreenAPIType {
     func readPayback(
         versionID: String,
         completion: @escaping Typealias.PaybackCompletion)
+    
+    
+    
+    
+    func updateNewMember(
+        userID: String,
+        roomID: String,
+        versionID: String) async throws
 }

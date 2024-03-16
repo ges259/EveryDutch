@@ -23,4 +23,11 @@ enum ErrorEnum: Error {
     case userNotFound
     
     
+    
+    
+    // UpdateRooms
+    case userAlreadyExists
+    case updateFailed
+    case roomUserIDUpdateFailed
+    case roomUserUpdateFailed
 }

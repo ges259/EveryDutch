@@ -876,8 +876,8 @@
 			isa = PBXGroup;
 			children = (
 				5F5AFBD32B4941B000BBBB9D /* RoomSettingVM.swift */,
-				5F67306E2B52E4BF00A91ED5 /* SettlementVM.swift */,
 				5F1AC30F2BA2ACC600E34CAC /* FindFriendsVM.swift */,
+				5F67306E2B52E4BF00A91ED5 /* SettlementVM.swift */,
 			);
 			path = RoomSetting;
 			sourceTree = "<group>";
