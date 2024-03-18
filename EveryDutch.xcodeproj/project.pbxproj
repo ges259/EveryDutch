@@ -48,6 +48,7 @@
 		5F294B542B4DBA0100396B6E /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 5F294B532B4DBA0100396B6E /* FirebaseDatabase */; };
 		5F294B562B4DBA0100396B6E /* FirebaseDatabaseSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 5F294B552B4DBA0100396B6E /* FirebaseDatabaseSwift */; };
 		5F294B582B4DBA0100396B6E /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 5F294B572B4DBA0100396B6E /* FirebaseStorage */; };
+		5F2AF6012BA74AD2001487EC /* AlertEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F2AF6002BA74AD2001487EC /* AlertEnum.swift */; };
 		5F2F7A782B3ECD91004B136F /* CardImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F2F7A772B3ECD91004B136F /* CardImageView.swift */; };
 		5F3211AF2B50028B0027C8B3 /* UsersTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F3211AE2B50028B0027C8B3 /* UsersTableView.swift */; };
 		5F46896B2B6E5482001352FA /* EditScreenEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F46896A2B6E5482001352FA /* EditScreenEnum.swift */; };
@@ -249,6 +250,7 @@
 		5F294B402B4D98C900396B6E /* Database_REF.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Database_REF.swift; sourceTree = "<group>"; };
 		5F294B422B4DA4BE00396B6E /* DatabaseConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseConstants.swift; sourceTree = "<group>"; };
 		5F294B442B4DA4E900396B6E /* APIError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIError.swift; sourceTree = "<group>"; };
+		5F2AF6002BA74AD2001487EC /* AlertEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertEnum.swift; sourceTree = "<group>"; };
 		5F2F7A772B3ECD91004B136F /* CardImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardImageView.swift; sourceTree = "<group>"; };
 		5F3211AE2B50028B0027C8B3 /* UsersTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersTableView.swift; sourceTree = "<group>"; };
 		5F46896A2B6E5482001352FA /* EditScreenEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditScreenEnum.swift; sourceTree = "<group>"; };
@@ -925,6 +927,7 @@
 				5F17137D2B46A643006B3EBB /* Receipt_Enum.swift */,
 				5FC196B82B627583005CC369 /* ReceiptCheckEnum.swift */,
 				5F7DB59A2B5921E300E8C11F /* PeopleSeelctionEnum.swift */,
+				5F2AF6002BA74AD2001487EC /* AlertEnum.swift */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -1379,6 +1382,7 @@
 				5F903E672B3B412A005DE55E /* SettlementTableViewCell.swift in Sources */,
 				5F68487A2B441A7E0015BFCC /* SelectALoginMethodCoordinator.swift in Sources */,
 				5FB703292B7916AF00178590 /* CheckReceiptPanVM.swift in Sources */,
+				5F2AF6012BA74AD2001487EC /* AlertEnum.swift in Sources */,
 				5F7CC32C2B87ACDA00236E84 /* TableHeaderEnum.swift in Sources */,
 				5F80EA932B67DF8100BD8D0C /* SplashScreenVMProtocol.swift in Sources */,
 				5F67306F2B52E4BF00A91ED5 /* SettlementVM.swift in Sources */,

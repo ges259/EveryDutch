@@ -184,7 +184,7 @@ extension FindFriendsVC {
     private func configureAction() {
         // 버튼 생성
         let backButton = UIBarButtonItem(
-            image: .chevronLeft, 
+            image: .chevronLeft,
             style: .done,
             target: self,
             action: #selector(self.backButtonTapped))
@@ -205,37 +205,88 @@ extension FindFriendsVC {
     
     // MARK: - 클로저 설정
     private func configureClosure() {
+        // 검색 성공
         self.viewModel.searchSuccessClosure = { [weak self] user in
             self?.configureCardImg(user: user)
         }
-        
-        self.viewModel.searchFailedClosure = { [weak self]  in
-            self?.configureNoDataView()
+        // 초대 성공
+        self.viewModel.inviteSuccessClosure = { [weak self]  in
+            self?.inviteSuccess()
         }
+        // 에러
+        self.viewModel.apiErrorClosure = { [weak self] errorType in
+            self?.handleApiError(errorType)
+        }
+        self.viewModel.showAPIFailedAlertClosure = { [weak self] alertType in
+            self?.showAPIFailedAlert(alertType)
+        }
+    }
+}
+
+
+
+
+
+
+    
+    
+
+
+// MARK: - 클로저 함수
+
+extension FindFriendsVC {
+    
+    // MARK: - 에러 작업
+    private func handleApiError(_ error: ErrorEnum) {
+        switch error {
+        case .searchIdError, .searchFailed, .userNotFound:
+            // 카드 숨기고, NodataView 보이게 하기
+            self.configureNoDataView()
+            break
+            
+        default: break
+        }
+    }
+    
+    // MARK: - 얼럿창 띄우기
+    private func showAPIFailedAlert(_ alertType: AlertEnum) {
+        self.customAlert(alertStyle: .alert,
+                         alertEnum: alertType) { _ in return }
+    }
+    
+    // MARK: - api작업 성공 시
+    private func inviteSuccess() {
+        self.customAlert(alertStyle: .alert,
+                         alertEnum: .inviteSuccess) { _ in return }
     }
     
     // MARK: - 카드 이미지 설정
     private func configureCardImg(user: User) {
         self.cardImgView.configureUserData(data: user)
         
-        self.noDataView.isHidden = true
-        self.cardImgView.isHidden = false
+        self.cardImgViewIsHidden(false)
     }
     
     // MARK: - NoData 뷰 설정
     private func configureNoDataView() {
         self.noDataView.configureUIWithType(type: .cantFindFriendScreen)
-        self.noDataView.isHidden = false
-        self.cardImgView.isHidden = true
+        
+        self.cardImgViewIsHidden(true)
     }
     
     // MARK: - 화면 isHidden
-    private func changedViewIsHidden(noData: Bool) {
+    private func cardImgViewIsHidden(_ isHidden: Bool) {
         // 정상적으로 적용
-        self.cardImgView.isHidden = noData
+        self.cardImgView.isHidden = isHidden
         // 반대로 적용
-        self.noDataView.isHidden = !noData
+        self.noDataView.isHidden = !isHidden
+        
+        // 반대로 적용
+        self.inviteBottomBtn.isEnabled = !isHidden
+        let color: UIColor = isHidden ? .medium_Blue : .deep_Blue
+        self.inviteBottomBtn.backgroundColor = color
     }
+}
     
     
     
@@ -244,7 +295,11 @@ extension FindFriendsVC {
     
     
     
-    
+
+
+// MARK: - 액션 함수
+
+extension FindFriendsVC {
     
     // MARK: - 뒤로가기 버튼 액션
     @objc private func backButtonTapped() {
@@ -254,11 +309,11 @@ extension FindFriendsVC {
     // MARK: - 검색 버튼
     @objc private func searchBtnTapped() {
         // 유저 검색
-        self.viewModel.searchUser(text: self.textField.text)
+        Task { await self.viewModel.searchUser(text: self.textField.text) }
     }
     
     // MARK: - 하단 버튼
     @objc private func inviteBottomBtnTapped() {
-        self.viewModel.inviteUser()
+        Task { await self.viewModel.inviteUser() }
     }
 }

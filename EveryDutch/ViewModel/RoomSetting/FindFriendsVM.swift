@@ -9,25 +9,37 @@ import Foundation
 
 final class FindFriendsVM: FindFriendsVMProtocol {
     
+    // MARK: - 모델
     private let roomDataManager: RoomDataManagerProtocol
     private let userAPI: UserAPIProtocol
     private let roomsAPI: RoomsAPIProtocol
-    
-    
-    var searchSuccessClosure: ((User) -> Void)?
-    var searchFailedClosure: (() -> Void)?
-    var inviteSuccessClosure: (() -> Void)?
-    var inviteFailClosure: (() -> Void)?
-    var userAlreadyExistsClosure: (() -> Void)?
-    
-    
-    
-    
-    
-    
     private var currentUser: RoomUserDataDict?
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    // MARK: - 클로저
+    var searchSuccessClosure: ((User) -> Void)?
+    var inviteSuccessClosure: (() -> Void)?
+    var apiErrorClosure: ((ErrorEnum) -> Void)?
+    var showAPIFailedAlertClosure: ((AlertEnum) -> Void)?
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    // MARK: - 라이프사이클
     init(roomDataManager: RoomDataManagerProtocol,
          userAPI: UserAPIProtocol,
          roomsAPI: RoomsAPIProtocol) {
@@ -35,90 +47,111 @@ final class FindFriendsVM: FindFriendsVMProtocol {
         self.userAPI = userAPI
         self.roomsAPI = roomsAPI
     }
-    
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - API
+ 
+extension FindFriendsVM {
     
     // MARK: - 유저 검색
-    func searchUser(text: String?) {
-        //
+    func searchUser(text: String?) async {
         guard let userID = text, !userID.isEmpty else {
-            // 빈킨이거나, 작성하면 안 되는 기호가 있을 때
-            self.searchFailedClosure?()
+            await notifyError(.searchIdError)
             return
         }
+        // 빈킨이거나 특수 기호가 있다면, 리턴
+        if await !(self.isValidUserID(userID)) { return }
         
-        self.userAPI.searchUser(userID) { [weak self] result in
-            switch result {
-                // 검색 성공
-            case .success(let userDict):
-                // 딕셔너리의 값을 배열로 변환하고, 첫 번째 User 객체를 사용합니다.
-                // userDict은 [String: User] 타입의 딕셔너리입니다.
-                guard let user = userDict.values.first else {
-                    self?.searchFailedClosure?()
-                    return
-                }
-                self?.currentUser = userDict
-                self?.searchSuccessClosure?(user)
-                
-                
-                // 검색 실패.
-            case .failure(_):
-                self?.currentUser = nil
-                self?.searchFailedClosure?()
+        // 유저 검색
+        do {
+            let userDict = try await userAPI.searchUser(userID)
+            guard let user = userDict.values.first else {
+                await notifyError(.searchFailed)
+                return
             }
+            await updateCurrentUser(userDict, with: user)
+        } catch {
+            await notifyError(.userNotFound)
+        }
+    }
+    
+    // MARK: - 유효성 검사
+    private func isValidUserID(_ userID: String) async -> Bool {
+        // 띄어쓰기 검사
+        if userID.contains(where: { $0.isWhitespace }) {
+            await notifyError(.containsWhitespace)
+            return false
+        }
+
+        // 특수 문자 검사 (알파벳, 숫자, 밑줄(_) 허용)
+        let allowedCharacters = CharacterSet.alphanumerics.union(.init(charactersIn: "_"))
+        if !CharacterSet(charactersIn: userID).isSubset(of: allowedCharacters) {
+            await notifyError(.invalidCharacters)
+            return false
+        }
+
+        return true
+    }
+    
+    // MARK: - 유저 초대
+    func inviteUser() async {
+        guard let userID = currentUser?.keys.first,
+              let versionID = roomDataManager.getCurrentVersion,
+              let roomID = roomDataManager.getCurrentRoomsID 
+        else {
+            await notifyError(.roomDataError)
+            return
+        }
+            
+        do {
+            try await roomsAPI.updateNewMember(userID: userID, roomID: roomID, versionID: versionID)
+            await MainActor.run { self.inviteSuccessClosure?() }
+        } catch let error as ErrorEnum {
+            await notifyError(error)
+        } catch {
+            await notifyError(.unknownError)
+        }
+    }
+    
+    // MARK: - 에러 처리
+    @MainActor
+    private func notifyError(_ error: ErrorEnum) async {
+        switch error {
+        case .searchFailed, .userNotFound:
+            self.apiErrorClosure?(error)
+            break
+            
+        case .searchIdError:
+            self.apiErrorClosure?(error)
+            self.showAPIFailedAlertClosure?(error.alertType)
+            break
+            
+        case .userAlreadyExists,
+                .roomDataError,
+                .roomUserUpdateFailed,
+                .roomUserIDUpdateFailed,
+                .unknownError:
+            self.showAPIFailedAlertClosure?(error.alertType)
+            break
+            
+        default:
+            break
         }
     }
 
-    
-    // MARK: - 유저 초대
-    func inviteUser() {
-        
-        guard let userID: String = self.currentUser?.keys.first,
-              let versionID: String = self.roomDataManager.getCurrentVersion,
-              let roomID: String = self.roomDataManager.getCurrentRoomsID
-        else {
-            print("아무것도없음")
-            self.inviteFailClosure?()
-            return
-        }
-        
-        Task {
-            do {
-                try await self.roomsAPI.updateNewMember(
-                    userID: userID,
-                    roomID: roomID,
-                    versionID: versionID)
-                
-                self.inviteSuccessClosure?()
-                
-                
-            } catch let error as ErrorEnum {
-                self.handleInviteError(error)
-                
-                // 예상치 못 한 오류
-            } catch {
-                self.inviteFailClosure?()
-            }
-        }
-    }
-    
-    private func handleInviteError(_ error: ErrorEnum) {
-        switch error {
-        case .userAlreadyExists:
-              // 사용자가 이미 존재할 경우의 처리
-              print("사용자가 이미 존재합니다.")
-            self.userAlreadyExistsClosure?()
-              
-        case .roomUserUpdateFailed:
-            print("RoomUser 에러")
-            self.inviteFailClosure?()
-            
-            
-        case .roomUserIDUpdateFailed:
-            print("RoomID 에러")
-            self.inviteFailClosure?()
-            
-            
-        default: break
-        }
+    // MARK: - 성공 처리 및 현재 사용자 업데이트
+    @MainActor
+    private func updateCurrentUser(_ userDict: [String: User], with user: User) async {
+        self.currentUser = userDict
+        self.searchSuccessClosure?(user)
     }
 }

@@ -24,37 +24,41 @@ import Firebase
 extension UserAPI {
     
     // MARK: - 유저 읽기
-    func readUser(
-        uid: String,
-        completion: @escaping Typealias.RoomUsersCompletion)
+    func readUser(uid: String) async throws -> [String: User]
     {
-        // 유저데이터 가져오기
-        USER_REF
-            .child(uid)
-            .observeSingleEvent(of: DataEventType.value) { snapshot  in
-                self.createUserFromSnapshot(snapshot, completion: completion)
-            }
+        return try await withCheckedThrowingContinuation
+        { (continuation: CheckedContinuation<[String: User], Error>) in
+            // 유저데이터 가져오기
+            USER_REF
+                .child(uid)
+                .observeSingleEvent(of: DataEventType.value) { snapshot  in
+                    
+                    do {
+                        let user = try self.createUserFromSnapshot(snapshot)
+                        continuation.resume(returning: user)
+                    } catch {
+                        continuation.resume(throwing: ErrorEnum.userNotFound)
+                    }
+                }
+        }
     }
+    
     
     
     
     // MARK: - User 객체 생성
     // 데이터 스냅샷으로부터 User 객체를 생성하고 반환하는 함수
     func createUserFromSnapshot(
-        _ snapshot: DataSnapshot,
-        completion: @escaping Typealias.RoomUsersCompletion)
+        _ snapshot: DataSnapshot) throws -> [String: User]
     {
         guard let value = snapshot.value as? [String: Any] else {
-            completion(.failure(.readError))
-            return
+            throw ErrorEnum.readError
         }
         
         // 유저 모델 만들기
         let user = User(dictionary: value)
         let key = snapshot.key
-        let userDict: RoomUserDataDict = [key: user]
-        
-        // 컴플리션
-        completion(.success(userDict))
+        let userDict: [String: User] = [key: user]
+        return userDict
     }
 }

@@ -9,9 +9,10 @@ import Foundation
 
 protocol FindFriendsVMProtocol {
     var searchSuccessClosure: ((User) -> Void)? { get set }
-    var searchFailedClosure: (() -> Void)? { get set }
+    var inviteSuccessClosure: (() -> Void)? { get set }
+    var apiErrorClosure: ((ErrorEnum) -> Void)? { get set }
+    var showAPIFailedAlertClosure: ((AlertEnum) -> Void)? { get set }
+    func searchUser(text: String?) async
     
-    func searchUser(text: String?)
-    
-    func inviteUser()
+    func inviteUser() async 
 }

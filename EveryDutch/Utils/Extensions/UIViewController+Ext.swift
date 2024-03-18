@@ -7,40 +7,6 @@
 
 import UIKit
 
-
-enum AlertEnum {
-    case loginFail
-    case logout
-    case timeFormat
-    
-    var title: String {
-        switch self {
-        case .loginFail: 
-            return "로그인에 실패하였습니다. 다시 시도해 주세요."
-        case .logout:
-            return ""
-        case .timeFormat:
-            return "시간 형식을 선택해주세요"
-        }
-    }
-    
-    var message: String {
-        switch self {
-        case .loginFail: return ""
-        case .logout: return ""
-        case .timeFormat: return ""
-        }
-    }
-    
-    var buttons: [String] {
-        switch self {
-        case .loginFail: return ["확인"]
-        default: return ["확인"]
-        }
-    }
-    
-}
-
 extension UIViewController {
     /// 커스텀 얼럿창을 생성하고 표시하는 메서드
     func customAlert(

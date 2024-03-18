@@ -36,11 +36,11 @@ enum NodataViewType {
         case .versionScreen:
             return "버전 정보가 없습니다.\n+ 정산 버튼을 눌러 버전을 생성해보세요!"
         case .ReceiptWriteScreen:
-            return "채팅방이 아직 없습니다.\n+ 버튼을 눌러 생성해보세요!"
-        case .findFriendsScreen: 
-            return "채팅방이 아직 없습니다.\n+ 버튼을 눌러 생성해보세요!"
+            return "영수증이 아직 없습니다."
+        case .findFriendsScreen:
+            return "친구의 아이디를 검색해 보세요!"
         case .cantFindFriendScreen:
-            return "채팅방이 아직 없습니다.\n+ 버튼을 눌러 생성해보세요!"
+            return "검색 결과가 없습니다."
         }
     }
     
