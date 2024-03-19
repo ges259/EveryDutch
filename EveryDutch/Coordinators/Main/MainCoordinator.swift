@@ -36,6 +36,11 @@ final class MainCoordinator: MainCoordProtocol{
     init(nav: UINavigationController) {
         self.nav = nav
     }
+    deinit {
+        print("\(#function)-----\(self)")
+    }
+    
+    
     
     // MARK: - start
     // MainViewController 띄우기
@@ -45,10 +50,8 @@ final class MainCoordinator: MainCoordProtocol{
     
     
     
-    
-    
     // MARK: - 메인 화면
-    func mainScreen() {
+    private func mainScreen() {
         // 뷰모델 인스턴스 생성 (이 부분이 추가됨)
         let mainViewModel = MainVM(
             roomDataManager: RoomDataManager.shared)
@@ -67,6 +70,8 @@ final class MainCoordinator: MainCoordProtocol{
         self.nav = mainVCNav
     }
     
+    
+    
     // MARK: - 정산방
     /// 채팅방으로 이동
     func settlementMoneyRoomScreen() {
@@ -81,7 +86,7 @@ final class MainCoordinator: MainCoordProtocol{
     
 
     
-    // MARK: - 프로필 스크린
+    // MARK: - 프로필 화면 스크린
     func profileScreen() {
         let profileCoordinator = ProfileCoordinator(
             nav: self.nav)
@@ -91,7 +96,8 @@ final class MainCoordinator: MainCoordProtocol{
     }
     
     
-    // MARK: - 화면 수정 화면
+    
+    // MARK: - 프로필 수정 화면
     /// 플러스 버튼을 누르면 화면 이동
     func profileEditScreen() {
         // Main-Coordinator 생성
@@ -99,11 +105,12 @@ final class MainCoordinator: MainCoordProtocol{
             nav: self.nav,
             isProfileEdit: true, 
             isMake: true)
-        editScreenVCCoordinator.editScreenDelegate = self
         self.moveToEditScreenVCCoord(to: editScreenVCCoordinator)
     }
     
-    // MARK: - 방 생성 스크린
+    
+    
+    // MARK: - 방 수정 스크린
     func roomEditScreen() {
         // Main-Coordinator 생성
         let editScreenVCCoordinator = EditScreenCoordinator(
@@ -111,10 +118,11 @@ final class MainCoordinator: MainCoordProtocol{
             isProfileEdit: false, 
             isMake: true)
         self.moveToEditScreenVCCoord(to: editScreenVCCoordinator)
-
     }
     
-    // MARK: - 수정 화면 이동
+    
+    
+    // MARK: - 수정 화면 이동 클로저
     private func moveToEditScreenVCCoord(
         to editScreenVCCoordinator: EditScreenCoordinator)
     {
@@ -127,12 +135,6 @@ final class MainCoordinator: MainCoordProtocol{
         // 코디네이터에게 화면이동을 지시
         editScreenVCCoordinator.start()
     }
-    
-    
-    
-    
-    
-    
     
     
     
@@ -151,15 +153,14 @@ final class MainCoordinator: MainCoordProtocol{
             viewControllerType: MainVC.self)
     }
     
+    
+    
     // MARK: - didFinish
     func didFinish() {
         // 필요한 경우 여기에서 추가적인 정리 작업을 수행
         // 자식 코디네이터를 부모의 배열에서 제거
         // 즉, PlusBtnCoordinator이 MainCoordinator의 childCoordinators 배열에서 제거
         self.parentCoordinator?.removeChildCoordinator(child: self)
-    }
-    deinit {
-        print("\(#function)-----\(self)")
     }
 }
 
@@ -176,9 +177,7 @@ extension MainCoordinator: EditScreenDelegate {
 
     func makeRoom(room: Rooms) {
         print(#function)
-        print("1")
         if let mainVC = self.findMainVC {
-            print("2")
             mainVC.makeRoom(room: room)
         }
     }

@@ -22,4 +22,7 @@ protocol EditScreenType {
     
     // MARK: - 셀 타입 반환
     var getAllOfCellType: [EditCellType] { get }
+    
+    
+//    var apiSingleTon: EditScreenAPIType { get }
 }

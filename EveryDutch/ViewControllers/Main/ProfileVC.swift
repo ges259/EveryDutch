@@ -107,9 +107,6 @@ extension ProfileVC {
     // MARK: - UI 설정
     private func configureUI() {
         self.view.backgroundColor = .base_Blue
-        
-        
-        self.tableView.addShadow(shadowType: .card)
     }
     
     // MARK: - 오토레이아웃 설정
@@ -155,6 +152,14 @@ extension ProfileVC {
             action: #selector(self.backButtonTapped))
         // 네비게이션 바의 왼쪽 아이템으로 설정
         self.navigationItem.leftBarButtonItem = backButton
+        
+        let rightBtn = UIBarButtonItem(
+            image: .gear_Fill_Img,
+            style: .done,
+            target: self,
+            action: #selector(self.rigntBtnTapped))
+        // 네비게이션 바의 왼쪽 아이템으로 설정
+        self.navigationItem.rightBarButtonItem = rightBtn
     }
 }
 
@@ -172,6 +177,9 @@ extension ProfileVC {
 extension ProfileVC {
     @objc private func backButtonTapped() {
         self.coordinator.didFinish()
+    }
+    @objc private func rigntBtnTapped() {
+        
     }
 }
 

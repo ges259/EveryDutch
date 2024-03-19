@@ -39,12 +39,36 @@ final class ProfileCoordinator: ProfileCoordProtocol {
         self.nav.pushViewController(profileVC, animated: true)
     }
     
+    // MARK: - 프로필 수정 화면
+    private func editScreen() {
+        let editScreenVCCoordinator = EditScreenCoordinator(
+            nav: self.nav,
+            isProfileEdit: true,
+            isMake: false)
+        editScreenVCCoordinator.editScreenDelegate = self
+        
+        // ***** 델리게이트 설정 *****
+        self.childCoordinators.append(editScreenVCCoordinator)
+        // 부모 코디네이터가 자신이라는 것을 명시 (뒤로가기 할 때 필요)
+        editScreenVCCoordinator.parentCoordinator = self
+        // 코디네이터에게 화면이동을 지시
+        editScreenVCCoordinator.start()
+    }
+    
+    
+    
     
     
     func didFinish() {
         self.nav.popViewController(animated: true)
         self.parentCoordinator?.removeChildCoordinator(child: self)
     }
+}
+
+extension ProfileCoordinator: EditScreenDelegate {
+    func makeRoom(room: Rooms) {}
     
-    
+    func makeUser() {
+        
+    }
 }

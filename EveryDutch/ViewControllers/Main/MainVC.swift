@@ -149,8 +149,7 @@ extension MainVC {
             // 모서리 설정
             // 화면 밖으로 설정
         self.floatingArray.forEach { btn in
-            btn.clipsToBounds = true
-            btn.layer.cornerRadius = 65 / 2
+            btn.setRoundedCorners(.all, withCornerRadius: 65 / 2)
             btn.alpha = 0
             // 버튼을 화면 밖으로 위치시키기
             btn.transform = self.viewModel.getBtnTransform
@@ -266,8 +265,8 @@ extension MainVC {
     @objc private func profileScreenBtnTapped() {
         
         // MARK: - Fix
-//        self.coordinator.profileScreen()
-        self.coordinator.profileEditScreen()
+        self.coordinator.profileScreen()
+//        self.coordinator.profileEditScreen()
     }
     
     // MARK: - 방 생성 액션

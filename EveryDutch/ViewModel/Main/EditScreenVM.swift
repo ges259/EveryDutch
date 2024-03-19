@@ -4,7 +4,8 @@
 //
 //  Created by 계은성 on 2023/12/26.
 //
-
+// MARK: - Fix
+// 하단 주석 친 코드와 같이 데이터가 변경되면, 저장. ( 어떤 식으로 저장해야 할지는 좀 더 생각해 봐야 할 듯)
 import UIKit
 
 final class EditScreenVM: ProfileEditVMProtocol {
@@ -14,8 +15,7 @@ final class EditScreenVM: ProfileEditVMProtocol {
     
     private let isMake: Bool
     
-    // MARK: - Fix
-    // 하단 주석 친 코드와 같이 데이터가 변경되면, 저장. ( 어떤 식으로 저장해야 할지는 좀 더 생각해 봐야 할 듯)
+    
     private var changedData: [String: Any?] = [:] {
         didSet {
             dump(self.changedData)
@@ -42,7 +42,7 @@ final class EditScreenVM: ProfileEditVMProtocol {
         print("\(#function)-----\(self)")
     }
     
-    var currentType: EditScreenType?
+    
     
     
     
@@ -230,6 +230,52 @@ extension EditScreenVM {
         // 모든 타입에 대한 데이터가 존재하는 경우, true 반환
         return true
     }
+    
+    
+    
+    
+    // MARK: - 유저 검색 또는 프로필 생성을 위한 유효성 검사
+    func validation2() async throws -> Rooms? {
+        guard let type = self.sections.first else {
+            throw ErrorEnum.readError
+        }
+        
+        // 유효성 검사를 수행하는 메서드 추출
+        let isValid = await validateType(type: type)
+        
+        if !isValid {
+            print("validation 실패")
+            throw ErrorEnum.readError
+        }
+        
+        print("validation 성공")
+        // 유효성 검사에 성공하면 방을 생성
+        return try await createRoom2()
+    }
+    
+    // Type에 따른 유효성 검사 로직을 별도의 메서드로 분리
+    private func validateType(type: EditScreenType) async -> Bool {
+        if type is RoomEditEnum {
+            return self.roomValidation(type: RoomEditCellType.self)
+            
+            
+        } else if type is ProfileEditEnum {
+            return self.roomValidation(type: ProfileEditCellType.self)
+            
+        }
+        return false
+    }
+
+    
+    // createRoom 함수가 async를 사용한다고 가정할 때
+    private func createRoom2() async throws -> Rooms? {
+        // 여기에 방 생성 관련 API 호출 로직 구현
+        throw ErrorEnum.loginError
+    }
+    
+    
+    
+    
 }
 
 
