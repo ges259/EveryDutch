@@ -8,8 +8,19 @@
 import Foundation
 
 protocol EditScreenAPIType {
-    func createData(
-        dict: [String: Any],
-        completion: @escaping (Result<Rooms?, ErrorEnum>) -> Void)
+}
+
+
+protocol RoomEditAPIType: EditScreenAPIType {
+    func createData(dict: [String: Any]) async throws -> Rooms
+    
     func updateData(dict: [String: Any])
+}
+protocol ProfileEditAPIType: EditScreenAPIType {
+    func createData(dict: [String: Any]) async throws -> User
+    
+    
+    
+    func updateData(dict: [String: Any])
+
 }

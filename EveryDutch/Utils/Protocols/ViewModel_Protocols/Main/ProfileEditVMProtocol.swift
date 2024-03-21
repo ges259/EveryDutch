@@ -9,6 +9,11 @@ import Foundation
 
 protocol ProfileEditVMProtocol {
     
+    var roomDataClosure: ((Rooms) -> Void)? { get set }
+    var userDataClosure: ((User) -> Void)? { get set }
+    var errorClosure: ((ErrorEnum) -> Void)? { get set }
+    
+    
     // MARK: - 하단 버튼 타이틀
     var getBottomBtnTitle: String? { get }
     
@@ -50,5 +55,5 @@ protocol ProfileEditVMProtocol {
     
     
     // MARK: - 조건
-    func validation(completion: @escaping (Result<Rooms?, ErrorEnum>) -> Void)
+    func validation() async throws
 }

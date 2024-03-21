@@ -181,7 +181,7 @@ extension MainCoordinator: EditScreenDelegate {
             mainVC.makeRoom(room: room)
         }
     }
-    func makeUser() {
+    func makeUser(user: User) {
         
     }
     

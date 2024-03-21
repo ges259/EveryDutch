@@ -188,6 +188,21 @@ extension EditScreenVC {
             action: #selector(self.bottomBtnTapped),
             for: .touchUpInside)
     }
+    
+    // MARK: - 클로저 설정
+    private func configureClosure() {
+        self.viewModel.roomDataClosure = { [weak self] room in
+            self?.coordinator.makeRoom(room: room)
+        }
+        
+        self.viewModel.userDataClosure = { [weak self] user in
+            self?.coordinator.makeUser(user: user)
+        }
+        
+        self.viewModel.errorClosure = { [weak self] errorType in
+            self?.errorType(errorType)
+        }
+    }
 }
 
 
@@ -210,15 +225,13 @@ extension EditScreenVC {
     
     // MARK: - 하단 버튼
     @objc private func bottomBtnTapped() {
-        self.viewModel.validation { result in
-            switch result {
-            case .success(let data):
-                guard let data = data else { return }
-                self.coordinator.makeRoom(room: data)
-                break
-            case .failure(_):
-                break
-            }
+        Task { try await self.viewModel.validation() }
+    }
+    
+    private func errorType(_ errorType: ErrorEnum) {
+        switch errorType {
+            
+        default: break
         }
     }
 }

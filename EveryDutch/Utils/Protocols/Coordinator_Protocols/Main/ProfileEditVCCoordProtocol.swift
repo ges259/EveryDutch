@@ -14,4 +14,5 @@ protocol ProfileEditVCCoordProtocol: Coordinator {
     
     
     func makeRoom(room: Rooms)
+    func makeUser(user: User) 
 }

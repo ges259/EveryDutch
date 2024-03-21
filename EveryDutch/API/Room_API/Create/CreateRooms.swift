@@ -17,90 +17,101 @@ final class RoomsAPI: RoomsAPIProtocol {
 
 extension RoomsAPI {
     
-    // MARK: - ROOMS_ID 생성
-    func createData(
-        dict: [String: Any],
-        completion: @escaping (Result<Rooms?, ErrorEnum>) -> Void)
-    {
+    // MARK: - ROOMS_ID 생성 및 데이터 설정
+    func createData(dict: [String: Any]) async throws -> Rooms {
         guard let uid = Auth.auth().currentUser?.uid else {
-            completion(.failure(.readError))
-            return
+            throw ErrorEnum.readError
         }
-        
-        let roomRef = ROOMS_ID_REF.child(uid).childByAutoId()
-        
         let versionID = "\(Int(Date().timeIntervalSince1970))"
+
+        // ROOMS_ID_REF에 versionID를 설정하는 별도의 함수
+        let roomID = try await setRoomVersionID(for: uid, versionID: versionID)
         
-        roomRef.setValue(versionID) { error, snapshot in
-            
-            if let _ = error {
-                completion(.failure(.readError))
-                return
-            }
-            
-            guard let roomID = snapshot.key else {
-                completion(.failure(.readError))
-                return
-            }
-            
-            self.addUserToRoom(with: roomID,
-                               uid: uid) { result in
-                switch result {
-                case .success():
-                    self.updateRoomThumbnail(with: roomID, 
-                                             data: dict) { result in
-                        switch result {
-                        case .success:
-                            let rooms = Rooms(roomID: roomID,
-                                              versionID: versionID,
-                                              dictionary: dict)
-                            completion(.success(rooms))
-                            
-                            
-                        case .failure(_):
-                            completion(.failure(.loginError))
-                        }
+        // addUserToRoom과 updateRoomThumbnail도 async/await를 사용하여 리팩토링 필요
+        try await addUserToRoom(with: roomID, uid: uid)
+        try await updateRoomThumbnail(with: roomID, data: dict)
+        
+        return Rooms(roomID: roomID, versionID: versionID, dictionary: dict)
+    }
+
+    // MARK: - ROOMS_ID_REF에 versionID 설정
+    private func setRoomVersionID(
+        for uid: String, 
+        versionID: String
+    ) async throws -> String {
+        let roomRef = ROOMS_ID_REF.child(uid).childByAutoId()
+
+        return try await withCheckedThrowingContinuation { continuation in
+            roomRef.setValue(versionID) { error, snapshot in
+                if error != nil {
+                    continuation.resume(throwing: ErrorEnum.readError)
+                } else {
+                    guard let roomID = snapshot.key else {
+                        continuation.resume(throwing: ErrorEnum.readError)
+                        return
                     }
-                case .failure(_):
-                    completion(.failure(.loginError))
+                    continuation.resume(returning: roomID)
                 }
             }
         }
     }
+    
+    
     
     // MARK: - 방 정보 생성
     private func updateRoomThumbnail(
-        with roomID: String, 
-        data: [String: Any],
-        completion: @escaping (Result<Void, ErrorEnum>) -> Void) 
-    {
-        ROOMS_THUMBNAIL_REF
-            .child(roomID)
-            .updateChildValues(data) { error, _ in
-            if let _ = error {
-                completion(.failure(.readError))
-                return
+        with roomID: String,
+        data: [String: Any])
+    async throws {
+        let ref = ROOMS_THUMBNAIL_REF.child(roomID)
+        
+        try await withCheckedThrowingContinuation
+        { (continuation: CheckedContinuation<Void, Error>) in
+            ref.updateChildValues(data) { error, _ in
+                if error != nil {
+                    continuation.resume(throwing: ErrorEnum.readError)
+                } else {
+                    continuation.resume(returning: ())
+                }
             }
-            completion(.success(()))
         }
     }
     
-    // MARK: - 유저 생성
+    
+    
+    
+    
+    
+    
+    
+    // MARK: - [User] 유저 데이터
     private func addUserToRoom(
-        with roomID: String, 
-        uid: String,
-        completion: @escaping (Result<Void, ErrorEnum>) -> Void) 
-    {
-        ROOM_USERS_REF
+        with roomID: String,
+        uid: String)
+    async throws {
+        let ref = ROOM_USERS_REF
             .child(roomID)
-            .updateChildValues([uid: true]) { error, _ in
-                if let _ = error {
-                    completion(.failure(.readError))
-                    return
+        
+        try await withCheckedThrowingContinuation
+        { (continuation: CheckedContinuation<Void, Error>) in
+            ref.updateChildValues([uid: true]) { error, _ in
+                if error != nil {
+                    continuation.resume(throwing: ErrorEnum.readError)
+                } else {
+                    continuation.resume()
                 }
-                completion(.success(()))
             }
+        }
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     func updateData(dict: [String: Any]) {
         

@@ -12,13 +12,17 @@ struct UserAPI: UserAPIProtocol {
     private init() {}
     
 
-    
-    func createData(
-        dict: [String: Any],
-        completion: @escaping (Result<Rooms?, ErrorEnum>) -> Void)
-    {
-        
+    func createData(dict: [String: Any]) async throws -> User {
+        throw ErrorEnum.loginError
     }
+    
+    
+//    func createData(
+//        dict: [String: Any],
+//        completion: @escaping (Result<Rooms?, ErrorEnum>) -> Void)
+//    {
+//        
+//    }
     func updateData(dict: [String: Any]) {
         
     }

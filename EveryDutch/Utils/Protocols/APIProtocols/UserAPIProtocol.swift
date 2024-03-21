@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol UserAPIProtocol: EditScreenAPIType {
+protocol UserAPIProtocol: ProfileEditAPIType {
     
     
 

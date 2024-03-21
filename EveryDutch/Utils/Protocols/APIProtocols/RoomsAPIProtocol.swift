@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol RoomsAPIProtocol: EditScreenAPIType {
+protocol RoomsAPIProtocol: RoomEditAPIType {
     
     
 

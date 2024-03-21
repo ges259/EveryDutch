@@ -74,9 +74,10 @@ final class EditScreenCoordinator: NSObject, ProfileEditVCCoordProtocol {
     private func startProfileEdit() {
         self.moveToEditScreen {
             // ProfileEditEnum을 사용하여 ViewModel 생성
-            let profileEditVM = EditScreenVM(editScreenType: ProfileEditEnum.self,
-                                             editScreenApiType: UserAPI.shared,
-                                             isMake: self.isMake)
+            let profileEditVM = EditScreenVM<ProfileEditEnum>(
+                api: UserAPI.shared,
+                isMake: self.isMake)
+            
             return EditScreenVC(viewModel: profileEditVM, coordinator: self)
         }
     }
@@ -85,9 +86,9 @@ final class EditScreenCoordinator: NSObject, ProfileEditVCCoordProtocol {
     private func startRoomEdit() {
         self.moveToEditScreen {
             // RoomEditEnum을 사용하여 ViewModel 생성
-            let roomEditVM = EditScreenVM(editScreenType: RoomEditEnum.self,
-                                          editScreenApiType: RoomsAPI.shared,
-                                          isMake: self.isMake)
+            let roomEditVM = EditScreenVM<RoomEditEnum>(
+                api: RoomsAPI.shared,
+                isMake: self.isMake)
             return EditScreenVC(viewModel: roomEditVM, coordinator: self)
         }
     }
@@ -144,9 +145,9 @@ extension EditScreenCoordinator: EditScreenDelegate {
         self.editScreenDelegate?.makeRoom(room: room)
     }
     
-    func makeUser() {
+    func makeUser(user: User) {
         self.didFinish()
-        self.editScreenDelegate?.makeUser()
+        self.editScreenDelegate?.makeUser(user: user)
     }
     
     /// CardScreenVC에서 delegate.logout()을 호출 시 실행 됨.

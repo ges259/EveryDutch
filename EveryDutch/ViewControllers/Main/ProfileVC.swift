@@ -179,7 +179,7 @@ extension ProfileVC {
         self.coordinator.didFinish()
     }
     @objc private func rigntBtnTapped() {
-        
+        self.coordinator.editScreen()
     }
 }
 
