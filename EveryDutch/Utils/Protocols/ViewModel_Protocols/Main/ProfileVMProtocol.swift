@@ -9,6 +9,14 @@ import Foundation
 
 protocol ProfileVMProtocol {
     
+    
+    
+    var userDataClosure: ((User) -> Void)? { get set }
+    var errorClosure: ((ErrorEnum) -> Void)? { get set }
+    func initializeUserData() 
+    
+    
+    
     var getNumOfSection: Int { get }
     
     func getNumOfCell(section: Int) -> Int

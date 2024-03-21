@@ -23,6 +23,14 @@ import Firebase
 
 extension UserAPI {
     
+    func readYourOwnUserData() async throws -> [String: User] {
+        guard let uid = Auth.auth().currentUser?.uid else {
+            throw ErrorEnum.readError
+        }
+        return try await self.readUser(uid: uid)
+    }
+    
+    
     // MARK: - 유저 읽기
     func readUser(uid: String) async throws -> [String: User]
     {

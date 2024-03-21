@@ -9,7 +9,7 @@ import Foundation
 
 protocol UserAPIProtocol: ProfileEditAPIType {
     
-    
+    func readYourOwnUserData() async throws -> [String: User]
 
     func readUser(uid: String) async throws -> [String: User]
     

@@ -54,7 +54,7 @@ final class ProfileVC: UIViewController {
     
     
     // MARK: - 프로퍼티
-    private let viewModel: ProfileVMProtocol
+    private var viewModel: ProfileVMProtocol
     private let coordinator: ProfileCoordProtocol
     
     
@@ -76,6 +76,7 @@ final class ProfileVC: UIViewController {
         self.configureUI()
         self.configureAutoLayout()
         self.configureAction()
+        self.viewModel.initializeUserData()
     }
     init(viewModel: ProfileVMProtocol,
          coordinator: ProfileCoordProtocol) {
@@ -161,6 +162,16 @@ extension ProfileVC {
         // 네비게이션 바의 왼쪽 아이템으로 설정
         self.navigationItem.rightBarButtonItem = rightBtn
     }
+    
+    // MARK: - 클로저 설절
+    private func configureClosure() {
+        self.viewModel.userDataClosure = { [weak self] userData in
+            self?.dataChange(data: userData)
+        }
+        self.viewModel.errorClosure = { [weak self] errorType in
+            self?.errorType(errorType)
+        }
+    }
 }
 
 
@@ -180,6 +191,14 @@ extension ProfileVC {
     }
     @objc private func rigntBtnTapped() {
         self.coordinator.editScreen()
+    }
+    
+    
+    private func dataChange(data: User) {
+        self.cardImgView.configureUserData(data: data)
+    }
+    private func errorType(_ errorType: ErrorEnum) {
+        
     }
 }
 

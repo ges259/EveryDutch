@@ -33,7 +33,7 @@ final class ProfileCoordinator: ProfileCoordProtocol {
     
     // MARK: - 프로필 화면
     private func profileScreen() {
-        let profileVM = ProfileVM()
+        let profileVM = ProfileVM(userAPI: UserAPI.shared)
         let profileVC = ProfileVC(viewModel: profileVM,
                                   coordinator: self)
         self.nav.pushViewController(profileVC, animated: true)

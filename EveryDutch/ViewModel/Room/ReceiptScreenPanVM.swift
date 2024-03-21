@@ -138,8 +138,8 @@ final class ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
             let user = self.roomDataManager.getIdToRoomUser(usersID: self.receipt.payer)
             return user.userName
         case 5:
-            let details = self.receipt.paymentDetails
-            
+            // MARK: - Fix
+//            let details = self.receipt.paymentDetails
             return "\(self.receipt.paymentMethod)" // Fix
         default:
             return ""
