@@ -119,8 +119,8 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     
     
 // MARK: - [데이터 섹션]
-    private var receiptEnum: [ReceiptEnum] = [
-        .date, .time, .memo, .price, .payer]
+    // payment_Method를 제외한 모든 타입들을 가져옴
+    private var receiptEnum: [ReceiptEnum] = ReceiptEnum.allCases.filter { $0 != .payment_Method }
     
     // MARK: - 데이터 셀 개수
     var getNumOfReceiptEnum: Int {
@@ -141,41 +141,11 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     
     
     // MARK: - 인덱스 리턴 함수
-    private func findReceiptEnumIndex(receiptEnum: ReceiptEnum) -> IndexPath {
+    func findReceiptEnumIndex(_ receiptEnum: ReceiptEnum) -> IndexPath {
         if let index = self.receiptEnum.firstIndex(of: receiptEnum) {
             return IndexPath(row: index, section: 0)
         }
         return IndexPath(row: 0, section: 0)
-    }
-    
-    // MARK: - 시간 셀
-    var getTimeCellIndexPath: IndexPath {
-        return self.findReceiptEnumIndex(
-            receiptEnum: .time)
-    }
-    
-    // MARK: - payer 셀
-    var getPayerCellIndexPath: IndexPath {
-        return self.findReceiptEnumIndex(
-            receiptEnum: .payer)
-    }
-    
-    // MARK: - 날짜 셀
-    var getDateCellIndexPath: IndexPath {
-        return self.findReceiptEnumIndex(
-            receiptEnum: .date)
-    }
-    
-    // MARK: - 가격 셀
-    var getPriceCellIndexPath: IndexPath {
-        return self.findReceiptEnumIndex(
-            receiptEnum: .price)
-    }
-    
-    // MARK: - 메모 셀
-    var getMemoCellIndexPath: IndexPath {
-        return self.findReceiptEnumIndex(
-            receiptEnum: .memo)
     }
     
     

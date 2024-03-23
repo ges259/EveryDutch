@@ -27,8 +27,10 @@ final class ReceiptScreenDataCell: UITableViewCell {
     
     // MARK: - 라이프사이클
     // 설정 메서드 추가
-    func configure(withReceiptEnum receiptEnum: ReceiptEnum) {
-        self.receiptEnum = receiptEnum
+    func configure(withReceiptEnum receiptEnum: ReceiptDataCell) {
+        self.receiptEnum = receiptEnum.type
+        self.cellStv.receiptInfoLbl.text = receiptEnum.detail
+        
         
         self.configureUI()
         self.configureAutoLayout()
@@ -69,8 +71,5 @@ extension ReceiptScreenDataCell {
     // MARK: - 액션 설정
     private func configureAction() {
 //        self.cellStv.receiptInfoLbl.text = "fasdkllf;asdl"
-    }
-    func configureText(text: String?) {
-        self.cellStv.receiptInfoLbl.text = text
     }
 }

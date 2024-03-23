@@ -15,12 +15,11 @@ struct SettleMoneyTableViewCellVM: SettlementTableViewCellVMProtocol {
     var price: Int
     var payer: String
     
-    init(payer: String,
-         receiptData: Receipt) {
+    init(receiptData: Receipt) {
         self.type = receiptData.type
         self.context = receiptData.context
         self.time = receiptData.time
         self.price = receiptData.price
-        self.payer = payer
+        self.payer = receiptData.payer
     }
 }

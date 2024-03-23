@@ -38,5 +38,5 @@ protocol SettleMoneyRoomProtocol {
     
     
     
-    func createOneCell(receipt: Receipt)
+    func createNewCell(receipt: Receipt)
 }

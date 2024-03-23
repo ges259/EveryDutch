@@ -17,4 +17,8 @@ struct User {
         self.userName = dictionary[DatabaseConstants.user_name] as? String ?? ""
         self.userProfile = dictionary[DatabaseConstants.user_image] as? String ?? ""
     }
+    
+//    var cellData: [CellData] {
+//        return [CellData(type: ., detail: <#T##String#>)]
+//    }
 }

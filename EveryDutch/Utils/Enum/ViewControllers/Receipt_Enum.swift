@@ -15,28 +15,6 @@ enum ReceiptEnum: CaseIterable {
     case payer
     case payment_Method
     
-    var img: UIImage? {
-        switch self {
-        case .memo: return UIImage.memo_Img
-        case .date: return UIImage.calendar_Img
-        case .time: return UIImage.clock_Img
-        case .price: return UIImage.won_Img
-        case .payer: return UIImage.person_Img
-        case .payment_Method: return UIImage.n_Mark_Img
-        }
-    }
-    
-    var text: String {
-        switch self {
-        case .memo: return "메모"
-        case .date: return "날짜"
-        case .time: return "시간"
-        case .price: return "금액"
-        case .payer: return "계산"
-        case .payment_Method: return "정산"
-        }
-    }
-    
     var databaseString: String {
         switch self {
         case .memo:             return DatabaseConstants.context
@@ -47,4 +25,43 @@ enum ReceiptEnum: CaseIterable {
         case .payment_Method:   return DatabaseConstants.payment_method
         }
     }
+    
+    
+    
+    // 각 케이스에 대한 이미지와 텍스트를 named tuple로 반환
+    var details: (img: UIImage?, text: String) {
+        switch self {
+        case .memo:             return (UIImage.memo_Img,       "메모")
+        case .date:             return (UIImage.calendar_Img,   "날짜")
+        case .time:             return (UIImage.clock_Img,      "시간")
+        case .price:            return (UIImage.won_Img,        "금액")
+        case .payer:            return (UIImage.person_Img,     "계산")
+        case .payment_Method:   return (UIImage.n_Mark_Img,     "정산")
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
+    func detail(from receipt: Receipt) -> String {
+         switch self {
+         case .memo:
+             return receipt.context
+         case .date:
+             return receipt.date
+         case .time:
+             return receipt.time
+         case .price:
+             return NumberFormatter.localizedString(from: NSNumber(value: receipt.price), number: .currency)
+         case .payer:
+             return receipt.payer
+         case .payment_Method:
+             return "\(receipt.paymentMethod)"
+         }
+     }
 }
+
+

@@ -282,10 +282,10 @@ extension ReceiptScreenPanVC: UITableViewDataSource {
             withIdentifier: Identifier.receiptDataCell,
             for: indexPath) as! ReceiptScreenDataCell
         
-        let receiptEnum = self.viewModel.getReceiptEnum(
+        let cellData = self.viewModel.getCellData(
             index: indexPath.row)
-        cell.configure(withReceiptEnum: receiptEnum)
-        cell.configureText(text: self.viewModel.getDataCellTitle(index: indexPath.row))
+        cell.configure(withReceiptEnum: cellData)
+        
         return cell
     }
     

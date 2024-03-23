@@ -12,17 +12,21 @@ final class ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
     // 정산내역 셀의 뷰모델
     private var cellViewModels: [ReceiptScreenPanUsersCellVM] = []
     
-    private var receipt: Receipt
     private var roomDataManager: RoomDataManagerProtocol
     
     
     
     
+    private let receipt: Receipt
+    // MARK: - [영수증] 배열
+    private var dataCellData: [ReceiptDataCell] = []
     
-    var currentNumOfUsers: Int = 0
-//    {
-//        return self.cellViewModels.count
-//    }
+    
+    
+    
+    
+    
+
     
     
 
@@ -32,12 +36,6 @@ final class ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
     
     var getReceipt: Receipt {
         return self.receipt
-    }
-    var getPayerName: String {
-        let payer = self.receipt.payer
-        let payerName = self.roomDataManager.getIdToRoomUser(
-            usersID: payer)
-        return payerName.userName
     }
     
     var getPayMethod: String {
@@ -55,26 +53,16 @@ final class ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
     // ****************************************
 
     
-    // MARK: - [영수증] 배열
-    private let receiptCell: [ReceiptEnum] = ReceiptEnum.allCases
+    
     
     
     // MARK: - 배열 반환
-    func getReceiptEnum(index: Int) -> ReceiptEnum {
-        return self.receiptCell[index]
+    func getCellData(index: Int) -> ReceiptDataCell {
+        return self.dataCellData[index]
     }
     
     
     
-    // MARK: - 이미지 반환
-    func getCellImg(section: Int) -> UIImage? {
-        return self.receiptCell[section].img
-    }
-    
-    // MARK: - 디테일 텍스트
-    func getCellText(section: Int) -> String {
-        return self.receiptCell[section].text
-    }
     
     
     
@@ -90,8 +78,8 @@ final class ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
     // MARK: - [공통] 셀의 개수
     func getNumOfCell(section: Int) -> Int {
         return section == 1
-        ? self.currentNumOfUsers
-        : self.self.receiptCell.count
+        ? self.cellViewModels.count
+        : self.self.dataCellData.count
     }
     
     // MARK: - [공통] 섹션의 개수
@@ -119,31 +107,7 @@ final class ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
         self.roomDataManager = roomDataManager
         
         self.makeUserCells()
-    }
-    
-    
-    
-    func getDataCellTitle(index: Int) -> String? {
-        switch index {
-        case 0: 
-            return self.receipt.context
-        case 1:
-            return self.receipt.date
-        case 2:
-            return self.receipt.time
-        case 3:
-            return NumberFormatter.formatStringChange(
-                price: "\(self.receipt.price)")
-        case 4:
-            let user = self.roomDataManager.getIdToRoomUser(usersID: self.receipt.payer)
-            return user.userName
-        case 5:
-            // MARK: - Fix
-//            let details = self.receipt.paymentDetails
-            return "\(self.receipt.paymentMethod)" // Fix
-        default:
-            return ""
-        }
+        self.makeDataCellData()
     }
     
     
@@ -151,16 +115,23 @@ final class ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
     
     
     
-    // MARK: - 셀 생성
+    
+    
+    
+    // MARK: - 데이터 셀 데이터 설정
+    private func makeDataCellData() {
+        self.dataCellData = ReceiptEnum.allCases.map { enumCase -> ReceiptDataCell in
+                let detail = enumCase.detail(from: receipt)
+                return (type: enumCase, detail: detail)
+            }
+    }
+    
+    // MARK: - 유저 셀 생성
     private func makeUserCells() {
         // Receipt에서 PaymentDetails 가져오기
-        let paymentDetails = receipt.paymentDetails
-        
-        // usersTableView 셀의 개수 저장
-        self.currentNumOfUsers = paymentDetails.count
+        let paymentDetails = self.receipt.paymentDetails
                     
         // 셀 만들기
-        
         self.cellViewModels = paymentDetails.map { detail in
             let user = self.roomDataManager.getIdToRoomUser(
                 usersID: detail.userID)

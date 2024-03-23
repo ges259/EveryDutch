@@ -679,7 +679,7 @@ extension ReceiptWriteVC {
     // MARK: - 날짜 셀
     private func updateDateCell(_ date: Date) {
         // 날짜 인덱스 가져오기
-        let indexPath = self.viewModel.getDateCellIndexPath
+        let indexPath = self.viewModel.findReceiptEnumIndex(.date)
         // 셀 가져오기
         if let cell = self.tableView.cellForRow(at: indexPath) as? ReceiptWriteDataCell {
             // 셀의 레이블에 새로운 텍스트를 설정합니다.
@@ -692,7 +692,7 @@ extension ReceiptWriteVC {
         // payer 정보 가져오기
         let payer = self.viewModel.getSelectedUsers
         // payer 인덱스패스 가져오기
-        let indexPath = self.viewModel.getPayerCellIndexPath
+        let indexPath = self.viewModel.findReceiptEnumIndex(.payer)
         // 셀 가져오기
         if let cell = self.tableView.cellForRow(at: indexPath) as? ReceiptWriteDataCell {
             // 셀의 레이블에 새로운 텍스트를 설정합니다.
@@ -703,7 +703,7 @@ extension ReceiptWriteVC {
     // MARK: - time 셀
     private func updateTimeCell(timeString: String) {
         // 시간 인덱스패스 가져오기
-        let indexPath = self.viewModel.getTimeCellIndexPath
+        let indexPath = self.viewModel.findReceiptEnumIndex(.time)
         // 셀 가져오기
         if let cell = self.tableView.cellForRow(at: indexPath) as? ReceiptWriteDataCell {
             // 셀의 레이블에 새로운 텍스트를 설정합니다.
@@ -1112,7 +1112,7 @@ extension ReceiptWriteVC: ReceiptWriteDataCellDelegate {
     // MARK: - 가격 셀
     func priceTFTapped() {
         self.scrollToTableViewCellBottom(
-            indexPath: self.viewModel.getPriceCellIndexPath)
+            indexPath: self.viewModel.findReceiptEnumIndex(.price))
     }
     
     // MARK: - 가격 셀
@@ -1126,7 +1126,7 @@ extension ReceiptWriteVC: ReceiptWriteDataCellDelegate {
     // MARK: - 메모 셀
     func memoTFTapped() {
         self.scrollToTableViewCellBottom(
-            indexPath: self.viewModel.getMemoCellIndexPath)
+            indexPath: self.viewModel.findReceiptEnumIndex(.memo))
     }
     
     // MARK: - 메모 셀

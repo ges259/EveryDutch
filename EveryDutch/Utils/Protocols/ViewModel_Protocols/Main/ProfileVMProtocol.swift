@@ -26,5 +26,8 @@ protocol ProfileVMProtocol {
     func getHeaderTitle(section: Int) -> String?
     
     
-    func getTableData(section: Int, index: Int) -> String?
+    
+    
+    func makeDataCellData(user: User)
+    func getCellData(indexPath: IndexPath) -> ProfileDataCell?
 }

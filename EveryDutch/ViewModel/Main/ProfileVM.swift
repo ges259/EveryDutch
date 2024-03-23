@@ -10,34 +10,38 @@ import UIKit
 final class ProfileVM: ProfileVMProtocol {
     
     
-    private var cellTypesDictionary: [Int: [profileType]] = [:]
+    private var cellTypesDictionary: [Int: [ProfileDataCell]] = [:]
     
     
     
     
     private var currentUserData: User? {
         didSet {
-            // `currentUserData`의 값 중 하나를 선택하여 사용합니다.
-            // 예를 들어, 딕셔너리의 첫 번째 값을 사용할 수 있습니다.
+            // 클로저를 통해 화면 업데이트
             guard let userData = self.currentUserData else { return }
             self.userDataClosure?(userData)
         }
     }
     
     
+    
+    
+    
+    
+    // MARK: - 클로저
     var userDataClosure: ((User) -> Void)?
     var errorClosure: ((ErrorEnum) -> Void)?
     
     
     
-    
+    // MARK: - API
     private let userAPI: UserAPIProtocol
     
     
     
     
     
-    
+
     
     
     
@@ -45,20 +49,8 @@ final class ProfileVM: ProfileVMProtocol {
     // MARK: - 라이프사이클
     init(userAPI: UserAPIProtocol) {
         self.userAPI = userAPI
-        // 섹션 데이터 초기화
-        self.initializeSectionData()
     }
     deinit { print("\(#function)-----\(self)") }
-    
-    // MARK: - 섹션 데이터 초기 설정
-    private func initializeSectionData() {
-        let sectionData = ProfileVCEnum.allCases
-        
-        sectionData.forEach { section in
-            let sectionIdex = section.sectionIndex
-            self.cellTypesDictionary[sectionIdex] = section.getAllOfCellType
-        }
-    }
     
     // MARK: - User 데이터 가져오기
     func initializeUserData() {
@@ -97,11 +89,6 @@ extension ProfileVM {
         ? 50 // 3개 미만이면 == 50
         : 3 // 3개 이상이면 == 3
     }
-    
-    // MARK: - 테이블 Info 데이터
-    func getTableData(section: Int, index: Int) -> String? {
-        return self.cellTypesDictionary[section]?[index].cellTitle ?? nil
-    }
 }
     
     
@@ -119,7 +106,7 @@ extension ProfileVM {
         
     // MARK: - 헤더의 타이틀
     func getHeaderTitle(section: Int) -> String? {
-        return self.cellTypesDictionary[section]?.first?.headerTitle
+        return self.cellTypesDictionary[section]?.first?.type.headerTitle
     }
 }
 
@@ -136,17 +123,38 @@ extension ProfileVM {
 
 extension ProfileVM {
     
-    // MARK: - 타입 반환
-    func returnCellType(indexPath: IndexPath) -> profileType? {
+    // MARK: - 셀의 데이터 반환
+    func getCellData(indexPath: IndexPath) -> ProfileDataCell? {
         return self.cellTypesDictionary[indexPath.section]?[indexPath.row]
     }
     
-    // MARK: - 마지막셀 검사
-    // 특정 섹션의 마지막 셀인지 여부를 반환하는 함수
-    // indexPath로 주어진 위치가 해당 섹션의 마지막 셀 위치와 일치할 경우 true를 반환
-    func getLastCell(indexPath: IndexPath) -> Bool {
-        return (self.cellTypesDictionary[indexPath.section]?.count ?? 0) - 1 == indexPath.row
+    
+    // MARK: - 데이터 생성 로직 수정
+    // 사용자 데이터를 기반으로 섹션별 셀 데이터를 생성하는 메서드
+    func makeDataCellData(user: User) {
+        var allCellData: [Int: [ProfileDataCell]] = [:]
+        
+        ProfileVCEnum.allCases.forEach { sectionEnum in
+            let sectionIndex = sectionEnum.sectionIndex
+            let cellData = sectionEnum.getAllOfCellType.compactMap { cellType -> ProfileDataCell? in
+                switch cellType {
+                case let userInfoType as UserInfoType:
+                    let detail = userInfoType.detail(from: user)
+                    return (type: userInfoType, detail: detail)
+                case is OthersType:
+                    // OthersType 경우 현재 구현에서는 detail이 nil이 될 수 있으나,
+                    // 필요에 따라 기본값 또는 다른 로직을 추가할 수 있습니다.
+                    return (type: cellType, detail: nil)
+                default:
+                    return nil
+                }
+            }
+            allCellData[sectionIndex] = cellData
+        }
+        
+        self.cellTypesDictionary = allCellData
     }
+    
 }
 
 
@@ -168,17 +176,25 @@ extension ProfileVM {
         do {
             let userDict = try await self.userAPI.readYourOwnUserData()
             if let user = userDict.values.first {
+                // 셀 데이터로 저장
+                self.makeDataCellData(user: user)
+                // 가져온 user데이터 저장하기
                 self.currentUserData = user
+                print("성공")
+
                 
             } else {
+                print("실패1")
                 self.errorClosure?(.userNotFound) // 예시 에러 처리
             }
             
         } catch let error as ErrorEnum {
+            print("실패2")
             self.errorClosure?(error)
             
             
         } catch {
+            print("실패3")
             self.errorClosure?(.unknownError)
         }
     }

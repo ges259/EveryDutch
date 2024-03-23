@@ -524,7 +524,7 @@ extension SettleMoneyRoomVC {
 // MARK: - ReceiptWriteVC_Delegate
 extension SettleMoneyRoomVC {
     func updateReceipt(with receipt: Receipt) {
-        self.viewModel.createOneCell(receipt: receipt)
+        self.viewModel.createNewCell(receipt: receipt)
     }
     
     // MARK: - 첫 번째 셀 업데이트

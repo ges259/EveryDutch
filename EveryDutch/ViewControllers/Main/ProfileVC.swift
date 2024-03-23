@@ -72,10 +72,12 @@ final class ProfileVC: UIViewController {
     // MARK: - 라이프사이클
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        // 기본 설정
         self.configureUI()
         self.configureAutoLayout()
         self.configureAction()
+        self.configureClosure()
+        // 내 정보 가져오기
         self.viewModel.initializeUserData()
     }
     init(viewModel: ProfileVMProtocol,
@@ -163,9 +165,10 @@ extension ProfileVC {
         self.navigationItem.rightBarButtonItem = rightBtn
     }
     
-    // MARK: - 클로저 설절
+    // MARK: - 클로저 설정
     private func configureClosure() {
         self.viewModel.userDataClosure = { [weak self] userData in
+            print(#function)
             self?.dataChange(data: userData)
         }
         self.viewModel.errorClosure = { [weak self] errorType in
@@ -196,6 +199,9 @@ extension ProfileVC {
     
     private func dataChange(data: User) {
         self.cardImgView.configureUserData(data: data)
+        
+        self.tableView.reloadData()
+        
     }
     private func errorType(_ errorType: ErrorEnum) {
         
@@ -231,6 +237,15 @@ extension ProfileVC: UITableViewDelegate {
         return self.createHeaderView(for: section)
     }
     
+    // MARK: - 헤더뷰 생성
+    /// 헤더 뷰를 생성합니다.
+    private func createHeaderView(for section: Int) -> UIView {
+        let title = self.viewModel.getHeaderTitle(section: section)
+        return TableHeaderView(
+            title: title,
+            tableHeaderEnum: .profileVC)
+    }
+    
     // MARK: - 헤더 높이
     /// 헤더의 높이를 설정합니다.
     func tableView(_ tableView: UITableView,
@@ -244,7 +259,7 @@ extension ProfileVC: UITableViewDelegate {
     func tableView(_ tableView: UITableView, 
                    viewForFooterInSection section: Int)
     -> UIView? {
-        return self.createFooterView()
+        return TableFooterView()
     }
     
     // MARK: - 푸터뷰 높이
@@ -253,27 +268,6 @@ extension ProfileVC: UITableViewDelegate {
                    heightForFooterInSection section: Int)
     -> CGFloat {
         return self.viewModel.getFooterViewHeight(section: section)
-    }
-    
-    
-    
-    
-    
-// MARK: - Helper_Functions
-    
-    
-    
-    // MARK: - 헤더뷰 생성
-    /// 헤더 뷰를 생성합니다.
-    private func createHeaderView(for section: Int) -> UIView {
-        let title = self.viewModel.getHeaderTitle(section: section)
-        return TableHeaderView(
-            title: title,
-            tableHeaderEnum: .profileVC)
-    }
-    // MARK: - 푸터뷰 생성
-    private func createFooterView() -> UIView {
-        return TableFooterView()
     }
 }
 
@@ -313,11 +307,10 @@ extension ProfileVC: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(
             withIdentifier: Identifier.profileTableViewCell,
             for: indexPath) as! ProfileCell
+        if let type = self.viewModel.getCellData(indexPath: indexPath) {
+            cell.configureCell(type)
+        }
         
-        let tableData = self.viewModel.getTableData(
-            section: indexPath.section,
-            index: indexPath.row)
-        cell.configureCell(tableData)
         return cell
     }
 }

@@ -11,10 +11,10 @@ protocol ReceiptScreenPanVMProtocol {
     
     
     var getReceipt: Receipt { get }
-    var getPayerName: String { get }
+    
 //    var currentNumOfUsers: Int { get }
     var getPayMethod: String { get }
-    func getDataCellTitle(index: Int) -> String?
+//    func getDataCellTitle(index: Int) -> String?
     
     func cellViewModel(at index: Int) -> ReceiptScreenPanUsersCellVM
     
@@ -23,12 +23,9 @@ protocol ReceiptScreenPanVMProtocol {
     // MARK: - 섹션의 개수
     var getNumOfSection: Int { get }
     func getCellHeight(section: Int) -> CGFloat
-    func getReceiptEnum(index: Int) -> ReceiptEnum
+    func getCellData(index: Int) -> ReceiptDataCell
     
-    // MARK: - 헤더의 타이틀
-    func getCellText(section: Int) -> String
     
-    func getCellImg(section: Int) -> UIImage?
     func getHeaderTitle(section: Int) -> String
     
     // MARK: - 셀의 개수

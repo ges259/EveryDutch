@@ -22,13 +22,13 @@ protocol ReceiptWriteVMProtocol {
     
     func getHeaderTitle(section: Int) -> String
     
-    
-    var getTimeCellIndexPath: IndexPath { get }
-    var getPayerCellIndexPath: IndexPath { get }
-    
-    var getPriceCellIndexPath: IndexPath { get }
-    
-    var getMemoCellIndexPath: IndexPath { get }
+    func findReceiptEnumIndex(_ receiptEnum: ReceiptEnum) -> IndexPath 
+//    var getTimeCellIndexPath: IndexPath { get }
+//    var getPayerCellIndexPath: IndexPath { get }
+//    var getDateCellIndexPath: IndexPath { get }
+//    var getPriceCellIndexPath: IndexPath { get }
+//    
+//    var getMemoCellIndexPath: IndexPath { get }
     
     
     
@@ -36,7 +36,7 @@ protocol ReceiptWriteVMProtocol {
     func isLastCell(_ receiptEnum: ReceiptEnum) -> Bool
     
     func saveCalenderDate(date: Date)
-    var getDateCellIndexPath: IndexPath { get }
+    
     
     
     // MARK: - 모델
