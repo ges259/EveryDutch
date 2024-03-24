@@ -10,7 +10,7 @@ import UIKit
 protocol ReceiptScreenPanVMProtocol {
     
     
-    var getReceipt: Receipt { get }
+    
     
 //    var currentNumOfUsers: Int { get }
     var getPayMethod: String { get }

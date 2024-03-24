@@ -73,7 +73,7 @@ final class ReceiptLblStackView: UIStackView {
     }
     
     private func configureData() {
-        let cellData = self.receiptEnum.details
+        let cellData = self.receiptEnum.cellInfoTuple
         
         self.receiptImg.image = cellData.img
         self.receiptDetailLbl.text = cellData.text

@@ -29,6 +29,17 @@ final class EditScreenVM<T: EditScreenType & CaseIterable>: ProfileEditVMProtoco
     
     
     
+    private var currentDataTuple: (type: EditCellType, indexPath: String)?
+    
+    typealias EditCellTuple = (type: EditCellType, indexPath: String)?
+    
+    
+    
+    private var userData: User?
+    private var roomsData: Rooms?
+    private var decorationData: Decoration?
+    
+    
     
     
     
@@ -55,7 +66,9 @@ final class EditScreenVM<T: EditScreenType & CaseIterable>: ProfileEditVMProtoco
     init(api: EditScreenAPIType, isMake: Bool) {
         self.api = api
         self.isMake = isMake
+        
         self.allCases = Array(T.allCases)
+        
         self.initializeCellTypes() // 셀 타입 초기화
     }
     deinit { print("\(#function)-----\(self)") }
@@ -68,8 +81,51 @@ final class EditScreenVM<T: EditScreenType & CaseIterable>: ProfileEditVMProtoco
             self.cellTypesDictionary[sectionIndex] = section.getAllOfCellType
         }
     }
-}
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    private var cellDataDictionary: [Int: [EditCellDataCell]] = [:]
+
+    // 데이터를 갱신하는 로직 (예시로 User 데이터를 사용하여 갱신)
+    func updateCellData() {
+        T.allCases.forEach { screenType in
+            
+            let cellData = screenType.getAllOfCellType.map { cellType -> EditCellDataCell in
+                
+                var detailData: String?
+                
+                switch cellType {
+                case let userDataCell as ProfileEditCellType:
+                    detailData = userDataCell.detail(user: self.userData)
+                    break
+                    
+                case let userDataCell as RoomEditCellType:
+                    detailData = userDataCell.detail(room: self.roomsData)
+                    break
+                    
+                case let decorationCell as ImageCellType:
+                    detailData = decorationCell.detail(data: self.decorationData)
+                    break
+                    
+                case let decorationCell as DecorationCellType:
+                    detailData = decorationCell.detail(data: self.decorationData)
+                    break
+                    
+                default: break
+                }
+                return (type: cellType, detail: detailData)
+            }
+            self.cellDataDictionary[screenType.sectionIndex] = cellData
+        }
+    }
+}
     
     
     

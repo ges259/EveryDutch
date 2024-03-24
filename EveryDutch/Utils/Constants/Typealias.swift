@@ -47,4 +47,9 @@ typealias CumulativeAmountDictionary = [String : CumulativeAmount]
 // PeopleSelectionPanVM
 typealias UserDataTuple = (key: String, value: User)
 typealias floatingType = (show: Bool, alpha: CGFloat)
+
+
+
 typealias ReceiptDataCell = (type: ReceiptEnum, detail: String)
+typealias ProfileDataCell = (type: ProfileType, detail: String?)
+typealias EditCellDataCell = (type: EditCellType, detail: String?)

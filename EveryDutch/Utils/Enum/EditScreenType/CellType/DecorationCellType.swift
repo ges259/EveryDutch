@@ -5,7 +5,7 @@
 //  Created by 계은성 on 3/1/24.
 //
 
-import Foundation
+import UIKit
 
 // MARK: - DecorationCellType
 enum DecorationCellType: Int, EditCellType, CaseIterable {
@@ -34,5 +34,19 @@ enum DecorationCellType: Int, EditCellType, CaseIterable {
         case .pointColor: return DatabaseConstants.point_Color
         case .backgroundColor: return DatabaseConstants.background_Color
         }
+    }
+    
+    
+    func detail(data: Decoration?) -> String? {
+        switch self {
+        case .blurEffect: return self.blurColor(bool: data?.blur)
+        case .titleColor: return data?.titleColor
+        case .pointColor: return data?.pointColor
+        case .backgroundColor: return data?.backgroundColor
+        }
+    }
+    
+    private func blurColor(bool: Bool?) -> String? {
+        return bool ?? false ? "true" : "false"
     }
 }

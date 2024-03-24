@@ -11,18 +11,20 @@ final class ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
     
     // 정산내역 셀의 뷰모델
     private var cellViewModels: [ReceiptScreenPanUsersCellVM] = []
-    
-    private var roomDataManager: RoomDataManagerProtocol
-    
-    
-    
-    
-    private let receipt: Receipt
-    // MARK: - [영수증] 배열
+    // 데이터 셀의 데이터
     private var dataCellData: [ReceiptDataCell] = []
     
     
     
+    private var roomDataManager: RoomDataManagerProtocol
+    
+    
+    private let receipt: Receipt
+    
+    
+    
+    
+    
     
     
     
@@ -33,10 +35,6 @@ final class ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
     
     
     
-    
-    var getReceipt: Receipt {
-        return self.receipt
-    }
     
     var getPayMethod: String {
         return self.receipt.paymentMethod == 1
@@ -45,21 +43,6 @@ final class ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
     }
     
     
-    
-    
-    
-    
-    
-    // ****************************************
-
-    
-    
-    
-    
-    // MARK: - 배열 반환
-    func getCellData(index: Int) -> ReceiptDataCell {
-        return self.dataCellData[index]
-    }
     
     
     
@@ -96,7 +79,10 @@ final class ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
     
     
     
-    // ****************************************
+    
+    
+    
+    
     
     
     
@@ -140,6 +126,20 @@ final class ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
                 roomUser: user,
                 paymentDetail: detail)
         }
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    // MARK: - 데이터 셀 반환
+    func getCellData(index: Int) -> ReceiptDataCell {
+        return self.dataCellData[index]
     }
     
     // MARK: - 셀 뷰모델 반환

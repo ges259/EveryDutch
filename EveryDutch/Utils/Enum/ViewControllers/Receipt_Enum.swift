@@ -29,7 +29,7 @@ enum ReceiptEnum: CaseIterable {
     
     
     // 각 케이스에 대한 이미지와 텍스트를 named tuple로 반환
-    var details: (img: UIImage?, text: String) {
+    var cellInfoTuple: (img: UIImage?, text: String) {
         switch self {
         case .memo:             return (UIImage.memo_Img,       "메모")
         case .date:             return (UIImage.calendar_Img,   "날짜")
@@ -39,11 +39,6 @@ enum ReceiptEnum: CaseIterable {
         case .payment_Method:   return (UIImage.n_Mark_Img,     "정산")
         }
     }
-    
-    
-    
-    
-    
     
     
     func detail(from receipt: Receipt) -> String {

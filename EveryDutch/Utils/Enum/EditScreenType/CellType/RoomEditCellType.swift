@@ -38,4 +38,12 @@ enum RoomEditCellType: Int, EditCellType, CaseIterable {
         case .ManagerName: return DatabaseConstants.manager_name
         }
     }
+    
+    func detail(room: Rooms?) -> String? {
+        switch self {
+        case .roomName: return room?.roomName
+        case .className: return room?.roomName
+        case .ManagerName: return room?.versionID
+        }
+    }
 }

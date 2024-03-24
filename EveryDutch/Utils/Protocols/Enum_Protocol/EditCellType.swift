@@ -17,4 +17,6 @@ protocol EditCellType {
     var getTextFieldPlaceholder: String { get }
     
     var databaseString: String { get }
+    
+    
 }

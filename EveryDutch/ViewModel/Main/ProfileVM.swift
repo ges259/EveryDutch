@@ -129,32 +129,31 @@ extension ProfileVM {
     }
     
     
-    // MARK: - 데이터 생성 로직 수정
+    // MARK: - 데이터 생성 로직 생성
     // 사용자 데이터를 기반으로 섹션별 셀 데이터를 생성하는 메서드
-    func makeDataCellData(user: User) {
+    func makeCellData(user: User) {
         var allCellData: [Int: [ProfileDataCell]] = [:]
         
         ProfileVCEnum.allCases.forEach { sectionEnum in
-            let sectionIndex = sectionEnum.sectionIndex
+            
             let cellData = sectionEnum.getAllOfCellType.compactMap { cellType -> ProfileDataCell? in
                 switch cellType {
                 case let userInfoType as UserInfoType:
                     let detail = userInfoType.detail(from: user)
                     return (type: userInfoType, detail: detail)
-                case is OthersType:
-                    // OthersType 경우 현재 구현에서는 detail이 nil이 될 수 있으나,
+                    
+                case let othersType as OthersType:
                     // 필요에 따라 기본값 또는 다른 로직을 추가할 수 있습니다.
-                    return (type: cellType, detail: nil)
-                default:
+                    return (type: othersType, detail: nil)
+                    
+                default: 
                     return nil
                 }
             }
-            allCellData[sectionIndex] = cellData
+            allCellData[sectionEnum.sectionIndex] = cellData
         }
-        
         self.cellTypesDictionary = allCellData
     }
-    
 }
 
 
@@ -177,7 +176,7 @@ extension ProfileVM {
             let userDict = try await self.userAPI.readYourOwnUserData()
             if let user = userDict.values.first {
                 // 셀 데이터로 저장
-                self.makeDataCellData(user: user)
+                self.makeCellData(user: user)
                 // 가져온 user데이터 저장하기
                 self.currentUserData = user
                 print("성공")

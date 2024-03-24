@@ -34,4 +34,11 @@ enum ProfileEditCellType: Int, EditCellType, CaseIterable {
         case .personalID: return DatabaseConstants.personal_ID
         }
     }
+    
+    func detail(user: User?) -> String? {
+        switch self {
+        case .nickName: return user?.userName
+        case .personalID: return user?.personalID
+        }
+    }
 }

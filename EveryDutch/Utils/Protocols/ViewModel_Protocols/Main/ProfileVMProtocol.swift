@@ -28,6 +28,6 @@ protocol ProfileVMProtocol {
     
     
     
-    func makeDataCellData(user: User)
+    func makeCellData(user: User)
     func getCellData(indexPath: IndexPath) -> ProfileDataCell?
 }
