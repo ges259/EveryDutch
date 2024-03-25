@@ -35,12 +35,9 @@ final class EditScreenVM<T: EditScreenType & CaseIterable>: ProfileEditVMProtoco
     
     
     
-    private var userData: User?
-    private var roomsData: Rooms?
-    private var decorationData: Decoration?
     
     
-    
+
     
     
     
@@ -91,40 +88,67 @@ final class EditScreenVM<T: EditScreenType & CaseIterable>: ProfileEditVMProtoco
     
     
     
+//    private func startData() {
+//        let user: User = User(dictionary: [
+//            DatabaseConstants.personal_ID : "personal_ID",
+//            DatabaseConstants.user_name:  "user_name",
+//            DatabaseConstants.user_image : "user_image"
+//        ])
+//        
+//        let rooms: Rooms = Rooms(
+//            roomID: "roomID",
+//            versionID: "versionID",
+//            dictionary: [
+//                DatabaseConstants.room_name: "room_name",
+//                DatabaseConstants.room_image: "room_image"
+//        ])
+//        
+//        let decoration: Decoration = Decoration(
+//            blur: true,
+//            profileImage: "profileImage",
+//            backgroundImage: "backgroundImage",
+//            backgroundColor: "backgroundColor",
+//            pointColor: "pointColor",
+//            titleColor: "titleColor")
+//        
+//        self.makeProviders(user: user, rooms: rooms, decoration: decoration)
+//        self.updateCellData()
+//    }
+    
+    private var dataProviders: [DataProvider] = []
     private var cellDataDictionary: [Int: [EditCellDataCell]] = [:]
 
-    // 데이터를 갱신하는 로직 (예시로 User 데이터를 사용하여 갱신)
-    func updateCellData() {
-        T.allCases.forEach { screenType in
-            
-            let cellData = screenType.getAllOfCellType.map { cellType -> EditCellDataCell in
-                
-                var detailData: String?
-                
-                switch cellType {
-                case let userDataCell as ProfileEditCellType:
-                    detailData = userDataCell.detail(user: self.userData)
-                    break
-                    
-                case let userDataCell as RoomEditCellType:
-                    detailData = userDataCell.detail(room: self.roomsData)
-                    break
-                    
-                case let decorationCell as ImageCellType:
-                    detailData = decorationCell.detail(data: self.decorationData)
-                    break
-                    
-                case let decorationCell as DecorationCellType:
-                    detailData = decorationCell.detail(data: self.decorationData)
-                    break
-                    
-                default: break
-                }
-                return (type: cellType, detail: detailData)
-            }
-            self.cellDataDictionary[screenType.sectionIndex] = cellData
+    
+    private func makeProviders(
+        user: User?,
+        rooms: Rooms?,
+        decoration: Decoration?)
+    {
+        if let user = user {
+            self.dataProviders.append(UserDataProvider(userData: user))
+        }
+        if let rooms = rooms {
+            self.dataProviders.append(RoomsDataProvider(roomsData: rooms))
+        }
+        if let decoration = decoration {
+            self.dataProviders.append(DecorationDataProvider(decorationData: decoration))
         }
     }
+    
+    
+    func updateCellData() {
+         T.allCases.forEach { screenType in
+             let cellData = screenType.getAllOfCellType.compactMap { cellType -> EditCellDataCell? in
+                 for provider in self.dataProviders {
+                     if let detailData = provider.provideData(for: cellType) {
+                         return (type: cellType, detail: detailData)
+                     }
+                 }
+                 return nil
+             }
+             self.cellDataDictionary[screenType.sectionIndex] = cellData
+         }
+     }
 }
     
     

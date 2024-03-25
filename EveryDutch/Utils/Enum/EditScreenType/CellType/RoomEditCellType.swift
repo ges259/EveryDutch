@@ -39,7 +39,7 @@ enum RoomEditCellType: Int, EditCellType, CaseIterable {
         }
     }
     
-    func detail(room: Rooms?) -> String? {
+    func detail(for room: Rooms?) -> String? {
         switch self {
         case .roomName: return room?.roomName
         case .className: return room?.roomName

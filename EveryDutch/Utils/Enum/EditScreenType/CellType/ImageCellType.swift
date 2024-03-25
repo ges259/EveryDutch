@@ -31,21 +31,11 @@ enum ImageCellType: Int, EditCellType, CaseIterable {
         }
     }
     
-    
-    func detail(data: Decoration?) -> String? {
+    func detail(for data: Decoration?) -> String? {
+        
         switch self {
         case .profileImg: return data?.profileImage ?? nil
         case .backgroundImg: return data?.backgroundImage ?? nil
-        }
-    }
-    
-    
-    func detail(type: Any?) -> String? {
-        let type = type as? Decoration
-        
-        switch self {
-        case .profileImg: return type?.profileImage ?? nil
-        case .backgroundImg: return type?.backgroundImage ?? nil
         }
     }
 }

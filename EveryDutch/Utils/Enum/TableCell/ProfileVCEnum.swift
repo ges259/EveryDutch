@@ -26,14 +26,14 @@ enum ProfileVCEnum: Int, CaseIterable {
 
 
 
-enum UserInfoType: Int, ProfileType, CaseIterable {
+enum UserInfoType: Int, ProfileType, Providers, CaseIterable {
     case personalID = 0
     case nickName
     
-    func detail(from user: User) -> String {
+    func detail(from user: User?) -> String? {
         switch self {
-        case .personalID: return user.personalID
-        case .nickName: return user.userName
+        case .personalID: return user?.personalID
+        case .nickName: return user?.userName
         }
     }
     

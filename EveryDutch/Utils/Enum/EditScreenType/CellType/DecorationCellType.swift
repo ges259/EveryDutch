@@ -37,7 +37,8 @@ enum DecorationCellType: Int, EditCellType, CaseIterable {
     }
     
     
-    func detail(data: Decoration?) -> String? {
+    
+    func detail(for data: Decoration?) -> String? {
         switch self {
         case .blurEffect: return self.blurColor(bool: data?.blur)
         case .titleColor: return data?.titleColor
