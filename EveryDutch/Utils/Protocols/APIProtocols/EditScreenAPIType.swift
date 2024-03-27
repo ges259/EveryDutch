@@ -8,19 +8,17 @@
 import Foundation
 
 protocol EditScreenAPIType {
-}
-
-
-protocol RoomEditAPIType: EditScreenAPIType {
-    func createData(dict: [String: Any]) async throws -> Rooms
+    
+    func createData(dict: [String: Any]) async throws
     
     func updateData(dict: [String: Any])
 }
-protocol ProfileEditAPIType: EditScreenAPIType {
-    func createData(dict: [String: Any]) async throws -> User
-    
-    
-    
-    func updateData(dict: [String: Any])
 
-}
+//protocol RoomEditAPIType: EditScreenAPIType {
+//    func createData(dict: [String: Any]) async throws -> Rooms
+//    
+//    func updateData(dict: [String: Any])
+//}
+//
+//protocol ProfileEditAPIType: EditScreenAPIType {
+//}

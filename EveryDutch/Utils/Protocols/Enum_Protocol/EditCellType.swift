@@ -8,8 +8,6 @@
 import Foundation
 
 
-protocol Providers {}
-
 
 // MARK: - EditCellType
 protocol EditCellType: Providers {
@@ -26,13 +24,53 @@ protocol EditCellType: Providers {
 
 
 
+// MARK: - 팩토리 패턴
+//class DataProviderFactory {
+//    static func createProviders(
+//        user: User?,
+//        rooms: Rooms?,
+//        decoration: Decoration?)
+//    -> [DataProvider] {
+//        
+//        var providers: [DataProvider] = []
+//        
+//        if let user = user {
+//            providers.append(UserDataProvider(userData: user))
+//        }
+//        
+//        if let rooms = rooms {
+//            providers.append(RoomsDataProvider(roomsData: rooms))
+//        }
+//        
+//        if let decoration = decoration {
+//            providers.append(DecorationDataProvider(decorationData: decoration))
+//        }
+//        return providers
+//    }
+//}
 
 
+
+
+
+
+
+
+
+
+// MARK: - Provider패턴
+
+protocol Providers {}
 
 protocol DataProvider {
+    func canProvideData(for cellType: Providers) -> Bool
     func provideData(for cellType: Providers) -> String?
+//    func updateData<T>(with newData: T)
 }
 
+
+
+// MARK: - UserDataProvider
 // User 데이터를 처리하는 프로바이더
 class UserDataProvider: DataProvider {
     private var userData: User?
@@ -40,10 +78,16 @@ class UserDataProvider: DataProvider {
     init(userData: User?) {
         self.userData = userData
     }
+    deinit { print("\(#function)-----\(self)") }
 
+    
+    func canProvideData(for cellType: Providers) -> Bool {
+        return cellType is ProfileEditCellType
+        || cellType is UserInfoType
+    }
+    
+    
     func provideData(for cellType: Providers) -> String? {
-        guard let userData = self.userData else { return nil }
-        
         switch cellType {
         case let cell as ProfileEditCellType:
             return cell.detail(for: userData)
@@ -55,9 +99,16 @@ class UserDataProvider: DataProvider {
             return nil
         }
     }
+//    func updateData<T>(with newData: T) {
+//        if let user = newData as? User {
+//            self.userData = user
+//        }
+//    }
 }
 
+// MARK: - RoomsDataProvider
 // Rooms 데이터를 처리하는 프로바이더
+
 class RoomsDataProvider: DataProvider {
 
     
@@ -66,20 +117,31 @@ class RoomsDataProvider: DataProvider {
     init(roomsData: Rooms?) {
         self.roomsData = roomsData
     }
+    deinit { print("\(#function)-----\(self)") }
 
     
+    func canProvideData(for cellType: Providers) -> Bool {
+        return cellType is RoomEditCellType
+    }
     func provideData(for cellType: Providers) -> String? {
-        guard let roomsData = self.roomsData else { return nil }
         switch cellType {
         case let cell as RoomEditCellType:
-            return cell.detail(for: roomsData)
+            return cell.detail(for: self.roomsData)
             
         default:
             return nil
         }
     }
+    
+//    func updateData<T>(with newData: T) {
+//        if let rooms = newData as? Rooms {
+//            self.roomsData = rooms
+//        }
+//    }
 }
 
+
+// MARK: - DecorationDataProvider
 // Decoration 데이터를 처리하는 프로바이더
 class DecorationDataProvider: DataProvider {
     private var decorationData: Decoration?
@@ -87,11 +149,15 @@ class DecorationDataProvider: DataProvider {
     init(decorationData: Decoration?) {
         self.decorationData = decorationData
     }
+    deinit { print("\(#function)-----\(self)") }
     
+    
+    func canProvideData(for cellType: Providers) -> Bool {
+        return cellType is ImageCellType
+            || cellType is DecorationCellType
+    }
     
     func provideData(for cellType: Providers) -> String? {
-        guard let decorationData = decorationData else { return nil }
-        
         switch cellType {
         case let cell as ImageCellType:
             return cell.detail(for: decorationData)
@@ -103,6 +169,11 @@ class DecorationDataProvider: DataProvider {
             return nil
         }
     }
+//    func updateData<T>(with newData: T) {
+//        if let decoration = newData as? Decoration {
+//            self.decorationData = decoration
+//        }
+//    }
 }
 
         

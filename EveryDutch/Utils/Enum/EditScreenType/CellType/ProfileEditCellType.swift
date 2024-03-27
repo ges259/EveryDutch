@@ -36,13 +36,6 @@ enum ProfileEditCellType: Int, EditCellType, CaseIterable {
     }
     
     func detail(for user: User?) -> String? {
-        print("//////////////////////////////////")
-        print("//////////////////////////////////")
-        print("//////////////////////////////////")
-        print(#function)
-        print("//////////////////////////////////")
-        print("//////////////////////////////////")
-        print("//////////////////////////////////")
         switch self {
         case .nickName: return user?.userName
         case .personalID: return user?.personalID

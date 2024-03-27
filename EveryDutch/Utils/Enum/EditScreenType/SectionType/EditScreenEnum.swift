@@ -13,6 +13,24 @@ enum ProfileEditEnum: Int, EditScreenType, CaseIterable {
     case imageData
     case cardDecoration
     
+    
+    
+    func createProviders(withData data: ProviderModel?, decoration: Decoration?) -> [DataProvider] {
+        return [
+            UserDataProvider(userData: data as? User),
+            DecorationDataProvider(decorationData: decoration)
+        ]
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     // MARK: - rawValue 반환
     var sectionIndex: Int {
         return self.rawValue

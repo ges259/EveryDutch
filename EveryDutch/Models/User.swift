@@ -7,7 +7,10 @@
 
 import UIKit
 
-struct User {
+protocol ProviderModel {}
+
+
+struct User: ProviderModel {
     var personalID: String
     var userName: String
     var userProfile: String

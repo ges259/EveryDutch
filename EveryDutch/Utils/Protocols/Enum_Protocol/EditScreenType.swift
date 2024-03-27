@@ -6,10 +6,14 @@
 //
 
 import Foundation
-
+//associatedtype typeData: Any
 // MARK: - EditScreenType
 
 protocol EditScreenType {
+    
+    
+    func createProviders(withData data: ProviderModel?, decoration: Decoration?) -> [DataProvider]
+
     
     // MARK: - 헤더 타이틀
     var getHeaderTitle: String { get }

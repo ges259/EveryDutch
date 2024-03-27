@@ -14,6 +14,15 @@ enum RoomEditEnum: Int, EditScreenType, CaseIterable {
     case cardDecoration
     
     
+    
+    func createProviders(withData data: ProviderModel?, decoration: Decoration?) -> [DataProvider] {
+            return [
+                RoomsDataProvider(roomsData: data as? Rooms),
+                DecorationDataProvider(decorationData: decoration)
+            ]
+    }
+    
+    
     // MARK: - rawValue 반환
     var sectionIndex: Int {
         return self.rawValue
