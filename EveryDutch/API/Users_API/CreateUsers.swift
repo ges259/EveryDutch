@@ -12,7 +12,7 @@ struct UserAPI: UserAPIProtocol {
     private init() {}
     
 
-    func createData(dict: [String: Any]) async throws -> User {
+    func createData(dict: [String: Any]) async throws {
         throw ErrorEnum.loginError
     }
     

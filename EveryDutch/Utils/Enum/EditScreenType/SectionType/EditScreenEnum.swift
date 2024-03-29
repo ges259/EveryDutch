@@ -14,8 +14,19 @@ enum ProfileEditEnum: Int, EditScreenType, CaseIterable {
     case cardDecoration
     
     
+//    typealias validationType = ProfileEditCellType
+//    
+//    
+//    func getType() -> validationType.Type {
+//        return ProfileEditCellType.self
+//    }
     
-    func createProviders(withData data: ProviderModel?, decoration: Decoration?) -> [DataProvider] {
+    
+    
+    func createProviders(
+        withData data: ProviderModel?,
+        decoration: Decoration?) -> [DataProvider]
+    {
         return [
             UserDataProvider(userData: data as? User),
             DecorationDataProvider(decorationData: decoration)
@@ -24,6 +35,11 @@ enum ProfileEditEnum: Int, EditScreenType, CaseIterable {
     
     
     
+    
+    
+    func validataionData(data: [String: Any]) -> Bool {
+        return ProfileEditCellType.allCases.allSatisfy { data.keys.contains($0.databaseString) }
+    }
     
     
     

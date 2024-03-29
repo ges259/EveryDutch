@@ -225,7 +225,7 @@ extension EditScreenVC {
     
     // MARK: - 하단 버튼
     @objc private func bottomBtnTapped() {
-        Task { try await self.viewModel.validation() }
+        Task { try? await self.viewModel.validation() }
     }
     
     private func errorType(_ errorType: ErrorEnum) {

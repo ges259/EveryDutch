@@ -8,10 +8,23 @@
 import Foundation
 
 // MARK: - RoomEditCellType
-enum RoomEditCellType: Int, EditCellType, CaseIterable {
+enum RoomEditCellType: Int, EditCellType, validationType, CaseIterable {
     case roomName = 0
     case className
     case ManagerName
+    
+    func validation(dict: [String: Any?]) -> [String] {
+        return RoomEditCellType.allCases.compactMap { caseItem in
+            if !dict.keys.contains(caseItem.databaseString) {
+                print("1111")
+                return caseItem.databaseString
+            } else {
+                print("2222")
+            }
+            return nil
+        }
+    }
+    
     
     // MARK: - 셀 타이틀
     var getCellTitle: String {

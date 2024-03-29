@@ -7,10 +7,28 @@
 
 import Foundation
 
+protocol validationType {
+    func validation(dict: [String: Any?]) -> [String]
+}
+
+
 // MARK: - ProfileEditCellType
-enum ProfileEditCellType: Int, EditCellType, CaseIterable {
+enum ProfileEditCellType: Int, EditCellType, validationType, CaseIterable {
     case nickName = 0
     case personalID
+    
+    func validation(dict: [String: Any?]) -> [String] {
+        return ProfileEditCellType.allCases.compactMap { caseItem in
+            if !dict.keys.contains(caseItem.databaseString) {
+                print("1111")
+                return caseItem.databaseString
+            } else {
+                print("2222")
+            }
+            return nil
+        }
+    }
+    
     
     // MARK: - 셀 타이틀
     var getCellTitle: String {

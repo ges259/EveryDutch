@@ -8,7 +8,6 @@
 import Foundation
 
 protocol EditScreenAPIType {
-    
     func createData(dict: [String: Any]) async throws
     
     func updateData(dict: [String: Any])

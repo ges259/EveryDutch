@@ -18,7 +18,7 @@ final class RoomsAPI: RoomsAPIProtocol {
 extension RoomsAPI {
     
     // MARK: - ROOMS_ID 생성 및 데이터 설정
-    func createData(dict: [String: Any]) async throws -> Rooms {
+    func createData(dict: [String: Any]) async throws {
         guard let uid = Auth.auth().currentUser?.uid else {
             throw ErrorEnum.readError
         }
@@ -31,7 +31,7 @@ extension RoomsAPI {
         try await addUserToRoom(with: roomID, uid: uid)
         try await updateRoomThumbnail(with: roomID, data: dict)
         
-        return Rooms(roomID: roomID, versionID: versionID, dictionary: dict)
+//        return Rooms(roomID: roomID, versionID: versionID, dictionary: dict)
     }
 
     // MARK: - ROOMS_ID_REF에 versionID 설정

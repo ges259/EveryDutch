@@ -9,6 +9,8 @@ import Foundation
 
 enum ErrorEnum: Error {
     
+    case validationError(_ databaseString: [String])
+    
     
     case readError
     case loginError

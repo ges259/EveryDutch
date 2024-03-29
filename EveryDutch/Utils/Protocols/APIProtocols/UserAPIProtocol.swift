@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol UserAPIProtocol: ProfileEditAPIType {
+protocol UserAPIProtocol: EditScreenAPIType {
     
     func readYourOwnUserData() async throws -> [String: User]
 

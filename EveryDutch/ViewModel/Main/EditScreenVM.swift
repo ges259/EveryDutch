@@ -266,80 +266,66 @@ extension EditScreenVM {
     // MARK: - 시작
     // 비동기적으로 유효성 검사를 수행하는 함수
     // 현재 타입이 RoomEditEnum 또는 ProfileEditEnum인지 확인하고, 해당하는 동작을 실행
-    func validation() async throws {
-        guard let type = self.allCases.first else {
-            throw ErrorEnum.unknownError // 첫 번째 케이스가 없는 경우, 알 수 없는 에러를 발생시킴
-        }
-        
-        // 타입에 따라 유효성 검사 및 데이터 생성 함수를 호출
-        try await self.validateType(type: type)
-    }
-    
-    // MARK: - 타입 검사
-    // 실제 유효성 검사 및 데이터 생성 로직을 포함하는 함수
-    // 각 타입에 맞는 유효성 검사를 수행하고, 성공적이면 데이터 생성 함수를 호출
-    private func validateType(type: any EditScreenType) async throws {
-//        
-//        switch type {
-//        case is RoomEditEnum:
-//            // 방(Room) 관련 데이터의 유효성 검사를 수행
-//            guard self.roomValidation(type: RoomEditCellType.self) else { throw ErrorEnum.unknownError }
-//            // 유효성 검사를 통과한 경우, 방을 생성하는 함수를 호출
-//            let room = try await createData()
-//            // 생성된 방 데이터를 클로저를 통해 전달
-//            self.roomDataClosure?(room)
-//            break
-//            
-//            
-//        case is ProfileEditEnum:
-//            // 사용자(User) 프로필 관련 데이터의 유효성 검사를 수행
-//            guard self.roomValidation(type: ProfileEditCellType.self) else { throw ErrorEnum.unknownError }
-//            // 유효성 검사를 통과한 경우, 사용자를 생성하는 함수를 호출
-//            let user = try await createUser()
-//            // 생성된 사용자 데이터를 클로저를 통해 전달
-//            self.userDataClosure?(user)
-//            break
-//            
-//            
-//        default:
-//            // 예상치 못한 타입의 경우, 알 수 없는 에러를 발생
-//            throw ErrorEnum.unknownError
-//        }
-    }
-    
-    
-    // MARK: - 타입별 유효성 검사
-    // 각 타입별로 유효성 검사를 수행하는 함수
-    // 모든 셀 타입에 대한 데이터가 변경된 데이터 딕셔너리에 존재하는지 검사
-    private func roomValidation<Q: EditCellType & CaseIterable>(type: Q.Type) -> Bool {
-        return Q.allCases.allSatisfy { self.changedData.keys.contains($0.databaseString) }
-    }
-    
-    
-    
-    
-    
-    private func validateType222(type: any EditScreenType) async throws {
-       
+    func validation() async {
         do {
-            guard self.roomValidation22() else { throw ErrorEnum.unknownError }
-            try await self.createData()
+            guard self.roomValidation() else { throw ErrorEnum.unknownError }
             
+//            try await self.createData()
+            
+        } catch let error as ErrorEnum {
+            self.errorClosure?(error)
             
         } catch {
-            throw ErrorEnum.unknownError
+            self.errorClosure?(.unknownError)
         }
     }
-    private func roomValidation22() -> Bool {
-//        return self.allCases.first?.getAllOfCellType.first?.allSatisfy { self.changedData.keys.contains($0.databaseString) }
-        
-        return false
-        
+    
+    // MARK: - 유효성 검사
+    private func roomValidation() -> Bool {
+        var missingFields: [String] = []
+        /*
+         type
+         - roomData
+         - imageData
+         - cardDecoration
+         */
+        for type in self.allCases {
+            /*
+             cellType
+             - RoomEditCellType.allCases
+             - ImageCellType.allCases
+             - DecorationCellType.allCases
+             */
+            for cellType in type.getAllOfCellType {
+                if let cellTypeEnyum = cellType as? validationType {
+                    let missingForType = cellTypeEnyum.validation(dict: self.changedData)
+                    missingFields.append(contentsOf: missingForType)
+                    break
+                }
+            }
+            // 첫 번째 type에서 누락된 필드가 발견되면 전체 검증 중단
+            // 필요에 따라 이 부분을 조정
+            if !missingFields.isEmpty { break }
+        }
+        // 빈칸           -> true
+        // 오류값이 있다    -> false
+        return missingFields.isEmpty
     }
-    
-    
 }
 
+/*
+ 
+ 
+ let boolean = self.allCases
+     .first?
+     .getAllOfCellType
+     .map({ type in
+         return self.changedData.keys.contains(type.databaseString)
+     }) ?? [false]
+         
+ 
+ 빈칸되면 ChangedData에서 삭제
+ */
 
 
 
@@ -380,13 +366,13 @@ extension EditScreenVM {
             DatabaseConstants.user_image : "user_image"
         ])
         
-        let rooms: Rooms = Rooms(
-            roomID: "roomID",
-            versionID: "versionID",
-            dictionary: [
-                DatabaseConstants.room_name: "room_name",
-                DatabaseConstants.room_image: "room_image"
-            ])
+//        let rooms: Rooms = Rooms(
+//            roomID: "roomID",
+//            versionID: "versionID",
+//            dictionary: [
+//                DatabaseConstants.room_name: "room_name",
+//                DatabaseConstants.room_image: "room_image"
+//            ])
         
         let decoration: Decoration = Decoration(
             blur: true,

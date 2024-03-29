@@ -11,7 +11,10 @@ import Foundation
 
 protocol EditScreenType {
     
-    
+//    associatedtype validationType: EditCellType
+//    
+//    func getType() -> validationType.Type
+//
     func createProviders(withData data: ProviderModel?, decoration: Decoration?) -> [DataProvider]
 
     
