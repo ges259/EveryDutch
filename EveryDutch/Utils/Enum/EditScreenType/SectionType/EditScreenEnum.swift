@@ -42,7 +42,9 @@ enum ProfileEditEnum: Int, EditScreenType, CaseIterable {
     }
     
     
-    
+    var apiType: EditScreenAPIType {
+        return UserAPI.shared
+    }
     
     
     

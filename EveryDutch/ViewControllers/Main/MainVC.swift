@@ -425,10 +425,6 @@ extension MainVC {
         self.collectionView.insertItems(at: [indexPath])
     }
     
-    func makeUser() {
-        
-    }
-    
     
 //    // MARK: - 로그아웃
 //    func logout() {

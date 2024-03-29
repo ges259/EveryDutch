@@ -25,6 +25,9 @@ enum RoomEditEnum: Int, EditScreenType, CaseIterable {
         ]
     }
     
+    var apiType: EditScreenAPIType {
+        return RoomsAPI.shared
+    }
     
     
     

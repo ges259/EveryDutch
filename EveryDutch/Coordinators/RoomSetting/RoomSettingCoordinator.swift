@@ -69,7 +69,7 @@ extension RoomSettingCoordinator: EditScreenDelegate {
         
     }
     
-    func makeUser(user: User) {
+    func makeProviderData(with: ProviderModel) {
         
     }
     

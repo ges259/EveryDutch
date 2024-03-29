@@ -17,6 +17,7 @@ protocol EditScreenType {
 //
     func createProviders(withData data: ProviderModel?, decoration: Decoration?) -> [DataProvider]
 
+    var apiType: EditScreenAPIType { get }
     
     // MARK: - 헤더 타이틀
     var getHeaderTitle: String { get }

@@ -13,6 +13,6 @@ protocol ProfileEditVCCoordProtocol: Coordinator {
     func imagePickerScreen()
     
     
-    func makeRoom(room: Rooms)
-    func makeUser(user: User) 
+//    func makeRoom(room: Rooms)
+    func makeProviderData(with: ProviderModel)
 }

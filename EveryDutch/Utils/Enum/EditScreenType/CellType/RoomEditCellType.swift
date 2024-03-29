@@ -47,7 +47,7 @@ enum RoomEditCellType: Int, EditCellType, validationType, CaseIterable {
     var databaseString: String {
         switch self {
         case .roomName: return DatabaseConstants.room_name
-        case .className: return DatabaseConstants.class_name
+        case .className: return DatabaseConstants.manager_name
         case .ManagerName: return DatabaseConstants.manager_name
         }
     }

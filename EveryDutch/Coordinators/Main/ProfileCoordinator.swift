@@ -68,7 +68,7 @@ final class ProfileCoordinator: ProfileCoordProtocol {
 extension ProfileCoordinator: EditScreenDelegate {
     func makeRoom(room: Rooms) {}
     
-    func makeUser(user: User) {
+    func makeProviderData(with: ProviderModel) {
         
     }
 }

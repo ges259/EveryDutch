@@ -20,5 +20,4 @@ final class RoomSettingVM: RoomSettingVMProtocol {
         self.users = self.roomDataManager.getRoomUsersDict
         return self.users
     }
-    
 }

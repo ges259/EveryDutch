@@ -7,17 +7,10 @@
 
 import Foundation
 
-protocol EditScreenAPIType {
+protocol EditScreenAPIType: DecorationAPIType {
     func createData(dict: [String: Any]) async throws
     
     func updateData(dict: [String: Any])
+    
+    func fetchData(DataRequiredWhenInEidtMode: String?) async throws -> ProviderModel
 }
-
-//protocol RoomEditAPIType: EditScreenAPIType {
-//    func createData(dict: [String: Any]) async throws -> Rooms
-//    
-//    func updateData(dict: [String: Any])
-//}
-//
-//protocol ProfileEditAPIType: EditScreenAPIType {
-//}

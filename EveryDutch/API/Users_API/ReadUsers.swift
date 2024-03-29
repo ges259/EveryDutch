@@ -23,6 +23,30 @@ import Firebase
 
 extension UserAPI {
     
+    func fetchData(DataRequiredWhenInEidtMode: String?) async throws -> ProviderModel
+    {
+        let userDataDict = try await self.readYourOwnUserData()
+        
+        guard let user = userDataDict.values.first else {
+            throw ErrorEnum.userNotFound
+        }
+        
+        
+        
+        return user
+    }
+    
+    func dd() async throws {
+        let data = try await self.fetchDecoration(dataRequiredWhenInEidtMode: "")
+        
+    }
+    
+    
+    
+    
+    
+    
+    // MARK: - User데이터 가져오기
     func readYourOwnUserData() async throws -> [String: User] {
         guard let uid = Auth.auth().currentUser?.uid else {
             throw ErrorEnum.readError
@@ -70,3 +94,31 @@ extension UserAPI {
         return userDict
     }
 }
+
+//private func oneyUserData() async throws -> User {
+//    guard let uid = Auth.auth().currentUser?.uid else {
+//        throw ErrorEnum.readError
+//    }
+//    
+//    return try await withCheckedThrowingContinuation
+//    { (continuation: CheckedContinuation<User, Error>) in
+//        // 유저데이터 가져오기
+//        USER_REF
+//            .child(uid)
+//            .observeSingleEvent(of: DataEventType.value) { snapshot  in
+//                
+//                do {
+//                    guard let value = snapshot.value as? [String: Any] else {
+//                        throw ErrorEnum.readError
+//                    }
+//                    
+//                    // 유저 모델 만들기
+//                    let user = User(dictionary: value)
+//                    continuation.resume(returning: user)
+//                    
+//                } catch {
+//                    continuation.resume(throwing: ErrorEnum.userNotFound)
+//                }
+//            }
+//    }
+//}

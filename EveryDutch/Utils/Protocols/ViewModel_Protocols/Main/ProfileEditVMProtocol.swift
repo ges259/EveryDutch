@@ -9,8 +9,8 @@ import Foundation
 
 protocol ProfileEditVMProtocol {
     
-    var roomDataClosure: ((Rooms) -> Void)? { get set }
-    var userDataClosure: ((User) -> Void)? { get set }
+    var updateDataClosure: (() -> Void)? { get set }
+    var makeDataClosure: ((ProviderModel) -> Void)? { get set }
     var errorClosure: ((ErrorEnum) -> Void)? { get set }
     
     

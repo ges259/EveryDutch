@@ -19,20 +19,7 @@ enum DatabaseConstants {
     static let user_image: String = "user_image"
     static let user_name: String = "user_name"
 }
-// Rooms_Thumbnails
-extension DatabaseConstants {
-    static let room_name: String = "room_name"
-    static let room_image: String = "roomimage"
-    
-    static let room_user_name: String = "room_user_name"
-    static let room_user_image: String = "room_user_image"
-    
-    static let class_name: String = "class_name"
-    static let manager_name: String = "manager_name"
-    
-    static let card_profile_image: String = "card_profile_image"
-    static let card_background_image: String = "card_background_image"
-}
+
 
 
 // Receipt
@@ -62,10 +49,28 @@ extension DatabaseConstants {
 
 
 
+
+
+// Rooms_Thumbnails
 extension DatabaseConstants {
+    static let room_name: String = "room_name"
+    static let class_name: String = "class_name"
+    static let manager_name: String = "manager_name"
+    
+//    static let room_image: String = "roomimage"
+//    static let room_user_name: String = "room_user_name"
+//    static let room_user_image: String = "room_user_image"
+    
+    
+    
+}
+extension DatabaseConstants {
+    
+    static let card_profile_image: String = "card_profile_image"
+    static let card_background_image: String = "card_background_image"
+    
     static let blur_Effect: String = "blur_Effect"
     static let title_Color: String = "title_Color"
     static let point_Color: String = "point_Color"
     static let background_Color: String = "background_Color"
-    
 }

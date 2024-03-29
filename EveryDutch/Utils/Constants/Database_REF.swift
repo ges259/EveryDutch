@@ -39,3 +39,8 @@ let VERSION_THUMBNAIL_REF = ref.child("Version_Thumbnail")
 
 // MARK: - Rollback_ERROR_API
 let Rollback_ERROR_REF = ref.child("Rollback_Error")
+
+
+let CARD_DATA_REF = ref.child("Card_Data")
+
+

@@ -139,16 +139,12 @@ final class EditScreenCoordinator: NSObject, ProfileEditVCCoordProtocol {
 
 // MARK: - CardScreenDelegate
 extension EditScreenCoordinator: EditScreenDelegate {
-    func makeRoom(room: Rooms) {
-        print(#function)
+    
+    func makeProviderData(with: ProviderModel) {
         self.didFinish()
-        self.editScreenDelegate?.makeRoom(room: room)
+        self.editScreenDelegate?.makeProviderData(with: with)
     }
     
-    func makeUser(user: User) {
-        self.didFinish()
-        self.editScreenDelegate?.makeUser(user: user)
-    }
     
     /// CardScreenVC에서 delegate.logout()을 호출 시 실행 됨.
 //    func logout() {

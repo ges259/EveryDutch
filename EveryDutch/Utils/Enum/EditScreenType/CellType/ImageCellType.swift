@@ -39,31 +39,3 @@ enum ImageCellType: Int, EditCellType, CaseIterable {
         }
     }
 }
-
-
-import UIKit
-
-struct Decoration {
-    var blur: Bool
-    var profileImage: String?
-    var backgroundImage: String?
-    var backgroundColor: String?
-    var pointColor: String?
-    var titleColor: String?
-    
-    // MARK: - Fix
-    init(blur: Bool, 
-         profileImage: String?,
-         backgroundImage: String?,
-         backgroundColor: String?,
-         pointColor: String?,
-         titleColor: String?)
-    {
-        self.blur = blur
-        self.profileImage = profileImage
-        self.backgroundImage = backgroundImage
-        self.backgroundColor = backgroundColor
-        self.pointColor = pointColor
-        self.titleColor = titleColor
-    }
-}

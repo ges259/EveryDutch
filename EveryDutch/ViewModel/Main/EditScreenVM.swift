@@ -7,27 +7,28 @@
 
 import UIKit
 
+/*
+ 해야 할 일
+ - 빈칸되면 ChangedData에서 삭제
+ */
+
+
+
 final class EditScreenVM<T: EditScreenType & CaseIterable>: ProfileEditVMProtocol {
     
-    // 각 섹션에 대응하는 셀 타입들을 저장하는 딕셔너리
-    private var dataProviders: [DataProvider]? = []
     // typealias EditCellDataCell = (type: EditCellType, detail: String?)
     private var cellDataDictionary: [Int: [EditCellDataCell]] = [:]
     
-    
-    
-    
-    
     // API 통신을 담당하는 프로토콜 객체
-    private let api: EditScreenAPIType
+    private var api: EditScreenAPIType?
     
+    // 제네릭 T의 모든 타입
     private let allCases: [T]
     
-    // MARK: - 현재 선택된 셀
     // 현재 선택된 셀 타입과 인덱스 패스를 저장하는 튜플
     private var selectedIndexTuple: (type: EditCellType, indexPath: IndexPath)?
     
-    
+    private var DataRequiredWhenInEidtMode: String?
     
     
 
@@ -43,8 +44,8 @@ final class EditScreenVM<T: EditScreenType & CaseIterable>: ProfileEditVMProtoco
     
     // MARK: - 클로저
     // 방 데이터와 사용자 데이터를 업데이트할 때 사용할 클로저
-    var roomDataClosure: ((Rooms) -> Void)?
-    var userDataClosure: ((User) -> Void)?
+    var updateDataClosure: (() -> Void)?
+    var makeDataClosure: ((ProviderModel) -> Void)?
     // 에러 발생 시 처리할 클로저
     var errorClosure: ((ErrorEnum) -> Void)?
     
@@ -58,25 +59,38 @@ final class EditScreenVM<T: EditScreenType & CaseIterable>: ProfileEditVMProtoco
     
     
     // MARK: - 라이프사이클
-    init(api: EditScreenAPIType, isMake: Bool) {
+    init(api: EditScreenAPIType,
+         isMake: Bool,
+         DataRequiredWhenInEidtMode: String? = nil)
+    {
         self.api = api
         self.isMake = isMake
         self.allCases = Array(T.allCases)
         
-        // 수정 -> 데이터 가져오기 ->> 셀 타입 초기화
-        if !isMake {
-            self.initializeCellTypes()
-            print("initializeCellTypes ---")
-        }
-        else {
-            self.setupDataProviders(withData: nil, decoration: nil)
+        self.api = self.allCases.first?.apiType
+        
+        self.setupDataProviders()
+        
+        if !self.isMake {
+            self.DataRequiredWhenInEidtMode = DataRequiredWhenInEidtMode
+            Task { await self.initializeCellTypes() }
         }
     }
     deinit { print("\(#function)-----\(self)") }
     
     
     
-    
+    private func initializeCellTypes() async {
+        // 수정 -> 데이터 가져오기 ->> 셀 타입 초기화
+        do {
+            try await self.fetchDatas()
+        } catch let error as ErrorEnum {
+            self.errorClosure?(error)
+        } catch {
+            self.errorClosure?(.unknownError)
+        }
+        print("initializeCellTypes ---")
+    }
     
     
     
@@ -84,36 +98,40 @@ final class EditScreenVM<T: EditScreenType & CaseIterable>: ProfileEditVMProtoco
     
     
     func setupDataProviders(
-        withData data: ProviderModel?,
-        decoration: Decoration?)
+        withData data: ProviderModel? = nil,
+        decoration: Decoration? = nil)
     {
-        self.dataProviders = self.allCases
+        let dataProviders = self.allCases
             .first?
             .createProviders(
                 withData: data,
                 decoration: decoration)
         // 여기서 self.decoration은 현재 VM이 가지고 있는 Decoration 데이터를 의미함
-        self.updateCellData() // 필요한 경우 cell data 업데이트
+        self.updateCellData(with: dataProviders) // 필요한 경우 cell data 업데이트
     }
     
     
-    private func updateCellData() {
+    private func updateCellData(with dataProviders: [DataProvider]?) {
         self.allCases.forEach { screenType in
             let cellData = screenType
                 .getAllOfCellType
                 .compactMap { cellType -> EditCellDataCell? in
                     
-                    guard let provider = self.dataProviders?.first(where: { $0.canProvideData(for: cellType) }) else {
+                    guard let provider = dataProviders?.first(where: { $0.canProvideData(for: cellType) }) else {
+                        
                         return (type: cellType, detail: nil)
                     }
                     
                     if let detailData = provider.provideData(for: cellType) {
+                        
                         return (type: cellType, detail: detailData)
                     }
                     
                     return (type: cellType, detail: nil)
                 }
+            
             self.cellDataDictionary[screenType.sectionIndex] = cellData
+            self.updateDataClosure?()
         }
     }
 }
@@ -313,19 +331,6 @@ extension EditScreenVM {
     }
 }
 
-/*
- 
- 
- let boolean = self.allCases
-     .first?
-     .getAllOfCellType
-     .map({ type in
-         return self.changedData.keys.contains(type.databaseString)
-     }) ?? [false]
-         
- 
- 빈칸되면 ChangedData에서 삭제
- */
 
 
 
@@ -344,7 +349,7 @@ extension EditScreenVM {
     // 변경된 데이터를 바탕으로 API를 호출하여 방을 생성
     private func createData() async throws {
         let dict = self.changedData.compactMapValues { $0 }
-        try await self.api.createData(dict: dict)
+        try await self.api?.createData(dict: dict)
     }
 }
 
@@ -359,29 +364,22 @@ extension EditScreenVM {
 
 // MARK: - 나중에 없앨 코드
 extension EditScreenVM {
-    private func initializeCellTypes() {
-        let user: User = User(dictionary: [
-            DatabaseConstants.personal_ID : "personal_ID",
-            DatabaseConstants.user_name:  "user_name",
-            DatabaseConstants.user_image : "user_image"
-        ])
+    
+    private func fetchDatas() async throws {
         
-//        let rooms: Rooms = Rooms(
-//            roomID: "roomID",
-//            versionID: "versionID",
-//            dictionary: [
-//                DatabaseConstants.room_name: "room_name",
-//                DatabaseConstants.room_image: "room_image"
-//            ])
+        let data = try await self.api?.fetchData(DataRequiredWhenInEidtMode: self.DataRequiredWhenInEidtMode)
+        let decoration = try await self.api?.fetchDecoration(dataRequiredWhenInEidtMode: self.DataRequiredWhenInEidtMode)
         
-        let decoration: Decoration = Decoration(
-            blur: true,
-            profileImage: "profileImage",
-            backgroundImage: "backgroundImage",
-            backgroundColor: "backgroundColor",
-            pointColor: "pointColor",
-            titleColor: "titleColor")
-        
-        self.setupDataProviders(withData: user, decoration: decoration)
+        self.setupDataProviders(withData: data, decoration: decoration)
     }
 }
+
+/*
+ 
+ print("/////////////////////////////////////////")
+ dump(data)
+ print("/////////////////////////////////////////")
+ dump(decoration)
+ print("/////////////////////////////////////////")
+ 
+ */

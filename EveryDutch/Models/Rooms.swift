@@ -17,6 +17,6 @@ struct Rooms: ProviderModel {
         self.roomID = roomID
         self.versionID = versionID
         self.roomName = dictionary[DatabaseConstants.room_name] as? String ?? ""
-        self.roomImg = dictionary[DatabaseConstants.room_image] as? String ?? ""
+        self.roomImg = dictionary[DatabaseConstants.manager_name] as? String ?? ""
     }
 }

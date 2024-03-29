@@ -112,6 +112,8 @@
 		5F6FDDE42B505DD000F09CCD /* ReceiptScreenPanUsersCellVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6FDDE32B505DD000F09CCD /* ReceiptScreenPanUsersCellVM.swift */; };
 		5F6FDDE82B5067E700F09CCD /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6FDDE72B5067E700F09CCD /* UserManager.swift */; };
 		5F70069D2B3B57450028DC8B /* UsersTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F70069C2B3B57450028DC8B /* UsersTableViewCell.swift */; };
+		5F71FEEA2BB6DB510005FC7A /* Decoration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F71FEE92BB6DB510005FC7A /* Decoration.swift */; };
+		5F71FEED2BB723BD0005FC7A /* DecorationAPIType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F71FEEC2BB723BD0005FC7A /* DecorationAPIType.swift */; };
 		5F729BF22B6CFC8000F3DDCA /* CardDecorationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F729BF12B6CFC8000F3DDCA /* CardDecorationCell.swift */; };
 		5F729BFD2B6D291A00F3DDCA /* TableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F729BFC2B6D291A00F3DDCA /* TableHeaderView.swift */; };
 		5F729BFF2B6D293500F3DDCA /* TableFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F729BFE2B6D293500F3DDCA /* TableFooterView.swift */; };
@@ -313,6 +315,8 @@
 		5F6FDDE32B505DD000F09CCD /* ReceiptScreenPanUsersCellVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptScreenPanUsersCellVM.swift; sourceTree = "<group>"; };
 		5F6FDDE72B5067E700F09CCD /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
 		5F70069C2B3B57450028DC8B /* UsersTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersTableViewCell.swift; sourceTree = "<group>"; };
+		5F71FEE92BB6DB510005FC7A /* Decoration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Decoration.swift; sourceTree = "<group>"; };
+		5F71FEEC2BB723BD0005FC7A /* DecorationAPIType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecorationAPIType.swift; sourceTree = "<group>"; };
 		5F729BF12B6CFC8000F3DDCA /* CardDecorationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardDecorationCell.swift; sourceTree = "<group>"; };
 		5F729BFC2B6D291A00F3DDCA /* TableHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableHeaderView.swift; sourceTree = "<group>"; };
 		5F729BFE2B6D293500F3DDCA /* TableFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableFooterView.swift; sourceTree = "<group>"; };
@@ -795,6 +799,14 @@
 			path = CustomViews;
 			sourceTree = "<group>";
 		};
+		5F71FEEB2BB723970005FC7A /* Decoration_API */ = {
+			isa = PBXGroup;
+			children = (
+				5F71FEEC2BB723BD0005FC7A /* DecorationAPIType.swift */,
+			);
+			path = Decoration_API;
+			sourceTree = "<group>";
+		};
 		5F729BF32B6D27F600F3DDCA /* TableViews */ = {
 			isa = PBXGroup;
 			children = (
@@ -1144,6 +1156,7 @@
 				5F8513C32B4D306A00A5B22D /* CumulativeAmount.swift */,
 				5F630ADB2B559A96008F9CBD /* Payback.swift */,
 				5F864E742B9CDD95007AEA3B /* PaymentDetail.swift */,
+				5F71FEE92BB6DB510005FC7A /* Decoration.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1152,6 +1165,7 @@
 			isa = PBXGroup;
 			children = (
 				5F4FA7212B553BD4009EE4F4 /* UserManager */,
+				5F71FEEB2BB723970005FC7A /* Decoration_API */,
 				5F8513D12B4D673000A5B22D /* Users_API */,
 				5F8513D72B4D677300A5B22D /* Room_API */,
 				5F8513D62B4D676B00A5B22D /* Receipt_API */,
@@ -1367,6 +1381,7 @@
 				5F3211AF2B50028B0027C8B3 /* UsersTableView.swift in Sources */,
 				5FFFED052B83CAE50090542D /* CrashlyticsLoggable.swift in Sources */,
 				5FE3DEC82B39CC2A008D58AE /* AppCoordinator.swift in Sources */,
+				5F71FEEA2BB6DB510005FC7A /* Decoration.swift in Sources */,
 				5F6FDDE42B505DD000F09CCD /* ReceiptScreenPanUsersCellVM.swift in Sources */,
 				5F5AFBCE2B493D2A00BBBB9D /* RoomSettingVMProtocol.swift in Sources */,
 				5F9F76632B6C227D00BB6511 /* ProfileCoordinator.swift in Sources */,
@@ -1505,6 +1520,7 @@
 				5FFF661D2B52A087000A5EC4 /* PeopleSelectionPanVMProtocol.swift in Sources */,
 				5F47CD082B3AD8F500FCBFA4 /* EditScreenVM.swift in Sources */,
 				5F6FDDE22B50568B00F09CCD /* ReceiptScreenUsersCell.swift in Sources */,
+				5F71FEED2BB723BD0005FC7A /* DecorationAPIType.swift in Sources */,
 				5F4FA7232B553C00009EE4F4 /* UserAPIProtocol.swift in Sources */,
 				5F68487C2B441BB70015BFCC /* LoginScreenCoordProtocol.swift in Sources */,
 				5F8513DC2B4D67F600A5B22D /* UpdateReceipt.swift in Sources */,

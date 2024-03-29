@@ -9,6 +9,6 @@ import Foundation
 
 protocol EditScreenDelegate: AnyObject {
 //    func logout()
-    func makeRoom(room: Rooms)
-    func makeUser(user: User)
+//    func makeRoom(room: Rooms)
+    func makeProviderData(with: ProviderModel)
 }

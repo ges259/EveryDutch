@@ -76,4 +76,23 @@ extension RoomsAPI {
             }
         }
     }
+    
+    
+    
+    
+    
+    
+    
+    func fetchData(DataRequiredWhenInEidtMode: String?) async throws -> ProviderModel
+    {
+//        let userDataDict = try await self.readYourOwnUserData()
+//        
+//        guard let user = userDataDict.values.first else {
+//            throw ErrorEnum.userNotFound
+//        }
+//        
+//        let data = try await self.fetchDecoration(dataRequiredWhenInEidtMode: "")
+        
+        return Rooms(roomID: "", versionID: "", dictionary: [:])
+    }
 }

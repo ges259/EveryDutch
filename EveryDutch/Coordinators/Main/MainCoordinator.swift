@@ -175,15 +175,16 @@ final class MainCoordinator: MainCoordProtocol{
 // MARK: - EditScreenDelegate 델리게이트
 extension MainCoordinator: EditScreenDelegate {
 
-    func makeRoom(room: Rooms) {
+    func makeProviderData(with: ProviderModel) {
         print(#function)
-        if let mainVC = self.findMainVC {
+        
+        if let mainVC = self.findMainVC,
+           let room = with as? Rooms {
             mainVC.makeRoom(room: room)
         }
     }
-    func makeUser(user: User) {
-        
-    }
+    // MARK: - Fix
+    // 델리게이트로 하는 게 좋을듯?
     
     // 공통된 ReceiptWriteVC 찾기 로직
     private var findMainVC: MainVC? {

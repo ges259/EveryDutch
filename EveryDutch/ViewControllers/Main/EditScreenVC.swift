@@ -191,12 +191,12 @@ extension EditScreenVC {
     
     // MARK: - 클로저 설정
     private func configureClosure() {
-        self.viewModel.roomDataClosure = { [weak self] room in
-            self?.coordinator.makeRoom(room: room)
+        self.viewModel.updateDataClosure = { [weak self] in
+            self?.tableView.reloadData()
         }
         
-        self.viewModel.userDataClosure = { [weak self] user in
-            self?.coordinator.makeUser(user: user)
+        self.viewModel.makeDataClosure = { [weak self] user in
+            self?.coordinator.makeProviderData(with: user)
         }
         
         self.viewModel.errorClosure = { [weak self] errorType in

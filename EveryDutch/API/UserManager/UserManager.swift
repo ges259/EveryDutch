@@ -21,7 +21,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
     init(roomsAPI: RoomsAPIProtocol) {
         self.roomsAPI = roomsAPI
     }
-    
+    deinit { print("\(#function)-----\(self)") }
     
     
     
