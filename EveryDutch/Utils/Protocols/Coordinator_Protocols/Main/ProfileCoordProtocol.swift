@@ -8,5 +8,5 @@
 import Foundation
 
 protocol ProfileCoordProtocol: Coordinator {
-    func editScreen()
+    func editScreen(DataRequiredWhenInEidtMode: String?) 
 }

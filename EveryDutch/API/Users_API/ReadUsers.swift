@@ -23,16 +23,14 @@ import Firebase
 
 extension UserAPI {
     
-    func fetchData(DataRequiredWhenInEidtMode: String?) async throws -> ProviderModel
+    func fetchData(dataRequiredWhenInEidtMode: String?) async throws -> ProviderModel
     {
+        print(#function)
         let userDataDict = try await self.readYourOwnUserData()
         
         guard let user = userDataDict.values.first else {
             throw ErrorEnum.userNotFound
         }
-        
-        
-        
         return user
     }
     

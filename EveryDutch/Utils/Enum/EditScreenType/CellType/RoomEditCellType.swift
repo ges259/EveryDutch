@@ -8,7 +8,7 @@
 import Foundation
 
 // MARK: - RoomEditCellType
-enum RoomEditCellType: Int, EditCellType, validationType, CaseIterable {
+enum RoomEditCellType: Int, EditCellType, ValidationType, CaseIterable {
     case roomName = 0
     case className
     case ManagerName

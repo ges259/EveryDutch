@@ -97,26 +97,26 @@ final class MainCoordinator: MainCoordProtocol{
     
     
     
-    // MARK: - 프로필 수정 화면
+    // MARK: - 프로필 수정 화면 (생성)
     /// 플러스 버튼을 누르면 화면 이동
     func profileEditScreen() {
         // Main-Coordinator 생성
         let editScreenVCCoordinator = EditScreenCoordinator(
             nav: self.nav,
             isProfileEdit: true, 
-            isMake: true)
+            DataRequiredWhenInEidtMode: nil)
         self.moveToEditScreenVCCoord(to: editScreenVCCoordinator)
     }
     
     
     
-    // MARK: - 방 수정 스크린
+    // MARK: - 방 수정 스크린 (생성)
     func roomEditScreen() {
         // Main-Coordinator 생성
         let editScreenVCCoordinator = EditScreenCoordinator(
             nav: self.nav,
             isProfileEdit: false, 
-            isMake: true)
+            DataRequiredWhenInEidtMode: nil)
         self.moveToEditScreenVCCoord(to: editScreenVCCoordinator)
     }
     

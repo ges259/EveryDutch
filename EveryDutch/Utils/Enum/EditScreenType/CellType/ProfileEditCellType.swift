@@ -7,13 +7,13 @@
 
 import Foundation
 
-protocol validationType {
+protocol ValidationType {
     func validation(dict: [String: Any?]) -> [String]
 }
 
 
 // MARK: - ProfileEditCellType
-enum ProfileEditCellType: Int, EditCellType, validationType, CaseIterable {
+enum ProfileEditCellType: Int, EditCellType, ValidationType, CaseIterable {
     case nickName = 0
     case personalID
     

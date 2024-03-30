@@ -83,7 +83,7 @@ extension RoomsAPI {
     
     
     
-    func fetchData(DataRequiredWhenInEidtMode: String?) async throws -> ProviderModel
+    func fetchData(dataRequiredWhenInEidtMode: String?) async throws -> ProviderModel
     {
 //        let userDataDict = try await self.readYourOwnUserData()
 //        

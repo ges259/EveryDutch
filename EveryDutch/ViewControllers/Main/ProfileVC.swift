@@ -193,7 +193,9 @@ extension ProfileVC {
         self.coordinator.didFinish()
     }
     @objc private func rigntBtnTapped() {
-        self.coordinator.editScreen()
+        
+        self.coordinator.editScreen(
+            DataRequiredWhenInEidtMode: self.viewModel.getUserID)
     }
     
     

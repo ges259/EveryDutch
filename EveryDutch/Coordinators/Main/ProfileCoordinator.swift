@@ -40,11 +40,11 @@ final class ProfileCoordinator: ProfileCoordProtocol {
     }
     
     // MARK: - 프로필 수정 화면
-    func editScreen() {
+    func editScreen(DataRequiredWhenInEidtMode: String?) {
         let editScreenVCCoordinator = EditScreenCoordinator(
             nav: self.nav,
             isProfileEdit: true,
-            isMake: false)
+            DataRequiredWhenInEidtMode: DataRequiredWhenInEidtMode)
         // ***** 델리게이트 설정 *****
         editScreenVCCoordinator.editScreenDelegate = self
         

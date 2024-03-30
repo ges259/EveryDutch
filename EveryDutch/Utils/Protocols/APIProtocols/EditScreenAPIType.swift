@@ -12,5 +12,5 @@ protocol EditScreenAPIType: DecorationAPIType {
     
     func updateData(dict: [String: Any])
     
-    func fetchData(DataRequiredWhenInEidtMode: String?) async throws -> ProviderModel
+    func fetchData(dataRequiredWhenInEidtMode: String?) async throws -> ProviderModel
 }

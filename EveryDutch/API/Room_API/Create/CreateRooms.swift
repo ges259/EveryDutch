@@ -30,8 +30,6 @@ extension RoomsAPI {
         // addUserToRoom과 updateRoomThumbnail도 async/await를 사용하여 리팩토링 필요
         try await addUserToRoom(with: roomID, uid: uid)
         try await updateRoomThumbnail(with: roomID, data: dict)
-        
-//        return Rooms(roomID: roomID, versionID: versionID, dictionary: dict)
     }
 
     // MARK: - ROOMS_ID_REF에 versionID 설정

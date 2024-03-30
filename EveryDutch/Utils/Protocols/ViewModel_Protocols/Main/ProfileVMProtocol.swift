@@ -9,7 +9,7 @@ import Foundation
 
 protocol ProfileVMProtocol {
     
-    
+    var getUserID: String { get }
     
     var userDataClosure: ((User) -> Void)? { get set }
     var errorClosure: ((ErrorEnum) -> Void)? { get set }

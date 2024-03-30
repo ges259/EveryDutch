@@ -45,8 +45,7 @@ final class EditScreenCoordinator: NSObject, ProfileEditVCCoordProtocol {
     
     var nav: UINavigationController
     private var isProfileEdit: Bool
-    private var isMake: Bool
-    
+    var DataRequiredWhenInEidtMode: String? = nil
     
     
     
@@ -54,10 +53,10 @@ final class EditScreenCoordinator: NSObject, ProfileEditVCCoordProtocol {
     // 의존성 주입
     init(nav: UINavigationController, 
          isProfileEdit: Bool,
-         isMake: Bool)
+         DataRequiredWhenInEidtMode: String? = nil)
     {
         self.nav = nav
-        self.isMake = isMake
+        self.DataRequiredWhenInEidtMode = DataRequiredWhenInEidtMode
         self.isProfileEdit = isProfileEdit
     }
     
@@ -74,9 +73,13 @@ final class EditScreenCoordinator: NSObject, ProfileEditVCCoordProtocol {
     private func startProfileEdit() {
         self.moveToEditScreen {
             // ProfileEditEnum을 사용하여 ViewModel 생성
-            let profileEditVM = EditScreenVM<ProfileEditEnum>(
-                api: UserAPI.shared,
-                isMake: self.isMake)
+//            let profileEditVM = EditScreenVM<ProfileEditEnum>(
+//                api: UserAPI.shared,
+//                isMake: self.isMake)
+            let profileEditVM = EditScreenVM(
+                screenType: ProfileEditEnum.self,
+                dataRequiredWhenInEidtMode: self.DataRequiredWhenInEidtMode)
+            
             
             return EditScreenVC(viewModel: profileEditVM, coordinator: self)
         }
@@ -86,9 +89,9 @@ final class EditScreenCoordinator: NSObject, ProfileEditVCCoordProtocol {
     private func startRoomEdit() {
         self.moveToEditScreen {
             // RoomEditEnum을 사용하여 ViewModel 생성
-            let roomEditVM = EditScreenVM<RoomEditEnum>(
-                api: RoomsAPI.shared,
-                isMake: self.isMake)
+            let roomEditVM = EditScreenVM(
+                screenType: RoomEditEnum.self,
+                dataRequiredWhenInEidtMode: self.DataRequiredWhenInEidtMode)
             return EditScreenVC(viewModel: roomEditVM, coordinator: self)
         }
     }

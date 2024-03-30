@@ -14,14 +14,6 @@ enum ProfileEditEnum: Int, EditScreenType, CaseIterable {
     case cardDecoration
     
     
-//    typealias validationType = ProfileEditCellType
-//    
-//    
-//    func getType() -> validationType.Type {
-//        return ProfileEditCellType.self
-//    }
-    
-    
     
     func createProviders(
         withData data: ProviderModel?,

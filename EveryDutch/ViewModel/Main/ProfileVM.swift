@@ -23,10 +23,12 @@ final class ProfileVM: ProfileVMProtocol {
         }
     }
     
+    private var uid: String = ""
     
     
-    
-    
+    var getUserID: String {
+        return self.uid
+    }
     
     // MARK: - 클로저
     var userDataClosure: ((User) -> Void)?
@@ -174,9 +176,12 @@ extension ProfileVM {
     private func fetchOwnUserData() async {
         do {
             let userDict = try await self.userAPI.readYourOwnUserData()
-            if let user = userDict.values.first {
+            if let uid = userDict.keys.first,
+                let user = userDict.values.first {
                 // 셀 데이터로 저장
                 self.makeCellData(user: user)
+                
+                self.uid = uid
                 // 가져온 user데이터 저장하기
                 self.currentUserData = user
                 print("성공")
