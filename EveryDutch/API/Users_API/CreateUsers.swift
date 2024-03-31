@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import FirebaseAuth
 
 struct UserAPI: UserAPIProtocol {
     static let shared: UserAPIProtocol = UserAPI()
@@ -13,16 +14,25 @@ struct UserAPI: UserAPIProtocol {
     
 
     func createData(dict: [String: Any]) async throws {
-        throw ErrorEnum.loginError
+        guard let uid = Auth.auth().currentUser?.uid else {
+            throw ErrorEnum.readError
+        }
+        
+        return try await withCheckedThrowingContinuation 
+        { (continuation: CheckedContinuation<Void, Error>) in
+            USER_REF
+                .child(uid)
+                .updateChildValues(dict) { error, _ in
+                    if let _ = error {
+                        continuation.resume(throwing: ErrorEnum.unknownError)
+                    } else {
+                        continuation.resume(returning: ())
+                    }
+                }
+        }
     }
     
     
-//    func createData(
-//        dict: [String: Any],
-//        completion: @escaping (Result<Rooms?, ErrorEnum>) -> Void)
-//    {
-//        
-//    }
     func updateData(dict: [String: Any]) {
         
     }

@@ -8,7 +8,8 @@
 import UIKit
 
 protocol MainCoordProtocol: Coordinator {
-    func profileEditScreen()
+    func startMakeUser()
+    func profileEditScreen(isMakeUserMode: Bool)
     func roomEditScreen()
     
     func settlementMoneyRoomScreen()

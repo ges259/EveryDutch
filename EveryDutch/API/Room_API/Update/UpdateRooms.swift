@@ -45,7 +45,7 @@ extension RoomsAPI {
     private func updateRoomsID(userID: String, roomsID: String, versionID: String) async throws {
         let dict: [String: String] = [roomsID: versionID]
         try await updateFirebaseData(
-            path: ROOMS_ID_REF.child(userID),
+            path: ROOMS_REF.child(userID),
             values: dict,
             errorEnum: .roomUserIDUpdateFailed)
     }

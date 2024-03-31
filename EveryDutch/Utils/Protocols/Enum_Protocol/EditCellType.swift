@@ -90,10 +90,10 @@ class UserDataProvider: DataProvider {
     func provideData(for cellType: Providers) -> String? {
         switch cellType {
         case let cell as ProfileEditCellType:
-            return cell.detail(for: userData)
+            return cell.detail(for: self.userData)
             
         case let cell as UserInfoType:
-            return cell.detail(from: userData)
+            return cell.detail(from: self.userData)
             
         default:
             return nil

@@ -10,4 +10,5 @@ import Foundation
 protocol AppCoordProtocol: Coordinator {
     func mainScreen()
     func selectALoginMethodScreen()
+    func mainToMakeUser()
 }

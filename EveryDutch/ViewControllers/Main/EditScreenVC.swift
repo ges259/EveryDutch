@@ -91,6 +91,7 @@ final class EditScreenVC: UIViewController {
         self.configureUI()
         self.configureAutoLayout()
         self.configureAction()
+        self.configureClosure()
     }
     init(viewModel: ProfileEditVMProtocol,
          coordinator: ProfileEditVCCoordProtocol) {
@@ -175,22 +176,35 @@ extension EditScreenVC {
     
     // MARK: - 액션 설정
     private func configureAction() {
-        // 버튼 생성
-        let backButton = UIBarButtonItem(
-            image: .chevronLeft, 
-            style: .done,
-            target: self, 
-            action: #selector(self.backButtonTapped))
-        // 네비게이션 바의 왼쪽 아이템으로 설정
-        self.navigationItem.leftBarButtonItem = backButton
         self.bottomBtn.addTarget(
             self,
             action: #selector(self.bottomBtnTapped),
             for: .touchUpInside)
     }
     
+    func configureBackBtn(isMakeMode: Bool) {
+        if isMakeMode {
+            self.navigationItem.hidesBackButton = true
+            return
+        }
+        
+        // 버튼 생성
+        let backButton = UIBarButtonItem(
+            image: .chevronLeft,
+            style: .done,
+            target: self,
+            action: #selector(self.backButtonTapped))
+        // 네비게이션 바의 왼쪽 아이템으로 설정
+        self.navigationItem.leftBarButtonItem = backButton
+    }
+    
     // MARK: - 클로저 설정
     private func configureClosure() {
+        self.viewModel.successDataClosure = { [weak self] in
+            print("\(#function) --- successDataClosure")
+            self?.coordinator.didFinish()
+        }
+        
         self.viewModel.updateDataClosure = { [weak self] in
             self?.tableView.reloadData()
         }
@@ -205,6 +219,14 @@ extension EditScreenVC {
     }
 }
 
+/*
+ successDataClosure
+ 데이터 성공 후, 뒤로가기만 구현한 상태.
+ -> Rooms인 경우 방 추가 (MainVC에)
+ -> User인 경우 아무것도 안함
+ 
+ Decoration이 저장이 안 됨
+ */
 
 
 
@@ -327,7 +349,9 @@ extension EditScreenVC: UITableViewDataSource {
     }
     
     // MARK: - [데이터 셀]
-    private func configureDataCell(indexPath: IndexPath) -> CardDataCell {
+    private func configureDataCell(
+        indexPath: IndexPath)
+    -> CardDataCell {
         let cell = tableView.dequeueReusableCell(
             withIdentifier: Identifier.cardDataCell,
             for: indexPath) as! CardDataCell
@@ -344,6 +368,9 @@ extension EditScreenVC: UITableViewDataSource {
                           isLast: isLast)
         cell.delegate = self
         
+//        print("\\\\\\\\\\\\\\\\\\\\\\\\\\")
+//        print(type?.detail)
+//        print("\\\\\\\\\\\\\\\\\\\\\\\\\\")
         return cell
     }
     
@@ -363,12 +390,17 @@ extension EditScreenVC: UITableViewDataSource {
         return cell
     }
     
+    
+    
+    
+    
     // MARK: - 셀을 눌렀을 때
     func tableView(
         _ tableView: UITableView,
         didSelectRowAt indexPath: IndexPath)
     {
-        let type = self.viewModel.saveCurrentIndexAndType(indexPath: indexPath)
+        let type = self.viewModel.saveCurrentIndexAndType(
+            indexPath: indexPath)
         
         self.screenChange(type: type)
     }
@@ -426,6 +458,43 @@ extension EditScreenVC: UIScrollViewDelegate {
         self.view.endEditing(true)
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

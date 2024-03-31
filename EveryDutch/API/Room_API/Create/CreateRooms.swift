@@ -22,58 +22,65 @@ extension RoomsAPI {
         guard let uid = Auth.auth().currentUser?.uid else {
             throw ErrorEnum.readError
         }
-        let versionID = "\(Int(Date().timeIntervalSince1970))"
+        
 
         // ROOMS_ID_REF에 versionID를 설정하는 별도의 함수
-        let roomID = try await setRoomVersionID(for: uid, versionID: versionID)
+        let roomID = try await setRoomVersionID(
+            for: uid,
+            dict: dict)
         
         // addUserToRoom과 updateRoomThumbnail도 async/await를 사용하여 리팩토링 필요
         try await addUserToRoom(with: roomID, uid: uid)
-        try await updateRoomThumbnail(with: roomID, data: dict)
+//        try await updateRoomThumbnail(with: roomID, data: dict)
     }
 
     // MARK: - ROOMS_ID_REF에 versionID 설정
     private func setRoomVersionID(
-        for uid: String, 
-        versionID: String
+        for uid: String,
+        dict: [String: Any]
     ) async throws -> String {
-        let roomRef = ROOMS_ID_REF.child(uid).childByAutoId()
-
+        
+        let versionID = "\(Int(Date().timeIntervalSince1970))"
+        
+        var updatedDict: [String: Any] = dict
+            updatedDict[DatabaseConstants.version_ID] = versionID
+        
         return try await withCheckedThrowingContinuation { continuation in
-            roomRef.setValue(versionID) { error, snapshot in
-                if error != nil {
-                    continuation.resume(throwing: ErrorEnum.readError)
-                } else {
-                    guard let roomID = snapshot.key else {
-                        continuation.resume(throwing: ErrorEnum.readError)
+            // 새로운 방 생성 및 정보 업데이트
+            ROOMS_REF
+                .child(uid)
+                .childByAutoId()
+                .updateChildValues(updatedDict) { error, ref in
+                    
+                    guard error == nil, let roomID = ref.key else {
+                        continuation.resume(throwing: ErrorEnum.writeError)
                         return
                     }
                     continuation.resume(returning: roomID)
                 }
-            }
         }
     }
     
     
     
     // MARK: - 방 정보 생성
-    private func updateRoomThumbnail(
-        with roomID: String,
-        data: [String: Any])
-    async throws {
-        let ref = ROOMS_THUMBNAIL_REF.child(roomID)
-        
-        try await withCheckedThrowingContinuation
-        { (continuation: CheckedContinuation<Void, Error>) in
-            ref.updateChildValues(data) { error, _ in
-                if error != nil {
-                    continuation.resume(throwing: ErrorEnum.readError)
-                } else {
-                    continuation.resume(returning: ())
-                }
-            }
-        }
-    }
+//    private func updateRoomThumbnail(
+//        with roomID: String,
+//        data: [String: Any])
+//    async throws {
+//        let ref = ROOMS_THUMBNAIL_REF.child(roomID)
+//        
+//        try await withCheckedThrowingContinuation
+//        { (continuation: CheckedContinuation<Void, Error>) in
+//            ref.updateChildValues(data) { error, _ in
+//                if error != nil {
+//                    continuation.resume(throwing: ErrorEnum.readError)
+//                } else {
+//                    continuation.resume(returning: ())
+//                }
+//            }
+//        }
+//    }
     
     
     

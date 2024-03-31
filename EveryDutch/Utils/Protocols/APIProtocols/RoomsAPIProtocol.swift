@@ -9,7 +9,11 @@ import Foundation
 
 protocol RoomsAPIProtocol: EditScreenAPIType {
     
-    func readRoomsID(completion: @escaping Typealias.RoomsIDCompletion)
+    
+    
+    func readRooms() async throws -> [Rooms]
+    
+    // *(((((
     func readRoomUsers(roomID: String, completion: @escaping Typealias.RoomUsersCompletion)
     func readCumulativeAmount(
         versionID: String,

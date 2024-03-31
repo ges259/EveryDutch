@@ -25,40 +25,52 @@ protocol ImagePickerDelegate: AnyObject {
 
 final class EditScreenCoordinator: NSObject, ProfileEditVCCoordProtocol {
     weak var parentCoordinator: Coordinator?
-
+    var nav: UINavigationController
     var childCoordinators: [Coordinator] = [] {
         didSet {
             print("**********MultipurposeScreenCoordinator**********")
-            dump(childCoordinators)
+            dump(self.childCoordinators)
             print("********************")
         }
     }
+    
+    
     // MainCoordinator에서 설정
     weak var editScreenDelegate: EditScreenDelegate?
-    private weak var colorDelegate: ColorPickerDelegate?
     private weak var imageDelegate: ImagePickerDelegate?
     
-    
+    private weak var colorDelegate: ColorPickerDelegate?
     private var selectedColor: UIColor?
     
     
     
-    var nav: UINavigationController
-    private var isProfileEdit: Bool
-    var DataRequiredWhenInEidtMode: String? = nil
     
+    // 프로필 / 유저 모드를 구분
+    // true -> 프로필 모드
+    // false -> 유저 모드
+    private var isProfileEdit: Bool
+    // 수정 / 생성을 구분
+    // nil인 경우       -> 생성
+    // nil이 아닌 경우   -> 수정
+    private var dataRequiredWhenInEidtMode: String? = nil
+    // 유저 생성 모드 플래그
+    private var isMakeUserMode: Bool
     
     
     // MARK: - 라이프사이클
     // 의존성 주입
     init(nav: UINavigationController, 
          isProfileEdit: Bool,
+         isMakeUserMode: Bool = false,
          DataRequiredWhenInEidtMode: String? = nil)
     {
         self.nav = nav
-        self.DataRequiredWhenInEidtMode = DataRequiredWhenInEidtMode
+        self.isMakeUserMode = isMakeUserMode
+        self.dataRequiredWhenInEidtMode = DataRequiredWhenInEidtMode
         self.isProfileEdit = isProfileEdit
     }
+    deinit { print("\(#function)-----\(self)") }
+    
     
     // MARK: - start
     func start() {
@@ -68,18 +80,13 @@ final class EditScreenCoordinator: NSObject, ProfileEditVCCoordProtocol {
     }
     
     
-    
     // MARK: - 프로필 화면
     private func startProfileEdit() {
         self.moveToEditScreen {
             // ProfileEditEnum을 사용하여 ViewModel 생성
-//            let profileEditVM = EditScreenVM<ProfileEditEnum>(
-//                api: UserAPI.shared,
-//                isMake: self.isMake)
             let profileEditVM = EditScreenVM(
                 screenType: ProfileEditEnum.self,
-                dataRequiredWhenInEidtMode: self.DataRequiredWhenInEidtMode)
-            
+                dataRequiredWhenInEidtMode: self.dataRequiredWhenInEidtMode)
             
             return EditScreenVC(viewModel: profileEditVM, coordinator: self)
         }
@@ -91,18 +98,26 @@ final class EditScreenCoordinator: NSObject, ProfileEditVCCoordProtocol {
             // RoomEditEnum을 사용하여 ViewModel 생성
             let roomEditVM = EditScreenVM(
                 screenType: RoomEditEnum.self,
-                dataRequiredWhenInEidtMode: self.DataRequiredWhenInEidtMode)
+                dataRequiredWhenInEidtMode: self.dataRequiredWhenInEidtMode)
             return EditScreenVC(viewModel: roomEditVM, coordinator: self)
         }
     }
     
     // MARK: - 화면 이동
-    private func moveToEditScreen(with viewModelCreation: () -> UIViewController) {
+    private func moveToEditScreen(with viewModelCreation: () -> EditScreenVC) {
         let screenVC = viewModelCreation()
-        self.colorDelegate = screenVC as? any ColorPickerDelegate
-        self.imageDelegate = screenVC as? any ImagePickerDelegate
+        screenVC.configureBackBtn(isMakeMode: self.isMakeUserMode)
+        self.colorDelegate = screenVC as any ColorPickerDelegate
+        self.imageDelegate = screenVC as any ImagePickerDelegate
         self.nav.pushViewController(screenVC, animated: true)
     }
+    
+    
+    
+    
+    
+    
+    
     
     
     
@@ -124,11 +139,10 @@ final class EditScreenCoordinator: NSObject, ProfileEditVCCoordProtocol {
     
     // MARK: - didFinish
     func didFinish() {
-        self.nav.popViewController(animated: true)
-        self.parentCoordinator?.removeChildCoordinator(child: self)
-    }
-    deinit {
-        print("\(#function)-----\(self)")
+        DispatchQueue.main.async {
+            self.nav.popViewController(animated: true)
+            self.parentCoordinator?.removeChildCoordinator(child: self)
+        }
     }
 }
 

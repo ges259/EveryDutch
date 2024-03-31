@@ -70,10 +70,10 @@ extension CardDecorationCell {
     }
     
     // MARK: - 레이블 설정
-    func setDetailLbl(type: EditCellType?,
+    func setDetailLbl(type: EditCellDataCell?,
                       isLast: Bool) {
-        guard let type = type else { return }
-        self.cellStv.userNameLbl.text = type.getCellTitle
+        guard let data = type else { return }
+        self.cellStv.userNameLbl.text = data.type.getCellTitle
         
         if isLast { self.configureLastCell() }
     }
@@ -100,22 +100,23 @@ extension CardDecorationCell {
 
 
 
-protocol CardDecorationCellVMProtocol {
-    var getUserName: String? { get }
-    
-}
 
-struct CardDecorationCellVM: CardDecorationCellVMProtocol {
-    
-    private let editCellType: EditCellType
-    
-    
-    init(editCellType: EditCellType) {
-        self.editCellType = editCellType
-        
-    }
-    
-    var getUserName: String? {
-        return self.editCellType.getCellTitle
-    }
-}
+//protocol CardDecorationCellVMProtocol {
+//    var getUserName: String? { get }
+//    
+//}
+//
+//struct CardDecorationCellVM: CardDecorationCellVMProtocol {
+//    
+//    private let editCellType: EditCellType
+//    
+//    
+//    init(editCellType: EditCellType) {
+//        self.editCellType = editCellType
+//        
+//    }
+//    
+//    var getUserName: String? {
+//        return self.editCellType.getCellTitle
+//    }
+//}

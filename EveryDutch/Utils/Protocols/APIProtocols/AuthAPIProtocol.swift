@@ -8,7 +8,7 @@
 import Foundation
 
 protocol AuthAPIProtocol {
-    func checkLogin(completion: @escaping Typealias.VoidCompletion)
+    func checkLogin() async throws 
     
     func signInAnonymously(completion: @escaping Typealias.VoidCompletion)
 }

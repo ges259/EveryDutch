@@ -9,8 +9,8 @@ import UIKit
 
 class SplashScreenVC: UIViewController {
     
-
-    private let viewModel: SplashScreenVMProtocol
+    
+    private var viewModel: SplashScreenVMProtocol
     private let coordinator: AppCoordProtocol
     
     
@@ -18,9 +18,9 @@ class SplashScreenVC: UIViewController {
     // MARK: - 라이프 사이클
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.view.backgroundColor = .base_Blue
-        
-        self.checkLogin()
+        self.configureUI()          // UI 설정
+        self.configureClosure()     // 클로져 설정
+        self.viewModel.checkLogin() // 로그인 확인
     }
     init(viewModel: SplashScreenVMProtocol,
          coordinator: AppCoordProtocol) {
@@ -31,44 +31,72 @@ class SplashScreenVC: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    deinit {
-        print("deinit --- \(#function)-----\(self)")
+    deinit { print("\(#function)-----\(self)") }
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - 기본 설정
+
+extension SplashScreenVC {
+    
+    // MARK: - 화면 설정
+    private func configureUI() {
+        self.view.backgroundColor = .base_Blue
     }
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    // MARK: - 로그인 확인
-    private func checkLogin() {
-        self.viewModel.checkLogin { [weak self] result in
-            
-            switch result {
-            case .success():
-                self?.goToMainScreen()
-                
-            case .failure(_):
-                self?.goToLoginScreen()
-            }
+    // MARK: - 클로저 설정
+    private func configureClosure() {
+        self.viewModel.successClosure = { [weak self] in
+            self?.configureSuccess()
+        }
+        self.viewModel.errorClosure = { [weak self] errorType in
+            self?.configureError(with: errorType)
         }
     }
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - 화면 이동
+
+extension SplashScreenVC {
     
-    // MARK: - 메인 화면으로 이동
-    // 메인 화면으로 이동하는 함수
-    private func goToMainScreen() {
-        // MARK: - Fix 유저 fetch
+    // MARK: - 성공 시 메인 화면으로 이동
+    private func configureSuccess() {
         self.coordinator.mainScreen()
     }
     
-    // MARK: - 로그인 선택 화면으로 이동
-    // 로그인 화면으로 이동하는 함수
-    private func goToLoginScreen() {
-            // 로그인 화면으로 이동하는 코드
-        self.coordinator.selectALoginMethodScreen()
+    // MARK: - 에러 설정
+    private func configureError(with errorType: ErrorEnum) {
+        switch errorType {
+        case .NotLoggedIn:
+            // MARK: - 유저 생성 화면으로 이동
+            self.coordinator.selectALoginMethodScreen()
+            break
+            
+            // MARK: - 로그인 선택 화면으로 이동
+        case .NoPersonalID:
+            self.coordinator.mainToMakeUser()
+            break
+            
+        default:
+            self.coordinator.selectALoginMethodScreen()
+            break
+        }
     }
 }

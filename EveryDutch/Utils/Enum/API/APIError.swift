@@ -11,7 +11,7 @@ enum ErrorEnum: Error {
     
     case validationError(_ databaseString: [String])
     
-    
+    case writeError
     case readError
     case loginError
     case receiptCreateError
@@ -20,7 +20,8 @@ enum ErrorEnum: Error {
     case receiptAPIFailed(_ receiptDict: [String: Any?])
     case receiptCheckFailed(_ receiptDict: [ReceiptCheck])
     
-    
+    case NotLoggedIn
+    case NoPersonalID
     
     // FindFriendsVC
     case userNotFound

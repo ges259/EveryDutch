@@ -261,19 +261,16 @@ extension RoomDataManager {
     
     
     // MARK: - 방의 데이터
+    @MainActor
     func loadRooms(completion: @escaping Typealias.VoidCompletion) {
-        self.roomsAPI.readRoomsID {[weak self] result in
-            switch result {
-            case .success(let rooms):
-                self?.rooms = rooms
-                print("loadRooms 성공")
+        Task {
+            do {
+                let rooms = try await self.roomsAPI.readRooms()
+                self.rooms = rooms
                 completion(.success(()))
-                break
-                // MARK: - Fix
-            case .failure(_):
+                
+            } catch {
                 completion(.failure(.readError))
-                print("loadRooms 실패")
-                break
             }
         }
     }

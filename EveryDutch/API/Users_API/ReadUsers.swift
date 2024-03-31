@@ -25,19 +25,13 @@ extension UserAPI {
     
     func fetchData(dataRequiredWhenInEidtMode: String?) async throws -> ProviderModel
     {
-        print(#function)
         let userDataDict = try await self.readYourOwnUserData()
-        
         guard let user = userDataDict.values.first else {
             throw ErrorEnum.userNotFound
         }
         return user
     }
     
-    func dd() async throws {
-        let data = try await self.fetchDecoration(dataRequiredWhenInEidtMode: "")
-        
-    }
     
     
     

@@ -8,7 +8,7 @@
 import Foundation
 
 protocol ProfileEditVMProtocol {
-    
+    var successDataClosure: (() -> Void)? { get set }
     var updateDataClosure: (() -> Void)? { get set }
     var makeDataClosure: ((ProviderModel) -> Void)? { get set }
     var errorClosure: ((ErrorEnum) -> Void)? { get set }
@@ -45,7 +45,7 @@ protocol ProfileEditVMProtocol {
     func getNumOfCell(section: Int) -> Int
     
     // MARK: - 셀에 사용할 타입 반환
-    func cellTypes(indexPath: IndexPath) -> EditCellType?
+    func cellTypes(indexPath: IndexPath) -> EditCellDataCell?
     
     // MARK: - 마지막 셀
     func getLastCell(indexPath: IndexPath) -> Bool

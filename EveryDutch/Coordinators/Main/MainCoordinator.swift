@@ -45,9 +45,14 @@ final class MainCoordinator: MainCoordProtocol{
     // MARK: - start
     // MainViewController 띄우기
     func start() {
-        self.mainScreen()
+        DispatchQueue.main.async {
+            self.mainScreen()
+        }
     }
-    
+    func startMakeUser() {
+        self.mainScreen()
+        self.profileEditScreen(isMakeUserMode: true)
+    }
     
     
     // MARK: - 메인 화면
@@ -99,11 +104,12 @@ final class MainCoordinator: MainCoordProtocol{
     
     // MARK: - 프로필 수정 화면 (생성)
     /// 플러스 버튼을 누르면 화면 이동
-    func profileEditScreen() {
+    func profileEditScreen(isMakeUserMode: Bool = false) {
         // Main-Coordinator 생성
         let editScreenVCCoordinator = EditScreenCoordinator(
             nav: self.nav,
-            isProfileEdit: true, 
+            isProfileEdit: true,
+            isMakeUserMode: isMakeUserMode,
             DataRequiredWhenInEidtMode: nil)
         self.moveToEditScreenVCCoord(to: editScreenVCCoordinator)
     }
@@ -126,7 +132,6 @@ final class MainCoordinator: MainCoordProtocol{
     private func moveToEditScreenVCCoord(
         to editScreenVCCoordinator: EditScreenCoordinator)
     {
-        
         // ***** 델리게이트 설정 *****
         editScreenVCCoordinator.editScreenDelegate = self
         self.childCoordinators.append(editScreenVCCoordinator)

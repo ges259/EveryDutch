@@ -73,7 +73,14 @@ final class AppCoordinator: AppCoordProtocol {
         self.transitionAndRemoveSplashVC()
     }
     
-    
+    func mainToMakeUser() {
+        let mainCoordinator = MainCoordinator(
+            nav: self.nav)
+        self.childCoordinators.append(mainCoordinator)
+        mainCoordinator.parentCoordinator = self
+        mainCoordinator.startMakeUser()
+        self.transitionAndRemoveSplashVC()
+    }
     
     // MARK: - 로그인 선택 화면
     func selectALoginMethodScreen() {

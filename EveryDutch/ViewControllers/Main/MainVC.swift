@@ -7,6 +7,7 @@
 
 import UIKit
 import SnapKit
+import FirebaseAuth
 
 // MARK: - MainViewController
 
@@ -264,8 +265,16 @@ extension MainVC {
     // 사람 이미지 버튼
     @objc private func profileScreenBtnTapped() {
         
+        do {
+            try Auth.auth().signOut()
+            print("로그아웃 성공")
+        } catch {
+            print("로그아웃 실패")
+        }
+        
+        
         // MARK: - Fix
-        self.coordinator.profileScreen()
+//        self.coordinator.profileScreen()
 //        self.coordinator.profileEditScreen()
     }
     

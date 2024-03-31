@@ -13,6 +13,9 @@ final class SplashScreenVM: SplashScreenVMProtocol {
     private let roomDataManager: RoomDataManagerProtocol
     
     
+    var errorClosure: ((ErrorEnum) -> Void)?
+    var successClosure: (() -> Void)?
+    
     
     // MARK: - 라이프사이클
     init(authAPI: AuthAPIProtocol,
@@ -26,16 +29,26 @@ final class SplashScreenVM: SplashScreenVMProtocol {
     
     
     // MARK: - 로그인 여부 확인
-    func checkLogin(completion: @escaping (Result<(),ErrorEnum>) -> Void) {
-        self.authAPI.checkLogin { result in
-            switch result {
-            case .success():
-                self.roomDataManager.loadRooms(completion: completion)
-                break
+    @MainActor
+    func checkLogin() {
+        Task {
+            do {
+                try await self.authAPI.checkLogin()
+                self.roomDataManager.loadRooms { result in
+                    switch result {
+                    case .success():
+                        self.successClosure?()
+                        
+                    case .failure(let error):
+                        self.errorClosure?(error)
+                    }
+                }
                 
-            case .failure(let errorEnum):
-                completion(.failure(errorEnum))
-                break
+            } catch let error as ErrorEnum{
+                self.errorClosure?(error)
+                
+            } catch {
+                self.errorClosure?(ErrorEnum.unknownError)
             }
         }
     }

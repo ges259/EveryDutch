@@ -19,6 +19,7 @@ enum ProfileEditEnum: Int, EditScreenType, CaseIterable {
         withData data: ProviderModel?,
         decoration: Decoration?) -> [DataProvider]
     {
+        
         return [
             UserDataProvider(userData: data as? User),
             DecorationDataProvider(decorationData: decoration)

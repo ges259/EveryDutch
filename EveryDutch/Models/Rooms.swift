@@ -13,10 +13,10 @@ struct Rooms: ProviderModel {
     var roomName: String
     var roomImg: String
     
-    init(roomID: String, versionID: String, dictionary: [String: Any]) {
+    init(roomID: String, dictionary: [String: Any]) {
         self.roomID = roomID
-        self.versionID = versionID
         self.roomName = dictionary[DatabaseConstants.room_name] as? String ?? ""
+        self.versionID = "\(dictionary[DatabaseConstants.version_ID] as? Int ?? 0)"
         self.roomImg = dictionary[DatabaseConstants.manager_name] as? String ?? ""
     }
 }

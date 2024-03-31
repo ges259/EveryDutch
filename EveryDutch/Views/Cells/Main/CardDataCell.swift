@@ -91,21 +91,22 @@ extension CardDataCell {
 extension CardDataCell {
     
     // MARK: - 셀의 텍스트 설정
-    func setDetailLbl(type: EditCellType?,
+    func setDetailLbl(type: EditCellDataCell?,
                       isFirst: Bool,
                       isLast: Bool)
     {
-        
-        guard let type = type else { return }
-        self.cellType = type
-        
         if isFirst { self.configureTextFieldCorner() }
         if isLast { self.configureLastCell() }
+        print(type?.type)
+        print(type?.detail)
+        guard let data = type else { return }
+        self.cellType = data.type
         
-        self.detailLbl.text = type.getCellTitle
+        self.detailLbl.text = data.type.getCellTitle
         
+        self.textField.text = data.detail
         self.textField.attributedPlaceholder = self.setAttributedText(
-            placeholderText: type.getTextFieldPlaceholder)
+            placeholderText: data.type.getTextFieldPlaceholder)
         
     }
     

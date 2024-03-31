@@ -421,6 +421,7 @@ final class EditScreenVM: ProfileEditVMProtocol {
     // MARK: - 클로저
     // 방 데이터와 사용자 데이터를 업데이트할 때 사용할 클로저
     var updateDataClosure: (() -> Void)?
+    var successDataClosure: (() -> Void)?
     var makeDataClosure: ((ProviderModel) -> Void)?
     // 에러 발생 시 처리할 클로저
     var errorClosure: ((ErrorEnum) -> Void)?
@@ -501,18 +502,15 @@ final class EditScreenVM: ProfileEditVMProtocol {
                 .compactMap { cellType -> EditCellDataCell? in
                     
                     guard let provider = dataProviders?.first(where: { $0.canProvideData(for: cellType) }) else {
-                        
                         return (type: cellType, detail: nil)
                     }
                     
                     if let detailData = provider.provideData(for: cellType) {
-                        
                         return (type: cellType, detail: detailData)
                     }
                     
                     return (type: cellType, detail: nil)
                 }
-            
             self.cellDataDictionary[screenType.sectionIndex] = cellData
             self.updateDataClosure?()
         }
@@ -534,8 +532,8 @@ extension EditScreenVM {
     
     // MARK: - 셀 타입 반환
     // 특정 인덱스 패스에 해당하는 셀 타입을 반환하는 메소드
-    func cellTypes(indexPath: IndexPath) -> EditCellType? {
-        return self.cellDataDictionary[indexPath.section]?[indexPath.row].type
+    func cellTypes(indexPath: IndexPath) -> EditCellDataCell? {
+        return self.cellDataDictionary[indexPath.section]?[indexPath.row]
     }
     
     // MARK: - 마지막셀 검사
@@ -577,7 +575,7 @@ extension EditScreenVM {
     // MARK: - 선택된 셀 및 인덱스 저장
     // 현재 선택된 셀 타입과 인덱스 패스를 저장하는 메소드
     func saveCurrentIndexAndType(indexPath: IndexPath) -> EditCellType? {
-        guard let type = self.cellTypes(indexPath: indexPath) else {
+        guard let type = self.cellTypes(indexPath: indexPath)?.type else {
             return nil
         }
         self.selectedIndexTuple = (type: type, indexPath: indexPath)
@@ -671,7 +669,8 @@ extension EditScreenVM {
         do {
             guard self.roomValidation() else { throw ErrorEnum.unknownError }
             
-//            try await self.createData()
+            try await self.createData()
+            self.successDataClosure?()
             
         } catch let error as ErrorEnum {
             self.errorClosure?(error)
@@ -746,7 +745,8 @@ extension EditScreenVM {
     private func fetchDatas() async throws {
         let data = try await self.api?.fetchData(dataRequiredWhenInEidtMode: self.dataRequiredWhenInEidtMode)
         let decoration = try await self.api?.fetchDecoration(dataRequiredWhenInEidtMode: self.dataRequiredWhenInEidtMode)
-        
-        self.setupDataProviders(withData: data, decoration: decoration)
+        DispatchQueue.main.async {
+            self.setupDataProviders(withData: data, decoration: decoration)
+        }
     }
 }

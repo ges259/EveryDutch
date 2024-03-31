@@ -26,6 +26,7 @@ final class SelectALoginMethodCoordinator: SelectALoginMethodCoordProtocol {
         self.nav = nav
     }
     
+    deinit { print("\(#function)-----\(self)") }
 
     func start() {
         self.selectALoginMethodScreen()
@@ -58,7 +59,6 @@ final class SelectALoginMethodCoordinator: SelectALoginMethodCoordProtocol {
     
     // MARK: - 메인 화면으로 이동
     func navigateToMain() {
-        
         let mainCoordinator = MainCoordinator(
             nav: self.nav)
         self.childCoordinators.append(mainCoordinator)
@@ -71,16 +71,21 @@ final class SelectALoginMethodCoordinator: SelectALoginMethodCoordProtocol {
             viewControllerType: SelectALoginMethodVC.self)
     }
     
+    func mainToMakeUser() {
+        let mainCoordinator = MainCoordinator(
+            nav: self.nav)
+        self.childCoordinators.append(mainCoordinator)
+        mainCoordinator.parentCoordinator = self
+        mainCoordinator.startMakeUser()
+        self.transitionAndRemoveVC(
+            from: self.nav,
+            viewControllerType: SelectALoginMethodVC.self)
+    }
+    
     func didFinish() {
         // 필요한 경우 여기에서 추가적인 정리 작업을 수행
         // 자식 코디네이터를 부모의 배열에서 제거
         // 즉, PlusBtnCoordinator이 MainCoordinator의 childCoordinators 배열에서 제거
         self.parentCoordinator?.removeChildCoordinator(child: self)
-    }
-    
-
-    
-    deinit {
-        print("\(#function)-----\(self)")
     }
 }
