@@ -16,8 +16,8 @@ enum RoomEditEnum: Int, EditScreenType, CaseIterable {
     
     
     func createProviders(
-        withData data: ProviderModel?,
-        decoration: Decoration?) -> [DataProvider]
+        withData data: EditProviderModel?,
+        decoration: Decoration?) -> [EditDataProvider]
     {
         return [
             RoomsDataProvider(roomsData: data as? Rooms),

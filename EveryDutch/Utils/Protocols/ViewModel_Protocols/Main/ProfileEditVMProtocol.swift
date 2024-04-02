@@ -10,7 +10,7 @@ import Foundation
 protocol ProfileEditVMProtocol {
     var successDataClosure: (() -> Void)? { get set }
     var updateDataClosure: (() -> Void)? { get set }
-    var makeDataClosure: ((ProviderModel) -> Void)? { get set }
+    var makeDataClosure: ((EditProviderModel) -> Void)? { get set }
     var errorClosure: ((ErrorEnum) -> Void)? { get set }
     
     
@@ -55,5 +55,5 @@ protocol ProfileEditVMProtocol {
     
     
     // MARK: - 조건
-    func validation() async throws
+    func validation()
 }

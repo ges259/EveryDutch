@@ -10,7 +10,7 @@ import Foundation
 
 
 // MARK: - EditCellType
-protocol EditCellType: Providers {
+protocol EditCellType: EditProviderEnumType {
     
     // MARK: - 셀 타이틀
     var getCellTitle: String { get }
@@ -24,33 +24,6 @@ protocol EditCellType: Providers {
 
 
 
-// MARK: - 팩토리 패턴
-//class DataProviderFactory {
-//    static func createProviders(
-//        user: User?,
-//        rooms: Rooms?,
-//        decoration: Decoration?)
-//    -> [DataProvider] {
-//        
-//        var providers: [DataProvider] = []
-//        
-//        if let user = user {
-//            providers.append(UserDataProvider(userData: user))
-//        }
-//        
-//        if let rooms = rooms {
-//            providers.append(RoomsDataProvider(roomsData: rooms))
-//        }
-//        
-//        if let decoration = decoration {
-//            providers.append(DecorationDataProvider(decorationData: decoration))
-//        }
-//        return providers
-//    }
-//}
-
-
-
 
 
 
@@ -60,11 +33,11 @@ protocol EditCellType: Providers {
 
 // MARK: - Provider패턴
 
-protocol Providers {}
+protocol EditProviderEnumType {}
 
-protocol DataProvider {
-    func canProvideData(for cellType: Providers) -> Bool
-    func provideData(for cellType: Providers) -> String?
+protocol EditDataProvider {
+    func canProvideData(for cellType: EditProviderEnumType) -> Bool
+    func provideData(for cellType: EditProviderEnumType) -> String?
 //    func updateData<T>(with newData: T)
 }
 
@@ -72,7 +45,7 @@ protocol DataProvider {
 
 // MARK: - UserDataProvider
 // User 데이터를 처리하는 프로바이더
-class UserDataProvider: DataProvider {
+class UserDataProvider: EditDataProvider {
     private var userData: User?
 
     init(userData: User?) {
@@ -81,13 +54,18 @@ class UserDataProvider: DataProvider {
     deinit { print("\(#function)-----\(self)") }
 
     
-    func canProvideData(for cellType: Providers) -> Bool {
+    func canProvideData(for cellType: EditProviderEnumType) -> Bool {
         return cellType is ProfileEditCellType
         || cellType is UserInfoType
     }
     
     
-    func provideData(for cellType: Providers) -> String? {
+    func provideData(for cellType: EditProviderEnumType) -> String? {
+        
+        if cellType is ProfileEditCellType {
+            
+        }
+        
         switch cellType {
         case let cell as ProfileEditCellType:
             return cell.detail(for: self.userData)
@@ -109,7 +87,7 @@ class UserDataProvider: DataProvider {
 // MARK: - RoomsDataProvider
 // Rooms 데이터를 처리하는 프로바이더
 
-class RoomsDataProvider: DataProvider {
+class RoomsDataProvider: EditDataProvider {
 
     
     private var roomsData: Rooms?
@@ -120,10 +98,10 @@ class RoomsDataProvider: DataProvider {
     deinit { print("\(#function)-----\(self)") }
 
     
-    func canProvideData(for cellType: Providers) -> Bool {
+    func canProvideData(for cellType: EditProviderEnumType) -> Bool {
         return cellType is RoomEditCellType
     }
-    func provideData(for cellType: Providers) -> String? {
+    func provideData(for cellType: EditProviderEnumType) -> String? {
         switch cellType {
         case let cell as RoomEditCellType:
             return cell.detail(for: self.roomsData)
@@ -132,18 +110,12 @@ class RoomsDataProvider: DataProvider {
             return nil
         }
     }
-    
-//    func updateData<T>(with newData: T) {
-//        if let rooms = newData as? Rooms {
-//            self.roomsData = rooms
-//        }
-//    }
 }
 
 
 // MARK: - DecorationDataProvider
 // Decoration 데이터를 처리하는 프로바이더
-class DecorationDataProvider: DataProvider {
+class DecorationDataProvider: EditDataProvider {
     private var decorationData: Decoration?
     
     init(decorationData: Decoration?) {
@@ -152,12 +124,12 @@ class DecorationDataProvider: DataProvider {
     deinit { print("\(#function)-----\(self)") }
     
     
-    func canProvideData(for cellType: Providers) -> Bool {
+    func canProvideData(for cellType: EditProviderEnumType) -> Bool {
         return cellType is ImageCellType
             || cellType is DecorationCellType
     }
     
-    func provideData(for cellType: Providers) -> String? {
+    func provideData(for cellType: EditProviderEnumType) -> String? {
         switch cellType {
         case let cell as ImageCellType:
             return cell.detail(for: decorationData)
@@ -169,11 +141,6 @@ class DecorationDataProvider: DataProvider {
             return nil
         }
     }
-//    func updateData<T>(with newData: T) {
-//        if let decoration = newData as? Decoration {
-//            self.decorationData = decoration
-//        }
-//    }
 }
 
         

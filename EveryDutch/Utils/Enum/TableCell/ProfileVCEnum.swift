@@ -26,7 +26,7 @@ enum ProfileVCEnum: Int, CaseIterable {
 
 
 
-enum UserInfoType: Int, ProfileType, Providers, CaseIterable {
+enum UserInfoType: Int, ProfileType, EditProviderEnumType, CaseIterable {
     case personalID = 0
     case nickName
     

@@ -25,9 +25,11 @@ final class SelectALoginMethodCoordinator: SelectALoginMethodCoordProtocol {
     init(nav: UINavigationController) {
         self.nav = nav
     }
-    
     deinit { print("\(#function)-----\(self)") }
-
+    
+    
+    
+    // MARK: - 라이프사이클
     func start() {
         self.selectALoginMethodScreen()
     }
@@ -57,7 +59,7 @@ final class SelectALoginMethodCoordinator: SelectALoginMethodCoordProtocol {
     }
     
     
-    // MARK: - 메인 화면으로 이동
+    // MARK: - 메인 화면
     func navigateToMain() {
         let mainCoordinator = MainCoordinator(
             nav: self.nav)
@@ -71,6 +73,8 @@ final class SelectALoginMethodCoordinator: SelectALoginMethodCoordProtocol {
             viewControllerType: SelectALoginMethodVC.self)
     }
     
+    
+    // MARK: - 유저 생성 화면
     func mainToMakeUser() {
         let mainCoordinator = MainCoordinator(
             nav: self.nav)

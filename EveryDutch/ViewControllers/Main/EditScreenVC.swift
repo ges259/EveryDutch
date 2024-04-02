@@ -247,7 +247,8 @@ extension EditScreenVC {
     
     // MARK: - 하단 버튼
     @objc private func bottomBtnTapped() {
-        Task { try? await self.viewModel.validation() }
+        self.view.endEditing(true)
+        self.viewModel.validation()
     }
     
     private func errorType(_ errorType: ErrorEnum) {
@@ -510,53 +511,53 @@ extension EditScreenVC: ColorPickerDelegate {
     func decorationCellChange(_ data: Any) {
         // 변경된 데이터와 타입을 저장하고 반환받기
         guard let changedData = self.viewModel.getCurrentCellType(
-            cellType: DecorationCellType.self) else {
+            cellType: DecorationCellType.self) 
+        else {
             // 유효하지 않은 데이터 타입이거나 처리할 수 없는 경우 로그를 남기고 반환
-            print("Unable to process the data due to invalid type or other issue.")
+            self.customAlert(alertEnum: .decorationSetError) { _ in }
             return
         }
-        
+    
         // Bool 타입으로 캐스팅 시도 및 blurEffect 타입 확인
         switch changedData.type {
         case .blurEffect:
-            if let isEnabled = data as? Bool {
-                self.viewModel.saveChangedData(
-                    type: changedData.type,
-                    data: isEnabled)
-                self.applyBlurEffectChange(
-                    isEnabled,
-                    indexPath: changedData.indexPath)
-                
-                // 데이터 타입이 예상과 다른 경우 처리
-            } else {
-                print("Expected Bool value for blurEffect, but received something else.")
-            }
-            
+            self.configureBlurEffect(changedData: changedData, data: data)
         case .titleColor, .pointColor, .backgroundColor:
-            
-            // UIColor 타입으로 캐스팅 시도
-            if let color = data as? UIColor {
-                self.viewModel.saveChangedData(type: changedData.type, 
-                                               data: color)
-                // 색상 변경 로직 적용
-                self.decorationCellChange(indexPath: changedData.indexPath,
-                                          color: color)
-                self.cardImgViewChangeColor(type: changedData.type, 
-                                            color: color)
-                
-                // 데이터 타입이 예상과 다른 경우 처리
-            } else {
-                print("Expected UIColor value for \(changedData.type), but received something else.")
-            }
+            self.configureColorEffect(changedData: changedData,data: data)
         }
     }
-
-    // MARK: - 블러 효과 변경 시
+    
+    
+    // MARK: - [블러 효과] 변경 시
     private func blurEffectChanged() {
+        
+        
         // MARK: - Fix
+        // 1. 가져온 데이터를 셀에 표시 해야함
+        // 2. 누르면 반대로 설정 + 뷰모델에 저장
         print(self.boolean2)
         self.decorationCellChange(self.boolean2)
         self.boolean2.toggle()
+    }
+    
+    
+    // MARK: - 블러 효과 변경
+    private func configureBlurEffect(
+        changedData: (type: DecorationCellType, indexPath: IndexPath),
+        data: Any
+    ) {
+        // UIColor 타입으로 캐스팅 시도
+        guard let isEnabled = data as? Bool else {
+            // 데이터 타입이 예상과 다른 경우 처리
+            self.customAlert(alertEnum: .blurSetError) { _ in }
+            return
+        }
+        self.viewModel.saveChangedData(
+            type: changedData.type,
+            data: isEnabled)
+        self.applyBlurEffectChange(
+            isEnabled,
+            indexPath: changedData.indexPath)
     }
     
     // MARK: - 블러 효과 변경 적용
@@ -569,9 +570,44 @@ extension EditScreenVC: ColorPickerDelegate {
         self.cardImgView.blurViewIsHidden(isEnabled)
     }
     
-
     
-    // MARK: - 카드 이미지 변경
+    
+    
+    
+    
+    
+    
+    
+    
+    // MARK: - [색상 설정]
+    private func configureColorEffect(
+        changedData: (type: DecorationCellType, indexPath: IndexPath),
+        data: Any
+    ) {
+        // UIColor 타입으로 캐스팅 시도
+        guard let color = data as? UIColor else {
+            // 데이터 타입이 예상과 다른 경우 처리
+            self.customAlert(alertEnum: .colorSetError) { _ in }
+            return
+        }
+        self.viewModel.saveChangedData(type: changedData.type,
+                                       data: color)
+        // 색상 변경 로직 적용
+        self.decorationCellChange(indexPath: changedData.indexPath,
+                                  color: color)
+        self.cardImgViewChangeColor(type: changedData.type,
+                                    color: color)
+    }
+    
+    // MARK: - 셀 변경
+    // 셀 변경
+    private func decorationCellChange(indexPath: IndexPath, color: UIColor) {
+        if let cell = self.tableView.cellForRow(at: indexPath) as? CardDecorationCell {
+            cell.colorIsChanged(color: color)
+        }
+    }
+    
+    // MARK: - 카드 색상 변경
     // 카드 이미지 변경
     private func cardImgViewChangeColor(type: DecorationCellType, color: UIColor) {
         switch type {
@@ -581,17 +617,8 @@ extension EditScreenVC: ColorPickerDelegate {
             self.cardImgView.pointColorChange(color: color)
         case .backgroundColor:
             self.cardImgView.backgroundColorChange(color: color)
-        case .blurEffect:
-            // blurEffect는 여기서 처리하지 않음
-            break
-        }
-    }
-    
-    // MARK: - 셀 변경
-    // 셀 변경
-    private func decorationCellChange(indexPath: IndexPath, color: UIColor) {
-        if let cell = self.tableView.cellForRow(at: indexPath) as? CardDecorationCell {
-            cell.colorIsChanged(color: color)
+        // blurEffect는 여기서 처리하지 않음
+        default: break
         }
     }
 }
@@ -612,9 +639,10 @@ extension EditScreenVC: ImagePickerDelegate {
         guard let changedData = self.viewModel.getCurrentCellType(
             cellType: ImageCellType.self) else {
             // 유효하지 않은 데이터 타입이거나 처리할 수 없는 경우 로그를 남기고 반환
-            print("Unable to process the data due to invalid type or other issue.")
+            self.customAlert(alertEnum: .imageSetError) { _ in return }
             return
         }
+        
         // 변경된 데이터 저장
         self.viewModel.saveChangedData(type: changedData.type,
                                        data: image)
@@ -682,7 +710,6 @@ extension EditScreenVC: CardDataCellDelegate {
 
 
 
-
 // MARK: - 권한 설정
 
 extension EditScreenVC {
@@ -698,18 +725,15 @@ extension EditScreenVC {
                 // 사용자가 앱에 사진 라이브러리의 전체 접근을 허용하지 않고,
                 // 대신 특정 사진이나 앨범에 대한 접근만을 허용한 경우
         case .authorized, .limited:
-            print("Authorized")
-            print("Limited Access")
+            print("Authorized or Limited Access")
             // 권한이 이미 있음
             self.coordinator.imagePickerScreen()
-            
             
             // .notDetermined == [접근 제한되지 않음]
                 // 사용자가 아직 앱에 대한 사진 라이브러리 접근 권한을 결정하지 않은 상태
         case .notDetermined:
-            print(status)
+            print("notDetermined")
             self.photoAccess()
-            
             
             // .denied == [접근 거부]
                 // 사용자가 앱의 사진 라이브러리 접근을 명시적으로 거부한 경우
@@ -717,6 +741,7 @@ extension EditScreenVC {
             // .restricted == [접근 불가]
                 // 부모의 제어 설정이나 기업 정책 등 외부 요인으로 인해 앱이 사진 라이브러리에 접근할 수 없는 경우
         case .denied, .restricted:
+            print("denied or restricted")
             self.showPhotoLibraryAccessDeniedAlert()
             
             
@@ -726,7 +751,6 @@ extension EditScreenVC {
     
     // MARK: - 권한 요청
     private func photoAccess() {
-        print(#function)
         // 권한 요청
         PHPhotoLibrary.requestAuthorization { newStatus in
             if newStatus == .authorized {
@@ -739,25 +763,12 @@ extension EditScreenVC {
     
     // MARK: - 설정 얼럿창
     private func showPhotoLibraryAccessDeniedAlert() {
-        print(#function)
-        let alert = UIAlertController(
-            title: "사진 라이브러리 접근 권한 필요",
-            message: "앱에서 사진을 선택하기 위해서는 사진 라이브러리 접근 권한이 필요합니다. 설정에서 권한을 허용해주세요.",
-            preferredStyle: .alert)
         
-        alert.addAction(UIAlertAction(title: "설정으로 이동", style: .default, handler: { _ in
+        self.customAlert(alertEnum: .photoAccess) { _ in
             // 사용자를 앱의 설정 화면으로 이동
-            guard let settingsUrl = URL(string: UIApplication.openSettingsURLString),
-                  UIApplication.shared.canOpenURL(settingsUrl) else {
-                return
-            }
+            guard let settingsUrl = URL(string: UIApplication.openSettingsURLString), UIApplication.shared.canOpenURL(settingsUrl)
+            else { return }
             UIApplication.shared.open(settingsUrl, options: [:])
-        }))
-        
-        alert.addAction(UIAlertAction(title: "취소", style: .cancel))
-        // 현재 화면에 알림 표시
-        DispatchQueue.main.async {
-            self.present(alert, animated: true)
         }
     }
 }

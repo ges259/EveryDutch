@@ -25,19 +25,4 @@ struct Decoration {
         self.pointColor = dictionary[DatabaseConstants.context] as? String ?? ""
         self.titleColor = dictionary[DatabaseConstants.context] as? String ?? ""
     }
-//    // MARK: - Fix
-//    init(blur: Bool,
-//         profileImage: String?,
-//         backgroundImage: String?,
-//         backgroundColor: String?,
-//         pointColor: String?,
-//         titleColor: String?)
-//    {
-//        self.blur = blur
-//        self.profileImage = profileImage
-//        self.backgroundImage = backgroundImage
-//        self.backgroundColor = backgroundColor
-//        self.pointColor = pointColor
-//        self.titleColor = titleColor
-//    }
 }

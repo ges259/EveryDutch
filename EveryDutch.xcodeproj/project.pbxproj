@@ -51,6 +51,7 @@
 		5F2AF6012BA74AD2001487EC /* AlertEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F2AF6002BA74AD2001487EC /* AlertEnum.swift */; };
 		5F2F7A782B3ECD91004B136F /* CardImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F2F7A772B3ECD91004B136F /* CardImageView.swift */; };
 		5F3211AF2B50028B0027C8B3 /* UsersTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F3211AE2B50028B0027C8B3 /* UsersTableView.swift */; };
+		5F3AE6992BBC18080039645D /* YPImagePicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5F3AE6982BBC18080039645D /* YPImagePicker */; };
 		5F46896B2B6E5482001352FA /* EditScreenEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F46896A2B6E5482001352FA /* EditScreenEnum.swift */; };
 		5F46896D2B6E5494001352FA /* RoomEditEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F46896C2B6E5494001352FA /* RoomEditEnum.swift */; };
 		5F47CD082B3AD8F500FCBFA4 /* EditScreenVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F47CD072B3AD8F500FCBFA4 /* EditScreenVM.swift */; };
@@ -97,9 +98,7 @@
 		5F6848782B441A670015BFCC /* SelectALoginMethodCoordProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6848772B441A670015BFCC /* SelectALoginMethodCoordProtocol.swift */; };
 		5F68487A2B441A7E0015BFCC /* SelectALoginMethodCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6848792B441A7E0015BFCC /* SelectALoginMethodCoordinator.swift */; };
 		5F68487C2B441BB70015BFCC /* LoginScreenCoordProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F68487B2B441BB70015BFCC /* LoginScreenCoordProtocol.swift */; };
-		5F68487E2B441BCA0015BFCC /* LoginScreenCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F68487D2B441BCA0015BFCC /* LoginScreenCoordinator.swift */; };
 		5F6848802B441C260015BFCC /* SignUpScreenCoordProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F68487F2B441C260015BFCC /* SignUpScreenCoordProtocol.swift */; };
-		5F6848822B441C360015BFCC /* SignUpScreenCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6848812B441C360015BFCC /* SignUpScreenCoordinator.swift */; };
 		5F6848852B4428310015BFCC /* CardTextDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6848842B4428310015BFCC /* CardTextDelegate.swift */; };
 		5F6848872B4431AF0015BFCC /* EditScreenDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6848862B4431AF0015BFCC /* EditScreenDelegate.swift */; };
 		5F6C43492B3C3B6A00BBC466 /* UIStackView+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6C43482B3C3B6A00BBC466 /* UIStackView+Ext.swift */; };
@@ -300,9 +299,7 @@
 		5F6848772B441A670015BFCC /* SelectALoginMethodCoordProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectALoginMethodCoordProtocol.swift; sourceTree = "<group>"; };
 		5F6848792B441A7E0015BFCC /* SelectALoginMethodCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectALoginMethodCoordinator.swift; sourceTree = "<group>"; };
 		5F68487B2B441BB70015BFCC /* LoginScreenCoordProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginScreenCoordProtocol.swift; sourceTree = "<group>"; };
-		5F68487D2B441BCA0015BFCC /* LoginScreenCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginScreenCoordinator.swift; sourceTree = "<group>"; };
 		5F68487F2B441C260015BFCC /* SignUpScreenCoordProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpScreenCoordProtocol.swift; sourceTree = "<group>"; };
-		5F6848812B441C360015BFCC /* SignUpScreenCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SignUpScreenCoordinator.swift; sourceTree = "<group>"; };
 		5F6848842B4428310015BFCC /* CardTextDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardTextDelegate.swift; sourceTree = "<group>"; };
 		5F6848862B4431AF0015BFCC /* EditScreenDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditScreenDelegate.swift; sourceTree = "<group>"; };
 		5F6C43482B3C3B6A00BBC466 /* UIStackView+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStackView+Ext.swift"; sourceTree = "<group>"; };
@@ -437,6 +434,7 @@
 				5F294B582B4DBA0100396B6E /* FirebaseStorage in Frameworks */,
 				5F294B4E2B4DBA0100396B6E /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */,
 				5F294B482B4DBA0100396B6E /* FirebaseAnalytics in Frameworks */,
+				5F3AE6992BBC18080039645D /* YPImagePicker in Frameworks */,
 				5F294B522B4DBA0100396B6E /* FirebaseCrashlytics in Frameworks */,
 				5F294B562B4DBA0100396B6E /* FirebaseDatabaseSwift in Frameworks */,
 				5F614B352B4590C500EF35CE /* PanModal in Frameworks */,
@@ -481,8 +479,6 @@
 			isa = PBXGroup;
 			children = (
 				5F6848792B441A7E0015BFCC /* SelectALoginMethodCoordinator.swift */,
-				5F68487D2B441BCA0015BFCC /* LoginScreenCoordinator.swift */,
-				5F6848812B441C360015BFCC /* SignUpScreenCoordinator.swift */,
 			);
 			path = Auth;
 			sourceTree = "<group>";
@@ -1151,12 +1147,12 @@
 			children = (
 				5F8513BB2B4D2FE700A5B22D /* User.swift */,
 				5F8513C72B4D309600A5B22D /* Rooms.swift */,
+				5F71FEE92BB6DB510005FC7A /* Decoration.swift */,
 				5F8513C12B4D303900A5B22D /* Receipt.swift */,
 				5F8513C52B4D307F00A5B22D /* VersionThumbnail.swift */,
 				5F8513C32B4D306A00A5B22D /* CumulativeAmount.swift */,
 				5F630ADB2B559A96008F9CBD /* Payback.swift */,
 				5F864E742B9CDD95007AEA3B /* PaymentDetail.swift */,
-				5F71FEE92BB6DB510005FC7A /* Decoration.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -1268,6 +1264,7 @@
 				5F294B532B4DBA0100396B6E /* FirebaseDatabase */,
 				5F294B552B4DBA0100396B6E /* FirebaseDatabaseSwift */,
 				5F294B572B4DBA0100396B6E /* FirebaseStorage */,
+				5F3AE6982BBC18080039645D /* YPImagePicker */,
 			);
 			productName = EveryDutch;
 			productReference = 5FE3DE8B2B39CA9B008D58AE /* EveryDutch.app */;
@@ -1302,6 +1299,7 @@
 				5F66F3A82B41D7FC005F6C52 /* XCRemoteSwiftPackageReference "FSCalendar" */,
 				5F614B332B4590C500EF35CE /* XCRemoteSwiftPackageReference "PanModal" */,
 				5F294B462B4DBA0100396B6E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+				5F3AE6972BBC18080039645D /* XCRemoteSwiftPackageReference "YPImagePicker" */,
 			);
 			productRefGroup = 5FE3DE8C2B39CA9B008D58AE /* Products */;
 			projectDirPath = "";
@@ -1366,7 +1364,6 @@
 				5F87DF2A2B3C999D001D5B80 /* RoomSettingCoordinator.swift in Sources */,
 				5F8513D52B4D676400A5B22D /* UpdateUsers.swift in Sources */,
 				5F4913DD2B3DBE7C00CD76A8 /* SettlementCoordinator.swift in Sources */,
-				5F6848822B441C360015BFCC /* SignUpScreenCoordinator.swift in Sources */,
 				5F70069D2B3B57450028DC8B /* UsersTableViewCell.swift in Sources */,
 				5F729C012B6D42A900F3DDCA /* CardDataCell.swift in Sources */,
 				5FB4F70E2B433DEF002F6CF3 /* SelectALoginMethodVC.swift in Sources */,
@@ -1386,7 +1383,6 @@
 				5F5AFBCE2B493D2A00BBBB9D /* RoomSettingVMProtocol.swift in Sources */,
 				5F9F76632B6C227D00BB6511 /* ProfileCoordinator.swift in Sources */,
 				5F8513EB2B4D705D00A5B22D /* CreateRooms.swift in Sources */,
-				5F68487E2B441BCA0015BFCC /* LoginScreenCoordinator.swift in Sources */,
 				5FE3DED82B39F8F3008D58AE /* InsetTextField.swift in Sources */,
 				5F7A49242B97D07C002CB7A8 /* EditScreenAPIType.swift in Sources */,
 				5FB4F7082B433DEF002F6CF3 /* EditScreenVC.swift in Sources */,
@@ -1745,6 +1741,14 @@
 				minimumVersion = 10.19.1;
 			};
 		};
+		5F3AE6972BBC18080039645D /* XCRemoteSwiftPackageReference "YPImagePicker" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Yummypets/YPImagePicker";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.2.2;
+			};
+		};
 		5F614B332B4590C500EF35CE /* XCRemoteSwiftPackageReference "PanModal" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/slackhq/PanModal";
@@ -1816,6 +1820,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 5F294B462B4DBA0100396B6E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseStorage;
+		};
+		5F3AE6982BBC18080039645D /* YPImagePicker */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5F3AE6972BBC18080039645D /* XCRemoteSwiftPackageReference "YPImagePicker" */;
+			productName = YPImagePicker;
 		};
 		5F614B342B4590C500EF35CE /* PanModal */ = {
 			isa = XCSwiftPackageProductDependency;

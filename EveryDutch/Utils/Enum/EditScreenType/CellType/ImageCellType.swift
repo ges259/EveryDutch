@@ -32,7 +32,6 @@ enum ImageCellType: Int, EditCellType, CaseIterable {
     }
     
     func detail(for data: Decoration?) -> String? {
-        
         switch self {
         case .profileImg: return data?.profileImage ?? nil
         case .backgroundImg: return data?.backgroundImage ?? nil

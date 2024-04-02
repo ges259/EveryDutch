@@ -23,7 +23,7 @@ import Firebase
 
 extension UserAPI {
     
-    func fetchData(dataRequiredWhenInEidtMode: String?) async throws -> ProviderModel
+    func fetchData(dataRequiredWhenInEidtMode: String?) async throws -> EditProviderModel
     {
         let userDataDict = try await self.readYourOwnUserData()
         guard let user = userDataDict.values.first else {

@@ -35,6 +35,7 @@ final class EditScreenVM: ProfileEditVMProtocol {
     
     // 사용자에 의해 변경된 데이터를 저장하는 딕셔너리
     private var changedData: [String: Any?] = [:]
+    private var imageData: [String: Any?] = [:]
     private var decorationData: [String: Any?] = [:]
     
     
@@ -44,7 +45,7 @@ final class EditScreenVM: ProfileEditVMProtocol {
     // 방 데이터와 사용자 데이터를 업데이트할 때 사용할 클로저
     var updateDataClosure: (() -> Void)?
     var successDataClosure: (() -> Void)?
-    var makeDataClosure: ((ProviderModel) -> Void)?
+    var makeDataClosure: ((EditProviderModel) -> Void)?
     // 에러 발생 시 처리할 클로저
     var errorClosure: ((ErrorEnum) -> Void)?
     
@@ -104,7 +105,7 @@ final class EditScreenVM: ProfileEditVMProtocol {
     
     
     func setupDataProviders(
-        withData data: ProviderModel? = nil,
+        withData data: EditProviderModel? = nil,
         decoration: Decoration? = nil)
     {
         let dataProviders = self.allCases
@@ -117,7 +118,7 @@ final class EditScreenVM: ProfileEditVMProtocol {
     }
     
     
-    private func updateCellData(with dataProviders: [DataProvider]?) {
+    private func updateCellData(with dataProviders: [EditDataProvider]?) {
         self.allCases.forEach { screenType in
             let cellData = screenType
                 .getAllOfCellType
@@ -193,10 +194,18 @@ extension EditScreenVM {
     func saveChangedData<R: EditCellType>(type: R, data: Any?) {
         let databaseString = type.databaseString
         
-        if type is ImageCellType || type is DecorationCellType {
+        switch type {
+        case is ImageCellType : 
             self.decorationData[databaseString] = data
-        } else {
+            break
+            
+        case is DecorationCellType: 
+            self.decorationData[databaseString] = data
+            break
+            
+        default: 
             self.changedData[databaseString] = data
+            break
         }
     }
     
@@ -293,18 +302,20 @@ extension EditScreenVM {
     // MARK: - 시작
     // 비동기적으로 유효성 검사를 수행하는 함수
     // 현재 타입이 RoomEditEnum 또는 ProfileEditEnum인지 확인하고, 해당하는 동작을 실행
-    func validation() async {
-        do {
-            guard self.roomValidation() else { throw ErrorEnum.unknownError }
-            
-            try await self.createData()
-            self.successDataClosure?()
-            
-        } catch let error as ErrorEnum {
-            self.errorClosure?(error)
-            
-        } catch {
-            self.errorClosure?(.unknownError)
+    @MainActor
+    func validation() {
+        Task {
+            do {
+                guard self.roomValidation() else { throw ErrorEnum.unknownError }
+                try await self.createData()
+                self.successDataClosure?()
+                
+            } catch let error as ErrorEnum {
+                self.errorClosure?(error)
+                
+            } catch {
+                self.errorClosure?(ErrorEnum.unknownError)
+            }
         }
     }
     

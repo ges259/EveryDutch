@@ -8,7 +8,5 @@
 import Foundation
 
 protocol EditScreenDelegate: AnyObject {
-//    func logout()
-//    func makeRoom(room: Rooms)
-    func makeProviderData(with: ProviderModel)
+    func makeProviderData(with: EditProviderModel)
 }

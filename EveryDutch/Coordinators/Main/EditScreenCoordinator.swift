@@ -6,7 +6,7 @@
 //
 
 import UIKit
-
+import YPImagePicker
 
 protocol ColorPickerDelegate: AnyObject {
     func decorationCellChange(_ data: Any)
@@ -15,6 +15,7 @@ protocol ColorPickerDelegate: AnyObject {
 
 protocol ImagePickerDelegate: AnyObject {
     func imageSelect(image: UIImage?)
+//    func error()
 }
 
 final class EditScreenCoordinator: NSObject, ProfileEditVCCoordProtocol {
@@ -31,10 +32,14 @@ final class EditScreenCoordinator: NSObject, ProfileEditVCCoordProtocol {
     
     // MainCoordinator에서 설정
     weak var editScreenDelegate: EditScreenDelegate?
+    
+    // MARK: - Image_Fix
     private weak var imageDelegate: ImagePickerDelegate?
     
-    private weak var colorDelegate: ColorPickerDelegate?
-    private var selectedColor: UIColor?
+    
+    // MARK: - Color_Fix
+//    private weak var colorDelegate: ColorPickerDelegate?
+//    private var selectedColor: UIColor?
     
     
     
@@ -101,8 +106,9 @@ final class EditScreenCoordinator: NSObject, ProfileEditVCCoordProtocol {
     private func moveToEditScreen(with viewModelCreation: () -> EditScreenVC) {
         let screenVC = viewModelCreation()
         screenVC.configureBackBtn(isMakeMode: self.isMakeUserMode)
-        self.colorDelegate = screenVC as any ColorPickerDelegate
-        self.imageDelegate = screenVC as any ImagePickerDelegate
+        // MARK: - Color_Fix
+//        self.colorDelegate = screenVC as any ColorPickerDelegate
+//        self.imageDelegate = screenVC as any ImagePickerDelegate
         self.nav.pushViewController(screenVC, animated: true)
     }
     
@@ -118,17 +124,13 @@ final class EditScreenCoordinator: NSObject, ProfileEditVCCoordProtocol {
     // MARK: - 색상 선택 화면
     func colorPickerScreen() {
         let colorPickerVC = UIColorPickerViewController()
-        colorPickerVC.delegate = self // 여기서 self는 이제 NSObject를 상속받았기 때문에 문제없이 delegate로 할당될 수 있습니다.
+        
+        // MARK: - Color_Fix
+//        colorPickerVC.delegate = self // 여기서 self는 이제 NSObject를 상속받았기 때문에 문제없이 delegate로 할당될 수 있습니다.
         self.nav.present(colorPickerVC, animated: true, completion: nil)
     }
 
-    // MARK: - 이미지 피커 화면
-    func imagePickerScreen() {
-        let imagePicker = UIImagePickerController()
-        imagePicker.delegate = self
-        imagePicker.sourceType = .photoLibrary
-        self.nav.present(imagePicker, animated: true, completion: nil)
-    }
+
     
     
     // MARK: - didFinish
@@ -148,72 +150,169 @@ final class EditScreenCoordinator: NSObject, ProfileEditVCCoordProtocol {
 
 
 
+
 // MARK: - CardScreenDelegate
 extension EditScreenCoordinator: EditScreenDelegate {
     
-    func makeProviderData(with: ProviderModel) {
+    func makeProviderData(with: EditProviderModel) {
         self.didFinish()
         self.editScreenDelegate?.makeProviderData(with: with)
     }
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - 이미지 피커 화면
+extension EditScreenCoordinator {
     
     
-    /// CardScreenVC에서 delegate.logout()을 호출 시 실행 됨.
-//    func logout() {
-//        self.didFinish()
-//        self.editScreenDelegate?.logout()
+    func imagePickerScreen() {
+        var config = YPImagePickerConfiguration()
+        
+        
+        // 디폴트 값들
+        config.library.mediaType = .photo
+        config.library.defaultMultipleSelection = false
+        config.library.maxNumberOfItems = 1
+        // 사진만 사용 가능하도록 설정
+        config.screens = [.library]
+        
+    
+        
+        // 필터 단계 스킵
+        config.showsPhotoFilters = false
+        // 새 이미지를 갤러리에 저장하지 않음
+        config.shouldSaveNewPicturesToAlbum = false
+        
+        
+        // 크롭 관련 설정
+        // crop overlay 의 default 색상.
+        config.colors.cropOverlayColor = .black.withAlphaComponent(0.6)
+        // crop 비율 설정
+        config.showsCrop = .rectangle(ratio: 1/1)
+        // 크롭 단계에서, 화면에 그리드 표시
+        config.showsCropGridOverlay = true
+        
+        
+        // cropping style 을 square or not 으로 지정.
+        config.library.isSquareByDefault = false
+        
+        config.targetImageSize = YPImageSize.original
+        
+        
+        config.overlayView?.clipsToBounds = true
+        
+        
+
+
+
+        let picker = YPImagePicker(configuration: config)
+        
+        
+        
+        
+        picker.didFinishPicking { [unowned picker] items, _ in
+            if let photo = items.singlePhoto {
+                // 여기에서 크롭된 이미지를 사용합니다.
+                // 예를 들어, ImagePickerDelegate를 통해 이미지를 전달할 수 있습니다.
+                self.imageDelegate?.imageSelect(image: photo.image)
+            }
+            picker.dismiss(animated: true, completion: nil)
+        }
+        
+        self.nav.present(picker, animated: true, completion: nil)
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// MARK: - Fix
+//
+//// MARK: - 색상 선택 델리게이트
+//
+//extension EditScreenCoordinator: UIColorPickerViewControllerDelegate {
+//    
+//    // MARK: - 화면이 내려갈 때
+//    func colorPickerViewControllerDidFinish(
+//        _ viewController: UIColorPickerViewController)
+//    {
+//        if let color = self.selectedColor {
+//            self.colorDelegate?.decorationCellChange(color)
+//            self.selectedColor = nil
+//        }
+//        viewController.dismiss(animated: true)
 //    }
-}
-
-
-
-
-
-
-// MARK: - 색상 선택 델리게이트
-
-extension EditScreenCoordinator: UIColorPickerViewControllerDelegate {
-    
-    // MARK: - 화면이 내려갈 때
-    func colorPickerViewControllerDidFinish(
-        _ viewController: UIColorPickerViewController)
-    {
-        if let color = self.selectedColor {
-            self.colorDelegate?.decorationCellChange(color)
-            self.selectedColor = nil
-        }
-        viewController.dismiss(animated: true)
-    }
-    
-    // MARK: - 색상 선택 시
-    func colorPickerViewControllerDidSelectColor(
-        _ viewController: UIColorPickerViewController)
-    {
-        self.selectedColor = viewController.selectedColor
-    }
-}
-
-
-
-
-
-// MARK: - 이미지 선택 델리게이트
-extension EditScreenCoordinator:
-    UIImagePickerControllerDelegate,
-    UINavigationControllerDelegate
-{
-    func imagePickerController(
-        _ picker: UIImagePickerController,
-        didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any])
-    {
-        guard let image = info[.originalImage] as? UIImage else {
-            picker.dismiss(animated: true)
-            return
-        }
-        self.imageDelegate?.imageSelect(image: image) // 이 부분을 적절히 조정해야 합니다.
-        picker.dismiss(animated: true)
-    }
-
-    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
-        picker.dismiss(animated: true)
-    }
-}
+//    
+//    // MARK: - 색상 선택 시
+//    func colorPickerViewControllerDidSelectColor(
+//        _ viewController: UIColorPickerViewController)
+//    {
+//        self.selectedColor = viewController.selectedColor
+//    }
+//}
+//
+//
+//
+//
+//
+//// MARK: - 이미지 선택 델리게이트
+//extension EditScreenCoordinator:
+//    UIImagePickerControllerDelegate,
+//    UINavigationControllerDelegate
+//{
+//    func imagePickerController(
+//        _ picker: UIImagePickerController,
+//        didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any])
+//    {
+//        guard let image = info[.originalImage] as? UIImage else {
+//            picker.dismiss(animated: true)
+//            return
+//        }
+//        self.imageDelegate?.imageSelect(image: image) // 이 부분을 적절히 조정해야 합니다.
+//        picker.dismiss(animated: true)
+//    }
+//
+//    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+//        picker.dismiss(animated: true)
+//    }
+//}

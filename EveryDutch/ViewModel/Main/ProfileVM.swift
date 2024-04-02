@@ -184,22 +184,17 @@ extension ProfileVM {
                 self.uid = uid
                 // 가져온 user데이터 저장하기
                 self.currentUserData = user
-                print("성공")
 
                 
             } else {
-                print("실패1")
-                self.errorClosure?(.userNotFound) // 예시 에러 처리
+                self.errorClosure?(ErrorEnum.userNotFound) // 예시 에러 처리
             }
             
         } catch let error as ErrorEnum {
-            print("실패2")
             self.errorClosure?(error)
             
-            
         } catch {
-            print("실패3")
-            self.errorClosure?(.unknownError)
+            self.errorClosure?(ErrorEnum.unknownError)
         }
     }
 }

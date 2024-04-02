@@ -9,6 +9,7 @@ import UIKit
 
 extension UIViewController {
     /// 커스텀 얼럿창을 생성하고 표시하는 메서드
+    @MainActor
     func customAlert(
         alertStyle: UIAlertController.Style = .alert,
         alertEnum: AlertEnum,
@@ -36,6 +37,13 @@ extension UIViewController {
             
             alertController.addAction(action)
         }
+        
+        // 취소 버튼 설정
+        if alertEnum.cancelBtn {
+            let cancel = UIAlertAction(title: "취소", style: .cancel)
+            alertController.addAction(cancel)
+        }
+        
         // 얼럿창을 화면에 표시
         self.present(alertController, animated: true)
     }

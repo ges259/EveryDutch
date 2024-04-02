@@ -180,7 +180,7 @@ final class MainCoordinator: MainCoordProtocol{
 // MARK: - EditScreenDelegate 델리게이트
 extension MainCoordinator: EditScreenDelegate {
 
-    func makeProviderData(with: ProviderModel) {
+    func makeProviderData(with: EditProviderModel) {
         print(#function)
         
         if let mainVC = self.findMainVC,

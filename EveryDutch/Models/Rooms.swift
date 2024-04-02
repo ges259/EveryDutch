@@ -7,7 +7,7 @@
 
 import UIKit
 
-struct Rooms: ProviderModel {
+struct Rooms: EditProviderModel {
     var roomID: String
     var versionID: String
     var roomName: String

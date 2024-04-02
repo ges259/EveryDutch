@@ -10,12 +10,7 @@ import Foundation
 // MARK: - EditScreenType
 
 protocol EditScreenType {
-    
-//    associatedtype validationType: EditCellType
-//    
-//    func getType() -> validationType.Type
-//
-    func createProviders(withData data: ProviderModel?, decoration: Decoration?) -> [DataProvider]
+    func createProviders(withData data: EditProviderModel?, decoration: Decoration?) -> [EditDataProvider]
 
     var apiType: EditScreenAPIType { get }
     

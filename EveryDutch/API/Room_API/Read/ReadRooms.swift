@@ -60,7 +60,7 @@ extension RoomsAPI {
     
     
     // MARK: - 특정 방 가져오기
-    func fetchData(dataRequiredWhenInEidtMode: String?) async throws -> ProviderModel
+    func fetchData(dataRequiredWhenInEidtMode: String?) async throws -> EditProviderModel
     {
 //        let userDataDict = try await self.readYourOwnUserData()
 //        
