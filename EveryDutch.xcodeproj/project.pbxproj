@@ -48,10 +48,10 @@
 		5F294B542B4DBA0100396B6E /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 5F294B532B4DBA0100396B6E /* FirebaseDatabase */; };
 		5F294B562B4DBA0100396B6E /* FirebaseDatabaseSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 5F294B552B4DBA0100396B6E /* FirebaseDatabaseSwift */; };
 		5F294B582B4DBA0100396B6E /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 5F294B572B4DBA0100396B6E /* FirebaseStorage */; };
+		5F2A862E2BC2A9600055E432 /* YPImagePicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5F2A862D2BC2A9600055E432 /* YPImagePicker */; };
 		5F2AF6012BA74AD2001487EC /* AlertEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F2AF6002BA74AD2001487EC /* AlertEnum.swift */; };
 		5F2F7A782B3ECD91004B136F /* CardImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F2F7A772B3ECD91004B136F /* CardImageView.swift */; };
 		5F3211AF2B50028B0027C8B3 /* UsersTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F3211AE2B50028B0027C8B3 /* UsersTableView.swift */; };
-		5F3AE6992BBC18080039645D /* YPImagePicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5F3AE6982BBC18080039645D /* YPImagePicker */; };
 		5F46896B2B6E5482001352FA /* EditScreenEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F46896A2B6E5482001352FA /* EditScreenEnum.swift */; };
 		5F46896D2B6E5494001352FA /* RoomEditEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F46896C2B6E5494001352FA /* RoomEditEnum.swift */; };
 		5F47CD082B3AD8F500FCBFA4 /* EditScreenVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F47CD072B3AD8F500FCBFA4 /* EditScreenVM.swift */; };
@@ -434,7 +434,7 @@
 				5F294B582B4DBA0100396B6E /* FirebaseStorage in Frameworks */,
 				5F294B4E2B4DBA0100396B6E /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */,
 				5F294B482B4DBA0100396B6E /* FirebaseAnalytics in Frameworks */,
-				5F3AE6992BBC18080039645D /* YPImagePicker in Frameworks */,
+				5F2A862E2BC2A9600055E432 /* YPImagePicker in Frameworks */,
 				5F294B522B4DBA0100396B6E /* FirebaseCrashlytics in Frameworks */,
 				5F294B562B4DBA0100396B6E /* FirebaseDatabaseSwift in Frameworks */,
 				5F614B352B4590C500EF35CE /* PanModal in Frameworks */,
@@ -1264,7 +1264,7 @@
 				5F294B532B4DBA0100396B6E /* FirebaseDatabase */,
 				5F294B552B4DBA0100396B6E /* FirebaseDatabaseSwift */,
 				5F294B572B4DBA0100396B6E /* FirebaseStorage */,
-				5F3AE6982BBC18080039645D /* YPImagePicker */,
+				5F2A862D2BC2A9600055E432 /* YPImagePicker */,
 			);
 			productName = EveryDutch;
 			productReference = 5FE3DE8B2B39CA9B008D58AE /* EveryDutch.app */;
@@ -1278,7 +1278,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1430;
-				LastUpgradeCheck = 1430;
+				LastUpgradeCheck = 1510;
 				TargetAttributes = {
 					5FE3DE8A2B39CA9B008D58AE = {
 						CreatedOnToolsVersion = 14.3.1;
@@ -1299,7 +1299,7 @@
 				5F66F3A82B41D7FC005F6C52 /* XCRemoteSwiftPackageReference "FSCalendar" */,
 				5F614B332B4590C500EF35CE /* XCRemoteSwiftPackageReference "PanModal" */,
 				5F294B462B4DBA0100396B6E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
-				5F3AE6972BBC18080039645D /* XCRemoteSwiftPackageReference "YPImagePicker" */,
+				5F2A862C2BC2A9600055E432 /* XCRemoteSwiftPackageReference "YPImagePicker" */,
 			);
 			productRefGroup = 5FE3DE8C2B39CA9B008D58AE /* Products */;
 			projectDirPath = "";
@@ -1575,6 +1575,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -1589,7 +1590,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1635,6 +1636,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -1643,7 +1645,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -1675,9 +1677,11 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ges.EveryDutch;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -1703,9 +1707,11 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = ges.EveryDutch;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -1741,9 +1747,9 @@
 				minimumVersion = 10.19.1;
 			};
 		};
-		5F3AE6972BBC18080039645D /* XCRemoteSwiftPackageReference "YPImagePicker" */ = {
+		5F2A862C2BC2A9600055E432 /* XCRemoteSwiftPackageReference "YPImagePicker" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Yummypets/YPImagePicker";
+			repositoryURL = "https://github.com/Yummypets/YPImagePicker.git";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 5.2.2;
@@ -1821,9 +1827,9 @@
 			package = 5F294B462B4DBA0100396B6E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseStorage;
 		};
-		5F3AE6982BBC18080039645D /* YPImagePicker */ = {
+		5F2A862D2BC2A9600055E432 /* YPImagePicker */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 5F3AE6972BBC18080039645D /* XCRemoteSwiftPackageReference "YPImagePicker" */;
+			package = 5F2A862C2BC2A9600055E432 /* XCRemoteSwiftPackageReference "YPImagePicker" */;
 			productName = YPImagePicker;
 		};
 		5F614B342B4590C500EF35CE /* PanModal */ = {

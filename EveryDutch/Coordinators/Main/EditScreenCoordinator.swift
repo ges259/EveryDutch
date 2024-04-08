@@ -9,7 +9,7 @@ import UIKit
 import YPImagePicker
 
 protocol ColorPickerDelegate: AnyObject {
-    func decorationCellChange(_ data: Any)
+    func decorationCellChange(_ data: UIColor)
     
 }
 
@@ -123,11 +123,11 @@ final class EditScreenCoordinator: NSObject, ProfileEditVCCoordProtocol {
     
     // MARK: - 색상 선택 화면
     func colorPickerScreen() {
-        let colorPickerVC = UIColorPickerViewController()
+//        let colorPickerVC = UIColorPickerViewController()
         
         // MARK: - Color_Fix
 //        colorPickerVC.delegate = self // 여기서 self는 이제 NSObject를 상속받았기 때문에 문제없이 delegate로 할당될 수 있습니다.
-        self.nav.present(colorPickerVC, animated: true, completion: nil)
+//        self.nav.present(colorPickerVC, animated: true, completion: nil)
     }
 
 
@@ -176,14 +176,12 @@ extension EditScreenCoordinator {
     func imagePickerScreen() {
         var config = YPImagePickerConfiguration()
         
-        
         // 디폴트 값들
         config.library.mediaType = .photo
         config.library.defaultMultipleSelection = false
         config.library.maxNumberOfItems = 1
         // 사진만 사용 가능하도록 설정
         config.screens = [.library]
-        
     
         
         // 필터 단계 스킵
@@ -191,32 +189,35 @@ extension EditScreenCoordinator {
         // 새 이미지를 갤러리에 저장하지 않음
         config.shouldSaveNewPicturesToAlbum = false
         
+        // cropping style 을 square or not 으로 지정.
+        config.library.isSquareByDefault = false
         
-        // 크롭 관련 설정
+        config.library.onlySquare = true
+        
+        config.isDebugLogsEnabled = true
+        
+        
+        // --- 크롭 관련 설정 ---
         // crop overlay 의 default 색상.
-        config.colors.cropOverlayColor = .black.withAlphaComponent(0.6)
+        config.colors.cropOverlayColor = .black.withAlphaComponent(0.4)
         // crop 비율 설정
         config.showsCrop = .rectangle(ratio: 1/1)
         // 크롭 단계에서, 화면에 그리드 표시
         config.showsCropGridOverlay = true
         
         
-        // cropping style 을 square or not 으로 지정.
-        config.library.isSquareByDefault = false
         
-        config.targetImageSize = YPImageSize.original
+        config.wordings.cancel = "취소"
+        config.wordings.save = "저장"
+        config.wordings.crop = "자르기"
+        config.wordings.next = "다음"
+        config.wordings.libraryTitle = "앨범"
         
         
-        config.overlayView?.clipsToBounds = true
-        
-        
-
-
-
+        // YPImagePicker에 설정을 적용
         let picker = YPImagePicker(configuration: config)
         
-        
-        
+        picker.imagePickerDelegate = self
         
         picker.didFinishPicking { [unowned picker] items, _ in
             if let photo = items.singlePhoto {
@@ -227,12 +228,22 @@ extension EditScreenCoordinator {
             picker.dismiss(animated: true, completion: nil)
         }
         
-        self.nav.present(picker, animated: true, completion: nil)
+        self.nav.present(picker, animated: true)
     }
 }
 
 
+// MARK: - YPImagePickerDelegate
+extension EditScreenCoordinator: YPImagePickerDelegate {
+    func imagePickerHasNoItemsInLibrary(_ picker: YPImagePicker) {
+        print(#function)
+    }
 
+    func shouldAddToSelection(indexPath: IndexPath, numSelections: Int) -> Bool {
+        // false 로 설정하면 선택해도 다음으로 갈 수 없다. 즉, 추가할 수 없음.
+        return true
+    }
+}
 
 
 

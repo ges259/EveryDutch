@@ -368,10 +368,6 @@ extension EditScreenVC: UITableViewDataSource {
                           isFirst: isFirst,
                           isLast: isLast)
         cell.delegate = self
-        
-//        print("\\\\\\\\\\\\\\\\\\\\\\\\\\")
-//        print(type?.detail)
-//        print("\\\\\\\\\\\\\\\\\\\\\\\\\\")
         return cell
     }
     
@@ -400,9 +396,10 @@ extension EditScreenVC: UITableViewDataSource {
         _ tableView: UITableView,
         didSelectRowAt indexPath: IndexPath)
     {
+        // 현재 선택된 셀의 [타입 및 IndexPath] 저장
         let type = self.viewModel.saveCurrentIndexAndType(
             indexPath: indexPath)
-        
+        // 셀 마다 다른 역할 수행
         self.screenChange(type: type)
     }
     
@@ -508,7 +505,7 @@ extension EditScreenVC: UIScrollViewDelegate {
 
 // MARK: - [데코] 색상 선택 델리게이트
 extension EditScreenVC: ColorPickerDelegate {
-    func decorationCellChange(_ data: Any) {
+    func decorationCellChange(_ data: UIColor) {
         // 변경된 데이터와 타입을 저장하고 반환받기
         guard let changedData = self.viewModel.getCurrentCellType(
             cellType: DecorationCellType.self) 
@@ -522,23 +519,14 @@ extension EditScreenVC: ColorPickerDelegate {
         switch changedData.type {
         case .blurEffect:
             self.configureBlurEffect(changedData: changedData, data: data)
+            
         case .titleColor, .pointColor, .backgroundColor:
             self.configureColorEffect(changedData: changedData,data: data)
         }
     }
     
     
-    // MARK: - [블러 효과] 변경 시
-    private func blurEffectChanged() {
-        
-        
-        // MARK: - Fix
-        // 1. 가져온 데이터를 셀에 표시 해야함
-        // 2. 누르면 반대로 설정 + 뷰모델에 저장
-        print(self.boolean2)
-        self.decorationCellChange(self.boolean2)
-        self.boolean2.toggle()
-    }
+
     
     
     // MARK: - 블러 효과 변경
@@ -571,14 +559,6 @@ extension EditScreenVC: ColorPickerDelegate {
     }
     
     
-    
-    
-    
-    
-    
-    
-    
-    
     // MARK: - [색상 설정]
     private func configureColorEffect(
         changedData: (type: DecorationCellType, indexPath: IndexPath),
@@ -590,36 +570,28 @@ extension EditScreenVC: ColorPickerDelegate {
             self.customAlert(alertEnum: .colorSetError) { _ in }
             return
         }
+        // 변경 사항 저장
         self.viewModel.saveChangedData(type: changedData.type,
                                        data: color)
         // 색상 변경 로직 적용
-        self.decorationCellChange(indexPath: changedData.indexPath,
-                                  color: color)
-        self.cardImgViewChangeColor(type: changedData.type,
-                                    color: color)
-    }
-    
-    // MARK: - 셀 변경
-    // 셀 변경
-    private func decorationCellChange(indexPath: IndexPath, color: UIColor) {
-        if let cell = self.tableView.cellForRow(at: indexPath) as? CardDecorationCell {
+        self.updateDecorationCell(at: changedData.indexPath) { cell in
             cell.colorIsChanged(color: color)
         }
+        // 카드 색상 변경
+        self.cardImgView.updateCardColor(type: changedData.type,
+                                         color: color)
     }
     
-    // MARK: - 카드 색상 변경
-    // 카드 이미지 변경
-    private func cardImgViewChangeColor(type: DecorationCellType, color: UIColor) {
-        switch type {
-        case .titleColor:
-            self.cardImgView.titleColorChange(color: color)
-        case .pointColor:
-            self.cardImgView.pointColorChange(color: color)
-        case .backgroundColor:
-            self.cardImgView.backgroundColorChange(color: color)
-        // blurEffect는 여기서 처리하지 않음
-        default: break
-        }
+    // MARK: - [블러 효과] 변경 시
+    private func blurEffectChanged() {
+        
+        
+        // MARK: - Fix
+        // 1. 가져온 데이터를 셀에 표시 해야함
+        // 2. 누르면 반대로 설정 + 뷰모델에 저장
+        print(self.boolean2)
+//        self.decorationCellChange(self.boolean2)
+        self.boolean2.toggle()
     }
 }
 
@@ -642,35 +614,28 @@ extension EditScreenVC: ImagePickerDelegate {
             self.customAlert(alertEnum: .imageSetError) { _ in return }
             return
         }
-        
         // 변경된 데이터 저장
         self.viewModel.saveChangedData(type: changedData.type,
                                        data: image)
         // 이미지 셀 변경
-        self.imageCellChange(indexPath: changedData.indexPath,
-                             image: image)
-        // 카드 이미지 변경
-        self.cardImgViewChangeImg(type: changedData.type,
-                                  image: image)
-    }
-    
-    // MARK: - 카드 이미지 변경
-    private func cardImgViewChangeImg(type: ImageCellType,
-                                      image: UIImage?) {
-        switch type {
-        case .profileImg:
-            self.cardImgView.profileImgChange(image: image)
-            
-        case .backgroundImg:
-            self.cardImgView.backgroundImgChange(image: image)
-        }
-    }
-    
-    // MARK: - 셀 변경
-    private func imageCellChange(indexPath: IndexPath,
-                                 image: UIImage?) {
-        if let cell = self.tableView.cellForRow(at: indexPath) as? CardDecorationCell {
+        self.updateDecorationCell(at: changedData.indexPath) { cell in
             cell.imgIsChanged(image: image)
+        }
+        // 카드 이미지 변경
+        self.cardImgView.updateCardImage(type: changedData.type, image: image)
+    }
+    
+    
+    
+    
+    // MARK: - 셀 업데이트
+    // 클로저를 통해 셀을 변경한다.
+    private func updateDecorationCell(
+        at indexPath: IndexPath,
+        withUpdateAction action: (CardDecorationCell) -> Void)
+    {
+        if let cell = tableView.cellForRow(at: indexPath) as? CardDecorationCell {
+            action(cell)
         }
     }
 }
@@ -710,7 +675,7 @@ extension EditScreenVC: CardDataCellDelegate {
 
 
 
-// MARK: - 권한 설정
+// MARK: - [권한 설정]
 
 extension EditScreenVC {
     
@@ -761,7 +726,7 @@ extension EditScreenVC {
         }
     }
     
-    // MARK: - 설정 얼럿창
+    // MARK: - 설정으로 이동
     private func showPhotoLibraryAccessDeniedAlert() {
         
         self.customAlert(alertEnum: .photoAccess) { _ in

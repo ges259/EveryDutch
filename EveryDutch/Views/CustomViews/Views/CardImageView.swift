@@ -50,7 +50,6 @@ final class CardImageView: UIView {
         
         self.configureUI()
         self.configureAutoLayout()
-        self.configureAction()
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -63,8 +62,6 @@ extension CardImageView {
     
     // MARK: - UI 설정
     private func configureUI() {
-        
-//        self.addShadow(shadowType: .card)
         self.backgroundImg.setRoundedCorners(.all, withCornerRadius: 10)
         self.blurView.setRoundedCorners(.all, withCornerRadius: 10)
         self.blurView.isHidden = true
@@ -128,36 +125,55 @@ extension CardImageView {
         }
     }
     
-    // MARK: - 액션 설정
-    private func configureAction() {
-        
+    // MARK: - 카드의 기본적인 데이터 설정
+    func configureUserData(data userData: User) {
+        self.titleLbl.text = userData.userName
+        self.nameLbl.text = userData.personalID
     }
     
     
-    func titleColorChange(color: UIColor) {
-        self.titleLbl.textColor = color
+    
+    
+    
+    
+    
+    
+    
+    
+    // MARK: - 카드의 색상 변경
+    func updateCardColor(type: DecorationCellType,
+                         color: UIColor?) {
+        switch type {
+        case .titleColor:
+            self.titleLbl.textColor = color
+            
+        case .pointColor:
+            self.lineView.backgroundColor = color
+            
+        case .backgroundColor:
+            self.backgroundImg.backgroundColor = color
+            
+        // blurEffect는 여기서 처리하지 않음
+        default: break
+        }
     }
-    func pointColorChange(color: UIColor) {
-        self.lineView.backgroundColor = color
+    
+    // MARK: - 이미지 변경
+    func updateCardImage(type: ImageCellType,
+                         image: UIImage?) {
+        switch type {
+        case .profileImg:
+            self.userImg.image = image
+            
+        case .backgroundImg:
+            self.backgroundImg.image = image
+        }
     }
-    func backgroundColorChange(color: UIColor) {
-        self.backgroundImg.backgroundColor = color
-    }
-    func backgroundImgChange(image: UIImage?) {
-        self.backgroundImg.image = image
-    }
-    func profileImgChange(image: UIImage?) {
-        self.userImg.image = image
-    }
+    
+    // MARK: - 블러 효과 변경
     func blurViewIsHidden(_ isHidden: Bool) {
     // MARK: - Fix
 //        self.blurView.isHidden = isHidden
         self.blurView.isHidden.toggle()
-    }
-    
-    
-    func configureUserData(data userData: User) {
-        self.titleLbl.text = userData.userName
-        self.nameLbl.text = userData.personalID
     }
 }

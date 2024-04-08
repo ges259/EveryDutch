@@ -20,12 +20,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         FirebaseApp.configure()
         
         // 네빙게이션바 설정
-        let navBar = UINavigationBar.appearance()
-        // 네비게이션 이미지의 색상을 검정색으로 변경
-        navBar.tintColor = UIColor.black
-        // 테이블뷰 / 컬렉션뷰 스크롤 했을 때 색상 바뀌는 것 방지
-        navBar.setBackgroundImage(UIImage(), for: .default)
-        navBar.shadowImage = UIImage()
+//        let navBar = UINavigationBar.appearance()
+//        // 네비게이션 이미지의 색상을 검정색으로 변경
+//        navBar.tintColor = UIColor.black
+//        // 테이블뷰 / 컬렉션뷰 스크롤 했을 때 색상 바뀌는 것 방지
+//        navBar.setBackgroundImage(UIImage(), for: .default)
+//        navBar.shadowImage = UIImage()
         return true
     }
 

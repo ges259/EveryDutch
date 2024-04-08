@@ -97,8 +97,7 @@ extension CardDataCell {
     {
         if isFirst { self.configureTextFieldCorner() }
         if isLast { self.configureLastCell() }
-        print(type?.type)
-        print(type?.detail)
+        
         guard let data = type else { return }
         self.cellType = data.type
         

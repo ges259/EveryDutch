@@ -165,7 +165,7 @@
     {
       "identity" : "ypimagepicker",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/Yummypets/YPImagePicker",
+      "location" : "https://github.com/Yummypets/YPImagePicker.git",
       "state" : {
         "revision" : "2db04eb020e3ef03828d3207d85250e110fa5919",
         "version" : "5.2.2"

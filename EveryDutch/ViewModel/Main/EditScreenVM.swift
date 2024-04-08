@@ -189,6 +189,24 @@ extension EditScreenVM {
         return (type, tuple.indexPath)
     }
     
+    
+    
+    func saveImageCellData(databaseString: String, data: UIImage) {
+        // 이미지 데이터를 저장하는 로직
+    }
+
+    func saveDecorationCellData(databaseString: String, data: UIColor) {
+        // 데코레이션 데이터를 저장하는 로직
+    }
+    func saveBlurData() {
+        
+    }
+    
+    func saveTextData() {
+        
+    }
+    
+    
     // MARK: - 변경된 데이터 저장
     // 변경된 데이터를 저장하는 메소드
     func saveChangedData<R: EditCellType>(type: R, data: Any?) {
