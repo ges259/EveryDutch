@@ -24,15 +24,22 @@ protocol ProfileEditVMProtocol {
     
     
     
-    func saveChangedData<T: EditCellType>(type: T,
-                         data: Any?)
+//    func saveChangedData<T: EditCellType>(type: T,
+//                         data: Any?)
+    func saveChangedData(data: Any?)
     
     
+//    func getCurrentCellType<T: EditCellType>(
+//        cellType: T.Type)
+//    -> (type: T,
+//        indexPath: IndexPath)?
     
-    func getCurrentCellType<T: EditCellType>(
-        cellType: T.Type)
-    -> (type: T,
-        indexPath: IndexPath)?
+    
+    func geteImageCellTypeTuple() -> (type: ImageCellType, indexPath: IndexPath)?
+    
+    func getDecorationCellTypeTuple() -> (type: DecorationCellType, indexPath: IndexPath)?
+    
+
     
     // MARK: - 섹션의 개수
     var getNumOfSection: Int { get }

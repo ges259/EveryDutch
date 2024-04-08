@@ -13,7 +13,6 @@ import UIKit
  */
 
 final class EditScreenVM: ProfileEditVMProtocol {
-    
     // typealias EditCellDataCell = (type: EditCellType, detail: String?)
     private var cellDataDictionary: [Int: [EditCellDataCell]] = [:]
     
@@ -33,8 +32,8 @@ final class EditScreenVM: ProfileEditVMProtocol {
     // 객체 생성 또는 편집 화면인지 구분하는 플래그
     private let isMake: Bool
     
-    // 사용자에 의해 변경된 데이터를 저장하는 딕셔너리
-    private var changedData: [String: Any?] = [:]
+    // 사용자에 의해 변경된 데이터를 저장하는 딕셔너리, DB에 저장할 예정
+    private var textData: [String: Any?] = [:]
     private var imageData: [String: Any?] = [:]
     private var decorationData: [String: Any?] = [:]
     
@@ -182,7 +181,7 @@ extension EditScreenVM {
     
     // MARK: - 선택된 셀의 인덱스 반환
     // 현재 선택된 셀 타입과 인덱스 패스를 반환하는 제네릭 메소드
-    func getCurrentCellType<F: EditCellType>(cellType: F.Type) -> (type: F, indexPath: IndexPath)? {
+    private func getCurrentCellType<F: EditCellType>(cellType: F.Type) -> (type: F, indexPath: IndexPath)? {
         guard let tuple = self.selectedIndexTuple, let type = tuple.type as? F else {
             return nil
         }
@@ -190,42 +189,25 @@ extension EditScreenVM {
     }
     
     
-    
-    func saveImageCellData(databaseString: String, data: UIImage) {
-        // 이미지 데이터를 저장하는 로직
-    }
-
-    func saveDecorationCellData(databaseString: String, data: UIColor) {
-        // 데코레이션 데이터를 저장하는 로직
-    }
-    func saveBlurData() {
-        
+    func geteImageCellTypeTuple() -> (type: ImageCellType, indexPath: IndexPath)? {
+        return self.getCurrentCellType(cellType: ImageCellType.self)
     }
     
-    func saveTextData() {
-        
+    func getDecorationCellTypeTuple() -> (type: DecorationCellType, indexPath: IndexPath)? {
+        return self.getCurrentCellType(cellType: DecorationCellType.self)
     }
     
     
-    // MARK: - 변경된 데이터 저장
-    // 변경된 데이터를 저장하는 메소드
-    func saveChangedData<R: EditCellType>(type: R, data: Any?) {
-        let databaseString = type.databaseString
-        
-        switch type {
-        case is ImageCellType : 
-            self.decorationData[databaseString] = data
-            break
-            
-        case is DecorationCellType: 
-            self.decorationData[databaseString] = data
-            break
-            
-        default: 
-            self.changedData[databaseString] = data
-            break
-        }
-    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     // MARK: - 선택된 셀 및 인덱스 저장
     // 현재 선택된 셀 타입과 인덱스 패스를 저장하는 메소드
@@ -235,6 +217,32 @@ extension EditScreenVM {
         }
         self.selectedIndexTuple = (type: type, indexPath: indexPath)
         return type
+    }
+    
+    // MARK: - 변경된 데이터 저장
+    // 변경된 데이터를 저장하는 메소드
+    func saveChangedData(data: Any?) {
+        guard let type = self.selectedIndexTuple?.type else { return }
+        let databaseString = type.databaseString
+        switch type {
+            
+        case is RoomEditCellType, is ProfileEditCellType:
+            self.textData[databaseString] = data
+            break
+            
+        case is ImageCellType:
+            self.decorationData[databaseString] = data
+            break
+            
+        case is DecorationCellType: 
+            self.decorationData[databaseString] = data
+            break
+            
+        default: 
+            print("Error --- \(self) --- \(#function)")
+            self.errorClosure?(.changeEditDataError)
+            break
+        }
     }
 }
     
@@ -350,7 +358,7 @@ extension EditScreenVM {
              */
             for cellType in type.getAllOfCellType {
                 if let cellTypeEnyum = cellType as? ValidationType {
-                    let missingForType = cellTypeEnyum.validation(dict: self.changedData)
+                    let missingForType = cellTypeEnyum.validation(dict: self.textData)
                     missingFields.append(contentsOf: missingForType)
                     break
                 }
@@ -382,7 +390,7 @@ extension EditScreenVM {
     // 방(Room) / 유저(User) 생성을 위한 비동기 함수
     // 변경된 데이터를 바탕으로 API를 호출하여 방을 생성
     private func createData() async throws {
-        let dict = self.changedData.compactMapValues { $0 }
+        let dict = self.textData.compactMapValues { $0 }
         let data = try await self.api?.createData(dict: dict)
         try await self.api?.updateDecoration(
             at: data,

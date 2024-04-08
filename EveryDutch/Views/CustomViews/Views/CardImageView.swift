@@ -136,13 +136,45 @@ extension CardImageView {
     
     
     
+    func updateCardView<T: EditCellType>(
+        type: T,
+        data: Any,
+        onFailure: (ErrorEnum) -> Void)
+    {
+         // data 타입에 따른 분기 처리
+         switch data {
+         case let boolData as Bool:
+             // Bool 타입 데이터 처리
+             self.blurViewIsHidden(!boolData)
+             
+         case let colorData as UIColor:
+             // UIColor 타입 데이터 처리
+             if let decoType = type as? DecorationCellType {
+                 self.updateCardColor(type: decoType, color: colorData)
+             } else {
+                 onFailure(.NoPersonalID)
+             }
+             
+         case let imageData as UIImage:
+             // UIImage 타입 데이터 처리
+             if let imgType = type as? ImageCellType {
+                 self.updateCardImage(type: imgType, image: imageData)
+             } else {
+                 onFailure(.containsWhitespace)
+             }
+             
+         default:
+             onFailure(.unknownError)
+         }
+     }
     
     
     
     
     // MARK: - 카드의 색상 변경
-    func updateCardColor(type: DecorationCellType,
+    private func updateCardColor(type: DecorationCellType?,
                          color: UIColor?) {
+        guard let type = type else { return }
         switch type {
         case .titleColor:
             self.titleLbl.textColor = color
@@ -159,8 +191,9 @@ extension CardImageView {
     }
     
     // MARK: - 이미지 변경
-    func updateCardImage(type: ImageCellType,
+    private func updateCardImage(type: ImageCellType?,
                          image: UIImage?) {
+        guard let type = type else { return }
         switch type {
         case .profileImg:
             self.userImg.image = image
@@ -171,9 +204,7 @@ extension CardImageView {
     }
     
     // MARK: - 블러 효과 변경
-    func blurViewIsHidden(_ isHidden: Bool) {
-    // MARK: - Fix
-//        self.blurView.isHidden = isHidden
+    private func blurViewIsHidden(_ isHidden: Bool) {
         self.blurView.isHidden.toggle()
     }
 }
