@@ -48,7 +48,6 @@
 		5F294B542B4DBA0100396B6E /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 5F294B532B4DBA0100396B6E /* FirebaseDatabase */; };
 		5F294B562B4DBA0100396B6E /* FirebaseDatabaseSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 5F294B552B4DBA0100396B6E /* FirebaseDatabaseSwift */; };
 		5F294B582B4DBA0100396B6E /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 5F294B572B4DBA0100396B6E /* FirebaseStorage */; };
-		5F2A862E2BC2A9600055E432 /* YPImagePicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5F2A862D2BC2A9600055E432 /* YPImagePicker */; };
 		5F2AF6012BA74AD2001487EC /* AlertEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F2AF6002BA74AD2001487EC /* AlertEnum.swift */; };
 		5F2F7A782B3ECD91004B136F /* CardImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F2F7A772B3ECD91004B136F /* CardImageView.swift */; };
 		5F3211AF2B50028B0027C8B3 /* UsersTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F3211AE2B50028B0027C8B3 /* UsersTableView.swift */; };
@@ -121,6 +120,9 @@
 		5F7B9FDA2B6917B1006917E6 /* RoomEditVMProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7B9FD92B6917B1006917E6 /* RoomEditVMProtocol.swift */; };
 		5F7CC32C2B87ACDA00236E84 /* TableHeaderEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7CC32B2B87ACDA00236E84 /* TableHeaderEnum.swift */; };
 		5F7DB59B2B5921E300E8C11F /* PeopleSeelctionEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7DB59A2B5921E300E8C11F /* PeopleSeelctionEnum.swift */; };
+		5F7E3A862BC5C1CF00282E19 /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = 5F7E3A852BC5C1CF00282E19 /* SDWebImage */; };
+		5F7E3A882BC5C1CF00282E19 /* SDWebImageMapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 5F7E3A872BC5C1CF00282E19 /* SDWebImageMapKit */; };
+		5F7E3A8B2BC90C4300282E19 /* YPImagePicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5F7E3A8A2BC90C4300282E19 /* YPImagePicker */; };
 		5F80EA8D2B679CE900BD8D0C /* SelectALoginMethodVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F80EA8C2B679CE900BD8D0C /* SelectALoginMethodVM.swift */; };
 		5F80EA8F2B67BDED00BD8D0C /* UIViewController+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F80EA8E2B67BDED00BD8D0C /* UIViewController+Ext.swift */; };
 		5F80EA912B67DF6500BD8D0C /* SplashScreenVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F80EA902B67DF6500BD8D0C /* SplashScreenVM.swift */; };
@@ -427,6 +429,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				5F294B542B4DBA0100396B6E /* FirebaseDatabase in Frameworks */,
+				5F7E3A8B2BC90C4300282E19 /* YPImagePicker in Frameworks */,
+				5F7E3A882BC5C1CF00282E19 /* SDWebImageMapKit in Frameworks */,
 				5F294B4C2B4DBA0100396B6E /* FirebaseAnalyticsSwift in Frameworks */,
 				5FE3DECF2B39CCAE008D58AE /* SnapKit in Frameworks */,
 				5F66F3AA2B41D7FC005F6C52 /* FSCalendar in Frameworks */,
@@ -434,8 +438,8 @@
 				5F294B582B4DBA0100396B6E /* FirebaseStorage in Frameworks */,
 				5F294B4E2B4DBA0100396B6E /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */,
 				5F294B482B4DBA0100396B6E /* FirebaseAnalytics in Frameworks */,
-				5F2A862E2BC2A9600055E432 /* YPImagePicker in Frameworks */,
 				5F294B522B4DBA0100396B6E /* FirebaseCrashlytics in Frameworks */,
+				5F7E3A862BC5C1CF00282E19 /* SDWebImage in Frameworks */,
 				5F294B562B4DBA0100396B6E /* FirebaseDatabaseSwift in Frameworks */,
 				5F614B352B4590C500EF35CE /* PanModal in Frameworks */,
 				5F294B502B4DBA0100396B6E /* FirebaseAuth in Frameworks */,
@@ -1264,7 +1268,9 @@
 				5F294B532B4DBA0100396B6E /* FirebaseDatabase */,
 				5F294B552B4DBA0100396B6E /* FirebaseDatabaseSwift */,
 				5F294B572B4DBA0100396B6E /* FirebaseStorage */,
-				5F2A862D2BC2A9600055E432 /* YPImagePicker */,
+				5F7E3A852BC5C1CF00282E19 /* SDWebImage */,
+				5F7E3A872BC5C1CF00282E19 /* SDWebImageMapKit */,
+				5F7E3A8A2BC90C4300282E19 /* YPImagePicker */,
 			);
 			productName = EveryDutch;
 			productReference = 5FE3DE8B2B39CA9B008D58AE /* EveryDutch.app */;
@@ -1299,7 +1305,8 @@
 				5F66F3A82B41D7FC005F6C52 /* XCRemoteSwiftPackageReference "FSCalendar" */,
 				5F614B332B4590C500EF35CE /* XCRemoteSwiftPackageReference "PanModal" */,
 				5F294B462B4DBA0100396B6E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
-				5F2A862C2BC2A9600055E432 /* XCRemoteSwiftPackageReference "YPImagePicker" */,
+				5F7E3A842BC5C1CF00282E19 /* XCRemoteSwiftPackageReference "SDWebImage" */,
+				5F7E3A892BC90C4300282E19 /* XCRemoteSwiftPackageReference "YPImagePicker" */,
 			);
 			productRefGroup = 5FE3DE8C2B39CA9B008D58AE /* Products */;
 			projectDirPath = "";
@@ -1747,14 +1754,6 @@
 				minimumVersion = 10.19.1;
 			};
 		};
-		5F2A862C2BC2A9600055E432 /* XCRemoteSwiftPackageReference "YPImagePicker" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Yummypets/YPImagePicker.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.2.2;
-			};
-		};
 		5F614B332B4590C500EF35CE /* XCRemoteSwiftPackageReference "PanModal" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/slackhq/PanModal";
@@ -1769,6 +1768,22 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 2.0.0;
+			};
+		};
+		5F7E3A842BC5C1CF00282E19 /* XCRemoteSwiftPackageReference "SDWebImage" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImage.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.19.1;
+			};
+		};
+		5F7E3A892BC90C4300282E19 /* XCRemoteSwiftPackageReference "YPImagePicker" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Yummypets/YPImagePicker.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.2.2;
 			};
 		};
 		5FE3DECD2B39CCAE008D58AE /* XCRemoteSwiftPackageReference "SnapKit" */ = {
@@ -1827,11 +1842,6 @@
 			package = 5F294B462B4DBA0100396B6E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseStorage;
 		};
-		5F2A862D2BC2A9600055E432 /* YPImagePicker */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 5F2A862C2BC2A9600055E432 /* XCRemoteSwiftPackageReference "YPImagePicker" */;
-			productName = YPImagePicker;
-		};
 		5F614B342B4590C500EF35CE /* PanModal */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 5F614B332B4590C500EF35CE /* XCRemoteSwiftPackageReference "PanModal" */;
@@ -1841,6 +1851,21 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 5F66F3A82B41D7FC005F6C52 /* XCRemoteSwiftPackageReference "FSCalendar" */;
 			productName = FSCalendar;
+		};
+		5F7E3A852BC5C1CF00282E19 /* SDWebImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5F7E3A842BC5C1CF00282E19 /* XCRemoteSwiftPackageReference "SDWebImage" */;
+			productName = SDWebImage;
+		};
+		5F7E3A872BC5C1CF00282E19 /* SDWebImageMapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5F7E3A842BC5C1CF00282E19 /* XCRemoteSwiftPackageReference "SDWebImage" */;
+			productName = SDWebImageMapKit;
+		};
+		5F7E3A8A2BC90C4300282E19 /* YPImagePicker */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5F7E3A892BC90C4300282E19 /* XCRemoteSwiftPackageReference "YPImagePicker" */;
+			productName = YPImagePicker;
 		};
 		5FE3DECE2B39CCAE008D58AE /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;

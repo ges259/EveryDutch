@@ -116,10 +116,7 @@ extension ReceiptScreenPanVC {
     private func configureAutoLayout() {
         self.view.addSubview(self.scrollView)
         self.scrollView.addSubview(self.contentView)
-        
         self.contentView.addSubview(self.usersTableView)
-        
-        
         
         // 스크롤뷰
         self.scrollView.snp.makeConstraints { make in
@@ -214,17 +211,6 @@ extension ReceiptScreenPanVC: UITableViewDelegate {
                    willDisplay cell: UITableViewCell,
                    forRowAt indexPath: IndexPath) {
         // 코너 둥글기 적용
-        self.applyCornerRadiusForCell(cell,
-                                      at: indexPath,
-                                      in: tableView)
-    }
-
-    func applyCornerRadiusForCell(
-        _ cell: UITableViewCell,
-        at indexPath: IndexPath,
-        in tableView: UITableView) 
-    {
-        
         let isFirstIndex = indexPath.row == 0
         
         let isLastIndex = indexPath.row == tableView.numberOfRows(inSection: indexPath.section) - 1

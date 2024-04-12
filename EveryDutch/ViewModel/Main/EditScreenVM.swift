@@ -79,62 +79,24 @@ final class EditScreenVM: ProfileEditVMProtocol {
         
         if !self.isMake {
             self.dataRequiredWhenInEidtMode = dataRequiredWhenInEidtMode
-            Task { await self.initializeCellTypes() }
+            self.initializeCellTypes()
         }
     }
     deinit { print("\(#function)-----\(self)") }
     
     
-    
-    private func initializeCellTypes() async {
-        // 수정 -> 데이터 가져오기 ->> 셀 타입 초기화
-        do {
-            try await self.fetchDatas()
-        } catch let error as ErrorEnum {
-            self.errorClosure?(error)
-        } catch {
-            self.errorClosure?(.unknownError)
-        }
-        print("initializeCellTypes ---")
-    }
-    
-    
-    
-    
-    
-    
-    func setupDataProviders(
-        withData data: EditProviderModel? = nil,
-        decoration: Decoration? = nil)
-    {
-        let dataProviders = self.allCases
-            .first?
-            .createProviders(
-                withData: data,
-                decoration: decoration)
-        // 여기서 self.decoration은 현재 VM이 가지고 있는 Decoration 데이터를 의미함
-        self.updateCellData(with: dataProviders) // 필요한 경우 cell data 업데이트
-    }
-    
-    
-    private func updateCellData(with dataProviders: [EditDataProvider]?) {
-        self.allCases.forEach { screenType in
-            let cellData = screenType
-                .getAllOfCellType
-                .compactMap { cellType -> EditCellDataCell? in
-                    
-                    guard let provider = dataProviders?.first(where: { $0.canProvideData(for: cellType) }) else {
-                        return (type: cellType, detail: nil)
-                    }
-                    
-                    if let detailData = provider.provideData(for: cellType) {
-                        return (type: cellType, detail: detailData)
-                    }
-                    
-                    return (type: cellType, detail: nil)
-                }
-            self.cellDataDictionary[screenType.sectionIndex] = cellData
-            self.updateDataClosure?()
+    // MARK: - 초기 설정
+    private func initializeCellTypes() {
+        Task {
+            // 수정 -> 데이터 가져오기 ->> 셀 타입 초기화
+            do {
+                try await self.fetchDatas()
+            } catch let error as ErrorEnum {
+                self.errorClosure?(error)
+            } catch {
+                self.errorClosure?(.unknownError)
+            }
+            print("initializeCellTypes ---")
         }
     }
 }
@@ -142,72 +104,47 @@ final class EditScreenVM: ProfileEditVMProtocol {
 
 
 
-    
-    
-    
-    
-    
-    
-// MARK: - CellForRowAt
-    
+
+
+
+
+
+
+// MARK: - 튜플 반환
 extension EditScreenVM {
-    
-    // MARK: - 셀 타입 반환
-    // 특정 인덱스 패스에 해당하는 셀 타입을 반환하는 메소드
-    func cellTypes(indexPath: IndexPath) -> EditCellDataCell? {
-        return self.cellDataDictionary[indexPath.section]?[indexPath.row]
-    }
-    
-    // MARK: - 마지막셀 검사
-    // 특정 섹션의 마지막 셀인지 여부를 반환하는 함수
-    // indexPath로 주어진 위치가 해당 섹션의 마지막 셀 위치와 일치할 경우 true를 반환
-    func getLastCell(indexPath: IndexPath) -> Bool {
-        return (self.cellDataDictionary[indexPath.section]?.count ?? 0) - 1 == indexPath.row
-    }
-}
-
-    
-    
-
-
-
-
-
-
-
-// MARK: - 바뀐 데이터 저장
-    
-extension EditScreenVM {
-    
-    // MARK: - 선택된 셀의 인덱스 반환
     // 현재 선택된 셀 타입과 인덱스 패스를 반환하는 제네릭 메소드
-    private func getCurrentCellType<F: EditCellType>(cellType: F.Type) -> (type: F, indexPath: IndexPath)? {
+    private func getCurrentCellType<F: EditCellType>(
+        cellType: F.Type) -> (type: F, indexPath: IndexPath)?
+    {
         guard let tuple = self.selectedIndexTuple, let type = tuple.type as? F else {
             return nil
         }
         return (type, tuple.indexPath)
     }
     
-    
+    // MARK: - 이미지 셀
     func geteImageCellTypeTuple() -> (type: ImageCellType, indexPath: IndexPath)? {
         return self.getCurrentCellType(cellType: ImageCellType.self)
     }
     
+    // MARK: - 데코 셀
     func getDecorationCellTypeTuple() -> (type: DecorationCellType, indexPath: IndexPath)? {
         return self.getCurrentCellType(cellType: DecorationCellType.self)
     }
+}
+
+
+
+
+
     
     
     
     
+
+// MARK: - 바뀐 데이터 저장
     
-    
-    
-    
-    
-    
-    
-    
+extension EditScreenVM {
     
     // MARK: - 선택된 셀 및 인덱스 저장
     // 현재 선택된 셀 타입과 인덱스 패스를 저장하는 메소드
@@ -222,10 +159,13 @@ extension EditScreenVM {
     // MARK: - 변경된 데이터 저장
     // 변경된 데이터를 저장하는 메소드
     func saveChangedData(data: Any?) {
+        // type가져오기
         guard let type = self.selectedIndexTuple?.type else { return }
+        
+        // 각 type에 저장된 데이터베이스 String 가져오기
         let databaseString = type.databaseString
+        
         switch type {
-            
         case is RoomEditCellType, is ProfileEditCellType:
             self.textData[databaseString] = data
             break
@@ -255,7 +195,7 @@ extension EditScreenVM {
 
 
 
-// MARK: - 테이블 데이터
+// MARK: - [테이블 데이터]
 
 extension EditScreenVM {
     
@@ -270,6 +210,28 @@ extension EditScreenVM {
     func getNumOfCell(section: Int) -> Int {
         return self.cellDataDictionary[section]?.count ?? 0
     }
+    
+    // MARK: - 헤더 타이틀
+    // 특정 섹션의 헤더 타이틀을 반환하는 메소드
+    func getHeaderTitle(section: Int) -> String {
+        guard section >= 0 && section < self.allCases.count else {
+            return "Invalid Section"
+        }
+        return self.allCases[section].getHeaderTitle
+    }
+    
+    // MARK: - 셀 타입 반환
+    // 특정 인덱스 패스에 해당하는 셀 타입을 반환하는 메소드
+    func cellTypes(indexPath: IndexPath) -> EditCellDataCell? {
+        return self.cellDataDictionary[indexPath.section]?[indexPath.row]
+    }
+    
+    // MARK: - 마지막셀 검사
+    // 특정 섹션의 마지막 셀인지 여부를 반환하는 함수
+    // indexPath로 주어진 위치가 해당 섹션의 마지막 셀 위치와 일치할 경우 true를 반환
+    func getLastCell(indexPath: IndexPath) -> Bool {
+        return (self.cellDataDictionary[indexPath.section]?.count ?? 0) - 1 == indexPath.row
+    }
 }
     
  
@@ -281,19 +243,48 @@ extension EditScreenVM {
 
 
 
-// MARK: - 화면 데이터
-
+// MARK: - 셀 생성
 extension EditScreenVM {
-    
-    // MARK: - 헤더 타이틀
-    // 특정 섹션의 헤더 타이틀을 반환하는 메소드
-    func getHeaderTitle(section: Int) -> String {
-        guard section >= 0 && section < self.allCases.count else {
-            return "Invalid Section"
-        }
-        return self.allCases[section].getHeaderTitle
+    func setupDataProviders(
+        withData data: EditProviderModel? = nil,
+        decoration: Decoration? = nil)
+    {
+        let dataProviders = self.allCases
+            .first?
+            .createProviders(
+                withData: data,
+                decoration: decoration)
+        // 여기서 self.decoration은 현재 VM이 가지고 있는 Decoration 데이터를 의미함
+        self.updateCellData(with: dataProviders) // 필요한 경우 cell data 업데이트
     }
     
+    private func updateCellData(with dataProviders: [EditDataProvider]?) {
+        self.allCases.forEach { screenType in
+            let cellData = screenType
+                .getAllOfCellType
+                .compactMap { cellType -> EditCellDataCell? in
+                    
+                    guard let provider = dataProviders?.first(where: { $0.canProvideData(for: cellType) }) else {
+                        return (type: cellType, detail: nil)
+                    }
+                    
+                    if let detailData = provider.provideData(for: cellType) {
+                        return (type: cellType, detail: detailData)
+                    }
+                    
+                    return (type: cellType, detail: nil)
+                }
+            self.cellDataDictionary[screenType.sectionIndex] = cellData
+        }
+        // 테이블뷰 리로드를 통해 [테이블 업데이트]
+        self.updateDataClosure?()
+    }
+}
+
+
+// MARK: - 화면 데이터
+extension EditScreenVM {
+        
     // MARK: - 하단 버튼 타이틀
     // 화면 하단에 표시될 버튼의 제목을 반환하는 변수
     // T 타입(섹션 타입)의 첫 번째 케이스를 기준으로, isMake 변수의 값(true 또는 false)에 따라 해당하는 제목을 반환 이는 '생성' 또는 '수정' 화면에 따라 다른 텍스트를 표시할 때 사용
@@ -386,7 +377,16 @@ extension EditScreenVM {
 
 extension EditScreenVM {
     
-    // MARK: - 데이터 생성
+    // MARK: - 데이터 가져오기
+    private func fetchDatas() async throws {
+        let data = try await self.api?.fetchData(dataRequiredWhenInEidtMode: self.dataRequiredWhenInEidtMode)
+        let decoration = try await self.api?.fetchDecoration(dataRequiredWhenInEidtMode: self.dataRequiredWhenInEidtMode)
+        DispatchQueue.main.async {
+            self.setupDataProviders(withData: data, decoration: decoration)
+        }
+    }
+    
+    // MARK: - 데이터 생성(업데이트)
     // 방(Room) / 유저(User) 생성을 위한 비동기 함수
     // 변경된 데이터를 바탕으로 API를 호출하여 방을 생성
     private func createData() async throws {
@@ -395,26 +395,5 @@ extension EditScreenVM {
         try await self.api?.updateDecoration(
             at: data,
             with: self.decorationData)
-    }
-}
-
-
-
-
-
-
-
-
-
-
-// MARK: - 나중에 없앨 코드
-extension EditScreenVM {
-    
-    private func fetchDatas() async throws {
-        let data = try await self.api?.fetchData(dataRequiredWhenInEidtMode: self.dataRequiredWhenInEidtMode)
-        let decoration = try await self.api?.fetchDecoration(dataRequiredWhenInEidtMode: self.dataRequiredWhenInEidtMode)
-        DispatchQueue.main.async {
-            self.setupDataProviders(withData: data, decoration: decoration)
-        }
     }
 }

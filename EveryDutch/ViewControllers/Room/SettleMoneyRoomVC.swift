@@ -155,19 +155,13 @@ extension SettleMoneyRoomVC {
         
         // 모서리 설정
         // 탑뷰
-        self.topView.layer.maskedCorners = [
-            .layerMinXMaxYCorner,
-            .layerMaxXMaxYCorner]
-        self.topView.layer.cornerRadius = 35
+        self.topView.setRoundedCorners(.bottom, withCornerRadius: 35)
         // 탑뷰 하단 '인디케이터'
-        self.topViewIndicator.clipsToBounds = true
-        self.topViewIndicator.layer.cornerRadius = 3
-        // 탑뷰 하단 버튼
+        self.topViewIndicator.setRoundedCorners(.all, withCornerRadius: 3)
         // 영수증 테이블뷰
         [self.topViewBottomBtn,
          self.receiptTableView].forEach { view in
-            view.clipsToBounds = true
-            view.layer.cornerRadius = 10
+            view.setRoundedCorners(.all, withCornerRadius: 10)
         }
     }
     

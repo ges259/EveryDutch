@@ -8,5 +8,5 @@
 import Foundation
 
 protocol EditScreenDelegate: AnyObject {
-    func makeProviderData(with: EditProviderModel)
+    func makeProviderData(with room: EditProviderModel)
 }

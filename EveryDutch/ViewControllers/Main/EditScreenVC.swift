@@ -66,6 +66,10 @@ final class EditScreenVC: UIViewController {
     
     
     
+    private var customImagePicker: ImageCropView = ImageCropView(image: UIImage(named: "practice2")!) { _ in }
+    
+    
+    
     
     
     
@@ -139,6 +143,7 @@ extension EditScreenVC {
         self.contentView.addSubview(self.cardImgView)
         self.contentView.addSubview(self.tableView)
         self.view.addSubview(self.bottomBtn)
+        self.view.addSubview(self.customImagePicker)
         
         // 스크롤뷰
         self.scrollView.snp.makeConstraints { make in
@@ -153,13 +158,10 @@ extension EditScreenVC {
         }
         // 카드 이미지 뷰
         self.cardImgView.snp.makeConstraints { make in
-            make.height.equalTo(self.cardHeight)
-        }
-        // 스택뷰
-        self.cardImgView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(2)
             make.leading.equalToSuperview().offset(10)
             make.trailing.equalToSuperview().offset(-10)
+            make.height.equalTo(self.cardHeight)
         }
         // 테이블뷰
         self.tableView.snp.makeConstraints { make in
@@ -171,6 +173,11 @@ extension EditScreenVC {
         self.bottomBtn.snp.makeConstraints { make in
             make.bottom.leading.trailing.equalToSuperview()
             make.height.equalTo(UIDevice.current.bottomBtnHeight)
+        }
+        self.customImagePicker.snp.makeConstraints { make in
+            make.leading.trailing.bottom.equalToSuperview()
+            make.height.equalTo(500)
+//            make.edges.equalToSuperview()
         }
     }
     
@@ -200,17 +207,17 @@ extension EditScreenVC {
     
     // MARK: - 클로저 설정
     private func configureClosure() {
-        self.viewModel.successDataClosure = { [weak self] in
+        self.viewModel.successDataClosure = { @MainActor [weak self] in
             print("\(#function) --- successDataClosure")
             self?.coordinator.didFinish()
         }
         
-        self.viewModel.updateDataClosure = { [weak self] in
+        self.viewModel.updateDataClosure = { @MainActor [weak self] in
             self?.tableView.reloadData()
         }
         
-        self.viewModel.makeDataClosure = { [weak self] user in
-            self?.coordinator.makeProviderData(with: user)
+        self.viewModel.makeDataClosure = { @MainActor [weak self] userData in
+            self?.coordinator.makeProviderData(with: userData)
         }
         
         self.viewModel.errorClosure = { [weak self] errorType in
@@ -251,6 +258,8 @@ extension EditScreenVC {
         self.viewModel.validation()
     }
     
+    // MARK: - 에러 설정
+    @MainActor
     private func errorType(_ errorType: ErrorEnum) {
         switch errorType {
             
@@ -340,7 +349,7 @@ extension EditScreenVC: UITableViewDataSource {
             section: section)
     }
     
-    // MARK: - 셀 구성
+    // MARK: - cellForRowAt
     func tableView(_ tableView: UITableView,
                    cellForRowAt indexPath: IndexPath)
     -> UITableViewCell {
@@ -391,14 +400,13 @@ extension EditScreenVC: UITableViewDataSource {
     
     
     
-    // MARK: - 셀을 눌렀을 때
+    // MARK: - didSelectRowAt
     func tableView(
         _ tableView: UITableView,
         didSelectRowAt indexPath: IndexPath)
     {
         // 현재 선택된 셀의 [타입 및 IndexPath] 저장
-        let type = self.viewModel.saveCurrentIndexAndType(
-            indexPath: indexPath)
+        let type = self.viewModel.saveCurrentIndexAndType(indexPath: indexPath)
         // 셀 마다 다른 역할 수행
         self.screenChange(type: type)
     }
@@ -407,23 +415,13 @@ extension EditScreenVC: UITableViewDataSource {
         // 섹션마다(타입 별로) 다른 역할
         switch type {
             // 이미지 섹션
-        case let imageType as ImageCellType:
-            self.selectedImgTypeCell(type: imageType)
+        case is ImageCellType:
+            self.requestPhotoLibraryAccess()
             // 데코 섹션
         case let decorationType as DecorationCellType:
             self.selectedDecorationTypeCell(type: decorationType)
             
         default: break
-        }
-    }
-    
-    // MARK: - [이미지 섹션]
-    private func selectedImgTypeCell(type: ImageCellType) {
-        self.requestPhotoLibraryAccess()
-        
-        switch type {
-        case .profileImg: break
-        case .backgroundImg: break
         }
     }
     

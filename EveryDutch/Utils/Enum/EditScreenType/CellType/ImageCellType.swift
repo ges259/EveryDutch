@@ -37,4 +37,20 @@ enum ImageCellType: Int, EditCellType, CaseIterable {
         case .backgroundImg: return data?.backgroundImage ?? nil
         }
     }
+    
+    
+    
+    var cropRatio: CGFloat {
+        switch self {
+        case .profileImg: return 1
+        case .backgroundImg: return 0.6
+        }
+    }
 }
+
+
+/*
+ 
+ let cropFrame = cropView.frame.intersection(imageView.frame)
+ cropView.frame = scrollView.convert(cropFrame, from: imageView)
+ */

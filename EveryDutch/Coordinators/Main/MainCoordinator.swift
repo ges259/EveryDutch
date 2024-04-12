@@ -180,11 +180,11 @@ final class MainCoordinator: MainCoordProtocol{
 // MARK: - EditScreenDelegate 델리게이트
 extension MainCoordinator: EditScreenDelegate {
 
-    func makeProviderData(with: EditProviderModel) {
+    func makeProviderData(with room: EditProviderModel) {
         print(#function)
         
         if let mainVC = self.findMainVC,
-           let room = with as? Rooms {
+           let room = room as? Rooms {
             mainVC.makeRoom(room: room)
         }
     }
