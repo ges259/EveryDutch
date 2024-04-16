@@ -112,8 +112,8 @@ final class SettleMoneyRoomVC: UIViewController {
     
     /// 테이블뷰의 셀의 높이
     private lazy var cellHeight: CGFloat = self.receiptTableView.frame.width / 7 * 2
-    
 
+    
     
     
     

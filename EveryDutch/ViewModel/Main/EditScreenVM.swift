@@ -27,6 +27,9 @@ final class EditScreenVM: ProfileEditVMProtocol {
     
     
 
+    var imagePickerIsOpen: Bool = false
+    
+    
     
     
     // 객체 생성 또는 편집 화면인지 구분하는 플래그
@@ -47,7 +50,6 @@ final class EditScreenVM: ProfileEditVMProtocol {
     var makeDataClosure: ((EditProviderModel) -> Void)?
     // 에러 발생 시 처리할 클로저
     var errorClosure: ((ErrorEnum) -> Void)?
-    
     
     
     

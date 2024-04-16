@@ -66,8 +66,16 @@ final class EditScreenVC: UIViewController {
     
     
     
-    private var customImagePicker: ImageCropView = ImageCropView(image: UIImage(named: "practice2")!) { _ in }
-    private var imagePickrHeight: NSLayoutConstraint!
+    private lazy var imagePickerView: ImageCropView = {
+        let view = ImageCropView()
+        view.delegate = self
+        return view
+    }()
+    
+    
+    
+    
+    private var imagePickrHeight: Constraint!
     
     
     
@@ -86,10 +94,19 @@ final class EditScreenVC: UIViewController {
     /// CardScreenCoordinator로 전달 됨
     weak var delegate: EditScreenDelegate?
     
+    private lazy var cardHeight = { (self.view.frame.width - 20) * 1.8 / 3 }()
     
     
-    private lazy var cardHeight = (self.view.frame.width - 20) * 1.8 / 3
-    private var boolean2: Bool = false
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     
@@ -131,11 +148,11 @@ extension EditScreenVC {
     private func configureUI() {
         self.view.backgroundColor = UIColor.base_Blue
         
-//        self.tableView.addShadow(shadowType: .card)
+        self.imagePickerView.addShadow(shadowType: .top)
         
         self.profileChangeBtn.setRoundedCorners(.bottom, withCornerRadius: 12)
         self.backgroundChangeBtn.setRoundedCorners(.bottom, withCornerRadius: 12)
-        self.customImagePicker.setRoundedCorners(.top, withCornerRadius: 12)
+        self.imagePickerView.setRoundedCorners(.top, withCornerRadius: 12)
         
         // 하단 버튼 설정
         self.bottomBtn.setTitle(self.viewModel.getBottomBtnTitle, for: .normal)
@@ -150,7 +167,7 @@ extension EditScreenVC {
         self.contentView.addSubview(self.cardImgView)
         self.contentView.addSubview(self.tableView)
         self.view.addSubview(self.bottomBtn)
-        self.view.addSubview(self.customImagePicker)
+        self.view.addSubview(self.imagePickerView)
         
         // 스크롤뷰
         self.scrollView.snp.makeConstraints { make in
@@ -181,16 +198,13 @@ extension EditScreenVC {
             make.bottom.leading.trailing.equalToSuperview()
             make.height.equalTo(UIDevice.current.bottomBtnHeight)
         }
-        self.customImagePicker.snp.makeConstraints { make in
+        // 이미지 피커 뷰
+        self.imagePickerView.snp.makeConstraints { make in
             make.leading.trailing.bottom.equalToSuperview()
-            make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(
-                self.cardHeight + 2 + 3)
-//            make.height.equalTo(self.view.safeAreaLayoutGuide.snp - self.cardHeight)
+            self.imagePickrHeight = make.height.equalTo(0).constraint
         }
-//        let height = self.view.frame.height - self.cardImgView.frame.height
-//        self.imagePickrHeight =
-        
-        
+        // 기존에 imagePickerView 높이를 설정하는 제약조건을 활성화합니다.
+        self.imagePickrHeight.isActive = true
     }
     
     // MARK: - 액션 설정
@@ -476,30 +490,36 @@ extension EditScreenVC: UIScrollViewDelegate {
 
 
 
-// MARK: - [데코레이션]
+// MARK: - [데이터] 셀 델리게이트
+extension EditScreenVC: CardDataCellDelegate {
+    func textData(type: EditCellType, text: String) {
+        self.viewModel.saveChangedData(data: text)
+        // 카드 텍스트 변경
+    }
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - [데코레이션] 셀 델리게이트
 
 extension EditScreenVC: ColorPickerDelegate, ImagePickerDelegate {
     
     // MARK: - 이미지 변경
     func imageSelect(image: UIImage?) {
-        self.updatedUI(data: image) {
-            // 튜플 가져오기
-            return self.viewModel.geteImageCellTypeTuple()
-            
-        } updateAction: { cell in
-            cell.imgIsChanged(image: image)
-        }
+        // 이미지 띄우기
+        self.openImagePicker(isOpen: true, image: image)
     }
-
+    
     // MARK: - 색상 변경
     func decorationCellChange(_ data: UIColor) {
-        self.updatedUI(data: data) {
-            // 튜플 가져오기
-            return self.viewModel.getDecorationCellTypeTuple()
-            
-        } updateAction: { cell in
-            cell.colorIsChanged(color: data)
-        }
+        
     }
     
     // MARK: - 블러 효과 변경
@@ -511,6 +531,40 @@ extension EditScreenVC: ColorPickerDelegate, ImagePickerDelegate {
             return self.viewModel.getDecorationCellTypeTuple()
         } updateAction: { cell in
             cell.blurEffectIsHidden(booleanData)
+        }
+    }
+}
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
+// MARK: - 업데이트
+
+extension EditScreenVC {
+    
+    // MARK: - 이미지
+    private func updateImage(image: UIImage) {
+        self.updatedUI(data: image) {
+            // 튜플 가져오기
+            return self.viewModel.geteImageCellTypeTuple()
+        } updateAction: { cell in
+            cell.imgIsChanged(image: image)
+        }
+    }
+    
+    // MARK: - 색상
+    func updateColor(color: UIColor) {
+        self.updatedUI(data: color) {
+            // 튜플 가져오기
+            return self.viewModel.getDecorationCellTypeTuple()
+        } updateAction: { cell in
+            cell.colorIsChanged(color: color)
         }
     }
 }
@@ -574,13 +628,6 @@ extension EditScreenVC {
 
 
 
-// MARK: - [데이터] 셀 델리게이트
-extension EditScreenVC: CardDataCellDelegate {
-    func textData(type: EditCellType, text: String) {
-        self.viewModel.saveChangedData(data: text)
-        // 카드 텍스트 변경
-    }
-}
 
 
 
@@ -668,4 +715,41 @@ extension EditScreenVC {
 // MARK: - 하단 이미지 피커 뷰
 extension EditScreenVC {
     
+    // EditScreenVC에서 requestPhotoLibraryAccess함수 -> 코디네이터 -> 이미지 선택창 이동
+    // 이미지 선택 시 -> coordinator에서 openImagePicker함수 호출
+    // 저장 선택 시 -> 화면 내려감
+    
+    func openImagePicker(
+        isOpen: Bool,
+        image: UIImage? = nil)
+    {
+        self.viewModel.imagePickerIsOpen = isOpen
+        
+        self.imagePickerView.setupImage(image: image)
+        
+        // 높이 설정
+        let height = self.viewModel.imagePickerIsOpen
+        // 열려있는 상태
+        ? self.view.frame.height - (self.view.safeAreaInsets.top + self.cardHeight + 14)
+        // 닫혀있는 상태
+        : 0
+        
+        self.imagePickrHeight.update(
+            offset: height)
+        
+        UIView.animate(withDuration: 0.5) {
+            self.view.layoutIfNeeded()
+        }
+    }
+}
+
+
+extension EditScreenVC: ImageCropDelegate{
+    func cancel() {
+        self.openImagePicker(isOpen: false)
+    }
+    
+    func done(with image: UIImage) {
+        print(#function)
+    }
 }

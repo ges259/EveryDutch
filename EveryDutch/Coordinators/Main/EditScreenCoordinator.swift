@@ -153,12 +153,9 @@ extension EditScreenCoordinator {
     
     
     func imagePickerScreen() {
-//        let image = UIImage(named: "practice2")
-//        guard let image = image else { return }
-//        let ypcropVC = YPCropVC(image: image)
-//        ypcropVC.modalPresentationStyle = .fullScreen
-//        self.nav.present(ypcropVC, animated: true)
-//        self.nav.presentPanModal(ypcropVC)
+        let imagePicker = UIImagePickerController()
+        imagePicker.delegate = self
+        self.nav.present(imagePicker, animated: true)
     }
 }
 

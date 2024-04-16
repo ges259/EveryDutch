@@ -8,6 +8,13 @@
 import UIKit
 import SnapKit
 
+
+protocol ToolbarDelegate: AnyObject {
+    func cancelBtnTapped()
+    func saveBtnTapped()
+//    func
+}
+
 final class ToolbarStackView: UIStackView {
     
     // MARK: - 레이아웃
@@ -22,7 +29,8 @@ final class ToolbarStackView: UIStackView {
         backgroundColor: .clear)
     
     
-    
+    // MARK: - 프로퍼티
+    weak var delegate: ToolbarDelegate?
     
     
     
@@ -36,6 +44,7 @@ final class ToolbarStackView: UIStackView {
         
         self.setupStackView()
         self.setupUI()
+        self.setupAction()
     }
     required init(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -66,6 +75,17 @@ final class ToolbarStackView: UIStackView {
     
     
     private func setupAction() {
+        self.cancelBtn.addTarget(
+            self,
+            action: #selector(self.cancel),
+            for: .touchUpInside)
+        self.doneButton.addTarget(
+            self,
+            action: #selector(self.done),
+            for: .touchUpInside)
+    }
+    
+    private func setupGestureRecognizers() {
         
     }
     
@@ -73,10 +93,10 @@ final class ToolbarStackView: UIStackView {
     
     @objc
     func cancel() {
-        print(#function)
+        self.delegate?.cancelBtnTapped()
     }
     @objc
     func done() {
-        print(#function)
+        self.delegate?.saveBtnTapped()
     }
 }
