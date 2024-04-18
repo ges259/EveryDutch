@@ -11,6 +11,7 @@ import SnapKit
 protocol ImageCropDelegate: AnyObject {
     func cancel()
     func done(with image: UIImage)
+    func changedLocation(image: UIImage)
 }
 
 
@@ -147,6 +148,7 @@ extension ImageCropView {
             self.imageView.image = nil
             return
         }
+        // 이미지 바꾸기
         self.imageView.image = image
         // imageView 비율 업데이트
         self.updateImageViewHeight(aspectRatio: image.size.height / image.size.width)
@@ -161,6 +163,7 @@ extension ImageCropView {
         }
         // 레이아웃 업데이트
         self.layoutIfNeeded()
+        self.changeCardImageView()
     }
     
     
@@ -283,7 +286,7 @@ extension ImageCropView {
         }
     }
     
-    // MARK: - 팬 위치 액션
+    // MARK: - 화면 위치 재조정
     private func adjustBounds() {
         let imageRect = self.imageView.frame
         let cropRect = self.cropArea.frame
@@ -321,6 +324,14 @@ extension ImageCropView {
                 
             }
         }
+        self.changeCardImageView()
+    }
+    
+    private func changeCardImageView() {
+        print("\(#function) --- 1")
+        guard let cropedImage = self.cropImage() else { return }
+        print("\(#function) --- 2")
+        self.delegate?.changedLocation(image: cropedImage)
     }
     
     

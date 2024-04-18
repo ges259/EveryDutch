@@ -11,6 +11,7 @@ struct Rooms: EditProviderModel {
     var roomID: String
     var versionID: String
     var roomName: String
+//    var className: String
     var roomImg: String
     
     init(roomID: String, dictionary: [String: Any]) {
@@ -18,5 +19,14 @@ struct Rooms: EditProviderModel {
         self.roomName = dictionary[DatabaseConstants.room_name] as? String ?? ""
         self.versionID = "\(dictionary[DatabaseConstants.version_ID] as? Int ?? 0)"
         self.roomImg = dictionary[DatabaseConstants.manager_name] as? String ?? ""
+    }
+    
+    var titleText: String {
+        return self.roomName
+    }
+    
+    var nameText: String {
+//        return self.className
+        return "더치더치"
     }
 }

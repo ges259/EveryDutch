@@ -514,7 +514,7 @@ extension EditScreenVC: ColorPickerDelegate, ImagePickerDelegate {
     // MARK: - 이미지 변경
     func imageSelect(image: UIImage?) {
         // 이미지 띄우기
-        self.openImagePicker(isOpen: true, image: image)
+        self.setupImagePicker(isOpen: true, image: image)
     }
     
     // MARK: - 색상 변경
@@ -719,14 +719,21 @@ extension EditScreenVC {
     // 이미지 선택 시 -> coordinator에서 openImagePicker함수 호출
     // 저장 선택 시 -> 화면 내려감
     
-    func openImagePicker(
+    func setupImagePicker(
         isOpen: Bool,
         image: UIImage? = nil)
     {
+        // 현재 상태 저장
         self.viewModel.imagePickerIsOpen = isOpen
-        
-        self.imagePickerView.setupImage(image: image)
-        
+        // 이미지가 있다면, 바꾸기
+        if let image = image { self.changeImagePicker(with: image) }
+        // 스크롤뷰 설정 변경
+        self.disableScrollAndMoveToTop(isOpen: isOpen)
+        // 이미지 피커의 높이 재설정
+        self.changeImagePickerHeight(isOpen: isOpen)
+    }
+    
+    private func changeImagePickerHeight(isOpen: Bool) {
         // 높이 설정
         let height = self.viewModel.imagePickerIsOpen
         // 열려있는 상태
@@ -741,15 +748,38 @@ extension EditScreenVC {
             self.view.layoutIfNeeded()
         }
     }
+    
+    private func changeImagePicker(with image: UIImage) {
+        self.imagePickerView.setupImage(image: image)
+    }
+    func disableScrollAndMoveToTop(isOpen: Bool) {
+        if isOpen {
+            // 스크롤뷰의 contentOffset을 (0,0)으로 설정하여 맨 위로 이동
+            self.scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
+        }
+        
+        // 스크롤 기능을 비활성화
+        self.scrollView.isScrollEnabled = !isOpen
+    }
 }
 
 
 extension EditScreenVC: ImageCropDelegate{
     func cancel() {
-        self.openImagePicker(isOpen: false)
+        // 원래 이미지로 변경
+        
+        // 이미지 피커 안 보이게 하기
+        self.setupImagePicker(isOpen: false)
     }
     
     func done(with image: UIImage) {
-        print(#function)
+        // 이미지 바꾸기 및 바뀐 이미지 저장
+        self.updateImage(image: image)
+        // 이미지 피커 안 보이게 하기
+        self.setupImagePicker(isOpen: false)
+    }
+    func changedLocation(image: UIImage) {
+        guard let currentType = self.viewModel.geteImageCellTypeTuple() else { return }
+        self.cardImgView.updateCardView(type: currentType.type, data: image, onFailure: self.errorType(_:))
     }
 }

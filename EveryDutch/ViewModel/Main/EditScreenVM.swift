@@ -247,7 +247,7 @@ extension EditScreenVM {
 
 // MARK: - 셀 생성
 extension EditScreenVM {
-    func setupDataProviders(
+    private func setupDataProviders(
         withData data: EditProviderModel? = nil,
         decoration: Decoration? = nil)
     {

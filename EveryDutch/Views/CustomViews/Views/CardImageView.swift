@@ -19,7 +19,8 @@ final class CardImageView: UIView {
     private var titleLbl: CustomLabel = CustomLabel(
         font: .boldSystemFont(ofSize: 25))
     
-    private var dutchImg: UIImageView = UIImageView()
+    private var dutchImg: UIImageView = UIImageView(
+        image: UIImage(named: "DutchIcon"))
     
     private var arrowImg: UIImageView = UIImageView()
     
@@ -41,6 +42,15 @@ final class CardImageView: UIView {
     
     
     // MARK: - 프로퍼티
+    private var originalBackgroundImage: UIImage?
+    private var originalUserImage: UIImage?
+    
+    func resetBackgroundImage() {
+        self.backgroundImg.image = self.originalBackgroundImage
+    }
+    func resetUserImage() {
+        self.userImg.image = self.originalUserImage
+    }
     
     
     

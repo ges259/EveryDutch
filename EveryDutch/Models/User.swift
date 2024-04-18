@@ -7,7 +7,10 @@
 
 import UIKit
 
-protocol EditProviderModel {}
+protocol EditProviderModel {
+    var titleText: String { get }
+    var nameText: String { get }
+}
 
 
 struct User: EditProviderModel {
@@ -19,5 +22,13 @@ struct User: EditProviderModel {
         self.personalID = dictionary[DatabaseConstants.personal_ID] as? String ?? ""
         self.userName = dictionary[DatabaseConstants.user_name] as? String ?? ""
         self.userProfile = dictionary[DatabaseConstants.user_image] as? String ?? ""
+    }
+    
+    var titleText: String {
+        return self.userName
+    }
+    
+    var nameText: String {
+        return self.personalID
     }
 }

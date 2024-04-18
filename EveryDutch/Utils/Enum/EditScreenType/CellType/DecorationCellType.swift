@@ -10,6 +10,7 @@ import UIKit
 // MARK: - DecorationCellType
 enum DecorationCellType: Int, EditCellType, CaseIterable {
     case blurEffect = 0
+//    case backgroundImg
     case titleColor
     case pointColor
     case backgroundColor
