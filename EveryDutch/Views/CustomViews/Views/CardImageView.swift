@@ -46,7 +46,7 @@ final class CardImageView: UIView {
     
     // MARK: - 프로퍼티
     // 데코레이션 모델, 초기화 시 해당 데이터 사용
-    private var originalDecorationData: Decoration?
+    var originalDecorationData: Decoration?
     
     
     
@@ -162,13 +162,16 @@ extension CardImageView {
     func resetCardData(type: DecorationCellType) {
         switch type {
         case .background:
+            print("1")
 //            self.backgroundImg = self.originalDecorationData?.backgroundImage ??
 //            self.backgroundColor = self.originalDecorationData?.backgroundColor ??
             break
-        case .titleColor: 
+        case .titleColor:
+            print("2")
 //            self.titleLbl.textColor = self.originalDecorationData?.titleColor ??
             break
-        case .pointColor: 
+        case .pointColor:
+            print("3")
 //            self.lineView.backgroundColor = self.originalDecorationData?.pointColor ??
 //            self.nameLbl.textColor = self.originalDecorationData?.pointColor ??
             break

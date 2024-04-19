@@ -48,6 +48,7 @@ final class EditScreenVM: ProfileEditVMProtocol {
     var updateDataClosure: (() -> Void)?
     var successDataClosure: (() -> Void)?
     var makeDataClosure: ((EditProviderModel) -> Void)?
+    var decorationDataClosure: ((Decoration?) -> Void)?
     // 에러 발생 시 처리할 클로저
     var errorClosure: ((ErrorEnum) -> Void)?
     
@@ -168,6 +169,10 @@ extension EditScreenVM {
             break
             
         case is DecorationCellType: 
+            // MARK: - Fix
+            // Decoration의 경우, 이미지, 색상, Boolean값을 따로 저장
+            // OR
+            // 모두 한 번에 저장 후, DB에 저장할 때, 나누기 (이게 좋겠다.)
             self.decorationData[databaseString] = data
             break
             
@@ -242,33 +247,13 @@ extension EditScreenVM {
         withData data: EditProviderModel? = nil,
         decoration: Decoration? = nil)
     {
-        let dataProviders = self.allCases
-            .first?
-            .createProviders(
-                withData: data,
-                decoration: decoration)
-        // 여기서 self.decoration은 현재 VM이 가지고 있는 Decoration 데이터를 의미함
-        self.updateCellData(with: dataProviders) // 필요한 경우 cell data 업데이트
-    }
-    
-    private func updateCellData(with dataProviders: [EditDataProvider]?) {
-        self.allCases.forEach { screenType in
-            let cellData = screenType
-                .getAllOfCellType
-                .compactMap { cellType -> EditCellDataCell? in
-                    
-                    guard let provider = dataProviders?.first(where: { $0.canProvideData(for: cellType) }) else {
-                        return (type: cellType, detail: nil)
-                    }
-                    
-                    if let detailData = provider.provideData(for: cellType) {
-                        return (type: cellType, detail: detailData)
-                    }
-                    
-                    return (type: cellType, detail: nil)
-                }
-            self.cellDataDictionary[screenType.sectionIndex] = cellData
-        }
+        let datas = self.allCases.first?.createProviders(
+            withData: data,
+            decoration: decoration)
+        
+        guard let datas = datas else { return }
+        self.cellDataDictionary = datas
+        
         // 테이블뷰 리로드를 통해 [테이블 업데이트]
         self.updateDataClosure?()
     }
@@ -337,7 +322,6 @@ extension EditScreenVM {
             /*
              cellType
              - RoomEditCellType.allCases
-             - ImageCellType.allCases
              - DecorationCellType.allCases
              */
             for cellType in type.getAllOfCellType {
@@ -376,6 +360,7 @@ extension EditScreenVM {
         let decoration = try await self.api?.fetchDecoration(dataRequiredWhenInEidtMode: self.dataRequiredWhenInEidtMode)
         DispatchQueue.main.async {
             self.setupDataProviders(withData: data, decoration: decoration)
+            self.decorationDataClosure?(decoration)
         }
     }
     

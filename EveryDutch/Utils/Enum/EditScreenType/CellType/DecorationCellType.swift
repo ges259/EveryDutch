@@ -37,6 +37,11 @@ enum DecorationCellType: Int, EditCellType, CaseIterable {
     }
     
     
+    static func getDetails(deco: Decoration?) -> [(type: EditCellType, detail: String?)] {
+        return DecorationCellType.allCases.map { cellType -> (type: EditCellType, detail: String?) in
+            return (type: cellType, detail: cellType.detail(for: deco))
+        }
+    }
     
     func detail(for data: Decoration?) -> String? {
         switch self {

@@ -10,8 +10,10 @@ import Foundation
 // MARK: - EditScreenType
 
 protocol EditScreenType {
-    func createProviders(withData data: EditProviderModel?, decoration: Decoration?) -> [EditDataProvider]
-
+    func createProviders(
+        withData data: EditProviderModel?,
+        decoration: Decoration?) -> [Int: [EditCellDataCell]]
+    
     var apiType: EditScreenAPIType { get }
     
     // MARK: - 헤더 타이틀

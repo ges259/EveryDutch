@@ -12,7 +12,7 @@ protocol ProfileEditVMProtocol {
     var updateDataClosure: (() -> Void)? { get set }
     var makeDataClosure: ((EditProviderModel) -> Void)? { get set }
     var errorClosure: ((ErrorEnum) -> Void)? { get set }
-    
+    var decorationDataClosure: ((Decoration?) -> Void)? { get set }
     
     // MARK: - 하단 버튼 타이틀
     var getBottomBtnTitle: String? { get }

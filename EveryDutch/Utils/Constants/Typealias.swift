@@ -52,4 +52,4 @@ typealias floatingType = (show: Bool, alpha: CGFloat)
 
 typealias ReceiptDataCell = (type: ReceiptEnum, detail: String)
 typealias ProfileDataCell = (type: ProfileType, detail: String?)
-typealias EditCellDataCell = (type: EditCellType, detail: String?)
+typealias EditCellDataCell = (type: any EditCellType, detail: String?)

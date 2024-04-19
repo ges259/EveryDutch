@@ -220,6 +220,10 @@ extension EditScreenVC {
         self.viewModel.errorClosure = { [weak self] errorType in
             self?.errorType(errorType)
         }
+        
+        self.viewModel.decorationDataClosure = { [weak self] deco in
+            self?.cardImgView.originalDecorationData = deco
+        }
     }
 }
 
@@ -706,10 +710,9 @@ extension EditScreenVC {
 // MARK: - 이미지 크롭 델리게이트
 extension EditScreenVC: ImageCropDelegate{
     func cancel() {
-        
-        // MARK: - Fix
+        guard let currentType = self.viewModel.getDecorationCellTypeTuple() else { return }
         // 원래 이미지로 변경
-        
+        self.cardImgView.resetCardData(type: currentType.type)
         // 이미지 피커 안 보이게 하기
         self.setupImagePicker(isOpen: false)
     }

@@ -52,11 +52,18 @@ enum RoomEditCellType: Int, EditCellType, ValidationType, CaseIterable {
         }
     }
     
-    func detail(for room: Rooms?) -> String? {
+    static func getDetails(data: EditProviderModel?) -> [(type: EditCellType, detail: String?)] {
+        return RoomEditCellType.allCases.map { cellType -> (type: EditCellType, detail: String?) in
+            return (type: cellType, detail: cellType.detail(for: data))
+        }
+    }
+    
+    func detail(for room: EditProviderModel?) -> String? {
+        guard let room = room as? Rooms else { return nil }
         switch self {
-        case .roomName: return room?.roomName
-        case .className: return room?.roomName
-        case .ManagerName: return room?.versionID
+        case .roomName: return room.roomName
+        case .className: return room.roomName
+        case .ManagerName: return room.versionID
         }
     }
 }

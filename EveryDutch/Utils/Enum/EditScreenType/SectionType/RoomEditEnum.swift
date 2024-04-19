@@ -13,16 +13,30 @@ enum RoomEditEnum: Int, EditScreenType, CaseIterable {
     case cardDecoration
     
     
-    
     func createProviders(
         withData data: EditProviderModel?,
-        decoration: Decoration?) -> [EditDataProvider]
+        decoration: Decoration?) -> [Int: [EditCellDataCell]]
     {
-        return [
-            RoomsDataProvider(roomsData: data as? Rooms),
-            DecorationDataProvider(decorationData: decoration)
-        ]
+        var detailsDictionary: [Int: [EditCellDataCell]] = [:]
+        
+        RoomEditEnum.allCases.forEach { roomEditEnum in
+            switch roomEditEnum {
+            case .roomData:
+                let roomEditCellTypes = RoomEditCellType.getDetails(data: data)
+                detailsDictionary[roomEditEnum.sectionIndex] = roomEditCellTypes
+                
+            case .cardDecoration:
+                let decoEditCellTypes = DecorationCellType.getDetails(deco: decoration)
+                detailsDictionary[roomEditEnum.sectionIndex] = decoEditCellTypes
+            }
+        }
+        return detailsDictionary
     }
+    
+    
+    
+    
+    
     
     var apiType: EditScreenAPIType {
         return RoomsAPI.shared

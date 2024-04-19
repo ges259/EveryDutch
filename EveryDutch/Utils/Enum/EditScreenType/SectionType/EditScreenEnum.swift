@@ -10,31 +10,38 @@ import Foundation
 // MARK: - ProfileEditEnum
 enum ProfileEditEnum: Int, EditScreenType, CaseIterable {
     case userData = 0
-//    case imageData
     case cardDecoration
     
     
     
+    // MARK: - 셀 생성
     func createProviders(
         withData data: EditProviderModel?,
-        decoration: Decoration?) -> [EditDataProvider]
+        decoration: Decoration?) -> [Int: [EditCellDataCell]]
     {
+        var detailsDictionary: [Int: [EditCellDataCell]] = [:]
         
-        return [
-            UserDataProvider(userData: data as? User),
-            DecorationDataProvider(decorationData: decoration)
-        ]
+        RoomEditEnum.allCases.forEach { roomEditEnum in
+            switch roomEditEnum {
+            case .roomData:
+                let roomEditCellTypes = ProfileEditCellType.getDetails(data: data)
+                detailsDictionary[roomEditEnum.sectionIndex] = roomEditCellTypes
+                
+            case .cardDecoration:
+                let decoEditCellTypes = DecorationCellType.getDetails(deco: decoration)
+                detailsDictionary[roomEditEnum.sectionIndex] = decoEditCellTypes
+            }
+        }
+        return detailsDictionary
     }
     
     
-    
-    
-    
+    // MARK: - 유효성 검사
     func validataionData(data: [String: Any]) -> Bool {
         return ProfileEditCellType.allCases.allSatisfy { data.keys.contains($0.databaseString) }
     }
     
-    
+    // MARK: - API 타입
     var apiType: EditScreenAPIType {
         return UserAPI.shared
     }

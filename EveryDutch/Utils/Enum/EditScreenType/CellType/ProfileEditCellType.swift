@@ -53,10 +53,20 @@ enum ProfileEditCellType: Int, EditCellType, ValidationType, CaseIterable {
         }
     }
     
-    func detail(for user: User?) -> String? {
+    
+    
+    
+    static func getDetails(data: EditProviderModel?) -> [(type: EditCellType, detail: String?)] {
+        return ProfileEditCellType.allCases.map { cellType -> (type: EditCellType, detail: String?) in
+            return (type: cellType, detail: cellType.detail(for: data))
+        }
+    }
+    func detail(for user: EditProviderModel?) -> String? {
+        guard let user = user as? User else { return nil }
+        
         switch self {
-        case .nickName: return user?.userName
-        case .personalID: return user?.personalID
+        case .nickName: return user.userName
+        case .personalID: return user.personalID
         }
     }
 }
