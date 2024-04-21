@@ -12,8 +12,6 @@ enum ProfileEditEnum: Int, EditScreenType, CaseIterable {
     case userData = 0
     case cardDecoration
     
-    
-    
     // MARK: - 셀 생성
     func createProviders(
         withData data: EditProviderModel?,
@@ -35,19 +33,19 @@ enum ProfileEditEnum: Int, EditScreenType, CaseIterable {
         return detailsDictionary
     }
     
-    
     // MARK: - 유효성 검사
-    func validataionData(data: [String: Any]) -> Bool {
-        return ProfileEditCellType.allCases.allSatisfy { data.keys.contains($0.databaseString) }
+    func validation(data: [String: Any?]) -> [String] {
+        let profileValidation = ProfileEditCellType.validation(dict: data)
+        // 추가적으로 다른 cellType에 유효성 검사가 필요할 경우,
+        // profileValidation + decorationValidation
+        // 해당 방식으로 사용
+        return profileValidation
     }
     
     // MARK: - API 타입
     var apiType: EditScreenAPIType {
         return UserAPI.shared
     }
-    
-    
-    
     
     // MARK: - rawValue 반환
     var sectionIndex: Int {
@@ -58,7 +56,6 @@ enum ProfileEditEnum: Int, EditScreenType, CaseIterable {
     var getAllOfCellType: [EditCellType] {
         switch self {
         case .userData:         return ProfileEditCellType.allCases
-//        case .imageData:        return ImageCellType.allCases
         case .cardDecoration:   return DecorationCellType.allCases
         }
     }
@@ -67,7 +64,6 @@ enum ProfileEditEnum: Int, EditScreenType, CaseIterable {
     var getHeaderTitle: String {
         switch self {
         case .userData:       return "회원 정보"
-//        case .imageData:      return self.imageHeaderTitle
         case .cardDecoration: return self.cardHeaderTitle
         }
     }

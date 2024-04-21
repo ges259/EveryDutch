@@ -8,7 +8,14 @@
 import UIKit
 import SnapKit
 import Photos
-
+/*
+ successDataClosure
+ 데이터 성공 후, 뒤로가기만 구현한 상태.
+ -> Rooms인 경우 방 추가 (MainVC에)
+ -> User인 경우 아무것도 안함
+ 
+ Decoration이 저장이 안 됨
+ */
 final class EditScreenVC: UIViewController {
     
     // MARK: - 레이아웃
@@ -227,14 +234,7 @@ extension EditScreenVC {
     }
 }
 
-/*
- successDataClosure
- 데이터 성공 후, 뒤로가기만 구현한 상태.
- -> Rooms인 경우 방 추가 (MainVC에)
- -> User인 경우 아무것도 안함
- 
- Decoration이 저장이 안 됨
- */
+
 
 
 
@@ -409,11 +409,12 @@ extension EditScreenVC: UITableViewDataSource {
         _ tableView: UITableView,
         didSelectRowAt indexPath: IndexPath)
     {
+        print(#function)
         // 현재 선택된 셀의 [타입 및 IndexPath] 저장
-        let type = self.viewModel.saveCurrentIndexAndGetType(indexPath: indexPath)
+        self.viewModel.saveCurrentIndex(indexPath: indexPath)
         
         // 섹션마다(타입 별로) 다른 역할
-        switch type {
+        switch self.viewModel.getCurrentType() {
             // 데코 섹션
         case let decorationType as DecorationCellType:
             self.selectedDecorationTypeCell(type: decorationType)
@@ -453,10 +454,23 @@ extension EditScreenVC: CardDataCellDelegate,
                         ColorPickerDelegate,
                         ImagePickerDelegate {
     
-    func textData(type: EditCellType, text: String) {
+    func textData(cell: CardDataCell, type: EditCellType, text: String) {
+        print(#function)
+        // 선택된 셀의 IndexPath 저장
+        let row = self.saveTextFieldsIndexPath(cell: cell)
+        // 변경된 텍스트 데이터 저장
         self.viewModel.saveChangedData(data: text)
         // 카드 텍스트 변경
+        self.cardImgView.updateDataCellText(indexPath: row, text: text)
     }
+    private func saveTextFieldsIndexPath(cell: CardDataCell) -> Int {
+        if let indexPath = self.tableView.indexPath(for: cell) {
+            self.viewModel.saveCurrentIndex(indexPath: indexPath)
+            return indexPath.row
+        }
+        return -1
+    }
+    
     
     // MARK: - 이미지 변경
     func imageSelect(image: UIImage?) {

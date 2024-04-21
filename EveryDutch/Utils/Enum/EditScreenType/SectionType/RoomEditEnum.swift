@@ -12,7 +12,7 @@ enum RoomEditEnum: Int, EditScreenType, CaseIterable {
     case roomData = 0
     case cardDecoration
     
-    
+    // MARK: - 셀 생성
     func createProviders(
         withData data: EditProviderModel?,
         decoration: Decoration?) -> [Int: [EditCellDataCell]]
@@ -33,16 +33,19 @@ enum RoomEditEnum: Int, EditScreenType, CaseIterable {
         return detailsDictionary
     }
     
+    // MARK: - 유효성 검사
+    func validation(data: [String: Any?]) -> [String] {
+        let roomValidation = RoomEditCellType.validation(dict: data)
+        // 추가적으로 다른 cellType에 유효성 검사가 필요할 경우,
+        // roomValidation + decorationValidation
+        // 해당 방식으로 사용
+        return roomValidation
+    }
     
-    
-    
-    
-    
+    // MARK: - API 타입
     var apiType: EditScreenAPIType {
         return RoomsAPI.shared
     }
-    
-    
     
     // MARK: - rawValue 반환
     var sectionIndex: Int {

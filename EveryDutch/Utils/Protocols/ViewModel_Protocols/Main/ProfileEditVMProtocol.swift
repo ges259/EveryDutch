@@ -20,7 +20,8 @@ protocol ProfileEditVMProtocol {
     // MARK: - 네비게이션 타이틀
     var getNavTitle: String? { get }
     
-    func saveCurrentIndexAndGetType(indexPath: IndexPath) -> EditCellType?
+    func saveCurrentIndex(indexPath: IndexPath)
+    func getCurrentType() -> EditCellType?
     
     
     var imagePickerIsOpen: Bool { get set }

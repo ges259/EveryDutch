@@ -129,6 +129,11 @@ extension EditScreenVM {
     func getDecorationCellTypeTuple() -> (type: DecorationCellType, indexPath: IndexPath)? {
         return self.getCurrentCellType(cellType: DecorationCellType.self)
     }
+    
+    // MARK: - 셀 반환
+    func getCurrentType() -> EditCellType? {
+        return self.selectedIndexTuple?.type
+    }
 }
 
 
@@ -146,12 +151,13 @@ extension EditScreenVM {
     
     // MARK: - 선택된 셀 및 인덱스 저장
     // 현재 선택된 셀 타입과 인덱스 패스를 저장하는 메소드
-    func saveCurrentIndexAndGetType(indexPath: IndexPath) -> EditCellType? {
+    func saveCurrentIndex(indexPath: IndexPath) {
         guard let type = self.cellTypes(indexPath: indexPath)?.type else {
-            return nil
+            // MARK: - Fix
+            // 에러 처리
+            return
         }
         self.selectedIndexTuple = (type: type, indexPath: indexPath)
-        return type
     }
     
     // MARK: - 변경된 데이터 저장
@@ -165,10 +171,10 @@ extension EditScreenVM {
         
         switch type {
         case is RoomEditCellType, is ProfileEditCellType:
-            self.textData[databaseString] = data
+            self.updateText(databaseString: databaseString, text: data)
             break
             
-        case is DecorationCellType: 
+        case is DecorationCellType:
             // MARK: - Fix
             // Decoration의 경우, 이미지, 색상, Boolean값을 따로 저장
             // OR
@@ -180,6 +186,16 @@ extension EditScreenVM {
             print("Error --- \(self) --- \(#function)")
             self.errorClosure?(.changeEditDataError)
             break
+        }
+    }
+    
+    
+    private func updateText(databaseString: String, text: Any?) {
+        // 옵셔널바인딩 실패, 비어있는 상태라면, 지우기
+        if let text = text as? String, text == "" {
+            self.textData.removeValue(forKey: databaseString)
+        } else {
+            self.textData[databaseString] = text
         }
     }
 }
@@ -257,11 +273,6 @@ extension EditScreenVM {
         // 테이블뷰 리로드를 통해 [테이블 업데이트]
         self.updateDataClosure?()
     }
-}
-
-
-// MARK: - 화면 데이터
-extension EditScreenVM {
         
     // MARK: - 하단 버튼 타이틀
     // 화면 하단에 표시될 버튼의 제목을 반환하는 변수
@@ -302,8 +313,10 @@ extension EditScreenVM {
         Task {
             do {
                 guard self.roomValidation() else { throw ErrorEnum.unknownError }
-                try await self.createData()
-                self.successDataClosure?()
+                // MARK: - Fix
+                // 나중에 주석 풀기
+//                try await self.createData()
+//                self.successDataClosure?()
                 
             } catch let error as ErrorEnum {
                 self.errorClosure?(error)
@@ -316,28 +329,10 @@ extension EditScreenVM {
     
     // MARK: - 유효성 검사
     private func roomValidation() -> Bool {
-        var missingFields: [String] = []
-        
-        for type in self.allCases {
-            /*
-             cellType
-             - RoomEditCellType.allCases
-             - DecorationCellType.allCases
-             */
-            for cellType in type.getAllOfCellType {
-                if let cellTypeEnyum = cellType as? ValidationType {
-                    let missingForType = cellTypeEnyum.validation(dict: self.textData)
-                    missingFields.append(contentsOf: missingForType)
-                    break
-                }
-            }
-            // 첫 번째 type에서 누락된 필드가 발견되면 전체 검증 중단
-            // 필요에 따라 이 부분을 조정
-            if !missingFields.isEmpty { break }
-        }
-        // 빈칸           -> true
-        // 오류값이 있다    -> false
-        return missingFields.isEmpty
+        let dict = self.allCases.first?.validation(data: self.textData)
+        // MARK: - Fix
+        // 오류 처리 (databaseString)
+        return dict?.isEmpty ?? false
     }
 }
 

@@ -51,7 +51,7 @@
 		5F2AF6012BA74AD2001487EC /* AlertEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F2AF6002BA74AD2001487EC /* AlertEnum.swift */; };
 		5F2F7A782B3ECD91004B136F /* CardImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F2F7A772B3ECD91004B136F /* CardImageView.swift */; };
 		5F3211AF2B50028B0027C8B3 /* UsersTableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F3211AE2B50028B0027C8B3 /* UsersTableView.swift */; };
-		5F46896B2B6E5482001352FA /* EditScreenEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F46896A2B6E5482001352FA /* EditScreenEnum.swift */; };
+		5F46896B2B6E5482001352FA /* ProfileEditEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F46896A2B6E5482001352FA /* ProfileEditEnum.swift */; };
 		5F46896D2B6E5494001352FA /* RoomEditEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F46896C2B6E5494001352FA /* RoomEditEnum.swift */; };
 		5F47CD082B3AD8F500FCBFA4 /* EditScreenVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F47CD072B3AD8F500FCBFA4 /* EditScreenVM.swift */; };
 		5F47CD0A2B3AE9D800FCBFA4 /* ProfileEditVMProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F47CD092B3AE9D800FCBFA4 /* ProfileEditVMProtocol.swift */; };
@@ -259,7 +259,7 @@
 		5F2AF6002BA74AD2001487EC /* AlertEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertEnum.swift; sourceTree = "<group>"; };
 		5F2F7A772B3ECD91004B136F /* CardImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardImageView.swift; sourceTree = "<group>"; };
 		5F3211AE2B50028B0027C8B3 /* UsersTableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersTableView.swift; sourceTree = "<group>"; };
-		5F46896A2B6E5482001352FA /* EditScreenEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditScreenEnum.swift; sourceTree = "<group>"; };
+		5F46896A2B6E5482001352FA /* ProfileEditEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditEnum.swift; sourceTree = "<group>"; };
 		5F46896C2B6E5494001352FA /* RoomEditEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomEditEnum.swift; sourceTree = "<group>"; };
 		5F47CD072B3AD8F500FCBFA4 /* EditScreenVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditScreenVM.swift; sourceTree = "<group>"; };
 		5F47CD092B3AE9D800FCBFA4 /* ProfileEditVMProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditVMProtocol.swift; sourceTree = "<group>"; };
@@ -580,8 +580,8 @@
 			children = (
 				5FE3DEC32B39CBA4008D58AE /* MainCollectionViewCell.swift */,
 				5FFD44512B6BB8A1009A38DA /* ProfileCell.swift */,
-				5F729BF12B6CFC8000F3DDCA /* CardDecorationCell.swift */,
 				5F729C002B6D42A900F3DDCA /* CardDataCell.swift */,
+				5F729BF12B6CFC8000F3DDCA /* CardDecorationCell.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -633,7 +633,7 @@
 			isa = PBXGroup;
 			children = (
 				5F0C462D2B910E46009E9920 /* CommonEditScreenType.swift */,
-				5F46896A2B6E5482001352FA /* EditScreenEnum.swift */,
+				5F46896A2B6E5482001352FA /* ProfileEditEnum.swift */,
 				5F46896C2B6E5494001352FA /* RoomEditEnum.swift */,
 			);
 			path = SectionType;
@@ -1356,7 +1356,7 @@
 				5F8AB54C2BCA65EA006161C2 /* ImageCropView.swift in Sources */,
 				5F8513DA2B4D67EC00A5B22D /* CreateReceipt.swift in Sources */,
 				5F0C46312B910EE5009E9920 /* ProfileEditCellType.swift in Sources */,
-				5F46896B2B6E5482001352FA /* EditScreenEnum.swift in Sources */,
+				5F46896B2B6E5482001352FA /* ProfileEditEnum.swift in Sources */,
 				5F7DB59B2B5921E300E8C11F /* PeopleSeelctionEnum.swift in Sources */,
 				5F0C46292B910DEA009E9920 /* EditCellType.swift in Sources */,
 				5FA1D0092BAF2E8E00FBA423 /* ProfileType.swift in Sources */,

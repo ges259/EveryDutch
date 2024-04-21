@@ -7,28 +7,25 @@
 
 import Foundation
 
-protocol ValidationType {
-    func validation(dict: [String: Any?]) -> [String]
-}
+//protocol ValidationType {
+//    func validation(dict: [String: Any?]) -> [String]
+//}
 
 
 // MARK: - ProfileEditCellType
-enum ProfileEditCellType: Int, EditCellType, ValidationType, CaseIterable {
+enum ProfileEditCellType: Int, EditCellType, CaseIterable {
     case nickName = 0
     case personalID
     
-    func validation(dict: [String: Any?]) -> [String] {
+    // MARK: - 유효성 검사
+    static func validation(dict: [String: Any?]) -> [String] {
         return ProfileEditCellType.allCases.compactMap { caseItem in
             if !dict.keys.contains(caseItem.databaseString) {
-                print("1111")
                 return caseItem.databaseString
-            } else {
-                print("2222")
             }
             return nil
         }
     }
-    
     
     // MARK: - 셀 타이틀
     var getCellTitle: String {
@@ -54,14 +51,13 @@ enum ProfileEditCellType: Int, EditCellType, ValidationType, CaseIterable {
     }
     
     
-    
-    
+    // MARK: - Detail
     static func getDetails(data: EditProviderModel?) -> [(type: EditCellType, detail: String?)] {
         return ProfileEditCellType.allCases.map { cellType -> (type: EditCellType, detail: String?) in
             return (type: cellType, detail: cellType.detail(for: data))
         }
     }
-    func detail(for user: EditProviderModel?) -> String? {
+    private func detail(for user: EditProviderModel?) -> String? {
         guard let user = user as? User else { return nil }
         
         switch self {

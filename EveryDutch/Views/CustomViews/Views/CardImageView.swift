@@ -137,9 +137,6 @@ extension CardImageView {
         }
         self.nameLbl.snp.makeConstraints { make in
             make.trailing.bottom.equalToSuperview().offset(-20)
-            make.width.height.equalTo(30)
-//            make.leading.equalToSuperview().offset(20)
-//            make.bottom.equalToSuperview().offset(-20)
         }
         self.blurView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
@@ -226,6 +223,23 @@ extension CardImageView {
 
 
 
+
+// MARK: - [데이터] 데이터 업데이트
+extension CardImageView {
+    func updateDataCellText(indexPath: Int, text: String?) {
+        switch indexPath {
+        case 0:
+            self.titleLbl.text = text
+            break
+            
+        case 1: self.nameLbl.text = text
+            break
+            
+        default:
+            break
+        }
+    }
+}
 
 // MARK: - [데코] 데이터 업데이트
 

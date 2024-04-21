@@ -13,6 +13,12 @@ protocol EditScreenType {
     func createProviders(
         withData data: EditProviderModel?,
         decoration: Decoration?) -> [Int: [EditCellDataCell]]
+    func validation(data: [String: Any?]) -> [String]
+    
+    
+    
+    
+    
     
     var apiType: EditScreenAPIType { get }
     

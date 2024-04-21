@@ -136,20 +136,18 @@ extension CardDataCell: UITextFieldDelegate {
     // MARK: - 수정 시작
     func textFieldDidBeginEditing(_ textField: UITextField) {
         print(#function)
+        
+        
     }
     
     // MARK: - 수정 끝
     func textFieldDidEndEditing(_ textField: UITextField) {
-        print(#function)
-        
-        guard let cellType = self.cellType,
-                let text = textField.text,
-                text !=  "" else { return }
-        
-        self.delegate?.textData(type: cellType, text: text)
+        guard let cellType = self.cellType else { return }
+        self.delegate?.textData(cell: self, type: cellType, text: textField.text ?? "")
     }
 }
 
 protocol CardDataCellDelegate: AnyObject {
-    func textData(type: EditCellType, text: String)
+    func textData(cell: CardDataCell, type: EditCellType, text: String)
+    
 }
