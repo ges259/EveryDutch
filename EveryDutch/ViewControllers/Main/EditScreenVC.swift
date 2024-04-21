@@ -61,7 +61,7 @@ final class EditScreenVC: UIViewController {
     private var imagePickrHeight: Constraint!
     
     
-    
+    private let customColorPicker: CustomColorPicker = CustomColorPicker()
     
     
     
@@ -146,6 +146,7 @@ extension EditScreenVC {
         self.contentView.addSubview(self.tableView)
         self.view.addSubview(self.bottomBtn)
         self.view.addSubview(self.imagePickerView)
+        self.view.addSubview(self.customColorPicker)
         
         // 스크롤뷰
         self.scrollView.snp.makeConstraints { make in
@@ -183,6 +184,11 @@ extension EditScreenVC {
         }
         // 기존에 imagePickerView 높이를 설정하는 제약조건을 활성화합니다.
         self.imagePickrHeight.isActive = true
+        
+        
+        self.customColorPicker.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
+        }
     }
     
     // MARK: - 액션 설정
@@ -740,5 +746,72 @@ extension EditScreenVC: ImageCropDelegate{
     func changedLocation(image: UIImage) {
         guard let currentType = self.viewModel.getDecorationCellTypeTuple() else { return }
         self.cardImgView.updateCardView(type: currentType.type, data: image, onFailure: self.errorType(_:))
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+final class CustomColorPicker: UIView {
+    
+    
+    private let colorPicker = ChromaColorPicker()
+    private let brightnessSlider = ChromaBrightnessSlider()
+    private lazy var homeHandle: ChromaColorHandle = {
+        let handle = ChromaColorHandle(color: .blue)
+            handle.accessoryView = imageView
+            handle.accessoryViewEdgeInsets = UIEdgeInsets(top: 2, left: 4, bottom: 4, right: 4)
+        return handle
+    }()
+    
+    private let imageView: UIImageView = {
+        let img = UIImageView(image: UIImage.Exit_Img)
+            img.contentMode = .scaleAspectFit
+            img.tintColor = .white
+        return img
+    }()
+    
+    override init(frame: CGRect) {
+        super.init(frame: .zero)
+        
+        self.setupView()
+        self.setupAutoLayaout()
+    }
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func setupView() {
+        self.backgroundColor = .medium_Blue
+    }
+    
+    private func setupAutoLayaout() {
+        self.addSubview(self.colorPicker)
+        self.addSubview(self.brightnessSlider)
+        colorPicker.connect(brightnessSlider) // or `brightnessSlider.connect(to: colorPicker)`
+        colorPicker.addHandle(homeHandle)
+        
+        
+        self.colorPicker.snp.makeConstraints { make in
+            make.width.height.equalTo(250)
+            make.centerY.equalToSuperview()
+            make.centerX.equalToSuperview()
+        }
+
+        self.brightnessSlider.snp.makeConstraints { make in
+            make.top.equalTo(self.colorPicker.snp.bottom).offset(50)
+            make.leading.trailing.equalTo(self.colorPicker)
+            make.height.equalTo(50)
+        }
     }
 }
