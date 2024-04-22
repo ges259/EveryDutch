@@ -100,6 +100,7 @@
 		5F66F3AA2B41D7FC005F6C52 /* FSCalendar in Frameworks */ = {isa = PBXBuildFile; productRef = 5F66F3A92B41D7FC005F6C52 /* FSCalendar */; };
 		5F67306D2B52DA7C00A91ED5 /* UsersTableViewVMProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F67306C2B52DA7C00A91ED5 /* UsersTableViewVMProtocol.swift */; };
 		5F67306F2B52E4BF00A91ED5 /* SettlementVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F67306E2B52E4BF00A91ED5 /* SettlementVM.swift */; };
+		5F67CA6A2BD5ED6000FD5735 /* CustomColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F67CA692BD5ED6000FD5735 /* CustomColorPicker.swift */; };
 		5F6848782B441A670015BFCC /* SelectALoginMethodCoordProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6848772B441A670015BFCC /* SelectALoginMethodCoordProtocol.swift */; };
 		5F68487A2B441A7E0015BFCC /* SelectALoginMethodCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6848792B441A7E0015BFCC /* SelectALoginMethodCoordinator.swift */; };
 		5F68487C2B441BB70015BFCC /* LoginScreenCoordProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F68487B2B441BB70015BFCC /* LoginScreenCoordProtocol.swift */; };
@@ -312,6 +313,7 @@
 		5F630ADB2B559A96008F9CBD /* Payback.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Payback.swift; sourceTree = "<group>"; };
 		5F67306C2B52DA7C00A91ED5 /* UsersTableViewVMProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersTableViewVMProtocol.swift; sourceTree = "<group>"; };
 		5F67306E2B52E4BF00A91ED5 /* SettlementVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettlementVM.swift; sourceTree = "<group>"; };
+		5F67CA692BD5ED6000FD5735 /* CustomColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomColorPicker.swift; sourceTree = "<group>"; };
 		5F6848772B441A670015BFCC /* SelectALoginMethodCoordProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectALoginMethodCoordProtocol.swift; sourceTree = "<group>"; };
 		5F6848792B441A7E0015BFCC /* SelectALoginMethodCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectALoginMethodCoordinator.swift; sourceTree = "<group>"; };
 		5F68487B2B441BB70015BFCC /* LoginScreenCoordProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginScreenCoordProtocol.swift; sourceTree = "<group>"; };
@@ -668,9 +670,9 @@
 				5F1B97522BD58FE300BAE2D0 /* SliderHandleView.swift */,
 				5F1B97542BD58FFB00BAE2D0 /* SliderTrackView.swift */,
 				5F1B97562BD5901300BAE2D0 /* ChromaBrightnessSlider.swift */,
-				5F1B97582BD590B600BAE2D0 /* ChromaColorPicker.swift */,
 				5F1B97502BD58FC300BAE2D0 /* ChromaColorHandle.swift */,
 				5F1B975A2BD590F000BAE2D0 /* ColorWheelView.swift */,
+				5F1B97582BD590B600BAE2D0 /* ChromaColorPicker.swift */,
 			);
 			path = ColorSelectView;
 			sourceTree = "<group>";
@@ -854,6 +856,7 @@
 				5F729BFC2B6D291A00F3DDCA /* TableHeaderView.swift */,
 				5F729BFE2B6D293500F3DDCA /* TableFooterView.swift */,
 				5F8AB54B2BCA65EA006161C2 /* ImageCropView.swift */,
+				5F67CA692BD5ED6000FD5735 /* CustomColorPicker.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1436,6 +1439,7 @@
 				5F8513ED2B4D70D400A5B22D /* DeleteRoomsThumbnail.swift in Sources */,
 				5F614B3B2B4592EF00EF35CE /* ReceiptWriteVC.swift in Sources */,
 				5FE3DEB62B39CB6F008D58AE /* UIImage+Ext.swift in Sources */,
+				5F67CA6A2BD5ED6000FD5735 /* CustomColorPicker.swift in Sources */,
 				5F5AFBD42B4941B000BBBB9D /* RoomSettingVM.swift in Sources */,
 				5F0C462B2B910E03009E9920 /* EditScreenType.swift in Sources */,
 				5F903E672B3B412A005DE55E /* SettlementTableViewCell.swift in Sources */,

@@ -270,6 +270,21 @@ extension EditScreenVC {
         default: break
         }
     }
+    
+    
+    
+    
+    
+    // MARK: - 화면 상단 고정
+    func disableScrollAndMoveToTop(isOpen: Bool) {
+        if isOpen {
+            // 스크롤뷰의 contentOffset을 (0,0)으로 설정하여 맨 위로 이동
+            self.scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
+        }
+        
+        // 스크롤 기능을 비활성화
+        self.scrollView.isScrollEnabled = !isOpen
+    }
 }
 
 
@@ -659,15 +674,11 @@ extension EditScreenVC {
 
 // MARK: - 하단 이미지 피커 뷰
 extension EditScreenVC {
-    
     // EditScreenVC에서 requestPhotoLibraryAccess함수 -> 코디네이터 -> 이미지 선택창 이동
     // 이미지 선택 시 -> coordinator에서 openImagePicker함수 호출
     // 저장 선택 시 -> 화면 내려감
-    
-    func setupImagePicker(
-        isOpen: Bool,
-        image: UIImage? = nil)
-    {
+    func setupImagePicker(isOpen: Bool,
+                          image: UIImage? = nil) {
         // 현재 상태 저장
         self.viewModel.imagePickerIsOpen = isOpen
         // 이미지가 있다면, 바꾸기
@@ -678,6 +689,7 @@ extension EditScreenVC {
         self.changeImagePickerHeight(isOpen: isOpen)
     }
     
+    // MARK: - 이미지 피커 높이 재설정
     private func changeImagePickerHeight(isOpen: Bool) {
         // 높이 설정
         let height = self.viewModel.imagePickerIsOpen
@@ -691,17 +703,9 @@ extension EditScreenVC {
         }
     }
     
+    // MARK: - 카드 이미지 바꾸기
     private func changeImagePicker(with image: UIImage) {
         self.imagePickerView.setupImage(image: image)
-    }
-    func disableScrollAndMoveToTop(isOpen: Bool) {
-        if isOpen {
-            // 스크롤뷰의 contentOffset을 (0,0)으로 설정하여 맨 위로 이동
-            self.scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
-        }
-        
-        // 스크롤 기능을 비활성화
-        self.scrollView.isScrollEnabled = !isOpen
     }
 }
 
@@ -733,94 +737,5 @@ extension EditScreenVC: ImageCropDelegate{
     func changedLocation(image: UIImage) {
         guard let currentType = self.viewModel.getDecorationCellTypeTuple() else { return }
         self.cardImgView.updateCardView(type: currentType.type, data: image, onFailure: self.errorType(_:))
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-final class CustomColorPicker: UIView {
-    
-    // MARK: - 레이아웃
-    private let colorPicker = ChromaColorPicker()
-    private let brightnessSlider = ChromaBrightnessSlider()
-    private lazy var homeHandle: ChromaColorHandle = {
-        let handle = ChromaColorHandle(color: .blue)
-            handle.accessoryView = imageView
-            handle.accessoryViewEdgeInsets = UIEdgeInsets(top: 2, left: 4, bottom: 4, right: 4)
-        return handle
-    }()
-    
-    private let imageView: UIImageView = {
-        let img = UIImageView(image: UIImage.Exit_Img)
-            img.contentMode = .scaleAspectFit
-            img.tintColor = .white
-        return img
-    }()
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    // MARK: - 라이프사이클
-    override init(frame: CGRect) {
-        super.init(frame: .zero)
-        
-        self.setupView()
-        self.setupAutoLayaout()
-    }
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    // MARK: - 화면 설정
-    private func setupView() {
-        self.backgroundColor = .medium_Blue
-//        self.colorPicker.dele
-    }
-    
-    // MARK: - 오토레이아웃 설정
-    private func setupAutoLayaout() {
-        self.addSubview(self.colorPicker)
-        self.addSubview(self.brightnessSlider)
-        self.colorPicker.connect(self.brightnessSlider) // or `brightnessSlider.connect(to: colorPicker)`
-        self.colorPicker.addHandle(self.homeHandle)
-        
-        
-        self.colorPicker.snp.makeConstraints { make in
-            make.width.height.equalTo(250)
-            make.centerY.equalToSuperview()
-            make.centerX.equalToSuperview()
-        }
-
-        self.brightnessSlider.snp.makeConstraints { make in
-            make.top.equalTo(self.colorPicker.snp.bottom).offset(50)
-            make.leading.trailing.equalTo(self.colorPicker)
-            make.height.equalTo(50)
-        }
     }
 }

@@ -77,11 +77,14 @@ final class ChromaBrightnessSlider: UIControl, ChromaControlStylable {
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.setupView()
+        self.setupSliderTrackView()
+        self.setupSliderHandleView()
+        self.updateTrackColor(to: self.trackColor)
     }
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        self.setupView()
     }
+    /// 뷰가 서브뷰 레이아웃을 조정할 때 호출
     override func layoutSubviews() {
         super.layoutSubviews()
         self.sliderTrackView.layer.cornerRadius = self.sliderTrackView.bounds.height / 2.0
@@ -117,9 +120,6 @@ final class ChromaBrightnessSlider: UIControl, ChromaControlStylable {
 extension ChromaBrightnessSlider {
     private func setupView() {
         self.backgroundColor = .clear
-        self.setupSliderTrackView()
-        self.setupSliderHandleView()
-        self.updateTrackColor(to: self.trackColor)
     }
     
     // MARK: - 오토레이아웃 설정
@@ -207,7 +207,7 @@ extension ChromaBrightnessSlider {
             // 있다면 -> 이 뷰에서 이벤트 처리
             return true
         }
-        // 없다면 -> 상위 클래스 호출 -> 다른 ㄴ뷰에서 처리할지 결정
+        // 없다면 -> 상위 클래스 호출 -> 다른 뷰에서 처리할지 결정
         return super.point(inside: point, with: event)
     }
 }
@@ -230,7 +230,6 @@ extension ChromaBrightnessSlider {
     func connect(to colorPicker: ChromaColorPicker) {
         colorPicker.connect(self)
     }
-    
     // MARK: - 슬라이더의 색상 판단
     /// Returns the relative value on the slider [0.0, 1.0] for the given color brightness ([0.0, 1.0]).
     func value(brightness: CGFloat) -> CGFloat {

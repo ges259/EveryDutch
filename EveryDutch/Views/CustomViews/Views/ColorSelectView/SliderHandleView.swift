@@ -39,11 +39,12 @@ final class SliderHandleView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.setupView()
+        self.updateHandleColor(to: self.handleColor)
     }
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        self.setupView()
     }
+    // 뷰가 서브뷰 레이아웃을 조정할 때 호출
     override func layoutSubviews() {
         let radius: CGFloat = bounds.height / 10
         self.handleLayer.path = makeRoundedTrianglePath(
@@ -64,7 +65,7 @@ final class SliderHandleView: UIView {
     // MARK: - 화면 설정
     private func setupView() {
         self.layer.addSublayer(self.handleLayer)
-        self.updateHandleColor(to: self.handleColor)
+        
     }
     
     // MARK: - 핸들 색상 설정

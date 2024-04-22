@@ -72,8 +72,8 @@ final class ChromaColorHandle: UIView, ChromaControlStylable {
     }
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        self.setupView()
     }
+    // 뷰가 서브뷰 레이아웃을 조정할 때 호출
     override func layoutSubviews() {
         super.layoutSubviews()
         self.layoutHandleShape()
@@ -84,10 +84,11 @@ final class ChromaColorHandle: UIView, ChromaControlStylable {
     }
     func updateShadowIfNeeded() {
         if self.showsShadow {
-            let shadowProps = ShadowProperties(color: UIColor.black.cgColor,
-                                               opacity: 0.3,
-                                               offset: CGSize(width: 0, height: bounds.height / 8.0),
-                                               radius: 4.0)
+            let shadowProps = ShadowProperties(
+                color: UIColor.black.cgColor,
+                opacity: 0.3,
+                offset: CGSize(width: 0, height: self.bounds.height / 8.0),
+                radius: 4.0)
             self.applyDropShadow(shadowProps)
         } else {
             self.removeDropShadow()
@@ -117,14 +118,14 @@ final class ChromaColorHandle: UIView, ChromaControlStylable {
     
     // MARK: - 핸들 설정
     private func layoutHandleShape() {
-        let size = CGSize(width: bounds.width - self.borderWidth, 
-                          height: bounds.height - self.borderWidth)
+        let size = CGSize(width: self.bounds.width - self.borderWidth,
+                          height: self.bounds.height - self.borderWidth)
         self.handleShape.path = self.makeHandlePath(frame: CGRect(
             origin: .zero,
             size: size))
         self.handleShape.frame = CGRect(
-            origin: CGPoint(x: bounds.midX - (size.width / 2), 
-                            y: bounds.midY - (size.height / 2)),
+            origin: CGPoint(x: self.bounds.midX - (size.width / 2),
+                            y: self.bounds.midY - (size.height / 2)),
             size: size)
         
         self.handleShape.fillColor = self.color.cgColor
@@ -135,10 +136,15 @@ final class ChromaColorHandle: UIView, ChromaControlStylable {
     // MARK: - 악세사리뷰 설정
     private func layoutAccessoryViewIfNeeded() {
         if let accessoryLayer = self.accessoryView?.layer {
-            let width = bounds.width - self.borderWidth * 2
-            let size = CGSize(width: width - (self.accessoryViewEdgeInsets.left + self.accessoryViewEdgeInsets.right),
-                              height: width - (self.accessoryViewEdgeInsets.top + self.accessoryViewEdgeInsets.bottom))
-            accessoryLayer.frame = CGRect(origin: CGPoint(x: (self.borderWidth / 2) + self.accessoryViewEdgeInsets.left, y: (self.borderWidth / 2) + self.accessoryViewEdgeInsets.top), size: size)
+            let width = self.bounds.width - self.borderWidth * 2
+            let size = CGSize(
+                width: width - (self.accessoryViewEdgeInsets.left + self.accessoryViewEdgeInsets.right),
+                height: width - (self.accessoryViewEdgeInsets.top + self.accessoryViewEdgeInsets.bottom))
+            accessoryLayer.frame = CGRect(
+                origin: CGPoint(
+                    x: (self.borderWidth / 2) + self.accessoryViewEdgeInsets.left,
+                    y: (self.borderWidth / 2) + self.accessoryViewEdgeInsets.top),
+                size: size)
             
             accessoryLayer.cornerRadius = size.height / 2
             accessoryLayer.masksToBounds = true

@@ -44,10 +44,10 @@ final class ColorWheelView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.setupView()
+        self.setupImageView()
     }
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        self.setupView()
     }
     // 뷰가 서브뷰 레이아웃을 조정할 때 호출
     override func layoutSubviews() {
@@ -70,11 +70,37 @@ final class ColorWheelView: UIView {
         self.imageView.mask = self.imageViewMask
     }
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
     // MARK: - 화면 설정
     private func setupView() {
         self.backgroundColor = .clear
-        self.setupImageView()
     }
+    
+    // MARK: - 오토레이아웃 설정
+    private func setupImageView() {
+        self.addSubview(self.imageView)
+        self.imageView.snp.makeConstraints { make in
+            make.size.equalToSuperview().inset(-defaultImageViewCurveInset * 2)
+            make.center.equalToSuperview()
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     // MARK: - 색상 위치 계산
     func location(of color: UIColor) -> CGPoint {
@@ -144,25 +170,17 @@ final class ColorWheelView: UIView {
         return isPointOnEdge
     }
     
-    // MARK: - 오토레이아웃 설정
-    private func setupImageView() {
-        self.addSubview(self.imageView)
-        self.imageView.snp.makeConstraints { make in
-            make.size.equalToSuperview().inset(-defaultImageViewCurveInset * 2)
-            make.center.equalToSuperview()
-        }
-    }
-    
     // MARK: - 색상 휠 이미지 생성
     private func makeColorWheelImage(radius: CGFloat) -> CIImage? {
-        let filter = CIFilter(name: "CIHueSaturationValueGradient", parameters: [
-            "inputColorSpace": CGColorSpaceCreateDeviceRGB(),
-            "inputDither": 0,
-            "inputRadius": radius,
-            "inputSoftness": 0,
-            "inputValue": 1
-        ])
-        
+        let filter = CIFilter(
+            name: "CIHueSaturationValueGradient",
+            parameters: [
+                "inputColorSpace": CGColorSpaceCreateDeviceRGB(),
+                "inputDither": 0,
+                "inputRadius": radius,
+                "inputSoftness": 0,
+                "inputValue": 1
+            ])
         // CIImage를 생성하여 반환
         return filter?.outputImage?.cropped(to: CGRect(x: 0, y: 0, width: radius * 2, height: radius * 2))
     }

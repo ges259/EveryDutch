@@ -82,11 +82,12 @@ final class ChromaColorPicker: UIControl, ChromaControlStylable {
     override init(frame: CGRect) {
         super.init(frame: frame)
         self.setupView()
+        self.setupColorWheelView()
     }
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        self.setupView()
     }
+    // 뷰가 서브뷰 레이아웃을 조정할 때 호출
     override func layoutSubviews() {
         super.layoutSubviews()
         self.updateShadowIfNeeded()
@@ -128,7 +129,6 @@ final class ChromaColorPicker: UIControl, ChromaControlStylable {
 extension ChromaColorPicker {
     private func setupView() {
         self.backgroundColor = UIColor.clear
-        self.setupColorWheelView()
     }
     
     // MARK: - 오토레이아웃 설정
@@ -198,6 +198,7 @@ extension ChromaColorPicker {
             handle.color = pixelColor.withBrightness(previousBrightness)
             self.positionHandle(handle, forColorLocation: location)
             
+            // 슬라이더의 색상 및 값 변경
             if let slider = self.brightnessSlider {
                 slider.trackColor = pixelColor
                 slider.currentValue = slider.value(brightness: previousBrightness)
@@ -221,7 +222,9 @@ extension ChromaColorPicker {
     // MARK: - 탭
     override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
         // Self should handle all touch events, forwarding if needed.
-        let touchableBounds = self.bounds.insetBy(dx: -handleSize.width, dy: -handleSize.height)
+        let touchableBounds = self.bounds.insetBy(
+            dx: -self.handleSize.width,
+            dy: -self.handleSize.height)
         return touchableBounds.contains(point) ? self : super.hitTest(point, with: event)
     }
 }
@@ -266,8 +269,9 @@ extension ChromaColorPicker {
     
     
     
-    // MARK: - 슬라이더 연결
+    // MARK: - 슬라이더 연결 및 액션 설정
     /// 슬라이더를 colorPicker에 연결하는 메서드
+    /// 슬라이더를 변경할 때마다 호출 됨
     func connect(_ slider: ChromaBrightnessSlider) {
         slider.addTarget(self,
                          action: #selector(self.brightnessSliderDidValueChange(_:)),
@@ -275,13 +279,13 @@ extension ChromaColorPicker {
         self.brightnessSlider = slider
     }
     
-    // MARK: 슬라이더 액션
+    // MARK: 슬라이더 색상 변경
     @objc private func brightnessSliderDidValueChange(_ slider: ChromaBrightnessSlider) {
         guard let currentHandle = self.currentHandle else { return }
             currentHandle.color = slider.currentColor
         self.informDelegateOfColorChange(on: currentHandle)
     }
-    /// 슬라이더 색상 변경
+    // MARK: 핸들 색상 변경
     private func informDelegateOfColorChange(on handle: ChromaColorHandle) {
         self.delegate?.colorPickerHandleDidChange(self, handle: handle, to: handle.color)
     }
@@ -298,7 +302,12 @@ extension ChromaColorPicker {
     }
     
     private func positionHandle(_ handle: ChromaColorHandle, forColorLocation location: CGPoint) {
-        handle.center = location.applying(CGAffineTransform.identity.translatedBy(x: 0, y: -handle.bounds.height / 2))
+        handle.center = location.applying(
+            CGAffineTransform
+                .identity
+                .translatedBy(
+                    x: 0,
+                    y: -handle.bounds.height / 2))
     }
     
     private func animateHandleScale(_ handle: ChromaColorHandle, shouldGrow: Bool) {

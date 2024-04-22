@@ -35,8 +35,8 @@ final class SliderTrackView: UIView {
     }
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-        self.setupView()
     }
+    // 뷰가 서브뷰 레이아웃을 조정할 때 호출
     override func layoutSubviews() {
         super.layoutSubviews()
         // gradient 레이어의 프레임을 뷰의 경계에 맞게 조정
