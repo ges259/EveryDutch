@@ -111,7 +111,7 @@ extension ImageCropView {
             // 높이를 0으로 기본 설정
             self.imagePickrHeight = make.height.equalTo(0).constraint
         }
-        self.imagePickrHeight.isActive = true
+//        self.imagePickrHeight.isActive = true
         self.cropArea.snp.makeConstraints { make in
             make.center.equalToSuperview()
             make.width.equalToSuperview() // 가로길이 비율

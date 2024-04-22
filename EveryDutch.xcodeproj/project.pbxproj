@@ -32,6 +32,12 @@
 		5F1AC30B2BA0E69200E34CAC /* SearchUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F1AC30A2BA0E69200E34CAC /* SearchUser.swift */; };
 		5F1AC30E2BA2AC9400E34CAC /* FindFriendsVMProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F1AC30D2BA2AC9400E34CAC /* FindFriendsVMProtocol.swift */; };
 		5F1AC3102BA2ACC600E34CAC /* FindFriendsVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F1AC30F2BA2ACC600E34CAC /* FindFriendsVM.swift */; };
+		5F1B97512BD58FC300BAE2D0 /* ChromaColorHandle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F1B97502BD58FC300BAE2D0 /* ChromaColorHandle.swift */; };
+		5F1B97532BD58FE300BAE2D0 /* SliderHandleView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F1B97522BD58FE300BAE2D0 /* SliderHandleView.swift */; };
+		5F1B97552BD58FFB00BAE2D0 /* SliderTrackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F1B97542BD58FFB00BAE2D0 /* SliderTrackView.swift */; };
+		5F1B97572BD5901300BAE2D0 /* ChromaBrightnessSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F1B97562BD5901300BAE2D0 /* ChromaBrightnessSlider.swift */; };
+		5F1B97592BD590B600BAE2D0 /* ChromaColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F1B97582BD590B600BAE2D0 /* ChromaColorPicker.swift */; };
+		5F1B975B2BD590F000BAE2D0 /* ColorWheelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F1B975A2BD590F000BAE2D0 /* ColorWheelView.swift */; };
 		5F2159262B7BC6CC0064A998 /* Typealias.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F2159252B7BC6CC0064A998 /* Typealias.swift */; };
 		5F23C20E2B4C04D600C7D6A3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5F23C20D2B4C04D600C7D6A3 /* GoogleService-Info.plist */; };
 		5F24ADB82B6EA42100843AA8 /* ReceiptScreenDataCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F24ADB72B6EA42100843AA8 /* ReceiptScreenDataCell.swift */; };
@@ -249,6 +255,12 @@
 		5F1AC30A2BA0E69200E34CAC /* SearchUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchUser.swift; sourceTree = "<group>"; };
 		5F1AC30D2BA2AC9400E34CAC /* FindFriendsVMProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindFriendsVMProtocol.swift; sourceTree = "<group>"; };
 		5F1AC30F2BA2ACC600E34CAC /* FindFriendsVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FindFriendsVM.swift; sourceTree = "<group>"; };
+		5F1B97502BD58FC300BAE2D0 /* ChromaColorHandle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChromaColorHandle.swift; sourceTree = "<group>"; };
+		5F1B97522BD58FE300BAE2D0 /* SliderHandleView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderHandleView.swift; sourceTree = "<group>"; };
+		5F1B97542BD58FFB00BAE2D0 /* SliderTrackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SliderTrackView.swift; sourceTree = "<group>"; };
+		5F1B97562BD5901300BAE2D0 /* ChromaBrightnessSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChromaBrightnessSlider.swift; sourceTree = "<group>"; };
+		5F1B97582BD590B600BAE2D0 /* ChromaColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChromaColorPicker.swift; sourceTree = "<group>"; };
+		5F1B975A2BD590F000BAE2D0 /* ColorWheelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorWheelView.swift; sourceTree = "<group>"; };
 		5F2159252B7BC6CC0064A998 /* Typealias.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Typealias.swift; sourceTree = "<group>"; };
 		5F23C20D2B4C04D600C7D6A3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5F24ADB72B6EA42100843AA8 /* ReceiptScreenDataCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptScreenDataCell.swift; sourceTree = "<group>"; };
@@ -650,6 +662,19 @@
 			path = EveryDutch/Utils/Protocols/ViewModel_Protocols/RoomSetting;
 			sourceTree = SOURCE_ROOT;
 		};
+		5F1B974F2BD58F9200BAE2D0 /* ColorSelectView */ = {
+			isa = PBXGroup;
+			children = (
+				5F1B97522BD58FE300BAE2D0 /* SliderHandleView.swift */,
+				5F1B97542BD58FFB00BAE2D0 /* SliderTrackView.swift */,
+				5F1B97562BD5901300BAE2D0 /* ChromaBrightnessSlider.swift */,
+				5F1B97582BD590B600BAE2D0 /* ChromaColorPicker.swift */,
+				5F1B97502BD58FC300BAE2D0 /* ChromaColorHandle.swift */,
+				5F1B975A2BD590F000BAE2D0 /* ColorWheelView.swift */,
+			);
+			path = ColorSelectView;
+			sourceTree = "<group>";
+		};
 		5F4FA7202B553B97009EE4F4 /* APIProtocols */ = {
 			isa = PBXGroup;
 			children = (
@@ -822,6 +847,7 @@
 		5F729BF42B6D280600F3DDCA /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				5F1B974F2BD58F9200BAE2D0 /* ColorSelectView */,
 				5F3211AE2B50028B0027C8B3 /* UsersTableView.swift */,
 				5F4913DE2B3DD97100CD76A8 /* NoDataView.swift */,
 				5F2F7A772B3ECD91004B136F /* CardImageView.swift */,
@@ -1379,11 +1405,13 @@
 				5F8513D52B4D676400A5B22D /* UpdateUsers.swift in Sources */,
 				5F4913DD2B3DBE7C00CD76A8 /* SettlementCoordinator.swift in Sources */,
 				5F70069D2B3B57450028DC8B /* UsersTableViewCell.swift in Sources */,
+				5F1B975B2BD590F000BAE2D0 /* ColorWheelView.swift in Sources */,
 				5F729C012B6D42A900F3DDCA /* CardDataCell.swift in Sources */,
 				5FB4F70E2B433DEF002F6CF3 /* SelectALoginMethodVC.swift in Sources */,
 				5F8513D32B4D675500A5B22D /* ReadUsers.swift in Sources */,
 				5F5AFBD02B49403200BBBB9D /* ReceiptWriteVMProtocol.swift in Sources */,
 				5F8513C62B4D307F00A5B22D /* VersionThumbnail.swift in Sources */,
+				5F1B97552BD58FFB00BAE2D0 /* SliderTrackView.swift in Sources */,
 				5F8513E32B4D68AE00A5B22D /* CreateVersion.swift in Sources */,
 				5F5AFBD82B4947E700BBBB9D /* SettleMoneyTableViewCellVM.swift in Sources */,
 				5FFF66192B51B9BE000A5EC4 /* ReceiptWriteUsersCellVM.swift in Sources */,
@@ -1395,8 +1423,10 @@
 				5F71FEEA2BB6DB510005FC7A /* Decoration.swift in Sources */,
 				5F6FDDE42B505DD000F09CCD /* ReceiptScreenPanUsersCellVM.swift in Sources */,
 				5F5AFBCE2B493D2A00BBBB9D /* RoomSettingVMProtocol.swift in Sources */,
+				5F1B97512BD58FC300BAE2D0 /* ChromaColorHandle.swift in Sources */,
 				5F9F76632B6C227D00BB6511 /* ProfileCoordinator.swift in Sources */,
 				5F8513EB2B4D705D00A5B22D /* CreateRooms.swift in Sources */,
+				5F1B97532BD58FE300BAE2D0 /* SliderHandleView.swift in Sources */,
 				5FE3DED82B39F8F3008D58AE /* InsetTextField.swift in Sources */,
 				5F7A49242B97D07C002CB7A8 /* EditScreenAPIType.swift in Sources */,
 				5FB4F7082B433DEF002F6CF3 /* EditScreenVC.swift in Sources */,
@@ -1503,6 +1533,7 @@
 				5F6848872B4431AF0015BFCC /* EditScreenDelegate.swift in Sources */,
 				5FE3DEC62B39CBD9008D58AE /* MainCoordProtocol.swift in Sources */,
 				5F5B2ED52B516C870064B738 /* Date+Ext.swift in Sources */,
+				5F1B97572BD5901300BAE2D0 /* ChromaBrightnessSlider.swift in Sources */,
 				5F4FA7252B553C5B009EE4F4 /* ReceiptAPIProtocol.swift in Sources */,
 				5F47CD0A2B3AE9D800FCBFA4 /* ProfileEditVMProtocol.swift in Sources */,
 				5FC151072B4EEDC0008A9B16 /* ReceiptScreenPanVM.swift in Sources */,
@@ -1519,6 +1550,7 @@
 				5F5AFBC22B49390500BBBB9D /* ReceiptWriteVM.swift in Sources */,
 				5F80EA8D2B679CE900BD8D0C /* SelectALoginMethodVM.swift in Sources */,
 				5F0C462E2B910E46009E9920 /* CommonEditScreenType.swift in Sources */,
+				5F1B97592BD590B600BAE2D0 /* ChromaColorPicker.swift in Sources */,
 				5FE3DEAA2B39CB15008D58AE /* Identifier.swift in Sources */,
 				5FB4F70B2B433DEF002F6CF3 /* RoomSettingVC.swift in Sources */,
 				5F46896D2B6E5494001352FA /* RoomEditEnum.swift in Sources */,

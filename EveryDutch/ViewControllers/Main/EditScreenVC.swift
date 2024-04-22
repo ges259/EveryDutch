@@ -182,10 +182,7 @@ extension EditScreenVC {
             make.leading.trailing.bottom.equalToSuperview()
             self.imagePickrHeight = make.height.equalTo(0).constraint
         }
-        // 기존에 imagePickerView 높이를 설정하는 제약조건을 활성화합니다.
-        self.imagePickrHeight.isActive = true
-        
-        
+        // 컬러 피커 뷰
         self.customColorPicker.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
@@ -499,7 +496,7 @@ extension EditScreenVC: CardDataCellDelegate,
     
     
 
-// MARK: - 셀 업데이트
+// MARK: - 셀 업데이트 분기처리
 
 extension EditScreenVC {
     
@@ -526,22 +523,12 @@ extension EditScreenVC {
             cell.colorIsChanged(color: color)
         }
     }
-}
-
-
-
-
-
-
-
-
-
-
-// MARK: - [셀 업데이트]
-
-extension EditScreenVC {
     
-    // MARK: - 데이터 처리
+    
+    
+    
+    
+    // MARK: - [셀 UI 업데이트]
     // 변경된 데이터 처리 및 셀 업데이트
     func updatedDecorationCellUI(
         data: Any?,
@@ -764,7 +751,7 @@ extension EditScreenVC: ImageCropDelegate{
 
 final class CustomColorPicker: UIView {
     
-    
+    // MARK: - 레이아웃
     private let colorPicker = ChromaColorPicker()
     private let brightnessSlider = ChromaBrightnessSlider()
     private lazy var homeHandle: ChromaColorHandle = {
@@ -781,6 +768,16 @@ final class CustomColorPicker: UIView {
         return img
     }()
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    // MARK: - 라이프사이클
     override init(frame: CGRect) {
         super.init(frame: .zero)
         
@@ -791,15 +788,27 @@ final class CustomColorPicker: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    // MARK: - 화면 설정
     private func setupView() {
         self.backgroundColor = .medium_Blue
+//        self.colorPicker.dele
     }
     
+    // MARK: - 오토레이아웃 설정
     private func setupAutoLayaout() {
         self.addSubview(self.colorPicker)
         self.addSubview(self.brightnessSlider)
-        colorPicker.connect(brightnessSlider) // or `brightnessSlider.connect(to: colorPicker)`
-        colorPicker.addHandle(homeHandle)
+        self.colorPicker.connect(self.brightnessSlider) // or `brightnessSlider.connect(to: colorPicker)`
+        self.colorPicker.addHandle(self.homeHandle)
         
         
         self.colorPicker.snp.makeConstraints { make in
