@@ -9,7 +9,6 @@ import UIKit
 
 protocol ProfileEditVCCoordProtocol: Coordinator {
     
-    func colorPickerScreen()
     func imagePickerScreen()
     
     

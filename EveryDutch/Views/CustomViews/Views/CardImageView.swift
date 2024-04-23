@@ -25,7 +25,7 @@ final class CardImageView: UIView {
     private var arrowImg: UIImageView = UIImageView()
     
     private var lineView: UIView = UIView.configureView(
-        color: UIColor.normal_white)
+        color: UIColor.deep_Blue)
     
     private var nameLbl: CustomLabel = CustomLabel(
         textColor: .placeholder_gray,
@@ -156,7 +156,7 @@ extension CardImageView {
 // MARK: - 데이터 초기화
 
 extension CardImageView {
-    func resetCardData(type: DecorationCellType) {
+    func resetDecorationData(type: DecorationCellType) {
         switch type {
         case .background:
             print("1")
@@ -167,9 +167,8 @@ extension CardImageView {
             print("2")
 //            self.titleLbl.textColor = self.originalDecorationData?.titleColor ??
             break
-        case .pointColor:
+        case .nameColor:
             print("3")
-//            self.lineView.backgroundColor = self.originalDecorationData?.pointColor ??
 //            self.nameLbl.textColor = self.originalDecorationData?.pointColor ??
             break
             
@@ -208,7 +207,6 @@ extension CardImageView {
     func setupDecorationData(data decorationData: Decoration) {
         self.blurView.isHidden = decorationData.blur
 //        self.titleLbl.textColor = decorationData.titleColor
-//        self.lineView.backgroundColor = decorationData.pointColor
 //        self.nameLbl.textColor = decorationData.pointColor
 //        self.backgroundImg.image = decorationData.backgroundImage
 //        self.backgroundImg.backgroundColor = decorationData.backgroundImage
@@ -258,10 +256,10 @@ extension CardImageView {
             self.blurViewIsHidden(!boolData)
             
         case let colorData as UIColor:
-            self.updateCardColor(type: type, color: colorData)
+            self.updateCardData(type: type, color: colorData)
             
         case let imageData as UIImage:
-            self.updateCardColor(type: type, image: imageData)
+            self.updateCardData(type: type, image: imageData)
             
         default:
             onFailure(.unknownError)
@@ -274,15 +272,14 @@ extension CardImageView {
     }
     
     // MARK: - 이미지 및 색상 변경
-    private func updateCardColor(type: DecorationCellType,
+    private func updateCardData(type: DecorationCellType,
                                  color: UIColor? = nil,
                                  image: UIImage? = nil) {
         switch type {
         case .titleColor:
             self.titleLbl.textColor = color
             
-        case .pointColor:
-            self.lineView.backgroundColor = color
+        case .nameColor:
             self.nameLbl.textColor = color
 
         case .background:

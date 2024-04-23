@@ -11,6 +11,12 @@ import SnapKit
 final class CustomColorPicker: UIView {
     
     // MARK: - 레이아웃
+    private lazy var toolbar: ToolbarStackView = {
+        let toolbar = ToolbarStackView()
+            toolbar.delegate = self
+        return toolbar
+    }()
+    
     private lazy var colorPicker = {
         let picker = ChromaColorPicker()
             picker.delegate = self
@@ -33,9 +39,10 @@ final class CustomColorPicker: UIView {
     }()
     
     
+    // MARK: - 프로퍼티
+    weak var delegate: CustomPickerDelegate?
     
-    
-    
+    private var currentColor: UIColor?
     
     
     
@@ -64,15 +71,26 @@ final class CustomColorPicker: UIView {
     // MARK: - 화면 설정
     private func setupView() {
         self.backgroundColor = .medium_Blue
+        self.clipsToBounds = true
+        
+        self.addShadow(shadowType: .top)
+        
+        self.setRoundedCorners(.top, withCornerRadius: 12)
     }
     
     // MARK: - 오토레이아웃 설정
     private func setupAutoLayaout() {
         self.addSubview(self.colorPicker)
         self.addSubview(self.brightnessSlider)
+        self.addSubview(self.toolbar)
+        
         self.colorPicker.connect(self.brightnessSlider)
         self.colorPicker.addHandle(self.homeHandle)
         
+        self.toolbar.snp.makeConstraints { make in
+            make.top.leading.trailing.equalToSuperview()
+            make.height.equalTo(50)
+        }
         self.colorPicker.snp.makeConstraints { make in
             make.size.equalTo(250)
             make.center.equalToSuperview()
@@ -82,6 +100,10 @@ final class CustomColorPicker: UIView {
             make.leading.trailing.equalTo(self.colorPicker)
             make.height.equalTo(50)
         }
+    }
+    
+    func setupColor(color: UIColor?) {
+        
     }
 }
 
@@ -99,7 +121,19 @@ extension CustomColorPicker: ChromaColorPickerDelegate {
     func colorPickerHandleDidChange(_ colorPicker: ChromaColorPicker,
                                     handle: ChromaColorHandle,
                                     to color: UIColor) {
-//        print(color)
+        self.currentColor = color
+        self.delegate?.changedCropLocation(data: color)
     }
 }
 
+// MARK: - 툴바 델리게이트
+extension CustomColorPicker: ToolbarDelegate {
+    func cancelBtnTapped() {
+        self.delegate?.cancel(type: .colorPicker)
+    }
+    
+    func saveBtnTapped() {
+        guard let color = self.currentColor else { return }
+        self.delegate?.done(with: color)
+    }
+}

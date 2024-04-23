@@ -26,10 +26,12 @@ final class EditScreenVM: ProfileEditVMProtocol {
     private var dataRequiredWhenInEidtMode: String?
     
     
-
-    var imagePickerIsOpen: Bool = false
     
+    private var pickerStates: [EditScreenPicker: Bool] = [:]
     
+    func savePickerState(picker: EditScreenPicker, isOpen: Bool) {
+        self.pickerStates[picker] = isOpen
+    }
     
     
     // 객체 생성 또는 편집 화면인지 구분하는 플래그

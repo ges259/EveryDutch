@@ -8,14 +8,12 @@
 import UIKit
 import SnapKit
 
-protocol ImageCropDelegate: AnyObject {
-    func cancel()
-    func done(with image: UIImage)
-    func changedLocation(image: UIImage)
-}
 
 
-class ImageCropView: UIView, UIGestureRecognizerDelegate {
+
+
+
+class CustomImageCropView: UIView, UIGestureRecognizerDelegate {
     
     
     
@@ -55,7 +53,7 @@ class ImageCropView: UIView, UIGestureRecognizerDelegate {
     
     
     // MARK: - 프로퍼티
-    weak var delegate: ImageCropDelegate? = nil
+    weak var delegate: CustomPickerDelegate?
     
     
     
@@ -88,11 +86,17 @@ class ImageCropView: UIView, UIGestureRecognizerDelegate {
 
 // MARK: - 기본 설정
 
-extension ImageCropView {
+extension CustomImageCropView {
     
     // MARK: - 화면 설정
     private func setupView() {
         self.backgroundColor = UIColor.deep_Blue
+        self.clipsToBounds = true
+        
+        
+        self.addShadow(shadowType: .top)
+        
+        self.setRoundedCorners(.top, withCornerRadius: 12)
     }
     
     // MARK: - 오토레이아웃 설정
@@ -106,16 +110,13 @@ extension ImageCropView {
             make.height.equalTo(50)
         }
         self.imageView.snp.makeConstraints { make in
-            make.leading.trailing.equalToSuperview() // 좌우에 맞춤
+            make.leading.trailing.equalToSuperview()
             make.centerY.equalToSuperview()
-            // 높이를 0으로 기본 설정
             self.imagePickrHeight = make.height.equalTo(0).constraint
         }
-//        self.imagePickrHeight.isActive = true
         self.cropArea.snp.makeConstraints { make in
             make.center.equalToSuperview()
-            make.width.equalToSuperview() // 가로길이 비율
-            // 세로길이 비율 (aspect ratio)
+            make.width.equalToSuperview()
             make.height.equalTo(self.cropArea.snp.width).multipliedBy(1.8 / 3)
         }
     }
@@ -140,7 +141,7 @@ extension ImageCropView {
     
     
 
-extension ImageCropView {
+extension CustomImageCropView {
     
     // MARK: - 이미지 설정
     func setupImage(image: UIImage?) {
@@ -174,7 +175,7 @@ extension ImageCropView {
         guard let image = self.imageView.image else { return nil }
         
         let scaleFactor = image.size.width / self.imageView.frame.size.width
-        let cropFrame = cropArea.frame
+        let cropFrame = self.cropArea.frame
         
         let x = (cropFrame.origin.x - self.imageView.frame.origin.x) * scaleFactor
         let y = (cropFrame.origin.y - self.imageView.frame.origin.y) * scaleFactor
@@ -197,7 +198,7 @@ extension ImageCropView {
 
 
 // MARK: - 핀치 액션
-extension ImageCropView {
+extension CustomImageCropView {
     @objc func pinch(_ sender: UIPinchGestureRecognizer) {
         // TODO: Zoom where the fingers are (more user friendly)
         switch sender.state {
@@ -208,7 +209,6 @@ extension ImageCropView {
                                            y: sender.scale)
             self.imageView.transform = transform
         case .ended:
-            print(#function)
             self.pinchGestureEnded()
             self.adjustBounds()
             
@@ -242,7 +242,6 @@ extension ImageCropView {
         
         // 허용된 범위를 벗어난 경우 애니메이션과 함께 원래 범위로 돌아오게 함
         if wentOutOfAllowedBounds {
-            print(#function)
             // 햅틱 피드백을 생성합니다.
             self.generateHapticFeedback()
             // 이미지 뷰의 변형을 애니메이션과 함께 적용
@@ -272,16 +271,16 @@ extension ImageCropView {
 
 
 // MARK: - 팬 액션
-extension ImageCropView {
+extension CustomImageCropView {
     @objc func pan(_ sender: UIPanGestureRecognizer) {
         let translation = sender.translation(in: self)
         if let view = sender.view {
-            self.imageView.center = CGPoint(x: self.imageView.center.x + translation.x, y: self.imageView.center.y + translation.y)
+            self.imageView.center = CGPoint(
+                x: self.imageView.center.x + translation.x,
+                y: self.imageView.center.y + translation.y)
             sender.setTranslation(CGPoint.zero, in: view)
         }
-
         if sender.state == .ended {
-            print(#function)
             self.adjustBounds()
         }
     }
@@ -294,44 +293,38 @@ extension ImageCropView {
         
         // Cap Top.
         if imageRect.minY > cropRect.minY {
-            print("1")
             correctedFrame.origin.y = cropRect.minY
         }
         
         // Cap Bottom.
         if imageRect.maxY < cropRect.maxY {
-            print("2")
             correctedFrame.origin.y = cropRect.maxY - imageRect.height
         }
         
         // Cap Left.
         if imageRect.minX > cropRect.minX {
-            print("3")
             correctedFrame.origin.x = cropRect.minX
         }
         
         // Cap Right.
         if imageRect.maxX < cropRect.maxX {
-            print("4")
             correctedFrame.origin.x = cropRect.maxX - imageRect.width
         }
         
         // Animate back to allowed bounds
         if imageRect != correctedFrame {
-            print("5")
             UIView.animate(withDuration: 0.3) {
                 self.imageView.frame = correctedFrame
-                
             }
         }
         self.changeCardImageView()
     }
     
     private func changeCardImageView() {
-        print("\(#function) --- 1")
+        // 이미지 크롭하기
         guard let cropedImage = self.cropImage() else { return }
-        print("\(#function) --- 2")
-        self.delegate?.changedLocation(image: cropedImage)
+        // 크롭한 이미지 전달
+        self.delegate?.changedCropLocation(data: cropedImage)
     }
     
     
@@ -352,9 +345,9 @@ extension ImageCropView {
 
 
 // MARK: - 툴바 델리게이트
-extension ImageCropView: ToolbarDelegate {
+extension CustomImageCropView: ToolbarDelegate {
     func cancelBtnTapped() {
-        self.delegate?.cancel()
+        self.delegate?.cancel(type: .imagePicker)
     }
     
     func saveBtnTapped() {

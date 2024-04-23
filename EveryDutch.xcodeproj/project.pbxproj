@@ -165,7 +165,7 @@
 		5F87DF2A2B3C999D001D5B80 /* RoomSettingCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F87DF292B3C999D001D5B80 /* RoomSettingCoordinator.swift */; };
 		5F87DF2C2B3C99A3001D5B80 /* RoomSettingCoordProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F87DF2B2B3C99A3001D5B80 /* RoomSettingCoordProtocol.swift */; };
 		5F8AB54A2BCA65C3006161C2 /* ToolbarStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F8AB5492BCA65C3006161C2 /* ToolbarStackView.swift */; };
-		5F8AB54C2BCA65EA006161C2 /* ImageCropView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F8AB54B2BCA65EA006161C2 /* ImageCropView.swift */; };
+		5F8AB54C2BCA65EA006161C2 /* CustomImageCropView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F8AB54B2BCA65EA006161C2 /* CustomImageCropView.swift */; };
 		5F903E672B3B412A005DE55E /* SettlementTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F903E662B3B412A005DE55E /* SettlementTableViewCell.swift */; };
 		5F9905052B4ABACC00DB9747 /* UsersTableViewVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F9905042B4ABACC00DB9747 /* UsersTableViewVM.swift */; };
 		5F9905072B4ABAD400DB9747 /* UsersTableViewCellVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F9905062B4ABAD400DB9747 /* UsersTableViewCellVM.swift */; };
@@ -375,7 +375,7 @@
 		5F87DF292B3C999D001D5B80 /* RoomSettingCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomSettingCoordinator.swift; sourceTree = "<group>"; };
 		5F87DF2B2B3C99A3001D5B80 /* RoomSettingCoordProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomSettingCoordProtocol.swift; sourceTree = "<group>"; };
 		5F8AB5492BCA65C3006161C2 /* ToolbarStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarStackView.swift; sourceTree = "<group>"; };
-		5F8AB54B2BCA65EA006161C2 /* ImageCropView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCropView.swift; sourceTree = "<group>"; };
+		5F8AB54B2BCA65EA006161C2 /* CustomImageCropView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomImageCropView.swift; sourceTree = "<group>"; };
 		5F903E662B3B412A005DE55E /* SettlementTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettlementTableViewCell.swift; sourceTree = "<group>"; };
 		5F9905042B4ABACC00DB9747 /* UsersTableViewVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersTableViewVM.swift; sourceTree = "<group>"; };
 		5F9905062B4ABAD400DB9747 /* UsersTableViewCellVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersTableViewCellVM.swift; sourceTree = "<group>"; };
@@ -855,7 +855,7 @@
 				5F2F7A772B3ECD91004B136F /* CardImageView.swift */,
 				5F729BFC2B6D291A00F3DDCA /* TableHeaderView.swift */,
 				5F729BFE2B6D293500F3DDCA /* TableFooterView.swift */,
-				5F8AB54B2BCA65EA006161C2 /* ImageCropView.swift */,
+				5F8AB54B2BCA65EA006161C2 /* CustomImageCropView.swift */,
 				5F67CA692BD5ED6000FD5735 /* CustomColorPicker.swift */,
 			);
 			path = Views;
@@ -1382,7 +1382,7 @@
 				5FE3DECC2B39CC8D008D58AE /* MainCollectionViewCellVM.swift in Sources */,
 				5F87DF2C2B3C99A3001D5B80 /* RoomSettingCoordProtocol.swift in Sources */,
 				5F02CAB72B6570E000CD5280 /* UINavigationController+Ext.swift in Sources */,
-				5F8AB54C2BCA65EA006161C2 /* ImageCropView.swift in Sources */,
+				5F8AB54C2BCA65EA006161C2 /* CustomImageCropView.swift in Sources */,
 				5F8513DA2B4D67EC00A5B22D /* CreateReceipt.swift in Sources */,
 				5F0C46312B910EE5009E9920 /* ProfileEditCellType.swift in Sources */,
 				5F46896B2B6E5482001352FA /* ProfileEditEnum.swift in Sources */,

@@ -24,7 +24,12 @@ protocol ProfileEditVMProtocol {
     func getCurrentType() -> EditCellType?
     
     
-    var imagePickerIsOpen: Bool { get set }
+//    var imagePickerIsOpen: Bool { get set }
+    
+    
+    func savePickerState(picker: EditScreenPicker, isOpen: Bool)
+    
+    
 //    func saveChangedData<T: EditCellType>(type: T,
 //                         data: Any?)
     func saveChangedData(data: Any?)

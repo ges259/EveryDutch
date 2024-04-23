@@ -12,15 +12,15 @@ enum DecorationCellType: Int, EditCellType, CaseIterable {
     case background = 0
     case blurEffect
     case titleColor
-    case pointColor
+    case nameColor
     
     // 공통으로 제공되는 cardDecorationTitle
     var getCellTitle: String {
         switch self {
         case .background:       return "배경 이미지 변경"
         case .blurEffect:       return "블러효과 적용"
-        case .titleColor:       return "글자 색상"
-        case .pointColor:       return "포인트 색상"
+        case .titleColor:       return "타이틀 색상 변경"
+        case .nameColor:       return "이름 색상 변경"
         }
     }
     var getTextFieldPlaceholder: String {
@@ -32,7 +32,7 @@ enum DecorationCellType: Int, EditCellType, CaseIterable {
         case .background: return DatabaseConstants.card_background_image
         case .blurEffect: return DatabaseConstants.blur_Effect
         case .titleColor: return DatabaseConstants.title_Color
-        case .pointColor: return DatabaseConstants.point_Color
+        case .nameColor: return DatabaseConstants.point_Color
         }
     }
     
@@ -50,7 +50,7 @@ enum DecorationCellType: Int, EditCellType, CaseIterable {
         case .background: return data?.backgroundImage ?? nil
         case .blurEffect: return self.blurColor(bool: data?.blur)
         case .titleColor: return data?.titleColor
-        case .pointColor: return data?.pointColor
+        case .nameColor: return data?.pointColor
         }
     }
     

@@ -8,10 +8,7 @@
 import UIKit
 import YPImagePicker
 
-protocol ColorPickerDelegate: AnyObject {
-    func decorationCellChange(_ data: UIColor)
-    
-}
+
 
 protocol ImagePickerDelegate: AnyObject {
     func imageSelect(image: UIImage?)
@@ -38,7 +35,7 @@ final class EditScreenCoordinator: NSObject, ProfileEditVCCoordProtocol {
     
     
     // MARK: - Color_Fix
-    private weak var colorDelegate: ColorPickerDelegate?
+//    private weak var colorDelegate: ColorPickerDelegate?
     private var selectedColor: UIColor?
     
     
@@ -150,8 +147,6 @@ extension EditScreenCoordinator: EditScreenDelegate {
 
 // MARK: - 이미지 피커 화면
 extension EditScreenCoordinator {
-    
-    
     func imagePickerScreen() {
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
@@ -197,53 +192,6 @@ extension EditScreenCoordinator: UIImagePickerControllerDelegate,
 
 
 
-
-// MARK: - 색상 선택 화면
-extension EditScreenCoordinator {
-    func colorPickerScreen() {
-//        let colorPickerVC = UIColorPickerViewController()
-//        
-//        // MARK: - Color_Fix
-//        colorPickerVC.delegate = self // 여기서 self는 이제 NSObject를 상속받았기 때문에 문제없이 delegate로 할당될 수 있습니다.
-//        self.nav.present(colorPickerVC, animated: true, completion: nil)
-        
-        let colorPickerVC = UIColorPickerViewController()
-        colorPickerVC.delegate = self
-        self.nav.present(colorPickerVC, animated: true, completion: nil)
-    }
-}
-
-
-
-
-
-// MARK: - Fix
-
-
-
-
-// MARK: - 색상 선택 델리게이트
-
-extension EditScreenCoordinator: UIColorPickerViewControllerDelegate {
-    
-    // MARK: - 화면이 내려갈 때
-    func colorPickerViewControllerDidFinish(
-        _ viewController: UIColorPickerViewController)
-    {
-        if let color = self.selectedColor {
-            self.colorDelegate?.decorationCellChange(color)
-            self.selectedColor = nil
-        }
-        viewController.dismiss(animated: true)
-    }
-    
-    // MARK: - 색상 선택 시
-    func colorPickerViewControllerDidSelectColor(
-        _ viewController: UIColorPickerViewController)
-    {
-        self.selectedColor = viewController.selectedColor
-    }
-}
 
 
 

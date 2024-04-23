@@ -52,8 +52,8 @@ final class EditScreenVC: UIViewController {
     private var bottomBtn: BottomButton = BottomButton(
         title: "완료")
     /// 이미지 피커
-    private lazy var imagePickerView: ImageCropView = {
-        let view = ImageCropView()
+    private lazy var customImagePicker: CustomImageCropView = {
+        let view = CustomImageCropView()
         view.delegate = self
         return view
     }()
@@ -61,7 +61,15 @@ final class EditScreenVC: UIViewController {
     private var imagePickrHeight: Constraint!
     
     
-    private let customColorPicker: CustomColorPicker = CustomColorPicker()
+    private lazy var customColorPicker: CustomColorPicker = {
+        let picker = CustomColorPicker()
+        picker.delegate = self
+        return picker
+    }()
+    /// 컬러 피커의 높이를  조절
+    private var colorPickrHeight: Constraint!
+    
+    
     
     
     
@@ -128,10 +136,6 @@ extension EditScreenVC {
     private func configureUI() {
         self.view.backgroundColor = UIColor.base_Blue
         
-        self.imagePickerView.addShadow(shadowType: .top)
-        
-        self.imagePickerView.setRoundedCorners(.top, withCornerRadius: 12)
-        
         // 하단 버튼 설정
         self.bottomBtn.setTitle(self.viewModel.getBottomBtnTitle, for: .normal)
         // 네비게이션 타이틀 설정
@@ -145,7 +149,7 @@ extension EditScreenVC {
         self.contentView.addSubview(self.cardImgView)
         self.contentView.addSubview(self.tableView)
         self.view.addSubview(self.bottomBtn)
-        self.view.addSubview(self.imagePickerView)
+        self.view.addSubview(self.customImagePicker)
         self.view.addSubview(self.customColorPicker)
         
         // 스크롤뷰
@@ -178,13 +182,14 @@ extension EditScreenVC {
             make.height.equalTo(UIDevice.current.bottomBtnHeight)
         }
         // 이미지 피커 뷰
-        self.imagePickerView.snp.makeConstraints { make in
+        self.customImagePicker.snp.makeConstraints { make in
             make.leading.trailing.bottom.equalToSuperview()
             self.imagePickrHeight = make.height.equalTo(0).constraint
         }
         // 컬러 피커 뷰
         self.customColorPicker.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+            make.leading.trailing.bottom.equalToSuperview()
+            self.colorPickrHeight = make.height.equalTo(0).constraint
         }
     }
     
@@ -275,16 +280,7 @@ extension EditScreenVC {
     
     
     
-    // MARK: - 화면 상단 고정
-    func disableScrollAndMoveToTop(isOpen: Bool) {
-        if isOpen {
-            // 스크롤뷰의 contentOffset을 (0,0)으로 설정하여 맨 위로 이동
-            self.scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
-        }
-        
-        // 스크롤 기능을 비활성화
-        self.scrollView.isScrollEnabled = !isOpen
-    }
+
 }
 
 
@@ -427,7 +423,6 @@ extension EditScreenVC: UITableViewDataSource {
         _ tableView: UITableView,
         didSelectRowAt indexPath: IndexPath)
     {
-        print(#function)
         // 현재 선택된 셀의 [타입 및 IndexPath] 저장
         self.viewModel.saveCurrentIndex(indexPath: indexPath)
         
@@ -446,8 +441,8 @@ extension EditScreenVC: UITableViewDataSource {
         case .blurEffect:
             self.blurEffectChanged()
             break
-        case .titleColor, .pointColor:
-            self.coordinator.colorPickerScreen()
+        case .titleColor, .nameColor:
+            self.configureColorPicker(isOpen: true, with: nil)
             break
         case .background:
             // 이미지 권한 확인 -> 문제 없으면, 이미지 피커로 이동
@@ -469,11 +464,9 @@ extension EditScreenVC: UITableViewDataSource {
 // MARK: - 셀 관련 델리게이트
 
 extension EditScreenVC: CardDataCellDelegate,
-                        ColorPickerDelegate,
                         ImagePickerDelegate {
     
     func textData(cell: CardDataCell, type: EditCellType, text: String) {
-        print(#function)
         // 선택된 셀의 IndexPath 저장
         let row = self.saveTextFieldsIndexPath(cell: cell)
         // 변경된 텍스트 데이터 저장
@@ -492,14 +485,11 @@ extension EditScreenVC: CardDataCellDelegate,
     
     // MARK: - 이미지 변경
     func imageSelect(image: UIImage?) {
-        // 이미지 띄우기
-        self.setupImagePicker(isOpen: true, image: image)
+        // 이미지 피커 띄우기
+        self.configureImagePicker(isOpen: true, with: image)
     }
     
-    // MARK: - 색상 변경
-    func decorationCellChange(_ data: UIColor) {
-        
-    }
+    // MARK: - Fix
 }
     
     
@@ -588,6 +578,181 @@ extension EditScreenVC {
 
 
 
+// MARK: - 피커 뷰 액션
+
+extension EditScreenVC {
+    
+    // MARK: - [ 열기 / 닫기 ]
+    private func configureImagePicker(isOpen: Bool, with image: UIImage?) {
+        self.customImagePicker.setupImage(image: image)
+        self.setPickerMode(for: .imagePicker, isOpen: isOpen)
+    }
+
+    // 색상 피커 설정
+    private func configureColorPicker(isOpen: Bool, with color: UIColor?) {
+        self.customColorPicker.setupColor(color: color)
+        self.setPickerMode(for: .colorPicker, isOpen: isOpen)
+    }
+
+    // 메인 설정 함수는 필요에 따라 각 설정 메소드를 호출
+    private func setPickerState(type: EditScreenPicker, 
+                                isOpen: Bool,
+                                image: UIImage? = nil,
+                                color: UIColor? = nil) {
+        switch type {
+        case .imagePicker:
+            self.configureImagePicker(isOpen: isOpen, with: image)
+        case .colorPicker:
+            self.configureColorPicker(isOpen: isOpen, with: color)
+        }
+    }
+    
+    
+    
+    // MARK: - [ 높이 설정 ]
+    private func setPickerMode(for picker: EditScreenPicker, isOpen: Bool) {
+        // 현재 상태 저장
+        self.viewModel.savePickerState(picker: picker, isOpen: isOpen)
+        // 스크롤뷰 설정 변경
+        self.disableScrollAndMoveToTop(isOpen: isOpen)
+        // 이미지 피커의 높이 재설정
+        self.adjustPickerHeight(for: picker, isOpen: isOpen)
+    }
+    
+    /// 화면 상단 고정
+    func disableScrollAndMoveToTop(isOpen: Bool) {
+        if isOpen {
+            // 스크롤뷰의 contentOffset을 (0,0)으로 설정하여 맨 위로 이동
+            self.scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
+        }
+        // 스크롤 기능을 비활성화
+        self.scrollView.isScrollEnabled = !isOpen
+    }
+    
+    /// 이미지 피커 높이 재설정
+    private func adjustPickerHeight(for picker: EditScreenPicker, isOpen: Bool) {
+        // 높이 설정
+        let height = isOpen ? self.openImagePickerHeight : 0
+        
+        switch picker {
+        case .imagePicker:
+            // 이미지 피커의 높이 업데이트
+            self.imagePickrHeight.update(offset: height)
+            
+        case .colorPicker:
+            self.colorPickrHeight.update(offset: height)
+        }
+        // 애니메이션을 통한 화면 바꾸기
+        UIView.animate(withDuration: 0.5) {
+            self.view.layoutIfNeeded()
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - 피커뷰 델리게이트
+extension EditScreenVC: CustomPickerDelegate {
+    // [ 공통 ]
+    // ----- 취소 버튼 -----
+    func cancel(type: EditScreenPicker) {
+        // 카드 이미지뷰 리셋
+        guard let currentType = self.viewModel.getDecorationCellTypeTuple() else { return }
+        // 원래 이미지로 변경
+        self.cardImgView.resetDecorationData(type: currentType.type)
+        // 피커 내리기
+        self.setPickerState(type: type, isOpen: false)
+    }
+    
+    // ----- 도중 -----
+    func changedCropLocation(data: Any) {
+        // 현재 타입 가져오기
+        guard let currentType = self.viewModel.getDecorationCellTypeTuple() else { return }
+        // 카드 이미지 뷰 업데이트
+        self.cardImgView.updateCardView(type: currentType.type, data: data, onFailure: self.errorType(_:))
+    }
+    
+    // ----- 완료 버튼 -----
+    func done<T>(with data: T) {
+        switch data {
+        case let image as UIImage:
+            self.processImage(image)
+            
+        case let color as UIColor:
+            self.processColor(color)
+            
+        default:
+            print("Unsupported data type")
+        }
+    }
+    
+    
+    // 저장
+    private func processImage(_ image: UIImage) {
+        // [셀] - 이미지 바꾸기 및 바뀐 이미지 저장
+        self.updateImage(image: image)
+        // 이미지 피커 안 보이게 하기
+        self.configureImagePicker(isOpen: false, with: image)
+    }
+    
+    // 저장
+    private func processColor(_ color: UIColor) {
+        // [셀] - 이미지 바꾸기 및 바뀐 이미지 저장
+        self.updateColor(color: color)
+        // 이미지 피커 안 보이게 하기
+        self.configureColorPicker(isOpen: false, with: color)
+    }
+}
+
+
+
+protocol CustomPickerDelegate: AnyObject {
+    func cancel(type: EditScreenPicker)
+    func changedCropLocation(data: Any)
+    func done<T>(with data: T)
+}
+
+
+
+
+enum EditScreenPicker {
+    case imagePicker
+    case colorPicker
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -657,85 +822,5 @@ extension EditScreenVC {
             else { return }
             UIApplication.shared.open(settingsUrl, options: [:])
         }
-    }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-// MARK: - 하단 이미지 피커 뷰
-extension EditScreenVC {
-    // EditScreenVC에서 requestPhotoLibraryAccess함수 -> 코디네이터 -> 이미지 선택창 이동
-    // 이미지 선택 시 -> coordinator에서 openImagePicker함수 호출
-    // 저장 선택 시 -> 화면 내려감
-    func setupImagePicker(isOpen: Bool,
-                          image: UIImage? = nil) {
-        // 현재 상태 저장
-        self.viewModel.imagePickerIsOpen = isOpen
-        // 이미지가 있다면, 바꾸기
-        if let image = image { self.changeImagePicker(with: image) }
-        // 스크롤뷰 설정 변경
-        self.disableScrollAndMoveToTop(isOpen: isOpen)
-        // 이미지 피커의 높이 재설정
-        self.changeImagePickerHeight(isOpen: isOpen)
-    }
-    
-    // MARK: - 이미지 피커 높이 재설정
-    private func changeImagePickerHeight(isOpen: Bool) {
-        // 높이 설정
-        let height = self.viewModel.imagePickerIsOpen
-        ? self.openImagePickerHeight // 열려있는 상태
-        : 0 // 닫혀있는 상태
-        // 이미지 피커의 높이 업데이트
-        self.imagePickrHeight.update(offset: height)
-        // 애니메이션을 통한 화면 바꾸기
-        UIView.animate(withDuration: 0.5) {
-            self.view.layoutIfNeeded()
-        }
-    }
-    
-    // MARK: - 카드 이미지 바꾸기
-    private func changeImagePicker(with image: UIImage) {
-        self.imagePickerView.setupImage(image: image)
-    }
-}
-
-
-
-
-
-
-
-
-
-
-// MARK: - 이미지 크롭 델리게이트
-extension EditScreenVC: ImageCropDelegate{
-    func cancel() {
-        guard let currentType = self.viewModel.getDecorationCellTypeTuple() else { return }
-        // 원래 이미지로 변경
-        self.cardImgView.resetCardData(type: currentType.type)
-        // 이미지 피커 안 보이게 하기
-        self.setupImagePicker(isOpen: false)
-    }
-    
-    func done(with image: UIImage) {
-        // 이미지 바꾸기 및 바뀐 이미지 저장
-        self.updateImage(image: image)
-        // 이미지 피커 안 보이게 하기2
-        self.setupImagePicker(isOpen: false)
-    }
-    func changedLocation(image: UIImage) {
-        guard let currentType = self.viewModel.getDecorationCellTypeTuple() else { return }
-        self.cardImgView.updateCardView(type: currentType.type, data: image, onFailure: self.errorType(_:))
     }
 }
