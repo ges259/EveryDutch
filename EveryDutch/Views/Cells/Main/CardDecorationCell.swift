@@ -75,48 +75,23 @@ extension CardDecorationCell {
         guard let data = type else { return }
         self.cellStv.userNameLbl.text = data.type.getCellTitle
         
-        if isLast { self.configureLastCell() }
-    }
-    
-    // MARK: - 마지막 셀 모서리 설정
-    private func configureLastCell() {
-        self.setRoundedCorners(.bottom, withCornerRadius: 12)
+        // 마지막 셀 모서리 설정
+        if isLast { self.setRoundedCorners(.bottom, withCornerRadius: 12) }
     }
     
     
     func colorIsChanged(color: UIColor) {
+        self.cellStv.rightView.image = nil
         self.cellStv.isTapped(color: color)
     }
     
     
     func imgIsChanged(image: UIImage?) {
         self.cellStv.rightView.image = image
+        self.cellStv.isTapped(color: .clear)
     }
     
     func blurEffectIsHidden(_ isHidden: Bool) {
         self.cellStv.isTappedView.isHidden.toggle()
     }
 }
-
-
-
-
-//protocol CardDecorationCellVMProtocol {
-//    var getUserName: String? { get }
-//    
-//}
-//
-//struct CardDecorationCellVM: CardDecorationCellVMProtocol {
-//    
-//    private let editCellType: EditCellType
-//    
-//    
-//    init(editCellType: EditCellType) {
-//        self.editCellType = editCellType
-//        
-//    }
-//    
-//    var getUserName: String? {
-//        return self.editCellType.getCellTitle
-//    }
-//}

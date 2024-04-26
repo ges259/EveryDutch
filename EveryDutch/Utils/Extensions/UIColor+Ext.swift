@@ -78,17 +78,17 @@ extension UIColor {
     }
 
     // HEX 문자열로부터 UIColor 생성
-    convenience init?(hex: String) {
-        var hexSanitized = hex.trimmingCharacters(in: .whitespacesAndNewlines)
-        hexSanitized = hexSanitized.replacingOccurrences(of: "#", with: "")
-
-        var rgb: UInt64 = 0
-
-        Scanner(string: hexSanitized).scanHexInt64(&rgb)
-
-        let r = CGFloat((rgb & 0xFF0000) >> 16) / 255.0
-        let g = CGFloat((rgb & 0x00FF00) >> 8) / 255.0
-        let b = CGFloat(rgb & 0x0000FF) / 255.0
+    convenience init?(hex: String?, defaultColor: UIColor = .clear) {
+        guard let hex = hex?.trimmingCharacters(in: .whitespacesAndNewlines).replacingOccurrences(of: "#", with: ""),
+              hex.count == 6, // HEX 코드는 6자리여야 함
+              let rgbValue = UInt64(hex, radix: 16) else {
+            self.init(cgColor: defaultColor.cgColor)
+            return
+        }
+        
+        let r = CGFloat((rgbValue & 0xFF0000) >> 16) / 255.0
+        let g = CGFloat((rgbValue & 0x00FF00) >> 8) / 255.0
+        let b = CGFloat(rgbValue & 0x0000FF) / 255.0
 
         self.init(red: r, green: g, blue: b, alpha: 1.0)
     }

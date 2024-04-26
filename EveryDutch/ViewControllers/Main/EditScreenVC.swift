@@ -523,12 +523,11 @@ extension EditScreenVC {
     }
     
     // MARK: - 색상
-    func updateColor(color: UIColor) {
+    private func updateColor(color: UIColor) {
         self.updatedDecorationCellUI(data: color) { cell in
             cell.colorIsChanged(color: color)
         }
     }
-    
     
     
     
@@ -583,13 +582,13 @@ extension EditScreenVC {
 extension EditScreenVC {
     
     // MARK: - [ 열기 / 닫기 ]
-    private func configureImagePicker(isOpen: Bool, with image: UIImage?) {
+    private func configureImagePicker(isOpen: Bool, with image: UIImage? = nil) {
         self.customImagePicker.setupImage(image: image)
         self.setPickerMode(for: .imagePicker, isOpen: isOpen)
     }
 
     // 색상 피커 설정
-    private func configureColorPicker(isOpen: Bool, with color: UIColor?) {
+    private func configureColorPicker(isOpen: Bool, with color: UIColor? = nil) {
         self.customColorPicker.setupColor(color: color)
         self.setPickerMode(for: .colorPicker, isOpen: isOpen)
     }
@@ -665,6 +664,7 @@ extension EditScreenVC: CustomPickerDelegate {
     func cancel(type: EditScreenPicker) {
         // 카드 이미지뷰 리셋
         guard let currentType = self.viewModel.getDecorationCellTypeTuple() else { return }
+        print(currentType)
         // 원래 이미지로 변경
         self.cardImgView.resetDecorationData(type: currentType.type)
         // 피커 내리기
@@ -681,6 +681,9 @@ extension EditScreenVC: CustomPickerDelegate {
     
     // ----- 완료 버튼 -----
     func done<T>(with data: T) {
+        // 현재 타입 가져오기
+        guard let currentType = self.viewModel.getDecorationCellTypeTuple() else { return }
+        self.cardImgView.saveCurrentData(type: currentType.type)
         switch data {
         case let image as UIImage:
             self.processImage(image)
@@ -689,7 +692,7 @@ extension EditScreenVC: CustomPickerDelegate {
             self.processColor(color)
             
         default:
-            print("Unsupported data type")
+            self.errorType(.readError)
         }
     }
     
@@ -780,7 +783,7 @@ extension EditScreenVC {
         case .authorized, .limited:
             print("Authorized or Limited Access")
             // 권한이 이미 있음
-            self.coordinator.imagePickerScreen()
+            self.selectBackground()
             
             // .notDetermined == [접근 제한되지 않음]
                 // 사용자가 아직 앱에 대한 사진 라이브러리 접근 권한을 결정하지 않은 상태
@@ -808,7 +811,7 @@ extension EditScreenVC {
         PHPhotoLibrary.requestAuthorization { newStatus in
             if newStatus == .authorized {
                 DispatchQueue.main.async {
-                    self.coordinator.imagePickerScreen()
+                    self.selectBackground()
                 }
             }
         }
@@ -821,6 +824,21 @@ extension EditScreenVC {
             guard let settingsUrl = URL(string: UIApplication.openSettingsURLString), UIApplication.shared.canOpenURL(settingsUrl)
             else { return }
             UIApplication.shared.open(settingsUrl, options: [:])
+        }
+    }
+    
+    // MARK: - 배경 선택 셀 선택 시
+    private func selectBackground() {
+        self.customAlert(alertStyle: .actionSheet, alertEnum: .backgroundSelect) { index in
+            switch index {
+            case 0: // 이미지
+                self.coordinator.imagePickerScreen()
+                break
+            case 1: // 색상
+                self.configureColorPicker(isOpen: true)
+                break
+            default: break
+            }
         }
     }
 }

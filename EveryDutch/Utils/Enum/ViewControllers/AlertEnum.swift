@@ -11,7 +11,7 @@ enum AlertEnum {
     case loginFail
     case logout
     case timeFormat
-    
+    case backgroundSelect
     
     case userAlreadyExists
     case searchFailed
@@ -35,6 +35,8 @@ enum AlertEnum {
     
     var title: String {
         switch self {
+        case .backgroundSelect:
+            return ""
         case .noImage:
             return "가져올 수 있는 사진이 없습니다."
         case .photoAccess:
@@ -86,6 +88,9 @@ enum AlertEnum {
     
     var buttons: [String] {
         switch self {
+        case .backgroundSelect:
+            return ["이미지 선택",
+                    "색상 선택"]
         case .photoAccess:
             return ["설정으로 이동"]
             
@@ -98,7 +103,7 @@ enum AlertEnum {
     
     var cancelBtn: Bool {
         switch self {
-        case .photoAccess:
+        case .photoAccess, .backgroundSelect:
             return true
             
         default:

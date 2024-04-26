@@ -17,7 +17,7 @@ enum DecorationCellType: Int, EditCellType, CaseIterable {
     // 공통으로 제공되는 cardDecorationTitle
     var getCellTitle: String {
         switch self {
-        case .background:       return "배경 이미지 변경"
+        case .background:       return "배경 변경"
         case .blurEffect:       return "블러효과 적용"
         case .titleColor:       return "타이틀 색상 변경"
         case .nameColor:       return "이름 색상 변경"
@@ -29,10 +29,10 @@ enum DecorationCellType: Int, EditCellType, CaseIterable {
     
     var databaseString: String {
         switch self {
-        case .background: return DatabaseConstants.card_background_image
+        case .background: return DatabaseConstants.background_Image
         case .blurEffect: return DatabaseConstants.blur_Effect
         case .titleColor: return DatabaseConstants.title_Color
-        case .nameColor: return DatabaseConstants.point_Color
+        case .nameColor: return DatabaseConstants.name_Color
         }
     }
     
@@ -47,10 +47,12 @@ enum DecorationCellType: Int, EditCellType, CaseIterable {
     }
     private func detail(for data: Decoration?) -> String? {
         switch self {
-        case .background: return data?.backgroundImage ?? nil
+        case .background: return data?.backgroundImageUrl ?? nil
         case .blurEffect: return self.blurColor(bool: data?.blur)
         case .titleColor: return data?.titleColor
-        case .nameColor: return data?.pointColor
+//        case .titleColor: return ""
+        case .nameColor: return data?.nameColor
+//        case .nameColor: return ""
         }
     }
     

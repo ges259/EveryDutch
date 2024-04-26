@@ -27,8 +27,12 @@ final class EditScreenVM: ProfileEditVMProtocol {
     
     
     
+    
+    
+    /// 피커 상태
     private var pickerStates: [EditScreenPicker: Bool] = [:]
     
+    // MARK: - 피커 상태 저장
     func savePickerState(picker: EditScreenPicker, isOpen: Bool) {
         self.pickerStates[picker] = isOpen
     }
@@ -56,7 +60,7 @@ final class EditScreenVM: ProfileEditVMProtocol {
     
     
     
-    
+//    private var currentData: (textData: EditProviderModel?, decoration: Decoration?)?
     
     
     
@@ -64,7 +68,6 @@ final class EditScreenVM: ProfileEditVMProtocol {
     /*
      type
      - roomData / userData
-     - imageData
      - cardDecoration
      */
     private let allCases: [EditScreenType]

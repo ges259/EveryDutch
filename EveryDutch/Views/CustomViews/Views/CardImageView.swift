@@ -22,7 +22,7 @@ final class CardImageView: UIView {
     private var iconImg: UIImageView = UIImageView(
         image: UIImage(named: "DutchIcon"))
     
-    private var arrowImg: UIImageView = UIImageView()
+    private var arrowImg: UIImageView = UIImageView(image: UIImage.chevronLeft)
     
     private var lineView: UIView = UIView.configureView(
         color: UIColor.deep_Blue)
@@ -32,8 +32,12 @@ final class CardImageView: UIView {
         font: UIFont.systemFont(ofSize: 13))
     
     
-    private var blurView: UIView = UIView.configureView(
-        color: .white.withAlphaComponent(0.38))
+    private var blurView: UIView = {
+        let view = UIView.configureView(
+            color: .white.withAlphaComponent(0.38))
+        view.isHidden = true
+        return view
+    }()
     
     
     
@@ -48,6 +52,16 @@ final class CardImageView: UIView {
     // 데코레이션 모델, 초기화 시 해당 데이터 사용
     var originalDecorationData: Decoration?
     
+    var currentColorDict: [String: String] = [:] {
+        didSet {
+            dump(self.currentColorDict)
+        }
+    }
+    var currentImageDict: [String: UIImage] = [:] {
+        didSet {
+            dump(self.currentImageDict)
+        }
+    }
     
     
     
@@ -84,31 +98,26 @@ extension CardImageView {
     
     // MARK: - UI 설정
     private func configureUI() {
-        [self.backgroundImg, 
+        [self,
          self.blurView,
          self.iconImg].forEach { view in
             view.setRoundedCorners(.all, withCornerRadius: 10)
         }
-        
-        self.blurView.isHidden = true
-        
+        self.backgroundColor = .medium_Blue
         // MARK: - Fix
         self.titleLbl.text = "더치더치"
-        self.nameLbl.text = "김게성성"
-        
-        self.arrowImg.image = UIImage.chevronLeft
-        self.iconImg.backgroundColor = .normal_white
+        self.nameLbl.text = "DUCTCH"
     }
     
     // MARK: - 오토레이아웃 설정
     private func configureAutoLayout() {
         [self.backgroundImg,
+         self.blurView,
          self.arrowImg,
          self.titleLbl,
          self.iconImg,
          self.lineView,
-         self.nameLbl,
-         self.blurView].forEach { view in
+         self.nameLbl].forEach { view in
             self.addSubview(view)
         }
         
@@ -153,40 +162,6 @@ extension CardImageView {
 
 
 
-// MARK: - 데이터 초기화
-
-extension CardImageView {
-    func resetDecorationData(type: DecorationCellType) {
-        switch type {
-        case .background:
-            print("1")
-//            self.backgroundImg = self.originalDecorationData?.backgroundImage ??
-//            self.backgroundColor = self.originalDecorationData?.backgroundColor ??
-            break
-        case .titleColor:
-            print("2")
-//            self.titleLbl.textColor = self.originalDecorationData?.titleColor ??
-            break
-        case .nameColor:
-            print("3")
-//            self.nameLbl.textColor = self.originalDecorationData?.pointColor ??
-            break
-            
-        // blurEffect는 여기서 처리하지 않음
-        case .blurEffect: break
-        }
-    }
-}
-
-
-
-
-
-
-
-
-
-
 // MARK: - 초기 데이터 설정
 
 extension CardImageView {
@@ -206,10 +181,111 @@ extension CardImageView {
     // MARK: - [데코]
     func setupDecorationData(data decorationData: Decoration) {
         self.blurView.isHidden = decorationData.blur
-//        self.titleLbl.textColor = decorationData.titleColor
-//        self.nameLbl.textColor = decorationData.pointColor
-//        self.backgroundImg.image = decorationData.backgroundImage
-//        self.backgroundImg.backgroundColor = decorationData.backgroundImage
+        self.titleLbl.textColor = decorationData.getTitleColor
+        self.nameLbl.textColor = decorationData.getNameColor
+        // MARK: - 이미지 설정
+//        self.backgroundImg.image = decorationData.
+        self.backgroundImg.backgroundColor = decorationData.getBackgroundColor
+    }
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - 현재 데이터 저장
+extension CardImageView {
+    func saveCurrentData(type: DecorationCellType) {
+        switch type {
+        case .background:
+            if let image = self.backgroundImg.image {
+                self.currentImageDict[DatabaseConstants.background_Image] = image
+                self.currentColorDict.removeValue(forKey: DatabaseConstants.background_Color)
+            } else {
+                self.currentColorDict[DatabaseConstants.background_Color] = self.backgroundImg.backgroundColor?.toHexString()
+                self.currentImageDict.removeValue(forKey: DatabaseConstants.background_Image)
+            }
+            break
+        case .titleColor:
+            self.currentColorDict[DatabaseConstants.title_Color] = self.titleLbl.textColor?.toHexString()
+            break
+        case .nameColor:
+            self.currentColorDict[DatabaseConstants.name_Color] = self.nameLbl.textColor?.toHexString()
+            break
+        case .blurEffect:
+            break
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - 데이터 리셋
+extension CardImageView {
+    func resetDecorationData(type: DecorationCellType) {
+        
+        let color = UIColor(hex: self.getCurrentColor(type: type),
+                            defaultColor: self.getDefaultColor(type: type))
+        switch type {
+        case .background:
+            if let currentImage = self.currentImageDict[DatabaseConstants.background_Image] {
+                self.backgroundImg.image = currentImage
+                self.backgroundImg.backgroundColor = nil
+            } else {
+                self.backgroundImg.backgroundColor = color
+                self.backgroundImg.image = nil
+            }
+            break
+            
+        case .titleColor:
+            self.titleLbl.textColor = color
+            break
+            
+        case .nameColor:
+            self.nameLbl.textColor = color
+            break
+            
+        // blurEffect는 여기서 처리하지 않음
+        case .blurEffect: break
+        }
+    }
+    /// 현재 색상을 가져옴
+    private func getCurrentColor(type: DecorationCellType) -> String? {
+        switch type {
+        case .background:
+            return self.currentColorDict[DatabaseConstants.background_Color] ?? self.originalDecorationData?.backgroundColor
+        case .titleColor:
+            return self.currentColorDict[DatabaseConstants.title_Color] ?? self.originalDecorationData?.titleColor
+        case .nameColor:
+            return self.currentColorDict[DatabaseConstants.name_Color] ?? self.originalDecorationData?.nameColor
+            
+        case .blurEffect: return nil
+        }
+    }
+    /// 기본 색상을 가져옴
+    private func getDefaultColor(type: DecorationCellType) -> UIColor {
+        switch type {
+        case .background:
+            return .medium_Blue
+        case .titleColor:
+            return .black
+        case .nameColor:
+            return .placeholder_gray
+        case .blurEffect:
+            return .clear
+        }
     }
 }
 
@@ -239,6 +315,8 @@ extension CardImageView {
     }
 }
 
+
+
 // MARK: - [데코] 데이터 업데이트
 
 extension CardImageView {
@@ -256,10 +334,10 @@ extension CardImageView {
             self.blurViewIsHidden(!boolData)
             
         case let colorData as UIColor:
-            self.updateCardData(type: type, color: colorData)
+            self.changeCardData(type: type, color: colorData)
             
         case let imageData as UIImage:
-            self.updateCardData(type: type, image: imageData)
+            self.changeCardData(type: type, image: imageData)
             
         default:
             onFailure(.unknownError)
@@ -272,9 +350,9 @@ extension CardImageView {
     }
     
     // MARK: - 이미지 및 색상 변경
-    private func updateCardData(type: DecorationCellType,
-                                 color: UIColor? = nil,
-                                 image: UIImage? = nil) {
+    private func changeCardData(type: DecorationCellType,
+                                color: UIColor? = nil,
+                                image: UIImage? = nil) {
         switch type {
         case .titleColor:
             self.titleLbl.textColor = color
