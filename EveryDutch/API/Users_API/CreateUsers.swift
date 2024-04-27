@@ -13,10 +13,7 @@ struct UserAPI: UserAPIProtocol {
     private init() {}
     
 
-    func createData(
-        dict: [String: Any]
-    ) async throws  -> String {
-        
+    func createData(dict: [String: Any]) async throws  -> String {
         guard let uid = Auth.auth().currentUser?.uid else {
             throw ErrorEnum.readError
         }

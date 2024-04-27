@@ -43,7 +43,6 @@ final class EditScreenVM: ProfileEditVMProtocol {
     
     // 사용자에 의해 변경된 데이터를 저장하는 딕셔너리, DB에 저장할 예정
     private var textData: [String: Any?] = [:]
-    private var imageData: [String: Any?] = [:]
     private var decorationData: [String: Any?] = [:]
     
     
@@ -104,7 +103,6 @@ final class EditScreenVM: ProfileEditVMProtocol {
             } catch {
                 self.errorClosure?(.unknownError)
             }
-            print("initializeCellTypes ---")
         }
     }
 }
@@ -180,10 +178,6 @@ extension EditScreenVM {
             break
             
         case is DecorationCellType:
-            // MARK: - Fix
-            // Decoration의 경우, 이미지, 색상, Boolean값을 따로 저장
-            // OR
-            // 모두 한 번에 저장 후, DB에 저장할 때, 나누기 (이게 좋겠다.)
             self.decorationData[databaseString] = data
             break
             
@@ -320,8 +314,8 @@ extension EditScreenVM {
                 guard self.roomValidation() else { throw ErrorEnum.unknownError }
                 // MARK: - Fix
                 // 나중에 주석 풀기
-//                try await self.createData()
-//                self.successDataClosure?()
+                try await self.createData()
+                self.successDataClosure?()
                 
             } catch let error as ErrorEnum {
                 self.errorClosure?(error)
@@ -368,10 +362,43 @@ extension EditScreenVM {
     // 방(Room) / 유저(User) 생성을 위한 비동기 함수
     // 변경된 데이터를 바탕으로 API를 호출하여 방을 생성
     private func createData() async throws {
+        // 방 또는 유저의 데이터 저장
         let dict = self.textData.compactMapValues { $0 }
-        let data = try await self.api?.createData(dict: dict)
-        try await self.api?.updateDecoration(
-            at: data,
-            with: self.decorationData)
+        let ref = try await self.api?.createData(dict: dict)
+        
+        // 이미지 데이터 분리
+        let imageDict = self.extractImagesFromDecorationData()
+        // 이미지를 스토리지에 저장 후, url가져오기
+        guard let urlDict = try await self.api?.uploadImage(data: imageDict) else {
+            throw ErrorEnum.NoPersonalID
+        }
+        self.mergeDecorationData(with: urlDict)
+        // 색상 데이터를 hex로 바꾸기
+        self.updateColorDataToHex()
+        // 데코 데이터 저장
+        try await self.api?.updateDecoration(at: ref, with: self.decorationData)
+    }
+    
+    /// decoationData에서 value값이 UIImage인 데이터를 추출하여 리턴
+    private func extractImagesFromDecorationData() -> [String: UIImage] {
+        return self.decorationData.reduce(into: [String: UIImage]()) { (result, element) in
+            if let image = element.value as? UIImage {
+                result[element.key] = image
+            }
+        }
+    }
+    /// value값이 String(url)인 딕셔너리를 decoration과 합침
+    private func mergeDecorationData(with urlDict: [String: String]) {
+        for (key, url) in urlDict {
+            self.decorationData[key] = url  // 이미지 경로를 저장
+        }
+    }
+    /// /// decoationData에서 value값이 UIColor인 데이터를 hex값으로 바꿈
+    private func updateColorDataToHex() {
+        for (key, value) in self.decorationData {
+            if let color = value as? UIColor {
+                self.decorationData[key] = color.toHexString()
+            }
+        }
     }
 }

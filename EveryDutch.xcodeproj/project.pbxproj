@@ -129,7 +129,6 @@
 		5F7DB59B2B5921E300E8C11F /* PeopleSeelctionEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7DB59A2B5921E300E8C11F /* PeopleSeelctionEnum.swift */; };
 		5F7E3A862BC5C1CF00282E19 /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = 5F7E3A852BC5C1CF00282E19 /* SDWebImage */; };
 		5F7E3A882BC5C1CF00282E19 /* SDWebImageMapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 5F7E3A872BC5C1CF00282E19 /* SDWebImageMapKit */; };
-		5F7E3A8B2BC90C4300282E19 /* YPImagePicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5F7E3A8A2BC90C4300282E19 /* YPImagePicker */; };
 		5F80EA8D2B679CE900BD8D0C /* SelectALoginMethodVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F80EA8C2B679CE900BD8D0C /* SelectALoginMethodVM.swift */; };
 		5F80EA8F2B67BDED00BD8D0C /* UIViewController+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F80EA8E2B67BDED00BD8D0C /* UIViewController+Ext.swift */; };
 		5F80EA912B67DF6500BD8D0C /* SplashScreenVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F80EA902B67DF6500BD8D0C /* SplashScreenVM.swift */; };
@@ -447,7 +446,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				5F294B542B4DBA0100396B6E /* FirebaseDatabase in Frameworks */,
-				5F7E3A8B2BC90C4300282E19 /* YPImagePicker in Frameworks */,
 				5F7E3A882BC5C1CF00282E19 /* SDWebImageMapKit in Frameworks */,
 				5F294B4C2B4DBA0100396B6E /* FirebaseAnalyticsSwift in Frameworks */,
 				5FE3DECF2B39CCAE008D58AE /* SnapKit in Frameworks */,
@@ -1305,7 +1303,6 @@
 				5F294B572B4DBA0100396B6E /* FirebaseStorage */,
 				5F7E3A852BC5C1CF00282E19 /* SDWebImage */,
 				5F7E3A872BC5C1CF00282E19 /* SDWebImageMapKit */,
-				5F7E3A8A2BC90C4300282E19 /* YPImagePicker */,
 			);
 			productName = EveryDutch;
 			productReference = 5FE3DE8B2B39CA9B008D58AE /* EveryDutch.app */;
@@ -1341,7 +1338,6 @@
 				5F614B332B4590C500EF35CE /* XCRemoteSwiftPackageReference "PanModal" */,
 				5F294B462B4DBA0100396B6E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				5F7E3A842BC5C1CF00282E19 /* XCRemoteSwiftPackageReference "SDWebImage" */,
-				5F7E3A892BC90C4300282E19 /* XCRemoteSwiftPackageReference "YPImagePicker" */,
 			);
 			productRefGroup = 5FE3DE8C2B39CA9B008D58AE /* Products */;
 			projectDirPath = "";
@@ -1822,14 +1818,6 @@
 				minimumVersion = 5.19.1;
 			};
 		};
-		5F7E3A892BC90C4300282E19 /* XCRemoteSwiftPackageReference "YPImagePicker" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Yummypets/YPImagePicker.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.2.2;
-			};
-		};
 		5FE3DECD2B39CCAE008D58AE /* XCRemoteSwiftPackageReference "SnapKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SnapKit/SnapKit";
@@ -1905,11 +1893,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 5F7E3A842BC5C1CF00282E19 /* XCRemoteSwiftPackageReference "SDWebImage" */;
 			productName = SDWebImageMapKit;
-		};
-		5F7E3A8A2BC90C4300282E19 /* YPImagePicker */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 5F7E3A892BC90C4300282E19 /* XCRemoteSwiftPackageReference "YPImagePicker" */;
-			productName = YPImagePicker;
 		};
 		5FE3DECE2B39CCAE008D58AE /* SnapKit */ = {
 			isa = XCSwiftPackageProductDependency;

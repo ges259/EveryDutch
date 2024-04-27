@@ -52,16 +52,8 @@ final class CardImageView: UIView {
     // 데코레이션 모델, 초기화 시 해당 데이터 사용
     var originalDecorationData: Decoration?
     
-    var currentColorDict: [String: String] = [:] {
-        didSet {
-            dump(self.currentColorDict)
-        }
-    }
-    var currentImageDict: [String: UIImage] = [:] {
-        didSet {
-            dump(self.currentImageDict)
-        }
-    }
+    var currentColorDict: [String: String] = [:]
+    var currentImageDict: [String: UIImage] = [:]
     
     
     
