@@ -74,3 +74,48 @@ extension UIView {
         return string
     }
 }
+
+
+
+
+// MARK: - 색상 피커
+extension UIView {
+    /// UIView의 현재 그림자 속성을 가져오는 계산 속성
+    var dropShadowProperties: ShadowProperties? {
+        guard let shadowColor = self.layer.shadowColor else { return nil }
+        return ShadowProperties(
+            color: shadowColor,
+            opacity: self.layer.shadowOpacity,
+            offset: self.layer.shadowOffset,
+            radius: self.layer.shadowRadius)
+    }
+    
+    /// 특정한 그림자 속성을 UIView에 적용하는 메서드
+    func applyDropShadow(color: UIColor, opacity: Float, offset: CGSize, radius: CGFloat) {
+        self.clipsToBounds = false
+        self.layer.masksToBounds = false
+        self.layer.shadowColor = color.cgColor
+        self.layer.shadowOpacity = opacity
+        self.layer.shadowOffset = offset
+        self.layer.shadowRadius = radius
+        
+        self.layer.shouldRasterize = true
+        self.layer.rasterizationScale = UIScreen.main.scale
+    }
+    /// ShadowProperties 구조체를 받아서 해당하는 그림자 속성을 UIView에 적용하는 메서드
+    func applyDropShadow(_ properties: ShadowProperties) {
+        applyDropShadow(color: UIColor(cgColor: properties.color), opacity: properties.opacity, offset: properties.offset, radius: properties.radius)
+    }
+    
+    /// UIView에서 그림자를 제거하는 메서드
+    func removeDropShadow() {
+        self.layer.shadowColor = nil
+        self.layer.shadowOpacity = 0
+    }
+    
+    /// UIView의 레이아웃을 즉시 업데이트하는 메서드
+    func layoutNow() {
+        self.setNeedsLayout()
+        self.layoutIfNeeded()
+    }
+}

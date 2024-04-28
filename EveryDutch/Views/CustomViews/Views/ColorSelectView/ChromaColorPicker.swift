@@ -46,7 +46,7 @@ final class ChromaColorPicker: UIControl, ChromaControlStylable {
     
     
     // MARK: - 프로퍼티
-    public weak var delegate: ChromaColorPickerDelegate?
+    public weak var delegate: CustomColorPickerDelegate?
     
     var borderWidth: CGFloat = 6.0 {
         didSet { self.layoutNow() }

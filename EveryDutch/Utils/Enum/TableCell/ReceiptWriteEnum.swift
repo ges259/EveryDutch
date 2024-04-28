@@ -19,4 +19,8 @@ enum ReceiptWriteEnum: CaseIterable {
             return "금액 입력"
         }
     }
+    
+    
+    
+    
 }

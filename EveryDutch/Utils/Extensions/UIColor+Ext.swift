@@ -93,3 +93,59 @@ extension UIColor {
         self.init(red: r, green: g, blue: b, alpha: 1.0)
     }
 }
+
+
+
+
+
+
+// MARK: - 색상 피커
+extension UIColor {
+    
+    /// 지정된 밝기 성분을 가진 색상을 반환
+    func withBrightness(_ value: CGFloat) -> UIColor {
+        // 색조
+        var hue: CGFloat = 0
+        // 채도
+        var saturation: CGFloat = 0
+        // alpha값
+        var alpha: CGFloat = 0
+        // 받은 밝기(brightness) 값이 0과 1 사이에 있도록 제한
+        let brightness = max(0, min(value, 1))
+        // 색상의 색조, 채도,. alpha값을 가져오기
+        self.getHue(&hue, saturation: &saturation, brightness: nil, alpha: &alpha)
+        // 색상 리턴
+        return UIColor(hue: hue,
+                       saturation: saturation,
+                       brightness: brightness,
+                       alpha: alpha)
+    }
+    
+    /// 색상의 밝기 성분 값
+    var brightness: CGFloat {
+        var brightness: CGFloat = 0
+        self.getHue(nil,
+                    saturation: nil,
+                    brightness: &brightness,
+                    alpha: nil)
+        return brightness
+    }
+    
+    /// 색상의 명도를 반환
+    var lightness: CGFloat {
+        var red: CGFloat = 0
+        var green: CGFloat = 0
+        var blue: CGFloat = 0
+        // 현재 색상의 빨강(red), 초록(green), 파랑(blue) 값을 가져오기
+        self.getRed(&red, green: &green, blue: &blue, alpha: nil)
+        // 가져온 RGB값을 사용하여, 명도(lightness)를 가져오기
+        return ((red * 299) + (green * 587) + (blue * 114)) / 1000
+    }
+    
+    /// 색상이 대비 측면에서 '밝다'로 간주되는지 여부를 반환
+    var isLight: Bool {
+        // 계산된 명도가 0.5이상이면 true(밝음 표시)
+        return lightness >= 0.5
+    }
+}
+

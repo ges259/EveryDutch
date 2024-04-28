@@ -117,7 +117,7 @@ final class CustomColorPicker: UIView {
 
 
 // MARK: - 컬러 피커 델리게이트
-extension CustomColorPicker: ChromaColorPickerDelegate {
+extension CustomColorPicker: CustomColorPickerDelegate {
     func colorPickerHandleDidChange(_ colorPicker: ChromaColorPicker,
                                     handle: ChromaColorHandle,
                                     to color: UIColor) {

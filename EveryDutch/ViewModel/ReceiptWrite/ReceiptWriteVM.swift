@@ -45,6 +45,7 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     var memo: String?
     var price: Int?
     var payer: RoomUserDataDict?
+    //  [String : User]
     var selectedUsers: RoomUserDataDict = [:]
     
     

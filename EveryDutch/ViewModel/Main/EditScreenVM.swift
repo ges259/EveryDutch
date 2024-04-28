@@ -331,7 +331,11 @@ extension EditScreenVM {
         let dict = self.allCases.first?.validation(data: self.textData)
         // MARK: - Fix
         // 오류 처리 (databaseString)
-        return dict?.isEmpty ?? false
+        if let dict = dict, dict.isEmpty {
+            self.errorClosure?(.validationError(dict))
+            return false
+        }
+        return true
     }
 }
 

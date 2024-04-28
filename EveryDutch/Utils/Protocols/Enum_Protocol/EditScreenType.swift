@@ -32,5 +32,5 @@ protocol EditScreenType {
     var sectionIndex: Int { get }
     
     // MARK: - 셀 타입 반환
-    var getAllOfCellType: [EditCellType] { get }
+//    var getAllOfCellType: [EditCellType] { get }
 }

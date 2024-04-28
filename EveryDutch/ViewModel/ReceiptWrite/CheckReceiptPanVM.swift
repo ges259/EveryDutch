@@ -23,7 +23,7 @@ final class CheckReceiptPanVM: CheckReceiptPanVMProtocol {
     }
     
     func getLabelText(index: Int) -> String {
-        return validationDict[index].cellTitle
+        return self.validationDict[index].cellTitle
     }
 }
 

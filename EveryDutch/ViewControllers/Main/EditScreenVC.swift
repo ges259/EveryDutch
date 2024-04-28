@@ -239,6 +239,8 @@ extension EditScreenVC {
         self.viewModel.decorationDataClosure = { [weak self] deco in
             self?.cardImgView.originalDecorationData = deco
         }
+        
+        
     }
 }
 
@@ -271,16 +273,12 @@ extension EditScreenVC {
     @MainActor
     private func errorType(_ errorType: ErrorEnum) {
         switch errorType {
+        case .validationError(let errorString):
             
+            break
         default: break
         }
     }
-    
-    
-    
-    
-    
-
 }
 
 
@@ -419,10 +417,9 @@ extension EditScreenVC: UITableViewDataSource {
     
     
     // MARK: - didSelectRowAt
-    func tableView(
-        _ tableView: UITableView,
-        didSelectRowAt indexPath: IndexPath)
-    {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // 텍스트 필드를 수정 주이라면 -> 멈추기
+        self.view.endEditing(true)
         // 현재 선택된 셀의 [타입 및 IndexPath] 저장
         self.viewModel.saveCurrentIndex(indexPath: indexPath)
         
@@ -664,7 +661,6 @@ extension EditScreenVC: CustomPickerDelegate {
     func cancel(type: EditScreenPicker) {
         // 카드 이미지뷰 리셋
         guard let currentType = self.viewModel.getDecorationCellTypeTuple() else { return }
-        print(currentType)
         // 원래 이미지로 변경
         self.cardImgView.resetDecorationData(type: currentType.type)
         // 피커 내리기
@@ -696,8 +692,7 @@ extension EditScreenVC: CustomPickerDelegate {
         }
     }
     
-    
-    // 저장
+    // 이미지 저장
     private func processImage(_ image: UIImage) {
         // [셀] - 이미지 바꾸기 및 바뀐 이미지 저장
         self.updateImage(image: image)
@@ -705,7 +700,7 @@ extension EditScreenVC: CustomPickerDelegate {
         self.configureImagePicker(isOpen: false, with: image)
     }
     
-    // 저장
+    // 색상 저장
     private func processColor(_ color: UIColor) {
         // [셀] - 이미지 바꾸기 및 바뀐 이미지 저장
         self.updateColor(color: color)
@@ -716,19 +711,6 @@ extension EditScreenVC: CustomPickerDelegate {
 
 
 
-protocol CustomPickerDelegate: AnyObject {
-    func cancel(type: EditScreenPicker)
-    func changedCropLocation(data: Any)
-    func done<T>(with data: T)
-}
-
-
-
-
-enum EditScreenPicker {
-    case imagePicker
-    case colorPicker
-}
 
 
 

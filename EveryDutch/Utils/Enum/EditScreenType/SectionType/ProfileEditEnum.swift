@@ -52,14 +52,6 @@ enum ProfileEditEnum: Int, EditScreenType, CaseIterable {
         return self.rawValue
     }
     
-    // MARK: - 셀 타입 반환
-    var getAllOfCellType: [EditCellType] {
-        switch self {
-        case .userData:         return ProfileEditCellType.allCases
-        case .cardDecoration:   return DecorationCellType.allCases
-        }
-    }
-    
     // MARK: - 헤더 타이틀
     var getHeaderTitle: String {
         switch self {
