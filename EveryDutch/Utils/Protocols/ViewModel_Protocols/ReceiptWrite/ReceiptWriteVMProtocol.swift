@@ -12,7 +12,7 @@ protocol ReceiptWriteVMProtocol {
     
     var getNumOfReceiptEnum: Int { get }
     
-    func getReceiptEnum(index: Int) -> ReceiptEnum
+    func getReceiptEnum(index: Int) -> ReceiptCellEnum
     
     func getFooterViewHeight(section: Int) -> CGFloat
     var getNoDataViewIsHidden: Bool { get }
@@ -22,7 +22,7 @@ protocol ReceiptWriteVMProtocol {
     
     func getHeaderTitle(section: Int) -> String
     
-    func findReceiptEnumIndex(_ receiptEnum: ReceiptEnum) -> IndexPath 
+    func findReceiptEnumIndex(_ receiptEnum: ReceiptCellEnum) -> IndexPath 
 //    var getTimeCellIndexPath: IndexPath { get }
 //    var getPayerCellIndexPath: IndexPath { get }
 //    var getDateCellIndexPath: IndexPath { get }
@@ -32,8 +32,8 @@ protocol ReceiptWriteVMProtocol {
     
     
     
-    func isFistCell(_ receiptEnum: ReceiptEnum) -> Bool
-    func isLastCell(_ receiptEnum: ReceiptEnum) -> Bool
+    func isFistCell(_ receiptEnum: ReceiptCellEnum) -> Bool
+    func isLastCell(_ receiptEnum: ReceiptCellEnum) -> Bool
     
     func saveCalenderDate(date: Date)
     

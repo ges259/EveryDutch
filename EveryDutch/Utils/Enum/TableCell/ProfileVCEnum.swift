@@ -46,8 +46,8 @@ enum ProfileVCEnum: Int, CaseIterable {
 //        }
 //        return allCellData
 //    }
-    func createProviders(user: User) -> [Int: [ProfileDataCell]] {
-        var allCellData: [Int: [ProfileDataCell]] = [:]
+    func createProviders(user: User) -> [Int: [ProfileTypeCell]] {
+        var allCellData: [Int: [ProfileTypeCell]] = [:]
         
         ProfileVCEnum.allCases.forEach { sectionEnum in
             
@@ -73,8 +73,8 @@ enum UserInfoType: Int, ProfileType, CaseIterable {
     case personalID = 0
     case nickName
     
-    static func getDetails(data: User) -> [ProfileDataCell] {
-        return UserInfoType.allCases.map { cellType -> ProfileDataCell in
+    static func getDetails(data: User) -> [ProfileTypeCell] {
+        return UserInfoType.allCases.map { cellType -> ProfileTypeCell in
             return (type: cellType, detail: cellType.detail(from: data))
         }
     }
@@ -100,8 +100,8 @@ enum OthersType: Int, ProfileType, CaseIterable {
     case logout = 0
     case withdrawal
     
-    static func getDetails() -> [ProfileDataCell] {
-        return OthersType.allCases.map { cellType -> ProfileDataCell in
+    static func getDetails() -> [ProfileTypeCell] {
+        return OthersType.allCases.map { cellType -> ProfileTypeCell in
             return (type: cellType, detail: nil)
         }
     }

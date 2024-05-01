@@ -7,12 +7,67 @@
 
 import UIKit
 
-enum ReceiptEnum: CaseIterable {
-    case memo
+
+protocol ReceiptWriteCellType {
+    
+    var databaseString: String { get }
+}
+
+
+
+enum ReceiptWriteEnum: Int, CaseIterable {
+    case receiptData
+    case userData
+    
+    var headerTitle: String {
+        switch self {
+        case .receiptData:
+            return "영수증 정보"
+        case .userData:
+            return "금액 입력"
+        }
+    }
+    
+    
+    func validation(data: [String: Any?]) -> [String] {
+        return ReceiptCellEnum.validation(dict: data)
+    }
+    
+    func createProviders(
+        withData receipt: Receipt?) -> [Int: [ReceiptWriteCellTuple]]
+    {
+        var detailsDictionary: [Int: [ReceiptWriteCellTuple]] = [:]
+        
+        ReceiptWriteEnum.allCases.forEach { roomEditEnum in
+            switch roomEditEnum {
+            case .receiptData:
+                let receiptData = ReceiptCellEnum.getDetails(receipt: receipt)
+                detailsDictionary[roomEditEnum.rawValue] = receiptData
+                break
+                
+            case .userData:
+                break
+            }
+        }
+        return detailsDictionary
+    }
+    var sectionIndex: Int {
+        return self.rawValue
+    }
+}
+
+
+
+
+enum ReceiptCellEnum: CaseIterable, ReceiptWriteCellType {
+    
     case date
     case time
+    
+    case memo
     case price
     case payer
+    
     case payment_Method
     
     var databaseString: String {
@@ -41,7 +96,30 @@ enum ReceiptEnum: CaseIterable {
     }
     
     
-    func detail(from receipt: Receipt) -> String {
+    
+    
+    static func validation(dict: [String: Any?]) -> [String] {
+        return self.allCases.compactMap { caseItem in
+            if !dict.keys.contains(caseItem.databaseString) {
+                return caseItem.databaseString
+            }
+            return nil
+        }
+    }
+    
+    
+    static func getDetails(receipt: Receipt?) -> [ReceiptWriteCellTuple] {
+        return self.allCases.map
+        { cellType -> (ReceiptWriteCellTuple) in
+            return (type: cellType, viewModel: ReceiptWriteDataCellVM(withReceiptEnum: cellType))
+        }
+    }
+    
+    
+    
+    private func detail(from receipt: Receipt?) -> String? {
+        guard let receipt = receipt else { return nil }
+        
          switch self {
          case .memo:
              return receipt.context

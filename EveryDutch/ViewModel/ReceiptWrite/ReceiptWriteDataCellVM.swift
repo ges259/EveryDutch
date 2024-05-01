@@ -9,10 +9,15 @@ import UIKit
 
 final class ReceiptWriteDataCellVM: ReceiptWriteDataCellVMProtocol {
     
-    private var receiptEnum: ReceiptEnum
-    private var price: Int? = 0
+    private var receiptEnum: ReceiptCellEnum
+    var price: Int? = 0
     
     let TF_MAX_COUNT: Int = 12
+    
+    func dddaa() -> ReceiptWriteCellType {
+        return self.receiptEnum
+    }
+    
     
     
     
@@ -47,14 +52,14 @@ final class ReceiptWriteDataCellVM: ReceiptWriteDataCellVMProtocol {
     }
     
     
-    var getReceiptEnum: ReceiptEnum {
+    var getReceiptEnum: ReceiptCellEnum {
         return self.receiptEnum
     }
     
     
     
     
-    init(withReceiptEnum receiptEnum: ReceiptEnum) {
+    init(withReceiptEnum receiptEnum: ReceiptCellEnum) {
         self.receiptEnum = receiptEnum
     }
     

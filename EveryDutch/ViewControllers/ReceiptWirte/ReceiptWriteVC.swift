@@ -573,13 +573,13 @@ extension ReceiptWriteVC {
     
     func changePayerLblData(addedUsers: RoomUserDataDict) {
         self.savePayer(addedUsers)
+//        let user = addedUsers.first?.value.userName
         self.updatePayerCell()
     }
     
     // MARK: - payer 저장
     private func savePayer(_ addedUsers: RoomUserDataDict) {
-        self.viewModel.isPayerSelected(
-            selectedUser: addedUsers)
+        self.viewModel.isPayerSelected(selectedUser: addedUsers)
     }
 }
     
@@ -635,8 +635,7 @@ extension ReceiptWriteVC {
         if !addedUsers.isEmpty {
             // 주의 --- 순서를 바꾸면 안 됨.
             // 뷰모델에서 셀의 뷰모델을 생성
-            self.viewModel.createUsersCellVM(
-                addedUsers: addedUsers)
+            self.viewModel.createUsersCellVM(addedUsers: addedUsers)
             // 추가될 셀의 IndexPath를 계산합니다.
             let indexPaths = self.viewModel.indexPathsForAddedUsers(addedUsers)
             // 테이블뷰에 특정 셀을 생성
@@ -710,6 +709,11 @@ extension ReceiptWriteVC {
             cell.setLabelText(text: timeString)
         }
     }
+    
+    private func updateReceiptWirteDataCell(action: ((ReceiptWriteDataCell) -> Void)) {
+        
+        
+    }
 }
 
 
@@ -773,8 +777,7 @@ extension ReceiptWriteVC: UITableViewDelegate {
     func tableView(_ tableView: UITableView,
                    didSelectRowAt indexPath: IndexPath)
     {
-        self.scrollToTableViewCellBottom(
-            indexPath: indexPath)
+        self.scrollToTableViewCellBottom(indexPath: indexPath)
     }
 }
 
@@ -837,7 +840,7 @@ extension ReceiptWriteVC: UITableViewDataSource {
     
     // MARK: - - 뷰모델 및 UI
     private func configureDataCellVM(_ cell: ReceiptWriteDataCell,
-                                     receiptEnum: ReceiptEnum) {
+                                     receiptEnum: ReceiptCellEnum) {
         // 뷰모델 가져오기
         let cellVM = ReceiptWriteDataCellVM(
             withReceiptEnum: receiptEnum)
@@ -846,7 +849,7 @@ extension ReceiptWriteVC: UITableViewDataSource {
     }
     
     // MARK: - - 셀의 모서리 설정
-    private func configureDataCellCorner(_ cell: ReceiptWriteDataCell, receiptEnum: ReceiptEnum) {
+    private func configureDataCellCorner(_ cell: ReceiptWriteDataCell, receiptEnum: ReceiptCellEnum) {
         // 첫 번째 셀이라면,
         if self.viewModel.isFistCell(receiptEnum) {
             cell.configureFirstCell()

@@ -15,9 +15,9 @@ enum ProfileEditEnum: Int, EditScreenType, CaseIterable {
     // MARK: - 셀 생성
     func createProviders(
         withData data: EditProviderModel?,
-        decoration: Decoration?) -> [Int: [EditCellDataCell]]
+        decoration: Decoration?) -> [Int: [EditCellTypeTuple]]
     {
-        var detailsDictionary: [Int: [EditCellDataCell]] = [:]
+        var detailsDictionary: [Int: [EditCellTypeTuple]] = [:]
         
         RoomEditEnum.allCases.forEach { roomEditEnum in
             switch roomEditEnum {

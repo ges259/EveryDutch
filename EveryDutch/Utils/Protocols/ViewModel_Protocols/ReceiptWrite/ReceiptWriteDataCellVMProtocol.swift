@@ -7,9 +7,9 @@
 
 import Foundation
 
-protocol ReceiptWriteDataCellVMProtocol {
+protocol ReceiptWriteDataCellVMProtocol: ReceiptWriteCellVMProtocol {
     
-    var getReceiptEnum: ReceiptEnum { get }
+    var getReceiptEnum: ReceiptCellEnum { get }
     var TF_MAX_COUNT: Int { get }
     func updateMemoCount(count: Int) -> String
     
@@ -32,4 +32,10 @@ protocol ReceiptWriteDataCellVMProtocol {
     
     
     func getCurrentTime() -> String
+}
+extension ReceiptWriteDataCellVMProtocol {
+    func getType() -> String {
+        return ""
+    }
+
 }

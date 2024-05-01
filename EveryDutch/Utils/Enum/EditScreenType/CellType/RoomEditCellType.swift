@@ -49,7 +49,8 @@ enum RoomEditCellType: Int, EditCellType, CaseIterable {
     
     // MARK: - Detail
     static func getDetails(data: EditProviderModel?) -> [(type: EditCellType, detail: String?)] {
-        return RoomEditCellType.allCases.map { cellType -> (type: EditCellType, detail: String?) in
+        return self.allCases.map
+        { cellType -> (type: EditCellType, detail: String?) in
             return (type: cellType, detail: cellType.detail(for: data))
         }
     }

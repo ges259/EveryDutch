@@ -13,8 +13,8 @@ import UIKit
  */
 
 final class EditScreenVM: ProfileEditVMProtocol {
-    // typealias EditCellDataCell = (type: EditCellType, detail: String?)
-    private var cellDataDictionary: [Int: [EditCellDataCell]] = [:]
+    // typealias EditCellTypeTuple = (type: EditCellType, detail: String?)
+    private var cellDataDictionary: [Int: [EditCellTypeTuple]] = [:]
     
     // API 통신을 담당하는 프로토콜 객체
     private var api: EditScreenAPIType?
@@ -120,8 +120,8 @@ final class EditScreenVM: ProfileEditVMProtocol {
 extension EditScreenVM {
     // 현재 선택된 셀 타입과 인덱스 패스를 반환하는 제네릭 메소드
     private func getCurrentCellType<F: EditCellType>(
-        cellType: F.Type) -> (type: F, indexPath: IndexPath)?
-    {
+        cellType: F.Type
+    ) -> (type: F, indexPath: IndexPath)? {
         guard let tuple = self.selectedIndexTuple, let type = tuple.type as? F else {
             return nil
         }
@@ -235,7 +235,7 @@ extension EditScreenVM {
     
     // MARK: - 셀 타입 반환
     // 특정 인덱스 패스에 해당하는 셀 타입을 반환하는 메소드
-    func cellTypes(indexPath: IndexPath) -> EditCellDataCell? {
+    func cellTypes(indexPath: IndexPath) -> EditCellTypeTuple? {
         return self.cellDataDictionary[indexPath.section]?[indexPath.row]
     }
     

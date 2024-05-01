@@ -7,7 +7,13 @@
 
 import UIKit
 
-protocol ReceiptWriteUsersCellVMProtocol {
+protocol ReceiptWriteCellVMProtocol {
+    func getType() -> String
+
+}
+
+
+protocol ReceiptWriteUsersCellVMProtocol: ReceiptWriteCellVMProtocol {
     var userID: String { get }
     var profileImageURL: String { get }
     var userName: String { get }
@@ -30,4 +36,10 @@ protocol ReceiptWriteUsersCellVMProtocol {
     func removeFormat(text: String?) -> String
     func textIsZero(text: String?) -> String?
     func configureTfFormat(text: String?) -> String?
+}
+extension ReceiptWriteUsersCellVMProtocol {
+    func getType() -> String {
+        return ""
+    }
+
 }

@@ -9,8 +9,8 @@ import UIKit
 
 final class ProfileVM: ProfileVMProtocol {
     
-    
-    private var cellTypesDictionary: [Int: [ProfileDataCell]] = [:]
+    // typealias ProfileDataCell = (type: ProfileType, detail: String?)
+    private var cellTypesDictionary: [Int: [ProfileTypeCell]] = [:]
     
     
     
@@ -126,7 +126,7 @@ extension ProfileVM {
 extension ProfileVM {
     
     // MARK: - 셀의 데이터 반환
-    func getCellData(indexPath: IndexPath) -> ProfileDataCell? {
+    func getCellData(indexPath: IndexPath) -> ProfileTypeCell? {
         return self.cellTypesDictionary[indexPath.section]?[indexPath.row]
     }
     
@@ -134,11 +134,11 @@ extension ProfileVM {
     // MARK: - 데이터 생성 로직 생성
     // 사용자 데이터를 기반으로 섹션별 셀 데이터를 생성하는 메서드
     func makeCellData(user: User) {
-        var allCellData: [Int: [ProfileDataCell]] = [:]
+        var allCellData: [Int: [ProfileTypeCell]] = [:]
         
         ProfileVCEnum.allCases.forEach { sectionEnum in
             
-            let cellData = sectionEnum.getAllOfCellType.compactMap { cellType -> ProfileDataCell? in
+            let cellData = sectionEnum.getAllOfCellType.compactMap { cellType -> ProfileTypeCell? in
                 switch cellType {
                 case let userInfoType as UserInfoType:
                     let detail = userInfoType.detail(from: user)

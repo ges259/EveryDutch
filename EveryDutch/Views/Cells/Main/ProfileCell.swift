@@ -70,7 +70,7 @@ extension ProfileCell {
         }
     }
     
-    func configureCell(_ cellData: ProfileDataCell) {
+    func configureCell(_ cellData: ProfileTypeCell) {
         self.detailLbl.text = cellData.type.cellTitle
         self.infoLbl.text = cellData.detail
     }

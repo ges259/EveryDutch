@@ -12,7 +12,7 @@ import Foundation
 protocol EditScreenType {
     func createProviders(
         withData data: EditProviderModel?,
-        decoration: Decoration?) -> [Int: [EditCellDataCell]]
+        decoration: Decoration?) -> [Int: [EditCellTypeTuple]]
     func validation(data: [String: Any?]) -> [String]
     
     

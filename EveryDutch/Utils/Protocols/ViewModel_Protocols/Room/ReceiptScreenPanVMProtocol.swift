@@ -23,7 +23,7 @@ protocol ReceiptScreenPanVMProtocol {
     // MARK: - 섹션의 개수
     var getNumOfSection: Int { get }
     func getCellHeight(section: Int) -> CGFloat
-    func getCellData(index: Int) -> ReceiptDataCell
+    func getCellData(index: Int) -> ReceiptCellTypeTuple
     
     
     func getHeaderTitle(section: Int) -> String

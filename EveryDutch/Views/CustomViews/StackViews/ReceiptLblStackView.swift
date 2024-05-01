@@ -29,10 +29,10 @@ final class ReceiptLblStackView: UIStackView {
         rightInset: 10)
     
     
-    private var receiptEnum: ReceiptEnum
+    private var receiptEnum: ReceiptCellEnum
     private var addInfoLbl: Bool = false
     
-    init(receiptEnum: ReceiptEnum,
+    init(receiptEnum: ReceiptCellEnum,
          addInfoLbl: Bool = false) {
         self.receiptEnum = receiptEnum
         self.addInfoLbl = addInfoLbl

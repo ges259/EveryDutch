@@ -70,7 +70,7 @@ extension CardDecorationCell {
     }
     
     // MARK: - 레이블 설정
-    func setDetailLbl(type: EditCellDataCell?,
+    func setDetailLbl(type: EditCellTypeTuple?,
                       isLast: Bool) {
         guard let data = type else { return }
         self.cellStv.userNameLbl.text = data.type.getCellTitle

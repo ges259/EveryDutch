@@ -12,7 +12,7 @@ final class ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
     // 정산내역 셀의 뷰모델
     private var cellViewModels: [ReceiptScreenPanUsersCellVM] = []
     // 데이터 셀의 데이터
-    private var dataCellData: [ReceiptDataCell] = []
+    private var dataCellData: [ReceiptCellTypeTuple] = []
     
     
     
@@ -106,10 +106,14 @@ final class ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
     
     // MARK: - 데이터 셀 데이터 설정
     private func makeDataCellData() {
-        self.dataCellData = ReceiptEnum.allCases.map { enumCase -> ReceiptDataCell in
-                let detail = enumCase.detail(from: receipt)
-                return (type: enumCase, detail: detail)
-            }
+        
+        
+        
+        // MARK: - Fix
+//        self.dataCellData = ReceiptCellEnum.allCases.map { enumCase -> ReceiptDataCell in
+//                let detail = enumCase.detail(from: receipt)
+//                return (type: enumCase, detail: detail)
+//            }
     }
     
     // MARK: - 유저 셀 생성
@@ -138,7 +142,7 @@ final class ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
     
     
     // MARK: - 데이터 셀 반환
-    func getCellData(index: Int) -> ReceiptDataCell {
+    func getCellData(index: Int) -> ReceiptCellTypeTuple {
         return self.dataCellData[index]
     }
     

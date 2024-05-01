@@ -17,7 +17,7 @@ final class ReceiptScreenDataCell: UITableViewCell {
     
     
     // MARK: - 프로퍼티
-    private var receiptEnum: ReceiptEnum = .time
+    private var receiptEnum: ReceiptCellEnum = .time
     
     
     
@@ -27,7 +27,7 @@ final class ReceiptScreenDataCell: UITableViewCell {
     
     // MARK: - 라이프사이클
     // 설정 메서드 추가
-    func configure(withReceiptEnum receiptEnum: ReceiptDataCell) {
+    func configure(withReceiptEnum receiptEnum: ReceiptCellTypeTuple) {
         self.receiptEnum = receiptEnum.type
         self.cellStv.receiptInfoLbl.text = receiptEnum.detail
         

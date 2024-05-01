@@ -91,7 +91,7 @@ extension CardDataCell {
 extension CardDataCell {
     
     // MARK: - 셀의 텍스트 설정
-    func setDetailLbl(type: EditCellDataCell?,
+    func setDetailLbl(type: EditCellTypeTuple?,
                       isFirst: Bool,
                       isLast: Bool)
     {

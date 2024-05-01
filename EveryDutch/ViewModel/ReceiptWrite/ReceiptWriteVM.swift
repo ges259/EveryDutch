@@ -7,17 +7,22 @@
 
 import UIKit
 
+/*
+ 1. tuple (
+    - 뷰모델을 사용
+    - type만 사용
+ 
+ 
+ 2. 셀의 개수가
+    - 가변적 (0개가 될 수 있음)
+    - 고정적
+ */
+
+
+
 final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     
-    // MARK: - 뷰 모델
-    private var usersCellViewModels: [ReceiptWriteUsersCellVM] = [] {
-        didSet {
-            print("*************************")
-            print(self.usersCellViewModels.count)
-            print("__________________________")
-        }
-    }
-    // MARK: - 뷰 모델
+    // MARK: - [데이터] 뷰 모델
     private var dataCellViewModels: [ReceiptWriteDataCellVM] = [] {
         didSet {
             print("*************************")
@@ -25,6 +30,120 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
             print("__________________________")
         }
     }
+    
+    // MARK: - [유저] 뷰 모델
+    private var usersCellViewModels: [ReceiptWriteUsersCellVM] = [] {
+        didSet {
+            print("*************************")
+            print(self.usersCellViewModels.count)
+            print("__________________________")
+        }
+    }
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    private var cellDataDictionary: [Int: [ReceiptWriteCellTuple]] = [:]
+    
+    // 현재 선택된 셀 타입과 인덱스 패스를 저장하는 튜플
+    private var selectedIndexTuple: (type: ReceiptWriteCellType, indexPath: IndexPath)?
+    
+    
+    
+    
+    private var receiptDataDict: [String: Any?] = [:]
+    
+    
+    
+    
+    private func getCurrentViewModelType<T: ReceiptWriteCellType>(
+        as type: T.Type
+    ) -> (type: T, indexPath: IndexPath)? {
+        if let tuple = self.selectedIndexTuple, let cellType = tuple.type as? T {
+            return (cellType, tuple.indexPath)
+        }
+        return nil
+    }
+    
+    // MARK: - 현재 셀의 [타입, 인덱스패스] 반환
+    func getReceiptCellTuple() -> (type: ReceiptWriteCellType, indexPath: IndexPath)? {
+        return self.getCurrentViewModelType(as: ReceiptCellEnum.self)
+    }
+    
+    
+    // MARK: - 셀의 [타입, 뷰모델] 반환
+    // 특정 인덱스 패스에 해당하는 셀 타입을 반환하는 메소드
+    func cellTypes(indexPath: IndexPath) -> ReceiptWriteCellTuple? {
+        return self.cellDataDictionary[indexPath.section]?[indexPath.row]
+    }
+    
+    
+    // MARK: - 선택된 셀 [타임, 인덱스] 저장
+    // 현재 선택된 셀 타입과 인덱스 패스를 저장하는 메소드
+    func saveCurrentIndex(indexPath: IndexPath) {
+        guard let type = self.cellTypes(indexPath: indexPath)?.type else {
+            // MARK: - Fix
+            // 에러 처리
+            return
+        }
+        self.selectedIndexTuple = (type: type, indexPath: indexPath)
+    }
+    
+    
+    func saveReceiptData(data: Any?) {
+        // type가져오기
+        guard let type = self.selectedIndexTuple?.type else { return }
+        // 데이터베이스 String 가져오기
+        self.receiptDataDict[type.databaseString] = data
+    }
+    
+    func saveMoneyData() {
+        
+    }
+    
+    
+//    func getReceiptDictData(type: ReceiptCellEnum) -> String {
+//        let dd = self.receiptDataDict[type.databaseString]
+//        
+//        return type.databaseString
+//    }
+//    
+    func getCurrentPrice() -> Int? {
+        guard let price = self.receiptDataDict[ReceiptCellEnum.price.databaseString] as? Int else {
+            return nil
+        }
+        return price
+    }
+    
+    var errorClosure: ((ErrorEnum) -> Void)?
+    
+    
+    
+    
+    
+    
+    
     
     
     
@@ -38,14 +157,19 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     // MARK: - 모델
     private var roomDataManager: RoomDataManagerProtocol
     private var receiptAPI: ReceiptAPIProtocol
+
     
-    var date: Int = Int(NSDate().timeIntervalSince1970)
-    var time: String = Date.returnCurrenTime()
+    //    var time: String = Date.returnCurrenTime()
+    //    var memo: String?
     
-    var memo: String?
-    var price: Int?
-    var payer: RoomUserDataDict?
-    //  [String : User]
+    
+//    var date: Int = Int(NSDate().timeIntervalSince1970)
+//    var price: Int?
+    
+    
+    
+    // typealias RoomUserDataDict = [String : User]
+//    var payer: RoomUserDataDict?
     var selectedUsers: RoomUserDataDict = [:]
     
     
@@ -64,7 +188,7 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     
     
     
-// MARK: - 디바운스
+// MARK: - [디바운스]
     
     
     
@@ -84,11 +208,11 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     
     
     
-// MARK: - 테이블뷰
+// MARK: - [테이블뷰]
     
     
     
-// MARK: - [공통]
+    // MARK: - [데이터 섹션]
     
     private var receiptWriteEnum: [ReceiptWriteEnum] = ReceiptWriteEnum.allCases
     
@@ -102,26 +226,11 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
         return self.receiptWriteEnum.count
     }
     
-    // MARK: - 첫 번째 셀 모서리
-    func isFistCell(_ receiptEnum: ReceiptEnum) -> Bool {
-        return receiptEnum == self.receiptEnum.first
-        ? true
-        : false
-    }
-    
-    // MARK: - 마지막 셀 모서리
-    func isLastCell(_ receiptEnum: ReceiptEnum) -> Bool {
-        return receiptEnum == self.receiptEnum.last
-        ? true
-        : false
-    }
     
     
-    
-    
-// MARK: - [데이터 섹션]
+    // MARK: - [데이터 셀]
     // payment_Method를 제외한 모든 타입들을 가져옴
-    private var receiptEnum: [ReceiptEnum] = ReceiptEnum.allCases.filter { $0 != .payment_Method }
+    private var receiptEnum: [ReceiptCellEnum] = ReceiptCellEnum.allCases.filter { $0 != .payment_Method }
     
     // MARK: - 데이터 셀 개수
     var getNumOfReceiptEnum: Int {
@@ -129,20 +238,32 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     }
     
     // MARK: - 데이터 셀 Enum
-    func getReceiptEnum(index: Int) -> ReceiptEnum {
+    func getReceiptEnum(index: Int) -> ReceiptCellEnum {
         return self.receiptEnum[index]
+    }
+    
+    // MARK: - 첫 번째 셀
+    func isFistCell(_ receiptEnum: ReceiptCellEnum) -> Bool {
+        return receiptEnum == self.receiptEnum.first
+        ? true
+        : false
+    }
+    
+    // MARK: - 마지막 셀
+    func isLastCell(_ receiptEnum: ReceiptCellEnum) -> Bool {
+        return receiptEnum == self.receiptEnum.last
+        ? true
+        : false
     }
     
     
     
-    
-    
-// MARK: - [셀 인덱스]
+    // MARK: - [셀 인덱스]
     
     
     
     // MARK: - 인덱스 리턴 함수
-    func findReceiptEnumIndex(_ receiptEnum: ReceiptEnum) -> IndexPath {
+    func findReceiptEnumIndex(_ receiptEnum: ReceiptCellEnum) -> IndexPath {
         if let index = self.receiptEnum.firstIndex(of: receiptEnum) {
             return IndexPath(row: index, section: 0)
         }
@@ -249,12 +370,7 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     
     
     
-// MARK: - 날짜 저장
-    func saveCalenderDate(date: Date) {
-        let dateInt = Int(date.timeIntervalSince1970)
-        self.date = dateInt
-    }
-    
+
     
     
     
@@ -274,6 +390,36 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     }
 }
 
+extension ReceiptWriteVM {
+    // MARK: - 날짜 저장
+    func saveCalenderDate(date: Date) {
+        let dateInt = Int(date.timeIntervalSince1970)
+//        self.date = dateInt
+        self.saveReceiptData(data: dateInt)
+    }
+    // MARK: - [저장] price(가격)
+    func savePriceText(price: Int) {
+        let priceInt: Int? = price == 0 ? nil : price
+        self.saveReceiptData(data: priceInt)
+    }
+    
+    func saveTime() {
+        
+    }
+    func saveMemo() {
+        
+    }
+    
+    
+    
+    // MARK: - 선택된 유저의 이름
+    func isPayerSelected(selectedUser: RoomUserDataDict) {
+//        self.payer = selectedUser
+        let dd = selectedUser.first?.key
+        
+        self.saveReceiptData(data: selectedUser.first?.key)
+    }
+}
 
 
 
@@ -402,7 +548,7 @@ extension ReceiptWriteVM {
     func dutchBtnTapped() {
         // 현재 금액 옵셔널 바인딩,
         // + 현재 금액이 0원이 아니라면
-        guard let price = self.price, 
+        guard let price = self.getCurrentPrice(),
                 price != 0,
                 self.selectedUsers.count != 0 else {
             // 현재 금액이 0원이라면 -> 0원으로 모두 맞춤
@@ -443,13 +589,7 @@ extension ReceiptWriteVM {
 
 extension ReceiptWriteVM {
     
-    // MARK: - [저장] price(가격)
-    func savePriceText(price: Int) {
-        
-        self.price = price == 0
-        ? nil
-        : price
-    }
+ 
     
     // MARK: - [형식] 남은 금액 레이블 텍스트 설정
     var moneyCountLblText: String? {
@@ -459,7 +599,7 @@ extension ReceiptWriteVM {
     
     // MARK: - 남은 금액 계산
     private var calculateRemainingMoney: Int {
-        let price = self.price ?? 0
+        let price = self.getCurrentPrice() ?? 0
         let total = price - self.cumulativeMoney
         return total
     }
@@ -520,13 +660,10 @@ extension ReceiptWriteVM {
     
 extension ReceiptWriteVM {
     
-    // MARK: - 선택된 유저의 이름
-    func isPayerSelected(selectedUser: RoomUserDataDict) {
-        self.payer = selectedUser
-    }
-    
+    // MARK: - Fix
     var getSelectedUsers: String? {
-        return self.payer?.values.first?.userName
+//        return self.payer?.values.first?.userName
+        return ""
     }
 }
 
@@ -706,8 +843,8 @@ extension ReceiptWriteVM {
     private func makeDictionary() {
         self.receiptDict[DatabaseConstants.type] = 0
         self.receiptDict[DatabaseConstants.payment_method] = self.calculatePaymentMethod()
-        self.receiptDict[DatabaseConstants.date] = self.date
-        self.receiptDict[DatabaseConstants.time] = self.time
+//        self.receiptDict[DatabaseConstants.date] = self.date
+//        self.receiptDict[DatabaseConstants.time] = self.time
     }
     
     // MARK: - 결제 세부 정보를 딕셔너리로 변환
@@ -798,6 +935,129 @@ extension ReceiptWriteVM {
             completion(.failure(.receiptCheckFailed(validationResults)))
         }
     }
+    
+    /*
+     1. 자동 작성
+     case date
+     case time
+     
+     -----
+     
+     2. 직접 작성
+     case memo          -> 메모 작성이 되어있지 않음
+     case price         -> 가격 설정이 되어있지 않음
+     case payer         -> 계산한 사람 선택이 되어있지 않음
+     
+     -----
+     
+     3. 자동 계산
+     case payment_Method    -> 계산 방법
+     
+     -----
+     
+     4. 따로 validation
+     payment_Detail     -> 계산함 사람이 선택되지 않음
+     cumulative_Money   -> 금액이 맞지 않음
+     pay                -> 0원으로 설정되어 있는 사람
+     
+     -----
+     
+     5. 안 함
+     type
+     
+     */
+    
+//    private func validation2() -> Bool {
+//        // 1번과 2번에 해당
+//        guard var data: [String] = self.receiptWriteEnum.first?.validation(data: self.receiptDataDict)
+//        else {
+//            // MARK: - 에러처리
+//            return false
+//        }
+//        
+//        // payment_details -> toDcitaionary()
+//        let details = self.toDictionary()
+//        if let details = details, !details.isEmpty {
+//            self.receiptDict[DatabaseConstants.payment_details] = details
+//        } else {
+//            data.append(DatabaseConstants.payment_details)
+//        }
+//        
+//        // culmulative_money -> 0원인지 판단
+//        if self.calculateRemainingMoney != 0 {
+//            data.append(DatabaseConstants.culmulative_money)
+//        }
+//        
+//        // pay ->
+//        let hasZeroPriceUser = self.selectedUsers.contains { self.usersMoneyDict[$0.key] == 0 }
+//        if hasZeroPriceUser {
+//            data.append(DatabaseConstants.pay)
+//        }
+//        
+//        
+//        if data.isEmpty {
+//            // MARK: - 에러처리
+//            self.errorClosure?(.validationError(data))
+//            return false
+//        }
+//        return true
+//    }
+//    
+    
+    
+    
+    
+    
+    
+    
+    private func validateData() -> Bool {
+        var errors: [String] = []
+
+        // 1번과 2번에 해당하는 검증
+        self.validateReceiptDetails(&errors)
+
+        // 추가 검증 로직들을 메소드로 분리
+        self.validatePaymentDetails(&errors)
+        self.validateCumulativeMoney(&errors)
+        self.validateUserPayments(&errors)
+
+        // 모든 에러들을 처리
+        if !errors.isEmpty {
+            self.errorClosure?(.validationError(errors))
+            return false
+        }
+
+        return true
+    }
+
+    private func validateReceiptDetails(_ errors: inout [String]) {
+        guard let details = receiptWriteEnum.first?.validation(data: self.receiptDataDict) else {
+            errors.append("Initial receipt details validation failed.")
+            return
+        }
+        // 여기에 성공적인 검증 시 수행할 추가 로직을 넣을 수 있습니다.
+    }
+    private func validatePaymentDetails(_ errors: inout [String]) {
+        let details = toDictionary()
+        if let details = details, !details.isEmpty {
+            self.receiptDict[DatabaseConstants.payment_details] = details
+        } else {
+            errors.append(DatabaseConstants.payment_details)
+        }
+    }
+
+    private func validateCumulativeMoney(_ errors: inout [String]) {
+        if calculateRemainingMoney != 0 {
+            errors.append(DatabaseConstants.culmulative_money)
+        }
+    }
+
+    private func validateUserPayments(_ errors: inout [String]) {
+        let hasZeroPriceUser = selectedUsers.contains { self.usersMoneyDict[$0.key] == 0 }
+        if hasZeroPriceUser {
+            errors.append(DatabaseConstants.pay)
+        }
+    }
 }
 
 
@@ -816,6 +1076,10 @@ extension ReceiptWriteVM {
     // MARK: - 비동기 작업 시작
     // 비동기 작업을 시작하는 함수
     func startReceiptAPI() async throws {
+        // 버전, payerID 가져오기
+        
+        
+        
         let receiptKey = try await createReceipt()
         try await createReceiptForUsers(receiptID: receiptKey)
         try await updateCumulativeMoney()

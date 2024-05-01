@@ -25,16 +25,23 @@ enum DatabaseConstants {
 // Receipt
 extension DatabaseConstants {
     static let type: String = "type"
-    static let context: String = "context"
+    static let done: String = "done"
+    
+    
     static let date: String = "date"
     static let time: String = "time"
+    
+    static let context: String = "context"
     static let price: String = "price"
     static let payer: String = "payer"
+    
     static let payment_method: String = "paymentMethod"
+    
+    
     static let payment_details: String = "paymentDetails"
     
     static let pay: String = "pay"
-    static let done: String = "done"
+    
 }
 
 
