@@ -311,12 +311,15 @@ extension EditScreenVM {
     func validation() {
         Task {
             do {
+                print("1")
                 guard self.roomValidation() else { throw ErrorEnum.unknownError }
+                print("2")
                 // MARK: - Fix
                 // 나중에 주석 풀기
                 try await self.createData()
+                print("3")
                 self.successDataClosure?()
-                
+                print("4")
             } catch let error as ErrorEnum {
                 self.errorClosure?(error)
                 
@@ -328,13 +331,18 @@ extension EditScreenVM {
     
     // MARK: - 유효성 검사
     private func roomValidation() -> Bool {
+        print("\(#function) --- 1")
         let dict = self.allCases.first?.validation(data: self.textData)
+        print("\(#function) --- 2")
+        dump(dict)
         // MARK: - Fix
         // 오류 처리 (databaseString)
-        if let dict = dict, dict.isEmpty {
+        if let dict = dict, !dict.isEmpty {
+            print("\(#function) --- 3")
             self.errorClosure?(.validationError(dict))
             return false
         }
+        print("\(#function) --- 4")
         return true
     }
 }

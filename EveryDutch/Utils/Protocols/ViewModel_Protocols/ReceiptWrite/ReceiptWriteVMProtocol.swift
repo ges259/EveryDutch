@@ -22,13 +22,7 @@ protocol ReceiptWriteVMProtocol {
     
     func getHeaderTitle(section: Int) -> String
     
-    func findReceiptEnumIndex(_ receiptEnum: ReceiptCellEnum) -> IndexPath 
-//    var getTimeCellIndexPath: IndexPath { get }
-//    var getPayerCellIndexPath: IndexPath { get }
-//    var getDateCellIndexPath: IndexPath { get }
-//    var getPriceCellIndexPath: IndexPath { get }
-//    
-//    var getMemoCellIndexPath: IndexPath { get }
+    func findReceiptEnumIndex(_ receiptEnum: ReceiptCellEnum) -> IndexPath
     
     
     
@@ -38,12 +32,8 @@ protocol ReceiptWriteVMProtocol {
     func saveCalenderDate(date: Date)
     
     
-    
+    func saveCurrentIndex(indexPath: IndexPath)
     // MARK: - 모델
-    var date: Int { get set }
-    var time: String { get set }
-    var memo: String? { get set }
-    var price: Int? { get set }
     var payer: RoomUserDataDict? { get }
     var selectedUsers: RoomUserDataDict { get set }
     
@@ -91,7 +81,7 @@ protocol ReceiptWriteVMProtocol {
     /// 키보드 높이
     var keyboardHeight: CGFloat { get set }
     
-    
+    func validationData()
     
     
     
@@ -104,13 +94,13 @@ protocol ReceiptWriteVMProtocol {
     // [형식]
 ////    func savePriceText(text: String?)
     func savePriceText(price: Int)
-//    
-//    func removeWonFormat(priceText: String?) -> String?
-//    func formatPriceForEditing(_ newText: String?) -> String?
-//    var priceInfoTFText: String? { get }
-    var moneyCountLblText: String? { get }
-//    
     
+    func saveTime(time: String)
+    func saveMemo(context: String)
+    
+    var moneyCountLblText: String? { get }
+    
+    func setSectionIndex(indexPath: IndexPath) -> ReceiptWriteEnum?
     
     
     // MARK: - 타임 피커
@@ -121,12 +111,12 @@ protocol ReceiptWriteVMProtocol {
     
     
     // MARK: - 레시피 체크
-    var receiptDict: [String : Any?] { get }
+//    var receiptDict: [String : Any?] { get }
     
     
 //    func getCheckReceipt(completion: @escaping (Bool) -> Void)
 //    func prepareReceiptDataAndValidate(completion: @escaping (Bool, [String: Any?]) -> Void)
-    func prepareReceiptDataAndValidate(completion: @escaping Typealias.ReceiptCompletion) 
+//    func prepareReceiptDataAndValidate(completion: @escaping Typealias.ReceiptCompletion) 
     
 // MARK: - [여러명] paymentDetails 선택
     
@@ -160,3 +150,10 @@ protocol ReceiptWriteVMProtocol {
 // MARK: - 셀의 뷰모델 반환
     func usersCellViewModel(at index: Int) -> ReceiptWriteUsersCellVM
 }
+
+//    var getTimeCellIndexPath: IndexPath { get }
+//    var getPayerCellIndexPath: IndexPath { get }
+//    var getDateCellIndexPath: IndexPath { get }
+//    var getPriceCellIndexPath: IndexPath { get }
+//
+//    var getMemoCellIndexPath: IndexPath { get }

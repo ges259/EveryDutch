@@ -8,12 +8,9 @@
 import Foundation
 
 protocol ReceiptWriteDataCellDelegate: AnyObject {
-    func dateLblTapped()
-    func timeLblTapped()
-    func payerLblTapped()
     
-    func priceTFTapped()
-    func memoTFTapped()
+    func cellIsTapped(_ cell: ReceiptWriteDataCell, type: ReceiptCellEnum?)
+    
     
     func finishPriceTF(price: Int)
     func finishMemoTF(memo: String)

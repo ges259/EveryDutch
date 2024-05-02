@@ -54,6 +54,10 @@ enum ReceiptWriteEnum: Int, CaseIterable {
     var sectionIndex: Int {
         return self.rawValue
     }
+    
+    func getRawValue(section: Int) -> ReceiptWriteEnum? {
+        return ReceiptWriteEnum(rawValue: section)
+    }
 }
 
 
@@ -76,7 +80,7 @@ enum ReceiptCellEnum: CaseIterable, ReceiptWriteCellType {
         case .date:             return DatabaseConstants.date
         case .time:             return DatabaseConstants.time
         case .price:            return DatabaseConstants.price
-        case .payer:            return DatabaseConstants.pay
+        case .payer:            return DatabaseConstants.payer
         case .payment_Method:   return DatabaseConstants.payment_method
         }
     }
@@ -100,7 +104,8 @@ enum ReceiptCellEnum: CaseIterable, ReceiptWriteCellType {
     
     static func validation(dict: [String: Any?]) -> [String] {
         return self.allCases.compactMap { caseItem in
-            if !dict.keys.contains(caseItem.databaseString) {
+            if caseItem != .payment_Method 
+                && !dict.keys.contains(caseItem.databaseString) {
                 return caseItem.databaseString
             }
             return nil

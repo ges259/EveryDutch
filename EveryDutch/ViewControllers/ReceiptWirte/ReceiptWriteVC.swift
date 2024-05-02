@@ -460,28 +460,30 @@ extension ReceiptWriteVC {
     @objc private func bottomBtnTapped() {
         // 모든 키보드 내리기
         self.endEditing()
+        self.viewModel.validationData()
         
-        self.viewModel.prepareReceiptDataAndValidate { [weak self] result in
-            guard let self = self else { return }
-            
-            switch result {
-            // 영수증 작성 완료. (DB에 저장 성공)
-            case .success(let receipt):
-                // 이전화면(SettlementMoneyVC) 으로 이동
-                self.coordinator.successMakeReceipt(receipt: receipt)
-                break
-            
-            // 영수증 작성 실패
-            case .failure(let errorEnum):
-                switch errorEnum {
-                case .receiptCheckFailed(let dict):
-                    self.coordinator.checkReceiptPanScreen(dict)
-                    break
-                    
-                default: break
-                }
-            }
-        }
+        // MARK: - Fix
+//        self.viewModel.prepareReceiptDataAndValidate { [weak self] result in
+//            guard let self = self else { return }
+//            
+//            switch result {
+//            // 영수증 작성 완료. (DB에 저장 성공)
+//            case .success(let receipt):
+//                // 이전화면(SettlementMoneyVC) 으로 이동
+//                self.coordinator.successMakeReceipt(receipt: receipt)
+//                break
+//            
+//            // 영수증 작성 실패
+//            case .failure(let errorEnum):
+//                switch errorEnum {
+//                case .receiptCheckFailed(let dict):
+//                    self.coordinator.checkReceiptPanScreen(dict)
+//                    break
+//                    
+//                default: break
+//                }
+//            }
+//        }
     }
 }
     
@@ -573,6 +575,8 @@ extension ReceiptWriteVC {
     
     func changePayerLblData(addedUsers: RoomUserDataDict) {
         self.savePayer(addedUsers)
+        
+        // MARK: - Fix
 //        let user = addedUsers.first?.value.userName
         self.updatePayerCell()
     }
@@ -711,7 +715,8 @@ extension ReceiptWriteVC {
     }
     
     private func updateReceiptWirteDataCell(action: ((ReceiptWriteDataCell) -> Void)) {
-        
+        // MARK: - Fix
+        // 나중에 리팩토링
         
     }
 }
@@ -741,8 +746,7 @@ extension ReceiptWriteVC: UITableViewDelegate {
     func tableView(_ tableView: UITableView,
                    viewForHeaderInSection section: Int)
     -> UIView? {
-        let title = self.viewModel.getHeaderTitle(
-            section: section)
+        let title = self.viewModel.getHeaderTitle(section: section)
         return TableHeaderView(
             title: title,
             tableHeaderEnum: .receiptWriteVC)
@@ -808,12 +812,21 @@ extension ReceiptWriteVC: UITableViewDataSource {
     func tableView(_ tableView: UITableView,
                    cellForRowAt indexPath: IndexPath)
     -> UITableViewCell {
-        return indexPath.section == 0
-        ? self.setReceiptWriteDataCell(indexPath)
-        : self.setReceiptWriteUsersCell(indexPath)
+        
+        let type = self.viewModel.setSectionIndex(indexPath: indexPath)
+        switch type {
+        case .receiptData:
+            return self.setReceiptWriteDataCell(indexPath)
+            
+        case .userData:
+            return self.setReceiptWriteUsersCell(indexPath)
+            
+        default:
+            return tableView.dequeueReusableCell(
+                withIdentifier: Identifier.defaultCell,
+                for: indexPath)
+        }
     }
-    
-    
     
     
     
@@ -826,15 +839,12 @@ extension ReceiptWriteVC: UITableViewDataSource {
         cell.delegate = self
         
         // ReceiptEnum 타입 가져오기
-        let receiptEnum = self.viewModel.getReceiptEnum(
-            index: indexPath.row)
+        let receiptEnum = self.viewModel.getReceiptEnum(index: indexPath.row)
 
-        self.configureDataCellVM(
-            cell,
-            receiptEnum: receiptEnum)
-        self.configureDataCellCorner(
-            cell,
-            receiptEnum: receiptEnum)
+        self.configureDataCellVM(cell,
+                                 receiptEnum: receiptEnum)
+        self.configureDataCellCorner(cell,
+                                     receiptEnum: receiptEnum)
         return cell
     }
     
@@ -842,8 +852,7 @@ extension ReceiptWriteVC: UITableViewDataSource {
     private func configureDataCellVM(_ cell: ReceiptWriteDataCell,
                                      receiptEnum: ReceiptCellEnum) {
         // 뷰모델 가져오기
-        let cellVM = ReceiptWriteDataCellVM(
-            withReceiptEnum: receiptEnum)
+        let cellVM = ReceiptWriteDataCellVM(withReceiptEnum: receiptEnum)
         // 셀 UI설정
         cell.configureCell(viewModel: cellVM)
     }
@@ -880,8 +889,7 @@ extension ReceiptWriteVC: UITableViewDataSource {
     private func configureUserCellVM(_ cell: ReceiptWriteUsersCell,
                                      index: Int) {
         // 셀 뷰모델 만들기
-        let cellVM = self.viewModel.usersCellViewModel(
-            at: index)
+        let cellVM = self.viewModel.usersCellViewModel(at: index)
         // 셀의 뷰모델을 셀에 넣기
         cell.configureCell(with: cellVM)
     }
@@ -1042,15 +1050,12 @@ extension ReceiptWriteVC: UIPickerViewDelegate {
     
     // MARK: - 타임 셀 텍스트 설정
     private func setTimeInfoLblText(hour: Int, min: Int) {
-        
-        let timeText = self.viewModel.timePickerString(
-            hour: hour,
-            minute: min)
-        
+        // 시간 계산
+        let timeText = self.viewModel.timePickerString(hour: hour,minute: min)
+        // 시간 저장
+        self.viewModel.saveTime(time: timeText)
         // 선택한 시간과 분을 이용하여 필요한 작업 수행
         self.updateTimeCell(timeString: timeText)
-        // 뷰모델에 시간 저장
-        self.viewModel.time = timeText
     }
     
     // MARK: - 타임피커 초기 설정
@@ -1075,6 +1080,7 @@ extension ReceiptWriteVC: UIPickerViewDelegate {
 // MARK: - 캘린더 델리게이트
 extension ReceiptWriteVC: CalendarDelegate {
     func didSelectDate(date: Date) {
+        print(#function)
         // 날짜 저장
         self.viewModel.saveCalenderDate(date: date)
         // 셀 업데이트
@@ -1095,29 +1101,11 @@ extension ReceiptWriteVC: CalendarDelegate {
 
 extension ReceiptWriteVC: ReceiptWriteDataCellDelegate {
     
-    // MARK: - 날짜 셀
-    func dateLblTapped() {
-        self.scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
-    }
     
-    // MARK: - 시간 셀
-    func timeLblTapped() {
-        /// 타임 레이블을 누르면 '타임 피커'가 보이도록 설정
-        self.dismissKeyboard()
-        self.hideTimePicker(false)
+    // MARK: - 메모 셀
+    func finishMemoTF(memo: String) {
+        self.viewModel.saveMemo(context: memo)
     }
-    
-    // MARK: - payer 셀
-    func payerLblTapped() {
-        self.payerInfoLblTapped()
-    }
-    
-    // MARK: - 가격 셀
-    func priceTFTapped() {
-        self.scrollToTableViewCellBottom(
-            indexPath: self.viewModel.findReceiptEnumIndex(.price))
-    }
-    
     // MARK: - 가격 셀
     func finishPriceTF(price: Int) {
         // 뷰모델에 price값 저장
@@ -1126,15 +1114,64 @@ extension ReceiptWriteVC: ReceiptWriteDataCellDelegate {
         self.moneyCountLbl.text = self.viewModel.moneyCountLblText
     }
     
-    // MARK: - 메모 셀
-    func memoTFTapped() {
-        self.scrollToTableViewCellBottom(
-            indexPath: self.viewModel.findReceiptEnumIndex(.memo))
+    
+    
+    
+    
+    func cellIsTapped(_ cell: ReceiptWriteDataCell, type: ReceiptCellEnum?) {
+        self.saveCellIndexPath(cell)
+        
+        self.isEdittingAction(type: type)
     }
     
+    private func saveCellIndexPath(_ cell: ReceiptWriteDataCell) {
+        if let indexPath = self.tableView.indexPath(for: cell) {
+            self.viewModel.saveCurrentIndex(indexPath: indexPath)
+        }
+    }
+    
+    private func isEdittingAction(type: ReceiptCellEnum?) {
+        guard let type = type else { return }
+        switch type {
+        case .date:
+            self.dateLblTapped()
+        case .time:
+            self.timeLblTapped()
+        case .memo:
+            self.memoTFTapped()
+        case .price:
+            self.priceTFTapped()
+        case .payer:
+            self.payerLblTapped()
+        case .payment_Method:
+            break
+        }
+        
+    }
+    // MARK: - 날짜 셀
+    private func dateLblTapped() {
+        self.scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
+    }
+    
+    // MARK: - 시간 셀
+    private func timeLblTapped() {
+        /// 타임 레이블을 누르면 '타임 피커'가 보이도록 설정
+        self.dismissKeyboard()
+        self.hideTimePicker(false)
+    }
+    
+    // MARK: - payer 셀
+    private func payerLblTapped() {
+        self.payerInfoLblTapped()
+    }
+    
+    // MARK: - 가격 셀
+    private func priceTFTapped() {
+        self.scrollToTableViewCellBottom(indexPath: self.viewModel.findReceiptEnumIndex(.price))
+    }
     // MARK: - 메모 셀
-    func finishMemoTF(memo: String) {
-        self.viewModel.memo = memo
+    private func memoTFTapped() {
+        self.scrollToTableViewCellBottom(indexPath: self.viewModel.findReceiptEnumIndex(.memo))
     }
 }
 

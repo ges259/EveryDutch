@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5F02A8102BE2592900FE10FA /* DefaultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F02A80F2BE2592900FE10FA /* DefaultCell.swift */; };
 		5F02B5022B74290F00069C2E /* ReceiptWriteEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F02B5012B74290F00069C2E /* ReceiptWriteEnum.swift */; };
 		5F02B5042B74293900069C2E /* CellSelectionUIStvEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F02B5032B74293900069C2E /* CellSelectionUIStvEnum.swift */; };
 		5F02B5062B74294800069C2E /* CellSelectionUIStv.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F02B5052B74294800069C2E /* CellSelectionUIStv.swift */; };
@@ -234,6 +235,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5F02A80F2BE2592900FE10FA /* DefaultCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultCell.swift; sourceTree = "<group>"; };
 		5F02B5012B74290F00069C2E /* ReceiptWriteEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptWriteEnum.swift; sourceTree = "<group>"; };
 		5F02B5032B74293900069C2E /* CellSelectionUIStvEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellSelectionUIStvEnum.swift; sourceTree = "<group>"; };
 		5F02B5052B74294800069C2E /* CellSelectionUIStv.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellSelectionUIStv.swift; sourceTree = "<group>"; };
@@ -708,6 +710,7 @@
 		5F56C7492B3D56C300266C12 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
+				5F02A80F2BE2592900FE10FA /* DefaultCell.swift */,
 				5F0A2AAD2B7559BD00ABDD59 /* Main */,
 				5F0A2AB02B755A0200ABDD59 /* Room */,
 				5F0A2AAF2B7559FC00ABDD59 /* ReceiptWrite */,
@@ -1435,6 +1438,7 @@
 				5F8513C62B4D307F00A5B22D /* VersionThumbnail.swift in Sources */,
 				5F1B97552BD58FFB00BAE2D0 /* SliderTrackView.swift in Sources */,
 				5F8513E32B4D68AE00A5B22D /* CreateVersion.swift in Sources */,
+				5F02A8102BE2592900FE10FA /* DefaultCell.swift in Sources */,
 				5F5AFBD82B4947E700BBBB9D /* SettleMoneyTableViewCellVM.swift in Sources */,
 				5FFF66192B51B9BE000A5EC4 /* ReceiptWriteUsersCellVM.swift in Sources */,
 				5F8513E52B4D68B600A5B22D /* UpdateVersion.swift in Sources */,

@@ -14,9 +14,6 @@ final class ReceiptWriteDataCellVM: ReceiptWriteDataCellVMProtocol {
     
     let TF_MAX_COUNT: Int = 12
     
-    func dddaa() -> ReceiptWriteCellType {
-        return self.receiptEnum
-    }
     
     
     

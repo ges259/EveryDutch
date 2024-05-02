@@ -27,7 +27,7 @@ enum Identifier {
     
     static let receiptDataCell: String = "ReceiptDataCell"
     
-    
+    static let defaultCell: String = "DefaultCell"
     
     
     static let receiptWriteUsersCell: String = "ReceiptWriteUsersCell"

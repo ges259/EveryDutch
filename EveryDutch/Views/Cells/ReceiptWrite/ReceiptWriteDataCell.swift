@@ -111,20 +111,21 @@ extension ReceiptWriteDataCell {
     // MARK: - 날짜
     private func configureDateUI() {
         self.configureLabelAutoLayout()
+        self.configureLabelAction()
         self.configureDateString()
     }
     
     // MARK: - 시간
     private func configureTimeUI() {
         self.configureLabelAutoLayout()
-        self.configureTimeLblAction()
+        self.configureLabelAction()
         self.configureTimeEnumUI()
     }
     
     // MARK: - Payer
     private func configurePayerUI() {
         self.configureLabelAutoLayout()
-        self.configurePayerLblAction()
+        self.configureLabelAction()
 
         self.configurePayerEnumUI()
     }
@@ -132,7 +133,7 @@ extension ReceiptWriteDataCell {
     // MARK: - 가격
     private func configurePriceUI() {
         self.configureTextFieldAutoLayout()
-        self.configurePriceTfAction()
+        self.configureTextFieldAction()
         self.configurePriceEnumUI()
     }
     
@@ -140,7 +141,7 @@ extension ReceiptWriteDataCell {
     private func configureMemoUI() {
         self.configureTextFieldAutoLayout()
         self.configureNumOfCharLbl()
-        self.configureMemoTfAction()
+        self.configureTextFieldAction()
     }
 }
 
@@ -166,11 +167,32 @@ extension ReceiptWriteDataCell {
         self.cellStv.backgroundColor = .medium_Blue
     }
     
+    
+    
+    
+    
+    // MARK: - 첫 번째 셀
+    func configureFirstCell() {
+        // 스택뷰의 모서리 설정
+        self.cellStv.setRoundedCorners(.rightTop, withCornerRadius: 10)
+    }
+    
+    // MARK: - 마지막 셀
+    func configureLastCell() {
+        // 스택뷰의 모서리 설정
+        self.cellStv.setRoundedCorners(.rightBottom, withCornerRadius: 10)
+        // 셀의 모서리 설정
+        self.setRoundedCorners(.bottom, withCornerRadius: 10)
+    }
+    
+    
+    
+    
+    
     // MARK: - 날짜
     private func configureDateString(date: Date = Date()) {
         self.label.text = Date.returnYearString(date: date)
     }
-    
     
     // MARK: - 시간
     private func configureTimeEnumUI() {
@@ -189,20 +211,6 @@ extension ReceiptWriteDataCell {
     // MARK: - 가격
     private func configurePriceEnumUI() {
         self.textField.keyboardType = .numberPad
-    }
-    
-    
-    // MARK: - 첫 번째 셀
-    func configureFirstCell() {
-        // 스택뷰의 모서리 설정
-        self.cellStv.setRoundedCorners(.rightTop, withCornerRadius: 10)
-    }
-    // MARK: - 마지막 셀
-    func configureLastCell() {
-        // 스택뷰의 모서리 설정
-        self.cellStv.setRoundedCorners(.rightBottom, withCornerRadius: 10)
-        // 셀의 모서리 설정
-        self.setRoundedCorners(.bottom, withCornerRadius: 10)
     }
 }
 
@@ -271,48 +279,21 @@ extension ReceiptWriteDataCell {
 
 extension ReceiptWriteDataCell {
     
-    private func configureDateLblAction() {
+    private func configureLabelAction() {
         // '계산한 사람' 레이블 제스처 생성
         let dateGesture = UITapGestureRecognizer(
             target: self,
-            action: #selector(self.dateInfoLblTapped))
+            action: #selector(self.labelTapped))
         self.label.isUserInteractionEnabled = true
         self.label.addGestureRecognizer(dateGesture)
     }
+
     
-    // MARK: - 가격 텍스트필드
-    private func configurePriceTfAction() {
+    private func configureTextFieldAction() {
         self.textField.addTarget(
             self,
-            action: #selector(self.priceInfoTFDidChanged),
+            action: #selector(self.textFieldIsChanged),
             for: .editingChanged)
-    }
-    
-    // MARK: - 메모 텍스트필드
-    private func configureMemoTfAction() {
-        self.textField.addTarget(
-            self,
-            action: #selector(self.memoInfoTFDidChanged),
-            for: .editingChanged)
-    }
-    // MARK: - payer 레이블
-    private func configurePayerLblAction() {
-        // '계산한 사람' 레이블 제스처 생성
-        let payerGesture = UITapGestureRecognizer(
-            target: self,
-            action: #selector(self.payerInfoLblTapped))
-        self.label.isUserInteractionEnabled = true
-        self.label.addGestureRecognizer(payerGesture)
-    }
-    
-    // MARK: - 시간 레이블
-    private func configureTimeLblAction() {
-        // '시간' 레이블 제스처 설정
-        let timeGesture = UITapGestureRecognizer(
-            target: self,
-            action: #selector(self.timeInfoLblTapped))
-        self.label.isUserInteractionEnabled = true
-        self.label.addGestureRecognizer(timeGesture)
     }
 }
     
@@ -328,24 +309,29 @@ extension ReceiptWriteDataCell {
 // MARK: - [액션]
 
 extension ReceiptWriteDataCell {
-    
-    // MARK: - 날짜 레이블
-    @objc private func dateInfoLblTapped() {
-        self.delegate?.dateLblTapped()
+    @objc private func labelTapped() {
+        self.delegate?.cellIsTapped(self, type: self.viewModel?.getReceiptEnum)
     }
     
-    // MARK: - 시간 레이블
-    @objc private func timeInfoLblTapped() {
-        self.delegate?.timeLblTapped()
+    
+    
+    
+    
+    @objc private func textFieldIsChanged() {
+        guard let type = self.viewModel?.getReceiptEnum else { return }
+        
+        switch type {
+        case .memo:
+            self.memoInfoTFDidChanged()
+        case .price:
+            self.priceInfoTFDidChanged()
+        default: break
+        }
     }
     
-    // MARK: - payer 레이블
-    @objc private func payerInfoLblTapped() {
-        self.delegate?.payerLblTapped()
-    }
     
     // MARK: - 가격 텍스트필드
-    @objc private func priceInfoTFDidChanged() {
+    private func priceInfoTFDidChanged() {
         guard let currentText = self.textField.text else { return }
 
         // 포매팅된 문자열로 텍스트 필드 업데이트
@@ -353,7 +339,7 @@ extension ReceiptWriteDataCell {
     }
     
     // MARK: - 메모 텍스트필드
-    @objc private func memoInfoTFDidChanged() {
+    private func memoInfoTFDidChanged() {
         // MARK: - Fix
         guard let count = self.textField.text?.count else { return }
         if count > 12 {
@@ -384,10 +370,7 @@ extension ReceiptWriteDataCell: UITextFieldDelegate {
     /// priceInfoTF의 수정을 시작할 때 ',' 및 '원'을 제거하는 메서드
     func textFieldDidBeginEditing(_ textField: UITextField) {
         // 텍스트필드가 눌렸다고 delegate 전달
-        _ = self.viewModel?.getReceiptEnum == .price
-        ? self.delegate?.priceTFTapped()
-        : self.delegate?.memoTFTapped()
-        
+        self.delegate?.cellIsTapped(self, type: self.viewModel?.getReceiptEnum)
         
         
         // MARK: - Fix
@@ -422,8 +405,7 @@ extension ReceiptWriteDataCell: UITextFieldDelegate {
     
     // MARK: - [저장] 메모 텍스트필드
     private func finishMemoTF(text: String?) {
-        if let text = text, 
-            text != "" {
+        if let text = text, text != "" {
             self.delegate?.finishMemoTF(memo: text)
         }
     }
@@ -433,13 +415,9 @@ extension ReceiptWriteDataCell: UITextFieldDelegate {
     /// 가격 텍스트필드의 수정이 끝났을 때 호출되는 메서드
     private func finishPriceTF(text: String?) {
         // Int값으로 바꾸기
-        let priceInt = self.viewModel?.removeAllFormat(
-            priceText: text) ?? 0
-        
+        let priceInt = self.viewModel?.removeAllFormat(priceText: text) ?? 0
         // 뷰컨트롤러로 전달
-        self.delegate?.finishPriceTF(
-            price: priceInt)
-        
+        self.delegate?.finishPriceTF(price: priceInt)
         // 텍스트필드에 ',' 및 '원'형식 설정
         self.textField.text = self.viewModel?.priceInfoTFText(price: priceInt)
     }
