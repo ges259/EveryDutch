@@ -78,6 +78,7 @@ final class CheckReceiptPanVC: UIViewController {
         
         self.configureUI()
         self.configureAutoLayout()
+        self.setupAction()
     }
     init(viewModel: CheckReceiptPanVMProtocol,
          coordinator: Coordinator) {
@@ -138,6 +139,16 @@ extension CheckReceiptPanVC {
         self.bottomBtn.snp.makeConstraints { make in
             make.height.equalTo(55)
         }
+    }
+    private func setupAction() {
+        self.bottomBtn.addTarget(
+            self,
+            action: #selector(self.bottomBtnTapped),
+            for: .touchUpInside)
+    }
+    @objc private func bottomBtnTapped() {
+//        self.coordinator.didFinish()
+        self.dismiss(animated: true)
     }
 }
 

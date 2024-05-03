@@ -17,7 +17,7 @@ struct Rooms: EditProviderModel {
     init(roomID: String, dictionary: [String: Any]) {
         self.roomID = roomID
         self.roomName = dictionary[DatabaseConstants.room_name] as? String ?? ""
-        self.versionID = "\(dictionary[DatabaseConstants.version_ID] as? Int ?? 0)"
+        self.versionID = dictionary[DatabaseConstants.version_ID] as? String ?? Date().returnErrorLogType()
         self.roomImg = dictionary[DatabaseConstants.manager_name] as? String ?? ""
     }
     
