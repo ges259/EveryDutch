@@ -331,6 +331,8 @@ extension ReceiptWriteVC {
         self.calculatePriceClosure()
         self.debouncingClosure()
         self.dutchBtnClosure()
+        self.errorClosure()
+        self.successApiClosure()
     }
     
     // MARK: - 금액 계산
@@ -372,6 +374,24 @@ extension ReceiptWriteVC {
             // reloadData() 후에 layoutIfNeeded()를 호출하여 레이아웃 업데이트를 즉시 실행
             self.tableView.layoutIfNeeded()
             CATransaction.commit()
+        }
+    }
+    private func errorClosure() {
+        self.viewModel.errorClosure = { errorType in
+            switch errorType {
+            case .validationError(let errorString):
+                self.coordinator.checkReceiptPanScreen(errorString)
+                break
+            default: 
+                
+                break
+            }
+        }
+    }
+    
+    private func successApiClosure() {
+        self.viewModel.makeReceiptClosure = { [weak self] receipt in
+            self?.coordinator.successMakeReceipt(receipt: receipt)
         }
     }
 }
@@ -461,29 +481,6 @@ extension ReceiptWriteVC {
         // 모든 키보드 내리기
         self.endEditing()
         self.viewModel.validationData()
-        
-        // MARK: - Fix
-//        self.viewModel.prepareReceiptDataAndValidate { [weak self] result in
-//            guard let self = self else { return }
-//            
-//            switch result {
-//            // 영수증 작성 완료. (DB에 저장 성공)
-//            case .success(let receipt):
-//                // 이전화면(SettlementMoneyVC) 으로 이동
-//                self.coordinator.successMakeReceipt(receipt: receipt)
-//                break
-//            
-//            // 영수증 작성 실패
-//            case .failure(let errorEnum):
-//                switch errorEnum {
-//                case .receiptCheckFailed(let dict):
-//                    self.coordinator.checkReceiptPanScreen(dict)
-//                    break
-//                    
-//                default: break
-//                }
-//            }
-//        }
     }
 }
     

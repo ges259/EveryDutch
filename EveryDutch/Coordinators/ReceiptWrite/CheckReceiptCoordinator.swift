@@ -13,17 +13,21 @@ final class CheckReceiptCoordinator: Coordinator {
     var childCoordinators: [Coordinator] = []
     
     var nav: UINavigationController
-    private var validationDict = [ReceiptCheck]()
+    private var validationDict = [String]()
+    private let receiptCheckType: ReceiptCheckEnum
     
     // 의존성 주입
     init(nav: UINavigationController,
-         validationDict: [ReceiptCheck]) {
+         type: ReceiptCheckEnum,
+         validationDict: [String]) {
         self.nav = nav
+        self.receiptCheckType = type
         self.validationDict = validationDict
     }
     
     func start() {
         let checkReceiptPanVM = CheckReceiptPanVM(
+            type: self.receiptCheckType,
             validationDict: self.validationDict)
         
         let checkReceiptPanVC = CheckReceiptPanVC(

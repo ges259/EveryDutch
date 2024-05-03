@@ -84,7 +84,8 @@ protocol ReceiptWriteVMProtocol {
     func validationData()
     
     
-    
+    var errorClosure: ((ErrorEnum) -> Void)?  { get set }
+    var makeReceiptClosure: ((Receipt) -> Void)? { get set }
     // MARK: - 가격 설정
     func calculatePrice(userID: String, price: Int?)
     

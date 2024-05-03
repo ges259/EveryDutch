@@ -74,14 +74,14 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     
     
     
-    private var receiptDataDict: [String: Any?] = [:] {
+    private lazy var receiptDataDict: [String: Any?] = [:] {
         didSet {
             dump(self.receiptDataDict)
         }
     }
     
     var errorClosure: ((ErrorEnum) -> Void)?
-    
+    var makeReceiptClosure: ((Receipt) -> Void)?
     
     
     
@@ -122,12 +122,10 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     }
     
     // MARK: - 데이터 저장
-    func saveReceiptData(data: Any?) {
-//        print("\(#function) ----- 1")
-//        print(self.selectedIndexTuple)
+    func saveReceiptData(data: Any?, ignore ignoreSelectedIndexTuple: ReceiptCellEnum? = nil) {
+        let targetType = self.selectedIndexTuple?.type ?? ignoreSelectedIndexTuple
         // type가져오기
-        guard let type = self.selectedIndexTuple?.type else { return }
-//        print("\(#function) ----- 2")
+        guard let type = targetType else { return }
         // 데이터베이스 String 가져오기
         self.receiptDataDict[type.databaseString] = data
     }
@@ -391,7 +389,10 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
         // MARK: - Fix
         guard let d = self.receiptWriteEnum.first?.createProviders(withData: nil) else { return }
         self.cellDataDictionary = d
-        
+        // 날짜 저장
+        self.saveCalenderDate(date: Date())
+        // 시간 저장
+        self.saveTime(time: self.timePickerString(hour: 1,minute: 1))
         
         // 데이터 셀 모델 만들기
         self.createDataCellVM()
@@ -402,7 +403,7 @@ extension ReceiptWriteVM {
     // MARK: - 날짜 저장
     func saveCalenderDate(date: Date) {
         let dateInt = Int(date.timeIntervalSince1970)
-        self.receiptDataDict[DatabaseConstants.date] = dateInt
+        self.saveReceiptData(data: dateInt, ignore: .date)
     }
     // MARK: - [저장] price(가격)
     func savePriceText(price: Int) {
@@ -412,7 +413,7 @@ extension ReceiptWriteVM {
     }
     
     func saveTime(time: String) {
-        self.saveReceiptData(data: time)
+        self.saveReceiptData(data: time, ignore: .time)
     }
     func saveMemo(context: String) {
         if context != "" {
@@ -833,10 +834,9 @@ extension ReceiptWriteVM {
      
      */
     func validationData() {
-        let boolean = self.validateData()
-        print("validation결과 ----- \(boolean)")
         // 실패 -> return
-        guard boolean else { return }
+        guard self.validateData() else { return }
+        print("성공!")
         // 성공 -> api작업 시작
 //        Task {
 //            do {
@@ -939,7 +939,8 @@ extension ReceiptWriteVM {
     private func calculatePaymentMethod(_ errors: inout [String]) {
         // paymentDetails 내의 모든 값이 동일한지 여부에 따라 결제 방식 결정
         guard let firstValue = self.usersMoneyDict.values.first else {
-            errors.append(DatabaseConstants.payment_method)
+            errors.append(DatabaseConstants.culmulative_money)
+            print("\(#function) ----- Error -----")
             return
         }
         

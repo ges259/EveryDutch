@@ -43,7 +43,7 @@ enum RoomEditCellType: Int, EditCellType, CaseIterable {
     var databaseString: String {
         switch self {
         case .roomName: return DatabaseConstants.room_name
-        case .className: return DatabaseConstants.manager_name
+        case .className: return DatabaseConstants.class_name
         }
     }
     

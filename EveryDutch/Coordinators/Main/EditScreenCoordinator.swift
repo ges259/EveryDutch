@@ -6,16 +6,13 @@
 //
 
 import UIKit
-import YPImagePicker
-
-
 
 protocol ImagePickerDelegate: AnyObject {
     func imageSelect(image: UIImage?)
 //    func error()
 }
 
-final class EditScreenCoordinator: NSObject, ProfileEditVCCoordProtocol {
+final class EditScreenCoordinator: NSObject, EditScreenCoordProtocol {
     weak var parentCoordinator: Coordinator?
     var nav: UINavigationController
     var childCoordinators: [Coordinator] = [] {
@@ -108,6 +105,24 @@ final class EditScreenCoordinator: NSObject, ProfileEditVCCoordProtocol {
         self.imageDelegate = screenVC as any ImagePickerDelegate
         self.nav.pushViewController(screenVC, animated: true)
     }
+    
+    
+    
+    // MARK: - 에러 체크 화면
+    func checkReceiptPanScreen(_ validationDict: [String]) {
+        // CheckReceiptCoordinator 생성
+        let checkReceiptCoordinator = CheckReceiptCoordinator(
+            nav: self.nav,
+            type: .editScreenVC,
+            validationDict: validationDict)
+        self.childCoordinators.append(checkReceiptCoordinator)
+        // 부모 코디네이터가 자신이라는 것을 명시 (뒤로가기 할 때 필요)
+        checkReceiptCoordinator.parentCoordinator = self
+        // 코디네이터에게 화면이동을 지시
+        checkReceiptCoordinator.start()
+    }
+    
+    
     
     // MARK: - didFinish
     func didFinish() {

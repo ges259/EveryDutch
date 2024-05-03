@@ -79,7 +79,7 @@ final class EditScreenVC: UIViewController {
     
     // MARK: - 프로퍼티
     private var viewModel: ProfileEditVMProtocol
-    private var coordinator: ProfileEditVCCoordProtocol
+    private var coordinator: EditScreenCoordProtocol
     /// CardScreenCoordinator로 전달 됨
     weak var delegate: EditScreenDelegate?
     /// 카드 이미지뷰의 높이
@@ -109,7 +109,7 @@ final class EditScreenVC: UIViewController {
         self.configureClosure()
     }
     init(viewModel: ProfileEditVMProtocol,
-         coordinator: ProfileEditVCCoordProtocol) {
+         coordinator: EditScreenCoordProtocol) {
         self.viewModel = viewModel
         self.coordinator = coordinator
         super.init(nibName: nil, bundle: nil)
@@ -274,7 +274,7 @@ extension EditScreenVC {
     private func errorType(_ errorType: ErrorEnum) {
         switch errorType {
         case .validationError(let errorString):
-            
+            self.coordinator.checkReceiptPanScreen(errorString)
             break
         default: break
         }

@@ -7,11 +7,13 @@
 
 import UIKit
 
-protocol ProfileEditVCCoordProtocol: Coordinator {
+protocol EditScreenCoordProtocol: Coordinator {
     
     func imagePickerScreen()
     
     
-//    func makeRoom(room: Rooms)
+    //    func makeRoom(room: Rooms)
     func makeProviderData(with: EditProviderModel)
+    
+    func checkReceiptPanScreen(_ validationDict: [String])
 }

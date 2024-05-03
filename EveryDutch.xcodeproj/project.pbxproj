@@ -215,7 +215,7 @@
 		5FE3DECC2B39CC8D008D58AE /* MainCollectionViewCellVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE3DECB2B39CC8D008D58AE /* MainCollectionViewCellVM.swift */; };
 		5FE3DECF2B39CCAE008D58AE /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 5FE3DECE2B39CCAE008D58AE /* SnapKit */; };
 		5FE3DED12B39DA9C008D58AE /* UIView+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE3DED02B39DA9C008D58AE /* UIView+Ext.swift */; };
-		5FE3DED62B39F416008D58AE /* ProfileEditVCCoordProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE3DED52B39F416008D58AE /* ProfileEditVCCoordProtocol.swift */; };
+		5FE3DED62B39F416008D58AE /* EditScreenCoordProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE3DED52B39F416008D58AE /* EditScreenCoordProtocol.swift */; };
 		5FE3DED82B39F8F3008D58AE /* InsetTextField.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE3DED72B39F8F3008D58AE /* InsetTextField.swift */; };
 		5FE3DEDB2B39FA22008D58AE /* NSAttributedString+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE3DEDA2B39FA22008D58AE /* NSAttributedString+Ext.swift */; };
 		5FE8A2EB2BDD26490072D3D9 /* CustomPickerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE8A2EA2BDD26490072D3D9 /* CustomPickerDelegate.swift */; };
@@ -431,7 +431,7 @@
 		5FE3DEC92B39CC52008D58AE /* EditScreenCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditScreenCoordinator.swift; sourceTree = "<group>"; };
 		5FE3DECB2B39CC8D008D58AE /* MainCollectionViewCellVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainCollectionViewCellVM.swift; sourceTree = "<group>"; };
 		5FE3DED02B39DA9C008D58AE /* UIView+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Ext.swift"; sourceTree = "<group>"; };
-		5FE3DED52B39F416008D58AE /* ProfileEditVCCoordProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditVCCoordProtocol.swift; sourceTree = "<group>"; };
+		5FE3DED52B39F416008D58AE /* EditScreenCoordProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditScreenCoordProtocol.swift; sourceTree = "<group>"; };
 		5FE3DED72B39F8F3008D58AE /* InsetTextField.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsetTextField.swift; sourceTree = "<group>"; };
 		5FE3DEDA2B39FA22008D58AE /* NSAttributedString+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSAttributedString+Ext.swift"; sourceTree = "<group>"; };
 		5FE8A2EA2BDD26490072D3D9 /* CustomPickerDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomPickerDelegate.swift; sourceTree = "<group>"; };
@@ -519,7 +519,7 @@
 				5FE3DEB12B39CB5A008D58AE /* Coordinator.swift */,
 				5F0A2AB12B755EEF00ABDD59 /* AppCoordProtocol.swift */,
 				5FE3DEC52B39CBD9008D58AE /* MainCoordProtocol.swift */,
-				5FE3DED52B39F416008D58AE /* ProfileEditVCCoordProtocol.swift */,
+				5FE3DED52B39F416008D58AE /* EditScreenCoordProtocol.swift */,
 				5F9F76602B6C225700BB6511 /* ProfileCoordProtocol.swift */,
 			);
 			path = Main;
@@ -1421,7 +1421,7 @@
 				5F6FDDE82B5067E700F09CCD /* UserManager.swift in Sources */,
 				5F8513F92B4D7FA200A5B22D /* CreateUsers.swift in Sources */,
 				5F0A2AB22B755EEF00ABDD59 /* AppCoordProtocol.swift in Sources */,
-				5FE3DED62B39F416008D58AE /* ProfileEditVCCoordProtocol.swift in Sources */,
+				5FE3DED62B39F416008D58AE /* EditScreenCoordProtocol.swift in Sources */,
 				5F9F76592B6C17C700BB6511 /* ProfileVM.swift in Sources */,
 				5FB278612B4716B400491C2B /* CheckReceiptCoordinator.swift in Sources */,
 				5F9F765F2B6C223F00BB6511 /* ProfileVMProtocol.swift in Sources */,
