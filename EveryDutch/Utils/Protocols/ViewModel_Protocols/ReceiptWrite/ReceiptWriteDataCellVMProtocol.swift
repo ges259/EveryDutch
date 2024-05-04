@@ -33,9 +33,3 @@ protocol ReceiptWriteDataCellVMProtocol: ReceiptWriteCellVMProtocol {
     
     func getCurrentTime() -> String
 }
-extension ReceiptWriteDataCellVMProtocol {
-    func getType() -> String {
-        return ""
-    }
-
-}

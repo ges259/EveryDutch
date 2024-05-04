@@ -47,7 +47,7 @@ final class ReceiptWriteDataCell: UITableViewCell {
     
     
     // MARK: - 라이프사이클
-    func configureCell(viewModel: ReceiptWriteDataCellVMProtocol) {
+    func configureCell(viewModel: ReceiptWriteDataCellVMProtocol?) {
         self.viewModel = viewModel
         
         self.configureUI()

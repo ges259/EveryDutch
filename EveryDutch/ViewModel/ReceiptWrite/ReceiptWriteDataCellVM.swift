@@ -14,8 +14,7 @@ final class ReceiptWriteDataCellVM: ReceiptWriteDataCellVMProtocol {
     
     let TF_MAX_COUNT: Int = 12
     
-    
-    
+
     
     
     // MARK: - 글자 수
@@ -52,7 +51,6 @@ final class ReceiptWriteDataCellVM: ReceiptWriteDataCellVMProtocol {
     var getReceiptEnum: ReceiptCellEnum {
         return self.receiptEnum
     }
-    
     
     
     

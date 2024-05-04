@@ -799,10 +799,7 @@ extension ReceiptWriteVC: UITableViewDataSource {
     func tableView(_ tableView: UITableView,
                    numberOfRowsInSection section: Int)
     -> Int {
-        
-        return section == 0
-        ? self.viewModel.getNumOfReceiptEnum
-        : self.viewModel.numOfUsers
+        return self.viewModel.getNumOfCell(section: section)
     }
     
 // MARK: - [셀 구성]
@@ -835,38 +832,14 @@ extension ReceiptWriteVC: UITableViewDataSource {
         // 델리게이트 설정
         cell.delegate = self
         
-        // ReceiptEnum 타입 가져오기
-        let receiptEnum = self.viewModel.getReceiptEnum(index: indexPath.row)
-
-        self.configureDataCellVM(cell,
-                                 receiptEnum: receiptEnum)
-        self.configureDataCellCorner(cell,
-                                     receiptEnum: receiptEnum)
+        
+        let cellVM = self.viewModel.getDataCellViewModel(indexPath: indexPath)
+            cell.configureCell(viewModel: cellVM)
+        
+        if indexPath.row == 0 { cell.configureFirstCell() }
+        
         return cell
     }
-    
-    // MARK: - - 뷰모델 및 UI
-    private func configureDataCellVM(_ cell: ReceiptWriteDataCell,
-                                     receiptEnum: ReceiptCellEnum) {
-        // 뷰모델 가져오기
-        let cellVM = ReceiptWriteDataCellVM(withReceiptEnum: receiptEnum)
-        // 셀 UI설정
-        cell.configureCell(viewModel: cellVM)
-    }
-    
-    // MARK: - - 셀의 모서리 설정
-    private func configureDataCellCorner(_ cell: ReceiptWriteDataCell, receiptEnum: ReceiptCellEnum) {
-        // 첫 번째 셀이라면,
-        if self.viewModel.isFistCell(receiptEnum) {
-            cell.configureFirstCell()
-            
-            // 마지막 셀이라면,
-        } else if self.viewModel.isLastCell(receiptEnum) {
-            cell.configureLastCell()
-        }
-    }
-    
-    
     
     
     
@@ -1116,14 +1089,14 @@ extension ReceiptWriteVC: ReceiptWriteDataCellDelegate {
     
     
     func cellIsTapped(_ cell: ReceiptWriteDataCell, type: ReceiptCellEnum?) {
-        self.saveCellIndexPath(cell)
+        self.saveCellIndexPath(cell, type: type)
         
         self.isEdittingAction(type: type)
     }
     
-    private func saveCellIndexPath(_ cell: ReceiptWriteDataCell) {
+    private func saveCellIndexPath(_ cell: ReceiptWriteDataCell, type: ReceiptCellEnum?) {
         if let indexPath = self.tableView.indexPath(for: cell) {
-            self.viewModel.saveCurrentIndex(indexPath: indexPath)
+            self.viewModel.saveCurrentIndex(type: type, indexPath: indexPath)
         }
     }
     

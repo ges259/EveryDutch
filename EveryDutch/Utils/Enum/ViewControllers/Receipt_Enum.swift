@@ -9,7 +9,6 @@ import UIKit
 
 
 protocol ReceiptWriteCellType {
-    
     var databaseString: String { get }
 }
 
@@ -34,14 +33,17 @@ enum ReceiptWriteEnum: Int, CaseIterable {
     }
     
     func createProviders(
-        withData receipt: Receipt?) -> [Int: [ReceiptWriteCellTuple]]
+        isReceiptWriteVC: Bool,
+        withData receipt: Receipt?) -> [Int: [ReceiptWriteCellVMProtocol]]
     {
-        var detailsDictionary: [Int: [ReceiptWriteCellTuple]] = [:]
+        var detailsDictionary: [Int: [ReceiptWriteCellVMProtocol]] = [:]
         
         ReceiptWriteEnum.allCases.forEach { roomEditEnum in
             switch roomEditEnum {
             case .receiptData:
-                let receiptData = ReceiptCellEnum.getDetails(receipt: receipt)
+                let receiptData = ReceiptCellEnum.getDetails(
+                    isReceiptWriteVC: isReceiptWriteVC, 
+                    receipt: receipt)
                 detailsDictionary[roomEditEnum.rawValue] = receiptData
                 break
                 
@@ -63,9 +65,9 @@ enum ReceiptWriteEnum: Int, CaseIterable {
 
 
 
-enum ReceiptCellEnum: CaseIterable, ReceiptWriteCellType {
+enum ReceiptCellEnum: Int, CaseIterable, ReceiptWriteCellType {
     
-    case date
+    case date = 0
     case time
     
     case memo
@@ -113,14 +115,30 @@ enum ReceiptCellEnum: CaseIterable, ReceiptWriteCellType {
     }
     
     
-    static func getDetails(receipt: Receipt?) -> [ReceiptWriteCellTuple] {
-        return self.allCases.map
-        { cellType -> (ReceiptWriteCellTuple) in
-            return (type: cellType, viewModel: ReceiptWriteDataCellVM(withReceiptEnum: cellType))
-        }
+//    static func getDetails(receipt: Receipt?) -> [ReceiptWriteCellVMProtocol] {
+//        return self.allCases.map
+//        { cellType -> (ReceiptWriteCellVMProtocol) in
+//            // MARK: - receipt 의존성 주입
+//            return ReceiptWriteDataCellVM(withReceiptEnum: cellType)
+//        }
+//    }
+    
+    
+    static func getDetails(isReceiptWriteVC: Bool, receipt: Receipt?) -> [ReceiptWriteCellVMProtocol] {
+        return self.allCases
+            .filter { cellType -> Bool in
+                // isReceiptWriteVC가 true일 경우 payment_Method를 제외
+                if isReceiptWriteVC 
+                    && cellType == .payment_Method {
+                    return false
+                }
+                return true
+            }
+            .map { cellType -> ReceiptWriteCellVMProtocol in
+                // 이제 조건에 맞는 cellType만 가지고 ViewModel을 생성
+                return ReceiptWriteDataCellVM(withReceiptEnum: cellType)
+            }
     }
-    
-    
     
     private func detail(from receipt: Receipt?) -> String? {
         guard let receipt = receipt else { return nil }

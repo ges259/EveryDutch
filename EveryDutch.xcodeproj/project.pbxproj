@@ -752,9 +752,9 @@
 			isa = PBXGroup;
 			children = (
 				5F5AFBCF2B49403200BBBB9D /* ReceiptWriteVMProtocol.swift */,
+				5F02B5072B742A0F00069C2E /* ReceiptWriteDataCellVMProtocol.swift */,
 				5F0BCE392B53144A007A3564 /* ReceiptWriteUsersCellVMProtocol.swift */,
 				5FFF661C2B52A087000A5EC4 /* PeopleSelectionPanVMProtocol.swift */,
-				5F02B5072B742A0F00069C2E /* ReceiptWriteDataCellVMProtocol.swift */,
 			);
 			path = ReceiptWrite;
 			sourceTree = "<group>";

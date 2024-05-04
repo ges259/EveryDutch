@@ -8,8 +8,6 @@
 import UIKit
 
 protocol ReceiptWriteCellVMProtocol {
-    func getType() -> String
-
 }
 
 
@@ -36,10 +34,4 @@ protocol ReceiptWriteUsersCellVMProtocol: ReceiptWriteCellVMProtocol {
     func removeFormat(text: String?) -> String
     func textIsZero(text: String?) -> String?
     func configureTfFormat(text: String?) -> String?
-}
-extension ReceiptWriteUsersCellVMProtocol {
-    func getType() -> String {
-        return ""
-    }
-
 }

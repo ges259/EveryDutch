@@ -301,7 +301,7 @@ extension ReceiptAPI {
         let path = RECEIPT_REF
             .child(versionID)
             .childByAutoId()
-        var filteredDictionary = dictionary.compactMapValues { $0 }
+        let filteredDictionary = dictionary.compactMapValues { $0 }
         
         return try await withCheckedThrowingContinuation { continuation in
             path.setValue(filteredDictionary) { error, ref in
@@ -355,8 +355,10 @@ extension ReceiptAPI {
         payerID: String,
         moneyDict: [String: Int]) async throws
     {
+        var paybackDict = moneyDict
+            paybackDict.removeValue(forKey: payerID)
         let reference = PAYBACK_REF.child(versionID).child(payerID)
-        try await performTransactionUpdate(forRef: reference, withDict: moneyDict)
+        try await performTransactionUpdate(forRef: reference, withDict: paybackDict)
     }
     
     // MARK: - 트랜잭션 업데이트를 위한 공통 함수

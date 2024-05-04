@@ -10,9 +10,11 @@ import UIKit
 protocol ReceiptWriteVMProtocol {
     var getSectionCount: Int { get }
     
-    var getNumOfReceiptEnum: Int { get }
+//    var getNumOfReceiptEnum: Int { get }
     
-    func getReceiptEnum(index: Int) -> ReceiptCellEnum
+    func getNumOfCell(section: Int) -> Int
+    
+//    func getReceiptEnum(index: Int) -> ReceiptCellEnum
     
     func getFooterViewHeight(section: Int) -> CGFloat
     var getNoDataViewIsHidden: Bool { get }
@@ -25,14 +27,10 @@ protocol ReceiptWriteVMProtocol {
     func findReceiptEnumIndex(_ receiptEnum: ReceiptCellEnum) -> IndexPath
     
     
-    
-    func isFistCell(_ receiptEnum: ReceiptCellEnum) -> Bool
-    func isLastCell(_ receiptEnum: ReceiptCellEnum) -> Bool
-    
     func saveCalenderDate(date: Date)
     
     
-    func saveCurrentIndex(indexPath: IndexPath)
+    func saveCurrentIndex(type: ReceiptCellEnum?, indexPath: IndexPath)
     // MARK: - 모델
     var payer: RoomUserDataDict? { get }
     var selectedUsers: RoomUserDataDict { get set }
@@ -53,10 +51,6 @@ protocol ReceiptWriteVMProtocol {
     
     
     // MARK: - 테이블뷰
-    /// 선택된 유저의 수
-    var numOfUsers: Int { get }
-    /// 테이블뷰를 숨길지 말지 설정
-    var tableIsHidden: Bool { get }
     
     
     // MARK: - 누적 금액
@@ -150,6 +144,27 @@ protocol ReceiptWriteVMProtocol {
     
 // MARK: - 셀의 뷰모델 반환
     func usersCellViewModel(at index: Int) -> ReceiptWriteUsersCellVM
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    // MARK: - 셀의 [타입, 뷰모델] 반환
+    
+    func getDataCellViewModel(indexPath: IndexPath) -> ReceiptWriteDataCellVMProtocol?
+    func getUserCellViewModel(indexPath: IndexPath) -> ReceiptWriteUsersCellVMProtocol?
 }
 
 //    var getTimeCellIndexPath: IndexPath { get }

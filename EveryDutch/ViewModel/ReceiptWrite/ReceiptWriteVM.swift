@@ -66,7 +66,7 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     
     
     
-    private var cellDataDictionary: [Int: [ReceiptWriteCellTuple]] = [:]
+    private var cellDataDictionary: [Int: [ReceiptWriteCellVMProtocol]] = [:]
     
     // 현재 선택된 셀 타입과 인덱스 패스를 저장하는 튜플
     private var selectedIndexTuple: (type: ReceiptWriteCellType?, indexPath: IndexPath)?
@@ -108,16 +108,44 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     
     
     
-    // MARK: - 셀의 [타입, 뷰모델] 반환
+//    // MARK: - 셀의 [타입, 뷰모델] 반환
     // 특정 인덱스 패스에 해당하는 셀 타입을 반환하는 메소드
-    func cellTypes(indexPath: IndexPath) -> ReceiptWriteCellTuple? {
-        return self.cellDataDictionary[indexPath.section]?[indexPath.row]
+//    func cellTypes(indexPath: IndexPath) -> ReceiptWriteCellVMProtocol? {
+//        return self.cellDataDictionary[indexPath.section]?[indexPath.row]
+//    }
+    
+    
+    
+    // MARK: - 뷰모델 반환
+    private func getCurrentReceiptWriteCellVM<T: ReceiptWriteCellVMProtocol>(
+        as type: T.Type,
+        indexPath: IndexPath) -> T?
+    {
+        if let dd = self.cellDataDictionary[indexPath.section]?[indexPath.row] as? T {
+            return dd
+        }
+        return nil
     }
+    func getDataCellViewModel(indexPath: IndexPath) -> ReceiptWriteDataCellVMProtocol? {
+        return self.getCurrentReceiptWriteCellVM(
+            as: ReceiptWriteDataCellVM.self,
+            indexPath: indexPath)
+    }
+    func getUserCellViewModel(indexPath: IndexPath) -> ReceiptWriteUsersCellVMProtocol? {
+        return self.getCurrentReceiptWriteCellVM(
+            as: ReceiptWriteUsersCellVM.self,
+            indexPath: indexPath)
+    }
+    
+    
+    
+    
+    
+    
     
     // MARK: - 선택된 셀 [타임, 인덱스] 저장
     // 현재 선택된 셀 타입과 인덱스 패스를 저장하는 메소드
-    func saveCurrentIndex(indexPath: IndexPath) {
-        let type = self.cellTypes(indexPath: indexPath)?.type ?? nil
+    func saveCurrentIndex(type: ReceiptCellEnum?, indexPath: IndexPath) {
         self.selectedIndexTuple = (type: type, indexPath: indexPath)
     }
     
@@ -225,51 +253,22 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     
     // MARK: - 섹션의 개수
     var getSectionCount: Int {
-        return self.receiptWriteEnum.count
+        return self.cellDataDictionary.count
     }
     
-    
-    
-    // MARK: - [데이터 셀]
-    // payment_Method를 제외한 모든 타입들을 가져옴
-    private var receiptEnum: [ReceiptCellEnum] = ReceiptCellEnum.allCases.filter { $0 != .payment_Method }
     
     // MARK: - 데이터 셀 개수
-    var getNumOfReceiptEnum: Int {
-        return self.receiptEnum.count
-    }
-    
-    // MARK: - 데이터 셀 Enum
-    func getReceiptEnum(index: Int) -> ReceiptCellEnum {
-        return self.receiptEnum[index]
-    }
-    
-    // MARK: - 첫 번째 셀
-    func isFistCell(_ receiptEnum: ReceiptCellEnum) -> Bool {
-        return receiptEnum == self.receiptEnum.first
-        ? true
-        : false
-    }
-    
-    // MARK: - 마지막 셀
-    func isLastCell(_ receiptEnum: ReceiptCellEnum) -> Bool {
-        return receiptEnum == self.receiptEnum.last
-        ? true
-        : false
+    func getNumOfCell(section: Int) -> Int {
+        return self.cellDataDictionary[section]?.count ?? 0
     }
     
     
     
-    // MARK: - [셀 인덱스]
     
     
-    
-    // MARK: - 인덱스 리턴 함수
+    // MARK: - 인덱스패스 리턴
     func findReceiptEnumIndex(_ receiptEnum: ReceiptCellEnum) -> IndexPath {
-        if let index = self.receiptEnum.firstIndex(of: receiptEnum) {
-            return IndexPath(row: index, section: 0)
-        }
-        return IndexPath(row: 0, section: 0)
+        return IndexPath(row: 0, section: receiptEnum.rawValue)
     }
     
     
@@ -277,18 +276,6 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
 // MARK: - [유저 섹션]
     
     
-    
-    // MARK: - 유저 섹션 개수
-    var numOfUsers: Int {
-        return self.selectedUsers.count
-    }
-    
-    // MARK: - 테이블뷰 isHidden
-    var tableIsHidden: Bool {
-        return self.numOfUsers == 0
-        ? true
-        : false
-    }
     
     // MARK: - 데이터 없을 때 뷰
     var getNoDataViewIsHidden: Bool {
@@ -386,13 +373,7 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
         self.roomDataManager = roomDataManager
         self.receiptAPI = receiptAPI
         
-        // MARK: - Fix
-        guard let d = self.receiptWriteEnum.first?.createProviders(withData: nil) else { return }
-        self.cellDataDictionary = d
-        // 날짜 저장
-        self.saveCalenderDate(date: Date())
-        // 시간 저장
-        self.saveTime(time: self.timePickerString(hour: 1,minute: 1))
+  
         
         // 데이터 셀 모델 만들기
         self.createDataCellVM()
@@ -669,8 +650,7 @@ extension ReceiptWriteVM {
     
     // MARK: - Fix
     var getSelectedUsers: String? {
-//        return self.payer?.values.first?.userName
-        return ""
+        return self.payer?.values.first?.userName
     }
 }
 
@@ -757,9 +737,21 @@ extension ReceiptWriteVM {
     
     // MARK: - 데이터 셀
     func createDataCellVM() {
-        self.dataCellViewModels = self.receiptEnum.map { enumType in
-            ReceiptWriteDataCellVM(withReceiptEnum: enumType)
-        }
+        
+        
+        // MARK: - Fix
+        guard let d = self.receiptWriteEnum.first?.createProviders(
+            isReceiptWriteVC: true,
+            withData: nil) else { return }
+        self.cellDataDictionary = d
+        // 날짜 저장
+        self.saveCalenderDate(date: Date())
+        // 시간 저장
+        self.saveTime(time: self.timePickerString(hour: 1,minute: 1))
+        // MARK: - Fix
+//        self.dataCellViewModels = self.receiptEnum.map { enumType in
+//            ReceiptWriteDataCellVM(withReceiptEnum: enumType)
+//        }
     }
 }
 
@@ -775,6 +767,16 @@ extension ReceiptWriteVM {
 // MARK: - 셀 뷰모델 반환
 
 extension ReceiptWriteVM {
+//    
+//    private func returnViewModel<T: ReceiptWriteCellVMProtocol>(type: T.Type, index: Int) -> T? {
+//        return self.cellDataDictionary[0]?[index].viewModel as? T
+//    }
+//    
+////
+//    private func returnUsersViewModel(at index: Int) -> ReceiptWriteUsersCellVM {
+//        return self.returnViewModel(type: ReceiptWriteUsersCellVM.self, index: index)
+//    }
+    
     
     // MARK: - 유저 셀
     /// cellViewModels 반환
@@ -803,36 +805,6 @@ extension ReceiptWriteVM {
 extension ReceiptWriteVM {
     
     // MARK: - 유효성 검사
-    /*
-     1. 자동 작성
-     case date
-     case time
-     
-     -----
-     
-     2. 직접 작성
-     case memo          -> 메모 작성이 되어있지 않음
-     case price         -> 가격 설정이 되어있지 않음
-     case payer         -> 계산한 사람 선택이 되어있지 않음
-     
-     -----
-     
-     3. 자동 계산
-     case payment_Method    -> 계산 방법
-     
-     -----
-     
-     4. 따로 validation
-     payment_Detail     -> 계산함 사람이 선택되지 않음
-     cumulative_Money   -> 금액이 맞지 않음
-     pay                -> 0원으로 설정되어 있는 사람
-     
-     -----
-     
-     5. 안 함
-     type
-     
-     */
     func validationData() {
         // 실패 -> return
         guard self.validateData() else { return }
@@ -845,7 +817,7 @@ extension ReceiptWriteVM {
                 
                 let dict = self.receiptDataDict.compactMapValues { $0 }
                 
-                let receipt = Receipt(dictionary: dict)
+//                let receipt = Receipt(dictionary: dict)
                 
                 // API 작업 성공, 성공 결과를 completion으로 전달
 //                completion(.success(receipt))
@@ -858,15 +830,11 @@ extension ReceiptWriteVM {
     }
     
     
-    
-    
-    
     private func validateData() -> Bool {
         var errors: [String] = []
         
         // 1번과 2번에 해당하는 검증
         self.validateReceiptDetails(&errors)
-
         // 추가 검증 로직들을 메소드로 분리
         self.validatePaymentDetails(&errors)
         self.validateCumulativeMoney(&errors)
@@ -886,7 +854,6 @@ extension ReceiptWriteVM {
             errors.append(contentsOf: details)
             return
         }
-        // 여기에 성공적인 검증 시 수행할 추가 로직을 넣을 수 있습니다.
     }
 
 
@@ -960,12 +927,6 @@ extension ReceiptWriteVM {
         guard let versionID = self.roomDataManager.getCurrentVersion,
                 let payerID = self.getCurrentPayerID()
         else { throw ErrorEnum.readError }
-        
-//        let receiptKey = try await createReceipt(versionID: versionID)
-//        try await createReceiptForUsers(receiptID: receiptKey)
-//        try await updateCumulativeMoney(versionID: versionID)
-//        try await updatePayback(versionID: versionID, payerID: payerID)
-        
         let receiptKey = try await self.receiptAPI.createReceipt(
             versionID: versionID, 
             dictionary: self.receiptDataDict)
@@ -975,92 +936,9 @@ extension ReceiptWriteVM {
         try await self.receiptAPI.updateCumulativeMoney(
             versionID: versionID,
             moneyDict: self.usersMoneyDict)
-        var paybackDict = self.usersMoneyDict
-            paybackDict.removeValue(forKey: payerID)
         try await self.receiptAPI.updatePayback(
             versionID: versionID,
             payerID: payerID, 
-            moneyDict: paybackDict)
+            moneyDict: self.usersMoneyDict)
     }
-    
-    // MARK: - 영수증 생성
-    // 영수증 생성
-//    private func createReceipt(versionID: String) async throws -> String {
-//        return try await withCheckedThrowingContinuation { continuation in
-//            self.receiptAPI.createReceipt(
-//                versionID: versionID,
-//                dictionary: self.receiptDataDict,
-//                retryCount: 0) { result in
-//                    switch result {
-//                    case .success(let receiptKey):
-//                        continuation.resume(returning: receiptKey)
-//                    case .failure(let error):
-//                        continuation.resume(throwing: error)
-//                    }
-//                }
-//        }
-//    }
-//    
-//    // MARK: - 유저별 영수증 생성
-//    private func createReceiptForUsers(receiptID: String) async throws {
-//        // 유저별 영수증 생성 로직 구현
-//        // 예시 코드는 생략되었습니다.
-//        return try await withCheckedThrowingContinuation { [weak self] continuation in
-//            guard let self = self else { return }
-//            
-//            self.receiptAPI.saveReceiptForUsers(
-//                receiptID: receiptID,
-//                users: Array(self.usersMoneyDict.keys),
-//                retryCount: 0) { result in
-//                    switch result {
-//                    case .success():
-//                        continuation.resume()
-//                    case .failure(let error):
-//                        continuation.resume(throwing: error)
-//                    }
-//                }
-//        }
-//    }
-//    
-//    // MARK: - 누적 금액 업데이트
-//    private func updateCumulativeMoney(versionID: String) async throws {
-//        return try await withCheckedThrowingContinuation { [weak self] continuation in
-//            guard let self = self else { return }
-//            
-//            self.receiptAPI.updateCumulativeMoney(
-//                versionID: versionID,
-//                usersMoneyDict: self.usersMoneyDict,
-//                retryCount: 0) { result in
-//                    switch result {
-//                    case .success():
-//                        continuation.resume()
-//                    case .failure(let error):
-//                        continuation.resume(throwing: error)
-//                    }
-//                }
-//        }
-//    }
-//    
-//    // MARK: - 페이백 업데이트
-//    private func updatePayback(versionID: String, payerID: String) async throws {
-//        var paybackDict = self.usersMoneyDict
-//        paybackDict.removeValue(forKey: payerID)
-//        
-//        return try await withCheckedThrowingContinuation { [weak self]continuation in
-//            guard let self = self else { return }
-//            
-//            self.receiptAPI.updatePayback(
-//                versionID: versionID,
-//                payerID: payerID,
-//                usersMoneyDict: paybackDict,
-//                retryCount: 0) { result in
-//                    switch result {
-//                    case .success():
-//                        continuation.resume()
-//                    case .failure(let error):
-//                        continuation.resume(throwing: error)
-//                    }
-//                }
-//        }
-//    }
 }
