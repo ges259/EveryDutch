@@ -63,6 +63,13 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     
     
     
+    private lazy var dataCellLastIndex: Int = {
+        return (self.cellDataDictionary[self.sectionIndex(receiptWriteEnum: .receiptData)]?.count ?? 0) - 1
+    }()
+    
+
+    
+    
     
     // MARK: - 라이프사이클
     init(roomDataManager: RoomDataManagerProtocol,
@@ -86,7 +93,7 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
 
 // MARK: - 데이터 저장
 extension ReceiptWriteVM {
-    func saveReceiptData(type: ReceiptCellEnum, data: Any?) {
+    private func saveReceiptData(type: ReceiptCellEnum, data: Any?) {
         // 데이터베이스 String 가져오기
         self.receiptDataDict[type.databaseString] = data
     }
@@ -134,6 +141,10 @@ extension ReceiptWriteVM {
     func setSectionIndex(section: Int) -> ReceiptWriteEnum? {
         return self.receiptWriteEnum[section]
     }
+    /// 섹션의 인덱스
+    private func sectionIndex(receiptWriteEnum: ReceiptWriteEnum) -> Int {
+        return receiptWriteEnum.rawValue
+    }
     /// 섹션의 개수
     var getSectionCount: Int {
         return self.receiptWriteEnum.count
@@ -146,11 +157,14 @@ extension ReceiptWriteVM {
     func getHeaderTitle(section: Int) -> String {
         return self.receiptWriteEnum[section].headerTitle
     }
+    func isLastCell(row: Int) -> Bool {
+        return self.dataCellLastIndex == row
+    }
     
     // MARK: - 셀 업데이트 시
     /// 셀 업데이트 시 사용하는 인덱스패스를 리턴
     func findReceiptEnumIndex(_ receiptEnum: ReceiptCellEnum) -> IndexPath {
-        return IndexPath(row: 0, section: receiptEnum.rawValue)
+        return IndexPath(row: receiptEnum.rawValue, section: 0)
     }
     
     /// NoDataView의 isHidden 여부
@@ -378,19 +392,19 @@ extension ReceiptWriteVM {
 extension ReceiptWriteVM {
     
     // MARK: - 추가될 셀의 IndexPath
-    func indexPathsForAddedUsers(
-        _ users: RoomUserDataDict,
-        type: ReceiptWriteEnum = .userData) -> [IndexPath]
+    func indexPathsForAddedUsers(_ users: RoomUserDataDict) -> [IndexPath]
     {
-        guard let cellCount = self.cellDataDictionary[type.rawValue]?.count else { return [] }
+        guard let cellCount = self.cellDataDictionary[self.sectionIndex(receiptWriteEnum: .userData)]?.count else { return [] }
         let startIndex = cellCount - users.count
         return (startIndex..<(startIndex + users.count)).map { IndexPath(row: $0, section: 1) }
     }
     
     // MARK: - 유저 삭제
-    func deleteData(removedUsers: RoomUserDataDict,
-                    type: ReceiptWriteEnum = .userData) {
-        if let usersVM = self.cellDataDictionary[type.rawValue] as? [ReceiptWriteUsersCellVMProtocol]  {
+    func deleteData(removedUsers: RoomUserDataDict) {
+        
+        let sectionIndex = self.sectionIndex(receiptWriteEnum: .userData)
+        
+        if let usersVM = self.cellDataDictionary[sectionIndex] as? [ReceiptWriteUsersCellVMProtocol]  {
             removedUsers.keys.forEach { userID in
                 
                 // 가격 없애기
@@ -399,19 +413,16 @@ extension ReceiptWriteVM {
                 self.selectedUsers.removeValue(forKey: userID)
                 
                 if let index = usersVM.firstIndex(where: { $0.userID == userID }) {
-                    self.cellDataDictionary[type.rawValue]?.remove(at: index)
+                    self.cellDataDictionary[sectionIndex]?.remove(at: index)
                 }
             }
         }
     }
     
     // MARK: - 삭제 될 셀의 IndexPath
-    func indexPathsForRemovedUsers(
-        _ users: RoomUserDataDict,
-        type: ReceiptWriteEnum = .userData
-    ) -> [IndexPath] {
+    func indexPathsForRemovedUsers(_ users: RoomUserDataDict) -> [IndexPath] {
         var indexPaths = [IndexPath]()
-        if let usersVM = self.cellDataDictionary[type.rawValue] as? [ReceiptWriteUsersCellVMProtocol]  {
+        if let usersVM = self.cellDataDictionary[self.sectionIndex(receiptWriteEnum: .userData)] as? [ReceiptWriteUsersCellVMProtocol]  {
             users.keys.forEach { userID in
                 if let index = usersVM.firstIndex(where: { $0.userID == userID }) {
                     indexPaths.append(IndexPath(row: index, section: 1))
@@ -453,9 +464,16 @@ extension ReceiptWriteVM {
                 self.selectedUsers[userID] = roomUser
             }
         }
-        // MARK: - Fix
-        // 나중에 다시 확인
-        self.cellDataDictionary[type.rawValue] = usersCellArray
+        
+        if let VMArray = self.cellDataDictionary[type.rawValue],
+            VMArray.isEmpty {
+            // 배열 합치기
+            self.cellDataDictionary[type.rawValue]?.append(contentsOf: usersCellArray)
+            
+        } else {
+            // 배열 생성
+            self.cellDataDictionary[type.rawValue] = usersCellArray
+        }
     }
     
     /// [데이터 셀] 생성

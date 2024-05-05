@@ -38,6 +38,8 @@
 		5F1B97572BD5901300BAE2D0 /* ChromaBrightnessSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F1B97562BD5901300BAE2D0 /* ChromaBrightnessSlider.swift */; };
 		5F1B97592BD590B600BAE2D0 /* ChromaColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F1B97582BD590B600BAE2D0 /* ChromaColorPicker.swift */; };
 		5F1B975B2BD590F000BAE2D0 /* ColorWheelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F1B975A2BD590F000BAE2D0 /* ColorWheelView.swift */; };
+		5F2061222BE7359100AB44F2 /* CustomTimePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F2061212BE7359100AB44F2 /* CustomTimePicker.swift */; };
+		5F2061242BE7542F00AB44F2 /* ReceiptWriteTableFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F2061232BE7542F00AB44F2 /* ReceiptWriteTableFooterView.swift */; };
 		5F2159262B7BC6CC0064A998 /* Typealias.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F2159252B7BC6CC0064A998 /* Typealias.swift */; };
 		5F23C20E2B4C04D600C7D6A3 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 5F23C20D2B4C04D600C7D6A3 /* GoogleService-Info.plist */; };
 		5F24ADB82B6EA42100843AA8 /* ReceiptScreenDataCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F24ADB72B6EA42100843AA8 /* ReceiptScreenDataCell.swift */; };
@@ -266,6 +268,8 @@
 		5F1B97562BD5901300BAE2D0 /* ChromaBrightnessSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChromaBrightnessSlider.swift; sourceTree = "<group>"; };
 		5F1B97582BD590B600BAE2D0 /* ChromaColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChromaColorPicker.swift; sourceTree = "<group>"; };
 		5F1B975A2BD590F000BAE2D0 /* ColorWheelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorWheelView.swift; sourceTree = "<group>"; };
+		5F2061212BE7359100AB44F2 /* CustomTimePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTimePicker.swift; sourceTree = "<group>"; };
+		5F2061232BE7542F00AB44F2 /* ReceiptWriteTableFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptWriteTableFooterView.swift; sourceTree = "<group>"; };
 		5F2159252B7BC6CC0064A998 /* Typealias.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Typealias.swift; sourceTree = "<group>"; };
 		5F23C20D2B4C04D600C7D6A3 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../../../Downloads/GoogleService-Info.plist"; sourceTree = "<group>"; };
 		5F24ADB72B6EA42100843AA8 /* ReceiptScreenDataCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptScreenDataCell.swift; sourceTree = "<group>"; };
@@ -868,6 +872,8 @@
 				5F729BFE2B6D293500F3DDCA /* TableFooterView.swift */,
 				5F8AB54B2BCA65EA006161C2 /* CustomImageCropView.swift */,
 				5F67CA692BD5ED6000FD5735 /* CustomColorPicker.swift */,
+				5F2061212BE7359100AB44F2 /* CustomTimePicker.swift */,
+				5F2061232BE7542F00AB44F2 /* ReceiptWriteTableFooterView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1401,6 +1407,7 @@
 				5F6C434D2B3C5BD000BBC466 /* CustomLabel.swift in Sources */,
 				5FE3DECC2B39CC8D008D58AE /* MainCollectionViewCellVM.swift in Sources */,
 				5F87DF2C2B3C99A3001D5B80 /* RoomSettingCoordProtocol.swift in Sources */,
+				5F2061222BE7359100AB44F2 /* CustomTimePicker.swift in Sources */,
 				5F02CAB72B6570E000CD5280 /* UINavigationController+Ext.swift in Sources */,
 				5F8AB54C2BCA65EA006161C2 /* CustomImageCropView.swift in Sources */,
 				5F8513DA2B4D67EC00A5B22D /* CreateReceipt.swift in Sources */,
@@ -1443,6 +1450,7 @@
 				5FFF66192B51B9BE000A5EC4 /* ReceiptWriteUsersCellVM.swift in Sources */,
 				5F8513E52B4D68B600A5B22D /* UpdateVersion.swift in Sources */,
 				5F6848802B441C260015BFCC /* SignUpScreenCoordProtocol.swift in Sources */,
+				5F2061242BE7542F00AB44F2 /* ReceiptWriteTableFooterView.swift in Sources */,
 				5F3211AF2B50028B0027C8B3 /* UsersTableView.swift in Sources */,
 				5FFFED052B83CAE50090542D /* CrashlyticsLoggable.swift in Sources */,
 				5FE3DEC82B39CC2A008D58AE /* AppCoordinator.swift in Sources */,

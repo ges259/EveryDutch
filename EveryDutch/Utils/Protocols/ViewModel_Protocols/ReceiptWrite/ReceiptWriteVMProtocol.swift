@@ -166,21 +166,22 @@ protocol ReceiptWriteVMProtocol {
     func getDataCellViewModel(indexPath: IndexPath) -> ReceiptWriteDataCellVMProtocol?
     func getUserCellViewModel(indexPath: IndexPath) -> ReceiptWriteUsersCellVMProtocol?
     
-    func indexPathsForAddedUsers(
-        _ users: RoomUserDataDict,
-        type: ReceiptWriteEnum) -> [IndexPath]
+    func indexPathsForAddedUsers(_ users: RoomUserDataDict) -> [IndexPath]
     
-    func deleteData(removedUsers: RoomUserDataDict,
-                     type: ReceiptWriteEnum)
+    func deleteData(removedUsers: RoomUserDataDict)
     
-    func indexPathsForRemovedUsers(
-        _ users: RoomUserDataDict,
-        type: ReceiptWriteEnum
-    ) -> [IndexPath]
+    func indexPathsForRemovedUsers(_ users: RoomUserDataDict) -> [IndexPath]
+    
+    
+    
+    
     
     func createUsersCellVM(
         type: ReceiptWriteEnum,
         addedUsers: RoomUserDataDict)
+    
+    
+    func isLastCell(row: Int) -> Bool 
     
 }
 
