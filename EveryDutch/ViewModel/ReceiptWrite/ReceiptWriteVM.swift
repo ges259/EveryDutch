@@ -30,11 +30,7 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     // MARK: - 데이터
     private var receiptWriteEnum: [ReceiptWriteEnum] = ReceiptWriteEnum.allCases
     private var cellDataDictionary: [Int: [ReceiptWriteCellVMProtocol]] = [:]
-    private var receiptDataDict: [String: Any?] = [:] {
-        didSet {
-            dump(self.receiptDataDict)
-        }
-    }
+    private var receiptDataDict: [String: Any?] = [:]
     /// 선택된 '유저ID' 및 '금액'
     private var usersMoneyDict: [String : Int] = [:]
     // PeopleSelectionPanScreen에 데이터를 전달해야 하는 데이터
@@ -63,13 +59,6 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     
     
     
-    private lazy var dataCellLastIndex: Int = {
-        return (self.cellDataDictionary[self.sectionIndex(receiptWriteEnum: .receiptData)]?.count ?? 0) - 1
-    }()
-    
-
-    
-    
     
     // MARK: - 라이프사이클
     init(roomDataManager: RoomDataManagerProtocol,
@@ -91,51 +80,7 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
 
 
 
-// MARK: - 데이터 저장
-extension ReceiptWriteVM {
-    private func saveReceiptData(type: ReceiptCellEnum, data: Any?) {
-        // 데이터베이스 String 가져오기
-        self.receiptDataDict[type.databaseString] = data
-    }
-    /// 날짜 저장
-    func saveCalenderDate(date: Date) {
-        let dateInt = Int(date.timeIntervalSince1970)
-        self.saveReceiptData(type: .date, data: dateInt)
-    }
-    /// price(가격) 저장
-    func savePriceText(price: Int) {
-        if price != 0 {
-            self.saveReceiptData(type: .price, data: price)
-        }
-    }
-    /// 시간 저장
-    func saveTime(time: String) {
-        self.saveReceiptData(type: .time, data: time)
-    }
-    // 메모 저장
-    func saveMemo(context: String) {
-        if context != "" {
-            self.saveReceiptData(type: .memo, data: context)
-        }
-    }
-    /// payer 선택된 유저의 이름
-    func isPayerSelected(selectedUser: RoomUserDataDict) {
-        self.payer = selectedUser
-        self.saveReceiptData(type: .payer, data: selectedUser.first?.key)
-    }
-}
-
-
-
-
-
-
-
-
-
-
 // MARK: - [테이블뷰]
-
 extension ReceiptWriteVM {
     /// 섹션의 타입
     func setSectionIndex(section: Int) -> ReceiptWriteEnum? {
@@ -157,20 +102,87 @@ extension ReceiptWriteVM {
     func getHeaderTitle(section: Int) -> String {
         return self.receiptWriteEnum[section].headerTitle
     }
+    /// 셀의 인덱스가 마지막 셀인지 확인하는 메서드
     func isLastCell(row: Int) -> Bool {
-        return self.dataCellLastIndex == row
+        let sectionIndex = self.sectionIndex(receiptWriteEnum: .receiptData)
+        let lastIndex = (self.cellDataDictionary[sectionIndex]?.count ?? 0) - 1
+        return lastIndex == row
     }
+    
+    
     
     // MARK: - 셀 업데이트 시
     /// 셀 업데이트 시 사용하는 인덱스패스를 리턴
     func findReceiptEnumIndex(_ receiptEnum: ReceiptCellEnum) -> IndexPath {
         return IndexPath(row: receiptEnum.rawValue, section: 0)
     }
-    
     /// NoDataView의 isHidden 여부
     var getNoDataViewIsHidden: Bool {
         return !(self.selectedUsers.count == 0)
     }
+    
+    // MARK: - 셀의 데이터 반환
+    private func getReceiptData<T>(type: ReceiptCellEnum) -> T? {
+        guard let data = self.receiptDataDict[type.databaseString] else {
+            return nil
+        }
+        return data as? T
+    }
+    /// receiptDataDict에 담긴 가격을 Int타입으로 반환
+    private func getCurrentPrice() -> Int? {
+        return self.getReceiptData(type: .price)
+    }
+    /// receiptDataDict에 담긴 payerID를 String타입으로 반환
+    private func getCurrentPayerID() -> String? {
+        return self.getReceiptData(type: .payer)
+    }
+    /// payer딕셔너리에 담긴 payer의 이름을 반환
+    var getSelectedUsers: String? {
+        return self.payer.values.first?.userName ?? nil
+    }
+    /// moneyCountLbl(남은 금액 레이블)에 적힐 텍스트 설정
+    var moneyCountLblText: String? {
+        let price = self.calculateRemainingMoney
+        return NumberFormatter.formatString(price: price)
+    }
+    /// 남은 금액 계산 <-> 금액(price) - 누적 금액(cumulativeMoney) 을 계산
+    private var calculateRemainingMoney: Int {
+        let price = self.getCurrentPrice() ?? 0
+        let total = price - self.cumulativeMoney
+        return total
+    }
+    
+    
+    
+    // MARK: - 데이터 저장
+    private func saveReceiptData(type: ReceiptCellEnum, data: Any?) {
+        // 데이터베이스 String 가져오기
+        self.receiptDataDict[type.databaseString] = data
+    }
+    /// 날짜 저장
+    func saveCalenderDate(date: Date) {
+        let dateInt = Int(date.timeIntervalSince1970)
+        self.saveReceiptData(type: .date, data: dateInt)
+    }
+    /// 시간 저장
+    func saveTime(time: String) {
+        self.saveReceiptData(type: .time, data: time)
+    }
+    // 메모 저장
+    func saveMemo(context: String) {
+        if context != "" { self.saveReceiptData(type: .memo, data: context) }
+    }
+    /// price(가격) 저장
+    func savePriceText(price: Int) {
+        if price != 0 { self.saveReceiptData(type: .price, data: price) }
+    }
+    /// payer 선택된 유저의 이름
+    func isPayerSelected(selectedUser: RoomUserDataDict) {
+        self.payer = selectedUser
+        self.saveReceiptData(type: .payer, data: selectedUser.first?.key)
+    }
+    
+    
     
     // MARK: - [푸터뷰]
     /// 푸터뷰의  높이
@@ -178,13 +190,9 @@ extension ReceiptWriteVM {
         
         let type = self.setSectionIndex(section: section)
         switch type {
-        case .receiptData:
-            return 0
-        case .userData:
-            return self.userSectionHeight()
-            
-        default:
-            return 0
+        case .receiptData:  return 0
+        case .userData:     return self.userSectionHeight()
+        default:            return 0
         }
     }
     /// 유저 섹션 - 푸터뷰 높이
@@ -210,6 +218,158 @@ extension ReceiptWriteVM {
 
 
 
+// MARK: - 셀의 뷰모델
+
+extension ReceiptWriteVM {
+    
+    // MARK: - 셀의 뷰모델 생성
+    /// [유저 셀] 생성
+    func createUsersCellVM(addedUsers: RoomUserDataDict) {
+        // userData섹션의 인덱스를 가져옴
+        let sectionIndex = self.sectionIndex(receiptWriteEnum: .userData)
+        //
+        var usersCellArray: [ReceiptWriteUsersCellVM] = []
+        // 추가된 유저 처리
+        addedUsers.forEach { (userID, roomUser) in
+            if self.selectedUsers[userID] == nil {
+                // 셀의 뷰모델 생성
+                let newCellVM = ReceiptWriteUsersCellVM(userID: userID,
+                                                        roomUsers: roomUser)
+                usersCellArray.append(newCellVM)
+                // 선택되었다고 표시
+                self.selectedUsers[userID] = roomUser
+            }
+        }
+        // 유저셀 뷰모델 배열이 있다면,
+        if (self.cellDataDictionary[sectionIndex] != nil) {
+            // 배열 합치기
+            self.cellDataDictionary[sectionIndex]?.append(contentsOf: usersCellArray)
+            // 유저셀 뷰모델 배열이 없다면,
+        } else {
+            // 배열 생성
+            self.cellDataDictionary[sectionIndex] = usersCellArray
+        }
+    }
+    
+    /// [데이터 셀] 생성
+    private func createDataCellVM() {
+        guard let dataCell = self.receiptWriteEnum.first?.createProviders(
+            isReceiptWriteVC: true,
+            withData: nil) else { return }
+        self.cellDataDictionary = dataCell
+        // 날짜 저장
+        self.saveCalenderDate(date: Date())
+    }
+    
+    // MARK: - 셀 뷰모델 반환
+    private func getCurrentReceiptWriteCellVM<T: ReceiptWriteCellVMProtocol>(
+        as type: T.Type,
+        indexPath: IndexPath) -> T?
+    {
+        if let dd = self.cellDataDictionary[indexPath.section]?[indexPath.row] as? T {
+            return dd
+        }
+        return nil
+    }
+    func getDataCellViewModel(indexPath: IndexPath) -> ReceiptWriteDataCellVMProtocol? {
+        return self.getCurrentReceiptWriteCellVM(
+            as: ReceiptWriteDataCellVM.self,
+            indexPath: indexPath)
+    }
+    func getUserCellViewModel(indexPath: IndexPath) -> ReceiptWriteUsersCellVMProtocol? {
+        return self.getCurrentReceiptWriteCellVM(
+            as: ReceiptWriteUsersCellVM.self,
+            indexPath: indexPath)
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+// MARK: - 계산할 사람 선택
+
+extension ReceiptWriteVM {
+    
+    // MARK: - 추가될 셀의 IndexPath
+    func indexPathsForAddedUsers(_ users: RoomUserDataDict) -> [IndexPath]
+    {
+        // userData섹션의 인덱스를 가져옴
+        let sectionIndex = self.sectionIndex(receiptWriteEnum: .userData)
+        
+        guard let cellCount = self.cellDataDictionary[sectionIndex]?.count else { return [] }
+        let startIndex = cellCount - users.count
+        return (startIndex..<(startIndex + users.count)).map { IndexPath(row: $0, section: 1) }
+    }
+    
+    // MARK: - 유저 뷰모델 삭제
+    func deleteData(removedUsers: RoomUserDataDict) {
+        // userData섹션의 인덱스를 가져옴
+        let sectionIndex = self.sectionIndex(receiptWriteEnum: .userData)
+        
+        // MARK: - Fix
+        // 에러처리 추가
+        guard let usersVM = self.cellDataDictionary[sectionIndex] as? [ReceiptWriteUsersCellVMProtocol]
+        else {
+            self.errorClosure?(.NoPersonalID)
+            return
+        }
+        
+        removedUsers.keys.forEach { userID in
+            // 가격 없애기
+            self.removePrice(userID: userID)
+            // 선택된 상태에서 없애기
+            self.selectedUsers.removeValue(forKey: userID)
+            
+            if let index = usersVM.firstIndex(where: { $0.userID == userID }) {
+                self.cellDataDictionary[sectionIndex]?.remove(at: index)
+            }
+        }
+    }
+    
+    // MARK: - 삭제 될 셀의 IndexPath
+    func indexPathsForRemovedUsers(_ users: RoomUserDataDict) -> [IndexPath] {
+        // userData섹션의 인덱스를 가져옴
+        let sectionIndex = self.sectionIndex(receiptWriteEnum: .userData)
+        // 삭제할 IndexPath를 담는 배열
+        var indexPaths = [IndexPath]()
+        
+        
+        // MARK: - Fix
+        // 에러처리 추가
+        // cellDataDictionary에서 유저셀의 뷰모델이 맞는지 확인
+        guard let usersVM = self.cellDataDictionary[sectionIndex] as? [ReceiptWriteUsersCellVMProtocol]
+        else {
+            self.errorClosure?(.NoPersonalID)
+            return []
+        }
+        // 유저셀의 뷰모델에서 userID를 가져옴
+        users.keys.forEach { userID in
+            // 가져온 userID와 삭제할 userID가 맞다면,
+            if let index = usersVM.firstIndex(where: { $0.userID == userID }) {
+                // indexPath배열에 추가
+                indexPaths.append(IndexPath(row: index, section: 1))
+            }
+        }
+        return indexPaths
+    }
+}
+
+
+
+
+
+
+
+
+
+
 // MARK: - 가격 설정
 
 extension ReceiptWriteVM {
@@ -218,15 +378,12 @@ extension ReceiptWriteVM {
     func calculatePrice(userID: String, price: Int?) {
         // [ 제거 ] - 아무것도 적지 않았다면 (nil값)
         if price == nil {
-            // 만약 유저가 돈이 있다면
-            // -> 0원으로 만들기
+            // 만약 유저가 돈이 있다면 -> 0원으로 만들기
             self.removePrice(userID: userID)
-            
             
         // [ 수정 ] - userID가 있다면
         } else if self.usersMoneyDict.keys.contains(userID) {
             self.modifyPrice(userID: userID, price: price)
-            
             
         // [ 추가 ] - userID가 없다면
         } else {
@@ -273,14 +430,8 @@ extension ReceiptWriteVM {
         // 금액 추가
         self.cumulativeMoney += price
     }
-}
     
-
-
-
-
-// MARK: - 가격 재분배 (1/N 버튼)
-extension ReceiptWriteVM {
+    // MARK: - 가격 재분배 (1/N 버튼)
     func dutchBtnTapped() {
         // 현재 금액 옵셔널 바인딩,
         // + 현재 금액이 0원이 아니라면
@@ -301,225 +452,12 @@ extension ReceiptWriteVM {
         self.selectedUsers.forEach { (userID: String, value: _) in
             return self.usersMoneyDict[userID] = dutchedPriceInt
         }
-        
-        
         // 누적 금액에 현재 금액(price)값 넣기 -> 클로저 호출(0원으로 만들기)
         self.cumulativeMoney = price
         // 현재 더치 버튼이 눌렸다고 표시
         self.isDutchedMode = true
         // 재분배 (더치 페이를 적용하여 테이블 뷰 업데이트)
         self.dutchBtnClosure?()
-    }
-}
-
-
-
-
-
-// MARK: - 가격 텍스트필드
-
-extension ReceiptWriteVM {
-    
-    // MARK: - [형식] 남은 금액 레이블 텍스트 설정
-    var moneyCountLblText: String? {
-        let price = self.calculateRemainingMoney
-        return NumberFormatter.formatString(price: price)
-    }
-    
-    // MARK: - 남은 금액 계산
-    private var calculateRemainingMoney: Int {
-        let price = self.getCurrentPrice() ?? 0
-        let total = price - self.cumulativeMoney
-        return total
-    }
-}
-
-
-    
-    
-    
-    
-
-
-
-
-// MARK: - 데이터 반환
-extension ReceiptWriteVM {
-    private func getReceiptData<T>(type: ReceiptCellEnum) -> T? {
-        guard let data = self.receiptDataDict[type.databaseString] else {
-            return nil
-        }
-        return data as? T
-    }
-    private func getCurrentPrice() -> Int? {
-        return self.getReceiptData(type: .price)
-    }
-    private func getCurrentPayerID() -> String? {
-        return self.getReceiptData(type: .payer)
-    }
-}
-
-
-
-
-
-
-
-
-
-
-// MARK: - [1명] payer 선택
-    
-extension ReceiptWriteVM {
-    
-    // MARK: - Fix
-    var getSelectedUsers: String? {
-        return self.payer.values.first?.userName ?? nil
-    }
-}
-
-
-
-
-
-
-
-
-
-
-// MARK: - [여러명] paymentDetails 선택
-
-extension ReceiptWriteVM {
-    
-    // MARK: - 추가될 셀의 IndexPath
-    func indexPathsForAddedUsers(_ users: RoomUserDataDict) -> [IndexPath]
-    {
-        guard let cellCount = self.cellDataDictionary[self.sectionIndex(receiptWriteEnum: .userData)]?.count else { return [] }
-        let startIndex = cellCount - users.count
-        return (startIndex..<(startIndex + users.count)).map { IndexPath(row: $0, section: 1) }
-    }
-    
-    // MARK: - 유저 삭제
-    func deleteData(removedUsers: RoomUserDataDict) {
-        
-        let sectionIndex = self.sectionIndex(receiptWriteEnum: .userData)
-        
-        if let usersVM = self.cellDataDictionary[sectionIndex] as? [ReceiptWriteUsersCellVMProtocol]  {
-            removedUsers.keys.forEach { userID in
-                
-                // 가격 없애기
-                self.removePrice(userID: userID)
-                // 선택된 상태에서 없애기
-                self.selectedUsers.removeValue(forKey: userID)
-                
-                if let index = usersVM.firstIndex(where: { $0.userID == userID }) {
-                    self.cellDataDictionary[sectionIndex]?.remove(at: index)
-                }
-            }
-        }
-    }
-    
-    // MARK: - 삭제 될 셀의 IndexPath
-    func indexPathsForRemovedUsers(_ users: RoomUserDataDict) -> [IndexPath] {
-        var indexPaths = [IndexPath]()
-        if let usersVM = self.cellDataDictionary[self.sectionIndex(receiptWriteEnum: .userData)] as? [ReceiptWriteUsersCellVMProtocol]  {
-            users.keys.forEach { userID in
-                if let index = usersVM.firstIndex(where: { $0.userID == userID }) {
-                    indexPaths.append(IndexPath(row: index, section: 1))
-                }
-            }
-        }
-        return indexPaths
-    }
-}
-
-
-
-
-
-
-
-
-
-
-// MARK: - 셀의 뷰모델 생성
-
-extension ReceiptWriteVM {
-    
-    /// [유저 셀] 생성
-    func createUsersCellVM(
-        type: ReceiptWriteEnum = .userData,
-        addedUsers: RoomUserDataDict)
-    {
-        var usersCellArray: [ReceiptWriteUsersCellVM] = []
-        // 추가된 유저 처리
-        addedUsers.forEach { (userID, roomUser) in
-            if self.selectedUsers[userID] == nil {
-                // 셀의 뷰모델 생성
-                let newCellVM = ReceiptWriteUsersCellVM(userID: userID,
-                                                        roomUsers: roomUser)
-                usersCellArray.append(newCellVM)
-                
-                // 선택되었다고 표시
-                self.selectedUsers[userID] = roomUser
-            }
-        }
-        
-        if let VMArray = self.cellDataDictionary[type.rawValue],
-            VMArray.isEmpty {
-            // 배열 합치기
-            self.cellDataDictionary[type.rawValue]?.append(contentsOf: usersCellArray)
-            
-        } else {
-            // 배열 생성
-            self.cellDataDictionary[type.rawValue] = usersCellArray
-        }
-    }
-    
-    /// [데이터 셀] 생성
-    func createDataCellVM() {
-        // MARK: - Fix
-        guard let dataCell = self.receiptWriteEnum.first?.createProviders(
-            isReceiptWriteVC: true,
-            withData: nil) else { return }
-        self.cellDataDictionary = dataCell
-        // 날짜 저장
-        self.saveCalenderDate(date: Date())
-        // 시간 저장
-        self.saveTime(time: self.timePickerString(hour: 1,minute: 1))
-    }
-}
-
-
-
-
-
-
-
-
-
-
-// MARK: - 셀 뷰모델 반환
-
-extension ReceiptWriteVM {
-    private func getCurrentReceiptWriteCellVM<T: ReceiptWriteCellVMProtocol>(
-        as type: T.Type,
-        indexPath: IndexPath) -> T?
-    {
-        if let dd = self.cellDataDictionary[indexPath.section]?[indexPath.row] as? T {
-            return dd
-        }
-        return nil
-    }
-    func getDataCellViewModel(indexPath: IndexPath) -> ReceiptWriteDataCellVMProtocol? {
-        return self.getCurrentReceiptWriteCellVM(
-            as: ReceiptWriteDataCellVM.self,
-            indexPath: indexPath)
-    }
-    func getUserCellViewModel(indexPath: IndexPath) -> ReceiptWriteUsersCellVMProtocol? {
-        return self.getCurrentReceiptWriteCellVM(
-            as: ReceiptWriteUsersCellVM.self,
-            indexPath: indexPath)
     }
 }
 
@@ -557,41 +495,6 @@ extension ReceiptWriteVM {
 
         // 생성된 타이머 작업을 저장
         self.debounceTimer = task
-    }
-}
-
-
-
-
-
-
-
-
-
-
-// MARK: - 타임 피커
-extension ReceiptWriteVM {
-    ///시간 설정 + 시간 저장
-    func timePickerString(hour: Int, minute: Int) -> String {
-        // 선택한 시간과 분을 이용하여 필요한 작업 수행
-        let hour = String(format: "%02d", hour)
-        let minute = String(format: "%02d", minute)
-        // 선택한 시간을 timeInfoLbl에 넣기
-        return "\(hour) : \(minute)"
-    }
-    /// 형식 설정
-    func timePickerFormat(_ row: Int) -> String {
-        return String(format: "%02d", row)
-    }
-    /// 현재 시간 반환
-    func getCurrentTime() -> [Int] {
-        let now = Date()
-        let calendar = Calendar.current
-        
-        let hour = calendar.component(.hour, from: now)
-        let minute = calendar.component(.minute, from: now)
-        
-        return [hour, minute]
     }
 }
 
@@ -657,6 +560,7 @@ extension ReceiptWriteVM {
 
 
     private func validateCumulativeMoney(_ errors: inout [String]) {
+        // 현재 남은 금액이 0원인지 확인
         if self.calculateRemainingMoney != 0 {
             errors.append(DatabaseConstants.culmulative_money)
         }

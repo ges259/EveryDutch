@@ -81,6 +81,7 @@ final class ReceiptWriteVC: UIViewController {
     private lazy var timePicker: CustomTimePicker = {
         let picker = CustomTimePicker()
             picker.customTimePickerDelegate = self
+        picker.setupTimePicker()
         return picker
     }()
     
@@ -521,14 +522,14 @@ extension ReceiptWriteVC {
         removedUsers: RoomUserDataDict)
     {
         // 테이블 뷰 한 번에 업데이트
-        self.tableView.performBatchUpdates{
+        self.tableView.performBatchUpdates({
             // 셀을 제거
             self.tableViewDeleteRows(removedUsers: removedUsers)
             // 셀을 생성
             self.tableViewInsertRows(addedUsers: addedUsers)
             // 테이블뷰의 푸터뷰를 업데이트
             self.updateTableFooterView()
-        }
+        })
     }
     
     // MARK: - 테이블뷰 푸터뷰 업데이트
@@ -553,14 +554,11 @@ extension ReceiptWriteVC {
         if !addedUsers.isEmpty {
             // 주의 --- 순서를 바꾸면 안 됨.
             // 뷰모델에서 셀의 뷰모델을 생성
-            self.viewModel.createUsersCellVM(type: .userData,
-                                             addedUsers: addedUsers)
+            self.viewModel.createUsersCellVM(addedUsers: addedUsers)
             // 추가될 셀의 IndexPath를 계산합니다.
             let indexPaths = self.viewModel.indexPathsForAddedUsers(addedUsers)
             // 테이블뷰에 특정 셀을 생성
-            self.tableView.insertRows(
-                at: indexPaths,
-                with: .none)
+            self.tableView.insertRows(at: indexPaths, with: .none)
         }
     }
     
@@ -571,12 +569,14 @@ extension ReceiptWriteVC {
             // 주의 --- 순서를 바꾸면 안 됨.
             // 제거될 셀의 IndexPath를 계산
             let indexPaths = self.viewModel.indexPathsForRemovedUsers(removedUsers)
-            // 뷰모델에서 셀의 뷰모델을 삭제
-            self.viewModel.deleteData(removedUsers: removedUsers)
-            // 테이블뷰의 특정 셀을 제거
-            self.tableView.deleteRows(
-                at: indexPaths,
-                with: .none)
+            // 비어있지 않다면,
+            // 비어있다면 -> 오류
+            if !indexPaths.isEmpty {
+                // 뷰모델에서 셀의 뷰모델을 삭제
+                self.viewModel.deleteData(removedUsers: removedUsers)
+                // 테이블뷰의 특정 셀을 제거
+                self.tableView.deleteRows(at: indexPaths, with: .none)
+            }
         }
     }
 }

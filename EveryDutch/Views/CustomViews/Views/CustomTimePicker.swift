@@ -20,7 +20,7 @@ final class CustomTimePicker: UIPickerView {
     override init(frame: CGRect) {
         super.init(frame: .zero)
         self.configureUI()
-        self.setupTimePicker()
+        
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -28,13 +28,33 @@ final class CustomTimePicker: UIPickerView {
     
     // MARK: - 화면 설정
     private func configureUI() {
+        self.backgroundColor = UIColor.white
+        
         self.dataSource = self
         self.delegate = self
         
-        self.backgroundColor = UIColor.white
-        
         self.isHidden = true
         self.alpha = 0
+    }
+    // MARK: - 타임피커 초기 설정
+    func setupTimePicker() {
+        // 타임피커 레이블에 현재 시간(시,분)을 설정
+        let currentTime: [Int] = self.getCurrentTime()
+        // [타임피커 내부] 레이블 설정
+        self.selectRow(currentTime[0], inComponent: 0, animated: false) // 시간
+        self.selectRow(currentTime[1], inComponent: 1, animated: false) // 분
+        
+        self.delegateTimeString(timeIntArray: currentTime)
+    }
+    /// 현재 시간 반환을 [Int] 형태로 반환
+    private func getCurrentTime() -> [Int] {
+        let now = Date()
+        let calendar = Calendar.current
+        
+        let hour = calendar.component(.hour, from: now)
+        let minute = calendar.component(.minute, from: now)
+        
+        return [hour, minute]
     }
 }
 
@@ -65,20 +85,6 @@ extension CustomTimePicker: UIPickerViewDelegate {
         return self.timePickerFormat(row)
     }
     
-    // MARK: - 선택 시 액션
-    func pickerView(_ pickerView: UIPickerView,
-                    didSelectRow row: Int,
-                    inComponent component: Int)
-    {
-        // 사용자가 선택한 시간과 분을 처리
-        let selectedHour = pickerView.selectedRow(inComponent: 0)
-        let selectedMinute = pickerView.selectedRow(inComponent: 1)
-        // 시간 계산
-        let timeText = self.timePickerString(hour: selectedHour,
-                                             minute: selectedMinute)
-        self.customTimePickerDelegate?.setTime(timeString: timeText)
-    }
-    
     // MARK: - 폰트
     func pickerView(_ pickerView: UIPickerView,
                     viewForRow row: Int,
@@ -93,7 +99,6 @@ extension CustomTimePicker: UIPickerViewDelegate {
         } else {
             label = UILabel()
         }
-        
         label.textColor = .black
         label.textAlignment = .center
         label.font = UIFont.systemFont(ofSize: 18) // 폰트 크기를 24로 설정
@@ -105,32 +110,36 @@ extension CustomTimePicker: UIPickerViewDelegate {
         return String(format: "%02d", row)
     }
     
-    ///시간 설정 + 시간 저장
+    
+    
+    
+    
+    // MARK: - 선택 시 액션
+    func pickerView(_ pickerView: UIPickerView,
+                    didSelectRow row: Int,
+                    inComponent component: Int)
+    {
+        // 사용자가 선택한 시간과 분을 처리
+        let selectedHour = pickerView.selectedRow(inComponent: 0)
+        let selectedMinute = pickerView.selectedRow(inComponent: 1)
+        self.delegateTimeString(timeIntArray: [
+            selectedHour,
+            selectedMinute
+        ])
+    }
+    /// 델리게이트를 통해 시간을 String데이터로 전달
+    private func delegateTimeString(timeIntArray: [Int]) {
+        // 시간 계산
+        let timeText = self.timePickerString(hour: timeIntArray[0],
+                                             minute: timeIntArray[1])
+        self.customTimePickerDelegate?.setTime(timeString: timeText)
+    }
+    /// '시간' 및 '분의 Int값을 파라미터로 받아, '12 : 12' 형태로 String으로 반환
     func timePickerString(hour: Int, minute: Int) -> String {
         // 선택한 시간과 분을 이용하여 필요한 작업 수행
         let hour = String(format: "%02d", hour)
         let minute = String(format: "%02d", minute)
         // 선택한 시간을 timeInfoLbl에 넣기
         return "\(hour) : \(minute)"
-    }
-    
-
-    /// 현재 시간 반환
-    func getCurrentTime() -> [Int] {
-        let now = Date()
-        let calendar = Calendar.current
-        
-        let hour = calendar.component(.hour, from: now)
-        let minute = calendar.component(.minute, from: now)
-        
-        return [hour, minute]
-    }
-    // MARK: - 타임피커 초기 설정
-    private func setupTimePicker() {
-        // 타임피커 레이블에 현재 시간(시,분)을 설정
-        let currentTime: [Int] = self.getCurrentTime()
-        // [타임피커 내부] 레이블 설정
-        self.selectRow(currentTime[0], inComponent: 0, animated: false) // 시간
-        self.selectRow(currentTime[1], inComponent: 1, animated: false) // 분
     }
 }
