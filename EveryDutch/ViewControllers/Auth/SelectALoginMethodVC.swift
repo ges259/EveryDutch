@@ -200,7 +200,6 @@ extension SelectALoginMethodVC {
     
     // MARK: - MainVC로 화면 이동
     private func signInSuccess() {
-//        self.coordinator.navigateToMain()
         self.coordinator.mainToMakeUser()
     }
     

@@ -24,17 +24,13 @@ final class SelectALoginMethodVM: SelectALoginMethodVMProtocol {
     
     // MARK: - 익명 로그인
     func signInAnonymously(completion: @escaping (Result<Void, ErrorEnum>) -> Void) {
-        self.userAPI.signInAnonymously { result in
-            completion(result)
+        Task {
+            do {
+                try await self.userAPI.signInAnonymously()
+                completion(.success(()))
+            } catch {
+                completion(.failure(.NotLoggedIn))
+            }
         }
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
 }

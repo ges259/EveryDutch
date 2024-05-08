@@ -16,9 +16,4 @@ final class SettlementVM: SettlementVMProtocol {
         self.roomDataManager = roomDataManager
          
     }
-    
-    func getUserData() -> RoomUserDataDict {
-        self.users = self.roomDataManager.getRoomUsersDict
-        return self.users
-    }
 }

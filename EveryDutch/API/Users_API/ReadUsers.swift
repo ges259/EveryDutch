@@ -72,13 +72,10 @@ extension UserAPI {
     
     // MARK: - User 객체 생성
     // 데이터 스냅샷으로부터 User 객체를 생성하고 반환하는 함수
-    func createUserFromSnapshot(
-        _ snapshot: DataSnapshot) throws -> [String: User]
-    {
+    func createUserFromSnapshot(_ snapshot: DataSnapshot) throws -> [String: User] {
         guard let value = snapshot.value as? [String: Any] else {
             throw ErrorEnum.readError
         }
-        
         // 유저 모델 만들기
         let user = User(dictionary: value)
         let key = snapshot.key
@@ -86,31 +83,3 @@ extension UserAPI {
         return userDict
     }
 }
-
-//private func oneyUserData() async throws -> User {
-//    guard let uid = Auth.auth().currentUser?.uid else {
-//        throw ErrorEnum.readError
-//    }
-//    
-//    return try await withCheckedThrowingContinuation
-//    { (continuation: CheckedContinuation<User, Error>) in
-//        // 유저데이터 가져오기
-//        USER_REF
-//            .child(uid)
-//            .observeSingleEvent(of: DataEventType.value) { snapshot  in
-//                
-//                do {
-//                    guard let value = snapshot.value as? [String: Any] else {
-//                        throw ErrorEnum.readError
-//                    }
-//                    
-//                    // 유저 모델 만들기
-//                    let user = User(dictionary: value)
-//                    continuation.resume(returning: user)
-//                    
-//                } catch {
-//                    continuation.resume(throwing: ErrorEnum.userNotFound)
-//                }
-//            }
-//    }
-//}

@@ -15,6 +15,8 @@ protocol RoomsAPIProtocol: EditScreenAPIType {
     
     // *(((((
     func readRoomUsers(roomID: String, completion: @escaping Typealias.RoomUsersCompletion)
+    
+    
     func readCumulativeAmount(
         versionID: String,
         completion: @escaping Typealias
@@ -24,6 +26,9 @@ protocol RoomsAPIProtocol: EditScreenAPIType {
         completion: @escaping Typealias.PaybackCompletion)
     
     
+//    func readRoomUsers(roomID: String) async throws -> [String : User]
+//    func readCumulativeAmount(versionID: String) async throws -> [String : CumulativeAmount]
+//    func readPayback(versionID: String) async throws -> Payback
     
     
     func updateNewMember(

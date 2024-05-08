@@ -345,7 +345,7 @@ extension ReceiptAPI {
         versionID: String,
         moneyDict: [String: Int]) async throws
     {
-        let reference = Cumulative_AMOUNT_REF.child(versionID)
+        let reference = CUMULATIVE_AMOUNT_REF.child(versionID)
         try await performTransactionUpdate(forRef: reference, withDict: moneyDict)
     }
     

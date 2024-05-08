@@ -156,8 +156,6 @@ final class PeopleSelectionPanVM: PeopleSelectionPanVMProtocol  {
     }
     
     
-    
-    
     // MARK: - 라이프 사이클
     init(selectedUsers: RoomUserDataDict?,
          roomDataManager: RoomDataManagerProtocol,

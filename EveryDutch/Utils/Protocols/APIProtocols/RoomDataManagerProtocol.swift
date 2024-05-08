@@ -9,6 +9,11 @@ import Foundation
 
 
 protocol RoomDataManagerProtocol {
+    func getViewModel(index: Int) -> UsersTableViewCellVMProtocol
+    
+    
+    var getRoomUsersDict: RoomUserDataDict { get }
+    
     
     
     var getCurrentRoomsID: String? { get }
@@ -19,7 +24,7 @@ protocol RoomDataManagerProtocol {
     func saveCurrentRooms(index: Int)
     var getRooms: [Rooms] { get }
     
-    var getRoomUsersDict: RoomUserDataDict { get }
+    
     var getCurrentRoomName: String? { get }
 //    var getCumulativeAmountArray: CumulativeAmountDictionary { get }
     

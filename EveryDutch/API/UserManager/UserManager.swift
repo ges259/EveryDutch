@@ -30,28 +30,120 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     
     private var rooms: [Rooms]?
-    private var currentIndex: Int = 0
+//    private var currentIndex: Int = 0
     
-    private var roomUserDataDict: RoomUserDataDict = [:]
+    
     private var cumulativeAmount: CumulativeAmountDictionary = [:]
-    
     private var paybackData: Payback?
     
     
+    
+    
+    
+    
+    /// [userID : User]로 이루어진 딕셔너리
+    /// Receipt관련 화면에서 userID로 User의 데이터 사용
+    /// ReceiptWriteVC에서 유저의 정보 사용
+    private var roomUserDataDict: [String : User] = [:]
+    
+    // UsersTableViewCell 관련 프로퍼티들
+    private var userIDToIndexPathMap: [String: IndexPath] = [:]
+    private var cellViewModels: [UsersTableViewCellVMProtocol] = []
+    
 
 
+    
+    
+    
+// MARK: - 유저 테이블
+    
+    
     
     // MARK: - 방의 개수
     var getNumOfRoomUsers: Int {
-        return Array(self.roomUserDataDict.values).count
+        return self.cellViewModels.count
     }
     
-
     
-    // MARK: - 방의 유저 데이터
+    // MARK: - 뷰모델 리턴
+    func getViewModel(index: Int) -> UsersTableViewCellVMProtocol {
+        return self.cellViewModels[index]
+    }
+    
+    
+    
+// MARK: - 특정 유저 정보 리턴
+    
     var getRoomUsersDict: RoomUserDataDict {
         return self.roomUserDataDict
     }
+    
+    /// 인데스패스 리턴
+    func getUserIndexPath(userID: String) -> IndexPath? {
+        return self.userIDToIndexPathMap[userID]
+    }
+    
+    /// 누적 금액 리턴
+    func getIDToCumulativeAmount(userID: String) -> Int {
+        return self.cumulativeAmount[userID]?.cumulativeAmount ?? 0
+    }
+    
+    /// 페이백 값
+    func getIDToPayback(userID: String) -> Int {
+        return self.paybackData?.payback[userID] ?? 0
+    }
+    
+    /// Receipt가 필요한 화면에서 userID로 User의 정보를 알기 위해 사용
+    func getIdToRoomUser(usersID: String) -> User {
+        return self.roomUserDataDict[usersID]
+        ?? User(dictionary: [:])
+    }
+    
+    
+    
+    
+    // MARK: - 뷰모델 데이터 변경
+    private func updateCumulativeAmount(_ dict: (userID: String, amount: Int)) {
+        guard let indexPath = self.userIDToIndexPathMap[dict.userID] else {
+            print("User not found in the mapping.")
+            return
+        }
+        
+        let index = indexPath.row
+        
+        guard index < self.cellViewModels.count else {
+            return
+        }
+        
+        var existingVM = self.cellViewModels[index]
+        existingVM.setCumulativeAmount(dict.amount)
+    }
+    
+    // MARK: - 뷰모델 데이터 변경
+    private func updatePayback(_ dict: (userID: String, payback: [String: Int])) {
+        guard let indexPath = self.userIDToIndexPathMap[dict.userID] else {
+            print("User not found in the mapping.")
+            return
+        }
+        
+        let index = indexPath.row
+        
+        guard index < self.cellViewModels.count else {
+            return
+        }
+        
+//        var existingVM = self.cellViewModels[index]
+//        existingVM.setpayback(dict.payback)
+    }
+    
+    
+    
+    
+    
+    
+// MARK: - 현재 방 정보
+
+    
     
     // MARK: - 방 데이터 가져가기
     var getRooms: [Rooms] {
@@ -63,14 +155,6 @@ final class RoomDataManager: RoomDataManagerProtocol {
     func addedRoom(room: Rooms) {
         self.rooms?.insert(room, at: 0)
     }
-    
-    
-    
-    
-    
-// MARK: - 현재 방 정보
-
-    
     
     // MARK: - 선택된 현재 방 저장
     func saveCurrentRooms(index: Int) {
@@ -91,30 +175,6 @@ final class RoomDataManager: RoomDataManagerProtocol {
     var getCurrentVersion: String? {
         return self.currentRoomData?.versionID
     }
-    
-    
-    
-    
-    
-// MARK: - 특정 유저 정보 리턴
-    
-    
-    
-    // MARK: - 누적 금액
-    func getIDToCumulativeAmount(userID: String) -> Int {
-        return self.cumulativeAmount[userID]?.cumulativeAmount ?? 0
-    }
-    
-    // MARK: - RoomUsers 정보
-    func getIdToRoomUser(usersID: String) -> User {
-        return self.roomUserDataDict[usersID]
-        ?? User(dictionary: [:])
-    }
-    
-    // MARK: - 페이백 값
-    func getIDToPayback(userID: String) -> Int {
-        return self.paybackData?.payback[userID] ?? 0
-    }
 }
 
 
@@ -129,39 +189,6 @@ final class RoomDataManager: RoomDataManagerProtocol {
 // MARK: - [API]
 
 extension RoomDataManager {
-    
-    // MARK: - 유저 데이터
-    // 콜백 함수 만들기(completion)
-    // SettlementMoneyRoomVM에서 호출 됨
-    func loadRoomUsers(
-        completion: @escaping Typealias.VoidCompletion)
-    {
-        // roomData 저장
-        guard let roomID = self.currentRoomData?.roomID else { return }
-        
-        // 데이터베이스나 네트워크에서 RoomUser 데이터를 가져오는 로직
-        self.roomsAPI.readRoomUsers(
-            roomID: roomID) { [weak self] result in
-                switch result {
-                case .success(let users):
-                    print("users 성공")
-                    // [String : RoomUsers] 딕셔너리 저장
-                    self?.roomUserDataDict = users
-                    completion(.success(()))
-                    break
-                    // MARK: - Fix
-                case .failure(let errorEnum):
-                    print("users 실패")
-                    completion(.failure(errorEnum))
-                    break
-                }
-            }
-    }
-    
-    
-    
-    
-    
     
     // 두 데이터 로드 작업을 실행하고 모두 완료되면 콜백을 호출
     func loadFinancialData(completion: @escaping Typealias.VoidCompletion) {
@@ -207,6 +234,7 @@ extension RoomDataManager {
             switch data {
             case .success(let moneyData):
                 print("cumulativeMoney 성공")
+                // [String : Int]
                 self?.cumulativeAmount = moneyData
                 completion(.success(()))
                 
@@ -252,14 +280,6 @@ extension RoomDataManager {
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
     // MARK: - 방의 데이터
     @MainActor
     func loadRooms(completion: @escaping Typealias.VoidCompletion) {
@@ -273,5 +293,127 @@ extension RoomDataManager {
                 completion(.failure(.readError))
             }
         }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+extension RoomDataManager {
+    
+    // MARK: - 유저 데이터
+    // 콜백 함수 만들기(completion)
+    // SettlementMoneyRoomVM에서 호출 됨
+    func loadRoomUsers(completion: @escaping Typealias.VoidCompletion) {
+        // roomData 저장
+        guard let roomID = self.currentRoomData?.roomID else { return }
+        
+        // 데이터베이스나 네트워크에서 RoomUser 데이터를 가져오는 로직
+        self.roomsAPI.readRoomUsers(roomID: roomID) { [weak self] result in
+                switch result {
+                case .success(let users):
+                    print("users 성공")
+                    // [String : RoomUsers] 딕셔너리 저장
+                    self?.updateUsers(with: users)
+                    completion(.success(()))
+                    break
+                    // MARK: - Fix
+                case .failure(let errorEnum):
+                    print("users 실패")
+                    completion(.failure(errorEnum))
+                    break
+                }
+            }
+    }
+    
+    
+    func updateUsers(with newUsers: [String: User]) {
+        // 현재 화면에 표시된 사용자 ID들
+        let existingUserIDs = Set(userIDToIndexPathMap.keys)
+
+        // 새로 받은 사용자 ID들
+        let newUserIDs = Set(newUsers.keys)
+
+        // 추가할 사용자 IDs
+        let toAdd = newUserIDs.subtracting(existingUserIDs)
+        
+        // 삭제할 사용자 IDs
+        let toRemove = existingUserIDs.subtracting(newUserIDs)
+        
+        // 업데이트할 사용자 IDs (교집합)
+        let toUpdate = newUserIDs.intersection(existingUserIDs)
+        
+        
+        var addedUsers = [IndexPath]()
+        var removedUsers = [IndexPath]()
+        var updatedUsers = [IndexPath]()
+        
+        // 추가
+        for userID in toAdd {
+            if let user = newUsers[userID] {
+                let indexPath = IndexPath(row: cellViewModels.count, section: 0)
+                let viewModel = UsersTableViewCellVM(
+                    userID: userID,
+                    roomUsers: user,
+                    customTableEnum: .isSettleMoney)
+                self.cellViewModels.append(viewModel)
+                self.userIDToIndexPathMap[userID] = indexPath
+                self.roomUserDataDict[userID] = user
+                addedUsers.append(indexPath)
+            }
+        }
+
+        // 삭제
+        for userID in toRemove {
+            if let indexPath = self.userIDToIndexPathMap[userID] {
+                self.cellViewModels.remove(at: indexPath.row)
+                self.userIDToIndexPathMap.removeValue(forKey: userID)
+                self.roomUserDataDict.removeValue(forKey: userID)
+                removedUsers.append(indexPath)
+            }
+        }
+
+        // 업데이트
+        for userID in toUpdate {
+            if let user = newUsers[userID],
+               let indexPath = self.userIDToIndexPathMap[userID] {
+                let viewModel = UsersTableViewCellVM(
+                    userID: userID,
+                    roomUsers: user,
+                    customTableEnum: .isSettleMoney)
+                self.cellViewModels[indexPath.row] = viewModel
+                self.roomUserDataDict[userID] = user
+                updatedUsers.append(indexPath)
+            }
+        }
+
+        // 인덱스 매핑 최적화
+        var index = 0
+        self.cellViewModels.forEach { viewModel in
+            let indexPath = IndexPath(row: index, section: 0)
+            self.userIDToIndexPathMap[viewModel.userID] = indexPath
+            index += 1
+        }
+
+        // 노티피케이션 전송
+        NotificationCenter.default.post(
+            name: .userDataChanged,
+            object: nil,
+            userInfo: [
+                "added": addedUsers,
+                "removed": removedUsers,
+                "updated": updatedUsers
+            ])
     }
 }

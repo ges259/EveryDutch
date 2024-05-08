@@ -26,7 +26,7 @@ extension RoomsAPI {
         
         ROOM_USERS_REF
             .child(roomID)
-            .observeSingleEvent(of: DataEventType.value) { snapshot in
+            .observe(DataEventType.value) { snapshot in
                 
                 guard let value = snapshot.value as? [String: Bool] else {
                     completion(.failure(.readError))
@@ -55,3 +55,46 @@ extension RoomsAPI {
             }
     }
 }
+
+//
+//extension RoomsAPI {
+//    func readRoomUsers(roomID: String) async throws -> [String : User] {
+//        // 최종적으로 반환될 RoomUsers 배열
+//        var roomUsers = [String : User]()
+//        // 디스패치 그룹
+//        let saveGroup = DispatchGroup()
+//        
+//        return try await withCheckedThrowingContinuation
+//        { (continuation: CheckedContinuation<[String : User], Error>) in
+//            ROOM_USERS_REF
+//                .child(roomID)
+//                .observeSingleEvent(of: DataEventType.value) { snapshot in
+//                    
+//                    guard let value = snapshot.value as? [String: Bool] else {
+//                        continuation.resume(throwing: ErrorEnum.readError)
+//                        return
+//                    }
+//                    
+//                    for (key, _) in value {
+//                        saveGroup.enter()
+//                        USER_REF
+//                            .child(key)
+//                            .observeSingleEvent(of: .value) { snapshot in
+//                                
+//                                guard let valueData = snapshot.value as? [String: Any] else {
+//                                    continuation.resume(throwing: ErrorEnum.readError)
+//                                    return
+//                                }
+//                                let roomUser = User(dictionary: valueData)
+//                                roomUsers[key] = roomUser
+//                                saveGroup.leave()
+//                            }
+//                    }
+//                    
+//                    saveGroup.notify(queue: .main) {
+//                        continuation.resume(returning: roomUsers)
+//                    }
+//                }
+//        }
+//    }
+//}

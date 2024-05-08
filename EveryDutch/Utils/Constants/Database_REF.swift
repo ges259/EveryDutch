@@ -24,7 +24,7 @@ let ROOMS_REF = ref.child("Rooms")
 let ROOM_USERS_REF = ref.child("Room_Users")
 // Room_Money_Data
 let PAYBACK_REF = ref.child("Payback")
-let Cumulative_AMOUNT_REF = ref.child("Cumulative_Amount")
+let CUMULATIVE_AMOUNT_REF = ref.child("Cumulative_Amount")
 
 // MARK: - Receipt_API
 // Receipt

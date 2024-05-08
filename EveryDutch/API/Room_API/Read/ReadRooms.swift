@@ -29,19 +29,14 @@ extension RoomsAPI {
                 .observeSingleEvent(of: .value) { snapshot in
                     
                     guard snapshot.exists() else {
-                        print("1")
                         // 스냅샷에 데이터가 존재하지 않는 경우, 빈 배열 반환
                         continuation.resume(returning: [])
                         return
                     }
-                    print("2")
-                    dump(snapshot)
                     guard let valueDict = snapshot.value as? [String: [String: Any]] else {
-                        print("3")
                         continuation.resume(throwing: ErrorEnum.readError)
                         return
                     }
-                    print("4")
                     var rooms: [Rooms] = []
                     
                     for (roomID, roomInfoDict) in valueDict {

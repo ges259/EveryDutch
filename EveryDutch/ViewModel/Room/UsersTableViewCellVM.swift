@@ -12,31 +12,26 @@ struct UsersTableViewCellVM: UsersTableViewCellVMProtocol {
     var userName: String = ""
     
     
-    var cumulativeAmount: Int
-    var paybackPrice: Int
+    var cumulativeAmount: Int = 0
+    var paybackPrice: Int = 0
     
     var userID: String
     
     
     var customTableEnum: UsersTableEnum
     
+    private var roomUser: User
     
     init(userID: String,
-         moneyData : Int,
-         paybackPrice: Int,
          roomUsers: User,
-         customTableEnum: UsersTableEnum) {
+         customTableEnum: UsersTableEnum) 
+    {
         self.userID = userID
-        self.cumulativeAmount = moneyData
-        
-        self.paybackPrice = paybackPrice
-        
         self.profileImageURL = roomUsers.userProfile
         self.userName = roomUsers.userName
-        
+        self.roomUser = roomUsers
         self.customTableEnum = customTableEnum
     }
-    
     
     
     
@@ -88,4 +83,16 @@ struct UsersTableViewCellVM: UsersTableViewCellVMProtocol {
         }
     }
     
+    
+    
+    
+    
+    
+    
+    mutating func setCumulativeAmount(_ amount: Int) {
+        self.cumulativeAmount = amount
+    }
+    mutating func setpayback(_ amount: Int) {
+        self.paybackPrice = amount
+    }
 }

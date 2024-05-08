@@ -22,4 +22,16 @@ protocol UsersTableViewCellVMProtocol {
     
     var isButtonExist: Bool { get }
     var imgLeftAnchor: CGFloat { get }
+    
+    
+    
+    
+    var userID: String { get }
+    
+     
+    
+    
+    
+    mutating func setCumulativeAmount(_ amount: Int)
+    mutating func setpayback(_ amount: Int)
 }

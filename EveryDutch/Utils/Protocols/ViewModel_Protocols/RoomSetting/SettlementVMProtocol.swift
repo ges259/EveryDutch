@@ -8,6 +8,6 @@
 import Foundation
 
 protocol SettlementVMProtocol {
-    func getUserData() -> RoomUserDataDict
+    
     
 }

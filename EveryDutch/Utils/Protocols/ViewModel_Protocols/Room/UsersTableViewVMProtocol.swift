@@ -17,6 +17,6 @@ protocol UsersTableViewVMProtocol {
     
     var tableViewIsScrollEnabled: Bool { get }
     
-    func cellViewModel(at index: Int) -> UsersTableViewCellVM
-    func makeCellVM()
+    func cellViewModel(at index: Int) -> UsersTableViewCellVMProtocol
+//    func makeCellVM()
 }

@@ -127,7 +127,9 @@ extension UsersTableView {
     // MARK: - 셀 생성
     /// SettleMoneyRoomVC에서 데이터를 받아온 시점에서 뷰모델을 만드는 함수
     func makeCellViewModel() {
-        self.viewModel.makeCellVM()
+        
+        // MARK: - Fix
+//        self.viewModel.makeCellVM()
         self.usersTableView.reloadData()
     }
 }
