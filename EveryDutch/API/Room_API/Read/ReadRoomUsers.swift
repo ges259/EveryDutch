@@ -14,87 +14,123 @@ import FirebaseAuth
     // 방 유저 데이터 가져오기 ----- (Room_Users)
 
 extension RoomsAPI {
-    
     func readRoomUsers(
         roomID: String,
-        completion: @escaping Typealias.RoomUsersCompletion)
+        completion: @escaping (Result<UserEvent, ErrorEnum>) -> Void)
     {
-        // 최종적으로 반환될 RoomUsers 배열
+        // 반환될 RoomUsers 배열
         var roomUsers = [String : User]()
+        let roomUsersRef = ROOM_USERS_REF.child(roomID)
         
         let saveGroup = DispatchGroup()
         
-        ROOM_USERS_REF
-            .child(roomID)
-            .observe(DataEventType.value) { snapshot in
+        // 방에 대한 전체 사용자 데이터를 초기 로드
+        roomUsersRef.observeSingleEvent(of: .value) { snapshot in
+            guard let value = snapshot.value as? [String: Bool] else {
+                completion(.failure(.readError))
+                return
+            }
+            
+            for key in value.keys {
+                saveGroup.enter()
                 
-                guard let value = snapshot.value as? [String: Bool] else {
-                    completion(.failure(.readError))
-                    return
+                self.fetchUserData(userID: key) { result in
+                    switch result {
+                    case .success(let user):
+                        roomUsers[key] = user
+                    case .failure:
+                        completion(.failure(.readError))
+                    }
+                    saveGroup.leave()
                 }
                 
-                for (key, _) in value {
-                    saveGroup.enter()
-                    
-                    USER_REF
-                        .child(key)
-                        .observeSingleEvent(of: .value) { snapshot in
-                            
-                            guard let valueData = snapshot.value as? [String: Any] else {
-                                completion(.failure(.readError))
-                                return
-                            }
-                            let roomUser = User(dictionary: valueData)
-                            roomUsers[key] = roomUser
-                            saveGroup.leave()
-                        }
-                }
-                saveGroup.notify(queue: .main) {
-                    completion(.success(roomUsers))
+                // 변경 및 삭제 이벤트를 위한 개별 옵저버 등록
+                self.observeUserChanges(userID: key, completion: completion)
+            }
+
+            saveGroup.notify(queue: .main) {
+                completion(.success(.initialLoad(roomUsers)))
+            }
+        }
+        
+        // 사용자 추가에 대한 옵저버
+        roomUsersRef.observe(.childAdded) { snapshot in
+            guard let userID = snapshot.key as String? else { return }
+
+            self.fetchUserData(userID: userID) { result in
+                switch result {
+                case .success(let user):
+                    completion(.success(.added([userID: user])))
+                case .failure:
+                    break
                 }
             }
+        }
+        
+        // 사용자 제거에 대한 옵저버
+        roomUsersRef.observe(.childRemoved) { snapshot in
+            guard let userID = snapshot.key as String? else { return }
+            completion(.success(.removed(userID)))
+        }
+    }
+    
+    // 개별 사용자 데이터 가져오기
+    private func fetchUserData(
+        userID: String,
+        completion: @escaping (Result<User, ErrorEnum>) -> Void)
+    {
+        let path = USER_REF.child(userID)
+        
+        path.observeSingleEvent(of: .value) { snapshot in
+            guard let valueData = snapshot.value as? [String: Any] else {
+                completion(.failure(.readError))
+                return
+            }
+
+            // User 객체 생성
+            let user = User(dictionary: valueData)
+            completion(.success(user))
+        }
+    }
+    
+    // 개별 사용자의 데이터 변경 및 삭제를 관찰하는 함수
+    private func observeUserChanges(
+        userID: String,
+        completion: @escaping (Result<UserEvent, ErrorEnum>) -> Void)
+    {
+        let userPath = USER_REF.child(userID)
+        
+        // 노드 변경 시
+        userPath.observe(.childChanged) { snapshot in
+            guard let valueData = snapshot.value as? [String: Any] else {
+                completion(.failure(.readError))
+                return
+            }
+            let user = User(dictionary: valueData)
+            completion(.success(.updated([userID: user])))
+        }
+        
+        // 노드 삭제 시
+        userPath.observe(.childRemoved) { _ in
+            completion(.success(.removed(userID)))
+        }
     }
 }
 
-//
-//extension RoomsAPI {
-//    func readRoomUsers(roomID: String) async throws -> [String : User] {
-//        // 최종적으로 반환될 RoomUsers 배열
-//        var roomUsers = [String : User]()
-//        // 디스패치 그룹
-//        let saveGroup = DispatchGroup()
-//        
-//        return try await withCheckedThrowingContinuation
-//        { (continuation: CheckedContinuation<[String : User], Error>) in
-//            ROOM_USERS_REF
-//                .child(roomID)
-//                .observeSingleEvent(of: DataEventType.value) { snapshot in
-//                    
-//                    guard let value = snapshot.value as? [String: Bool] else {
-//                        continuation.resume(throwing: ErrorEnum.readError)
-//                        return
-//                    }
-//                    
-//                    for (key, _) in value {
-//                        saveGroup.enter()
-//                        USER_REF
-//                            .child(key)
-//                            .observeSingleEvent(of: .value) { snapshot in
-//                                
-//                                guard let valueData = snapshot.value as? [String: Any] else {
-//                                    continuation.resume(throwing: ErrorEnum.readError)
-//                                    return
-//                                }
-//                                let roomUser = User(dictionary: valueData)
-//                                roomUsers[key] = roomUser
-//                                saveGroup.leave()
-//                            }
-//                    }
-//                    
-//                    saveGroup.notify(queue: .main) {
-//                        continuation.resume(returning: roomUsers)
-//                    }
-//                }
-//        }
-//    }
-//}
+enum UserEvent {
+    case added([String: User])
+    case removed(String)
+    case updated([String: User])
+    case initialLoad([String: User])
+    
+    var notificationName: String {
+        switch self {
+        case .added(_), .initialLoad(_):
+            return "added"
+        case .removed(_):
+            return "removed"
+        case .updated(_):
+            return "updated"
+        }
+    }
+}

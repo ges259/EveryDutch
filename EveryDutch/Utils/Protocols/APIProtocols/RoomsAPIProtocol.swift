@@ -14,7 +14,9 @@ protocol RoomsAPIProtocol: EditScreenAPIType {
     func readRooms() async throws -> [Rooms]
     
     // *(((((
-    func readRoomUsers(roomID: String, completion: @escaping Typealias.RoomUsersCompletion)
+    func readRoomUsers(
+        roomID: String,
+        completion: @escaping (Result<UserEvent, ErrorEnum>) -> Void)
     
     
     func readCumulativeAmount(

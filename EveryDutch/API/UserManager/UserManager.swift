@@ -215,89 +215,129 @@ extension RoomDataManager {
                 
             case .failure(let errorEnum):
                 print("users 실패")
-                completion(.failure(.readError))
+                completion(.failure(errorEnum))
                 break
             }
         }
     }
     
     
-    private func updateUsers(with newUsers: [String: User]) {
-        // 현재 화면에 표시된 사용자 ID들
-        let existingUserIDs = Set(userIDToIndexPathMap.keys)
+    private func updateUsers(with usersEvent: UserEvent) {
+        
+        switch usersEvent {
+        case .updated(let toUpdate):
+            // 리턴할 인덱스패스
+            var updatedIndexPaths = [IndexPath]()
+            
+            for (userID, user) in toUpdate {
+                if let indexPath = self.userIDToIndexPathMap[userID] {
+                    // 뷰모델에 바뀐 user데이터 저장
+                    self.cellViewModels[indexPath.row].updateUserData(user)
+                    // [userID: User] 딕셔너리 데이터 업데이트
+                    self.roomUserDataDict[userID] = user
+                    updatedIndexPaths.append(indexPath)
+                }
+            }
+            
+            self.postNotification(name: .userDataChanged,
+                                  eventType: .updated(toUpdate),
+                                  indexPath: updatedIndexPaths)
+            
+            
+            // 데이터 초기 로드
+        case .initialLoad(let userDict):
+            // 리턴할 인덱스패스
+            var addedIndexPaths = [IndexPath]()
 
-        // 새로 받은 사용자 ID들
-        let newUserIDs = Set(newUsers.keys)
-
-        // 추가할 사용자 IDs
-        let toAdd = newUserIDs.subtracting(existingUserIDs)
-        
-        // 삭제할 사용자 IDs
-        let toRemove = existingUserIDs.subtracting(newUserIDs)
-        
-        // 업데이트할 사용자 IDs (교집합)
-        let toUpdate = newUserIDs.intersection(existingUserIDs)
-        
-        
-        var addedUsers = [IndexPath]()
-        var removedUsers = [IndexPath]()
-        var updatedUsers = [IndexPath]()
-        
-        // 추가
-        for userID in toAdd {
-            if let user = newUsers[userID] {
-                let indexPath = IndexPath(row: cellViewModels.count, section: 0)
+            // 초기 로드일 때 모든 데이터 초기화
+            self.cellViewModels.removeAll()
+            self.userIDToIndexPathMap.removeAll()
+            // [userID: User] 딕셔너리 데이터 저장
+            self.roomUserDataDict = userDict
+            
+            // 모든 데이터 추가
+            for (index, (userID, user)) in userDict.enumerated() {
+                // 인덱스 패스 생성
+                let indexPath = IndexPath(row: index, section: 0)
+                // 뷰모델 생성
                 let viewModel = UsersTableViewCellVM(
                     userID: userID,
                     roomUsers: user,
                     customTableEnum: .isSettleMoney)
+                // 뷰모델 저장
                 self.cellViewModels.append(viewModel)
+                // 인덱스패스 저장
                 self.userIDToIndexPathMap[userID] = indexPath
-                self.roomUserDataDict[userID] = user
-                addedUsers.append(indexPath)
+                addedIndexPaths.append(indexPath)
             }
-        }
-
-        // 삭제
-        for userID in toRemove {
-            if let indexPath = self.userIDToIndexPathMap[userID] {
-                self.cellViewModels.remove(at: indexPath.row)
-                self.userIDToIndexPathMap.removeValue(forKey: userID)
-                self.roomUserDataDict.removeValue(forKey: userID)
-                removedUsers.append(indexPath)
-            }
-        }
-
-        // 업데이트
-        for userID in toUpdate {
-            if let user = newUsers[userID],
-               let indexPath = self.userIDToIndexPathMap[userID] {
+            
+            self.postNotification(name: .userDataChanged,
+                                  eventType: .initialLoad(userDict),
+                                  indexPath: addedIndexPaths)
+            
+            
+        case .added(let toAdd):
+            // 리턴할 인덱스패스
+            var addedIndexPaths = [IndexPath]()
+            for (userID, user) in toAdd {
+                // 중복 추가 방지
+                guard self.userIDToIndexPathMap[userID] == nil else { continue }
+                // 인덱스패스 생성
+                let indexPath = IndexPath(row: self.cellViewModels.count, section: 0)
+                // 뷰모델 생성
                 let viewModel = UsersTableViewCellVM(
                     userID: userID,
                     roomUsers: user,
                     customTableEnum: .isSettleMoney)
-                self.cellViewModels[indexPath.row] = viewModel
+                // 뷰모델 저장
+                self.cellViewModels.append(viewModel)
+                // 인덱스패스 업데이트
+                self.userIDToIndexPathMap[userID] = indexPath
+                // [userID: User] 딕셔너리 데이터 업데이트
                 self.roomUserDataDict[userID] = user
-                updatedUsers.append(indexPath)
+                addedIndexPaths.append(indexPath)
             }
-        }
+            
+            self.postNotification(name: .userDataChanged,
+                                  eventType: .added(toAdd),
+                                  indexPath: addedIndexPaths)
+            
+            
+        case .removed(let userID):
+            // 리턴할 인덱스패스
+            var removedIndexPaths = [IndexPath]()
 
-        // 인덱스 매핑 최적화
-        var index = 0
-        self.cellViewModels.forEach { viewModel in
-            let indexPath = IndexPath(row: index, section: 0)
-            self.userIDToIndexPathMap[viewModel.userID] = indexPath
-            index += 1
+            if let indexPath = self.userIDToIndexPathMap[userID] {
+                // 뷰모델 삭제
+                self.cellViewModels.remove(at: indexPath.row)
+                // 인덱스패스 삭제
+                self.userIDToIndexPathMap.removeValue(forKey: userID)
+                // [String: User] 데이터 삭제
+                self.roomUserDataDict.removeValue(forKey: userID)
+                removedIndexPaths.append(indexPath)
+                // 삭제 후 인덱스 재정렬 (인덱스 매핑 최적화)
+                for row in indexPath.row..<self.cellViewModels.count {
+                    let newIndexPath = IndexPath(row: row, section: 0)
+                    let userID = self.cellViewModels[row].userID
+                    self.userIDToIndexPathMap[userID] = newIndexPath
+                }
+            }
+            self.postNotification(name: .userDataChanged,
+                                  eventType: .removed(userID),
+                                  indexPath: removedIndexPaths)
         }
+    }
+    
+    private func postNotification(
+        name: Notification.Name,
+        eventType: UserEvent,
+        indexPath: [IndexPath])
+    {
         // 노티피케이션 전송
         NotificationCenter.default.post(
             name: .userDataChanged,
             object: nil,
-            userInfo: [
-                "added": addedUsers,
-                "removed": removedUsers,
-                "updated": updatedUsers
-            ]
+            userInfo: [eventType.notificationName: indexPath]
         )
     }
 }
@@ -334,15 +374,15 @@ extension RoomDataManager {
 
     // MARK: - 누적 금액 데이터
     private func loadCumulativeAmountData(versionID: String) {
-        self.roomsAPI.readCumulativeAmount(versionID: versionID) { [weak self] data in
-            switch data {
+        self.roomsAPI.readCumulativeAmount(versionID: versionID) { [weak self] result in
+            switch result {
             case .success(let moneyData):
                 print("cumulativeMoney 성공")
-                self?.updateCumulativeAmount(moneyData)
                 dump(moneyData)
-                
+                self?.updateCumulativeAmount(moneyData)
                 self?.markAsLoaded(self?.cumulativeAmountLoadedKey ?? "")
                 self?.trySendNotification()
+                break
             case .failure:
                 print("cumulativeMoney 실패")
                 break
@@ -352,14 +392,16 @@ extension RoomDataManager {
 
     // MARK: - 페이백 데이터
     private func loadPaybackData(versionID: String) {
-        self.roomsAPI.readPayback(versionID: versionID) { [weak self] paybackData in
-            switch paybackData {
-            case .success(let data):
+        self.roomsAPI.readPayback(versionID: versionID) { [weak self] result in
+            switch result {
+            case .success(let moneyData):
                 print("payback 성공")
-                self?.updatePayback(data)
+                dump(moneyData)
+                self?.updatePayback(moneyData)
                 self?.markAsLoaded(self?.paybackLoadedKey ?? "")
                 self?.trySendNotification()
                 break
+                
             case .failure:
                 print("payback 실패")
                 break
@@ -369,7 +411,6 @@ extension RoomDataManager {
 
     // 누적 금액 데이터 변경
     private func updateCumulativeAmount(_ amount: [String: Int]) {
-        print(#function)
         for (key, value) in amount {
             guard let indexPath = self.userIDToIndexPathMap[key] else {
                 print("User not found in the mapping.")
@@ -378,8 +419,6 @@ extension RoomDataManager {
             let index = indexPath.row
             if index < self.cellViewModels.count {
                 self.cellViewModels[index].setCumulativeAmount(value)
-//                var existingVM = self.cellViewModels[index]
-//                existingVM.setCumulativeAmount(value)
                 self.changedIndexPaths.append(indexPath)
             }
         }
@@ -395,8 +434,6 @@ extension RoomDataManager {
             let index = indexPath.row
             if index < self.cellViewModels.count {
                 self.cellViewModels[index].setpayback(value)
-//                var existingVM = self.cellViewModels[index]
-//                existingVM.setpayback(value)
                 self.changedIndexPaths.append(indexPath)
             }
         }
@@ -417,7 +454,9 @@ extension RoomDataManager {
     private func trySendNotification() {
 //        if self.allDataLoaded() {
             print(#function)
-            dump(self.changedIndexPaths)
+            print(self.changedIndexPaths)
+            print(self.changedIndexPaths.count)
+            print("____________")
             NotificationCenter.default.post(
                 name: .financialDataUpdated,
                 object: nil,
@@ -429,7 +468,7 @@ extension RoomDataManager {
     }
     
     private func resetMoneyData() {
-        self.loadedStates.removeAll()
-        self.changedIndexPaths.removeAll()
+        self.loadedStates = []
+        self.changedIndexPaths = []
     }
 }

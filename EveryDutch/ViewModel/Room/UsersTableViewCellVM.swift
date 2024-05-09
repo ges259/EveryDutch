@@ -8,6 +8,8 @@
 import UIKit
 
 struct UsersTableViewCellVM: UsersTableViewCellVMProtocol {
+    // MARK: - Fix
+    // 이거 roomUser -> getUserName 이런식으로 바꾸기
     var profileImageURL: String = ""
     var userName: String = ""
     
@@ -84,7 +86,9 @@ struct UsersTableViewCellVM: UsersTableViewCellVMProtocol {
     }
     
     
-    
+    mutating func updateUserData(_ user: User) {
+        self.roomUser = user
+    }
     
     
     
