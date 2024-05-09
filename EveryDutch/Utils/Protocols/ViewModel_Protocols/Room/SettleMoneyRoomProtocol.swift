@@ -39,4 +39,13 @@ protocol SettleMoneyRoomProtocol {
     
     
     func createNewCell(receipt: Receipt)
+    
+    
+    
+    func userDataChanged(_ userInfo: [String: [IndexPath]])
+    
+    // 모든 대기 중인 변경 사항 초기화
+    func resetPendingUpdates()
+    // 뷰모델에 저장된 변경 사항 반환
+    func getPendingUpdates() -> [String: [IndexPath]]
 }

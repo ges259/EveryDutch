@@ -9,6 +9,42 @@ import UIKit
 
 final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
     
+    
+    
+    
+    
+    private var pendingIndexPaths: [String: [IndexPath]] = [
+        "added": [],
+        "removed": [],
+        "updated": []
+    ]
+    
+    func userDataChanged(_ userInfo: [String: [IndexPath]]) {
+        for (key, newIndexPaths) in userInfo {
+            if var existingIndexPaths = self.pendingIndexPaths[key] {
+                // 기존 배열에 새로운 인덱스 패스를 추가
+                existingIndexPaths.append(contentsOf: newIndexPaths)
+                // 기존 배열을 업데이트
+                self.pendingIndexPaths[key] = existingIndexPaths
+            } else {
+                // 키가 없을 경우 새로운 배열로 추가
+                self.pendingIndexPaths[key] = newIndexPaths
+            }
+        }
+    }
+    // 뷰모델에 저장된 변경 사항 반환
+    func getPendingUpdates() -> [String: [IndexPath]] {
+        return pendingIndexPaths
+    }
+    // 모든 대기 중인 변경 사항 초기화
+    func resetPendingUpdates() {
+        self.pendingIndexPaths = ["added": [],
+                                  "removed": [],
+                                  "updated": []]
+    }
+    
+    
+    
     // MARK: - 탑뷰의 높이
     /*
      인원 수에 따라 스택뷰의 maxHeight 크기 바꾸기
@@ -33,7 +69,7 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
     /// 탑뷰의 최소 크기
     let minHeight: CGFloat = 35
     
-
+    private var isInitialLoad: Bool = true
     
     
     // MARK: - 탑뷰 토글
@@ -138,25 +174,12 @@ extension SettleMoneyRoomVM {
     /// RoomDataManager에서 RoomUsers데이터 가져오기
     private func getUsersData() {
         self.roomDataManager.loadRoomUsers() { [weak self] result in
+            guard let self = self, self.isInitialLoad else { return }
+            self.isInitialLoad = false
             // 영수증 가져오기
-            self?.fetchReceipt()
+            self.fetchReceipt()
             // 돈 관련 데이터 가져오기 (페이백, 누적 금액)
-            self?.getRoomMoneyData()
-        }
-    }
-    
-    // MARK: - 페이벡 + 누적 금액 (돈 관련)
-    private func getRoomMoneyData() {
-        self.roomDataManager.loadFinancialData { [weak self] result in
-            self?.fetchMoneyDataClosure?()
-            switch result {
-            case .success(): 
-                break
-            case .failure(_):
-                // MARK: - Fix
-                // 유저에게 알리기.
-                break
-            }
+            self.roomDataManager.loadFinancialData()
         }
     }
     
@@ -179,10 +202,6 @@ extension SettleMoneyRoomVM {
             case .failure(_): break
             }
         }
-    }
-    
-    private func observingReceipt(versionID: String) {
-        
     }
 }
     

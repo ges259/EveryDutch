@@ -10,7 +10,7 @@ import Foundation
 
 protocol RoomDataManagerProtocol {
     func getViewModel(index: Int) -> UsersTableViewCellVMProtocol
-    
+    func loadFinancialData()
     
     var getRoomUsersDict: RoomUserDataDict { get }
     
@@ -34,10 +34,10 @@ protocol RoomDataManagerProtocol {
     func getIDToCumulativeAmount(userID: String) -> Int
     
     
-    func loadFinancialData(completion: @escaping Typealias.VoidCompletion)
     
-    func loadRoomUsers(
-        completion: @escaping Typealias.VoidCompletion)
+    
+    func loadRoomUsers(completion: @escaping (Result<Void, ErrorEnum>) -> Void)
+    
     
 //    func loadCumulativeAmountData(
 //        completion: @escaping Typealias.VoidCompletion) 

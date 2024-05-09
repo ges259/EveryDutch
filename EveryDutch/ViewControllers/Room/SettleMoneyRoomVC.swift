@@ -118,18 +118,16 @@ final class SettleMoneyRoomVC: UIViewController {
     
     
 
-    
-    
-    
+    //
+    private var isViewVisible = false
     
     // MARK: - 라이프사이클
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        self.configureNotification()
         self.configureUI()
         self.configureAutoLayout()
         self.configureAction()
-        self.configureGesture()
         self.configureClosure()
         self.configureViewWithViewModel()
     }
@@ -142,7 +140,32 @@ final class SettleMoneyRoomVC: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.isViewVisible = true
+        self.processPendingUpdates()
+    }
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.isViewVisible = false
+    }
+    // 모든 대기 중인 변경 사항을 적용
+    private func processPendingUpdates() {
+        print(#function)
+        self.usersTableView.userDataReload(at: self.viewModel.getPendingUpdates())
+        // 변경 사항 초기화
+        self.viewModel.resetPendingUpdates()
+    }
 }
+
+
+
+
+
+
+
+
+
 
 // MARK: - 화면 설정
 
@@ -255,10 +278,6 @@ extension SettleMoneyRoomVC {
             self,
             action: #selector(self.bottomBtnTapped),
             for: .touchUpInside)
-    }
-    
-    // MARK: - 제스처 설정
-    private func configureGesture() {
         // 탑뷰 - 팬 재스쳐
         let topViewPanGesture = UIPanGestureRecognizer(
             target: self,
@@ -301,6 +320,20 @@ extension SettleMoneyRoomVC {
         // 네비게이션 타이틀 설정
         self.navigationItem.title = self.viewModel.navTitle
     }
+    
+    // MARK: - 노티피케이션 설정
+    private func configureNotification() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(self.handleUserDataChanged(notification:)),
+            name: .userDataChanged,
+            object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(self.handleUserDataChanged(notification:)),
+            name: .financialDataUpdated,
+            object: nil)
+    }
 }
     
     
@@ -313,22 +346,26 @@ extension SettleMoneyRoomVC {
 
 
 // MARK: - 액션 함수 (화면 이동)
-
 extension SettleMoneyRoomVC {
-    
-    // MARK: - 바텀 버튼
+    /// 바텀 버튼
     @objc private func bottomBtnTapped() {
         self.coordinator.receiptWriteScreen()
     }
-    
-    // MARK: - 설정 버튼
+    /// 설정 버튼
     @objc private func settingBtnTapped() {
         self.coordinator.RoomSettingScreen()
     }
-    
-    // MARK: - 뒤로가기 버튼
+    /// 뒤로가기 버튼
     @objc private func backBtnTapped() {
         self.coordinator.didFinish()
+    }
+    /// 노티피케이션을 통해 받은 변경사항을 바로 반영하거나 저장하는 메서드
+    @objc private func handleUserDataChanged(notification: Notification) {
+        print(#function)
+        guard let userInfo = notification.userInfo as? [String: [IndexPath]] else { return }
+        self.viewModel.userDataChanged(userInfo)
+        //
+        if self.isViewVisible { self.processPendingUpdates() }
     }
 }
     

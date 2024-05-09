@@ -52,6 +52,16 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
 
 
+    // 두 작업 완료 여부를 추적하는 플래그
+    // 플래그 대신 상태 추적을 위한 집합 사용
+    private var loadedStates: Set<String> = []
+    private let cumulativeAmountLoadedKey = "cumulativeAmount"
+    private let paybackLoadedKey = "payback"
+    private var changedIndexPaths: [IndexPath] = []
+
+
+    
+    
     
     
     
@@ -97,43 +107,6 @@ final class RoomDataManager: RoomDataManagerProtocol {
     func getIdToRoomUser(usersID: String) -> User {
         return self.roomUserDataDict[usersID]
         ?? User(dictionary: [:])
-    }
-    
-    
-    
-    
-    // MARK: - 뷰모델 데이터 변경
-    private func updateCumulativeAmount(_ dict: (userID: String, amount: Int)) {
-        guard let indexPath = self.userIDToIndexPathMap[dict.userID] else {
-            print("User not found in the mapping.")
-            return
-        }
-        
-        let index = indexPath.row
-        
-        guard index < self.cellViewModels.count else {
-            return
-        }
-        
-        var existingVM = self.cellViewModels[index]
-        existingVM.setCumulativeAmount(dict.amount)
-    }
-    
-    // MARK: - 뷰모델 데이터 변경
-    private func updatePayback(_ dict: (userID: String, payback: [String: Int])) {
-        guard let indexPath = self.userIDToIndexPathMap[dict.userID] else {
-            print("User not found in the mapping.")
-            return
-        }
-        
-        let index = indexPath.row
-        
-        guard index < self.cellViewModels.count else {
-            return
-        }
-        
-//        var existingVM = self.cellViewModels[index]
-//        existingVM.setpayback(dict.payback)
     }
     
     
@@ -190,95 +163,6 @@ final class RoomDataManager: RoomDataManagerProtocol {
 
 extension RoomDataManager {
     
-    // 두 데이터 로드 작업을 실행하고 모두 완료되면 콜백을 호출
-    func loadFinancialData(completion: @escaping Typealias.VoidCompletion) {
-        let dispatchGroup = DispatchGroup()
-        var errors: [ErrorEnum] = [] // 오류를 저장할 배열
-
-        dispatchGroup.enter()
-        loadPaybackData { result in
-            if case .failure(let error) = result {
-                errors.append(error)
-            }
-            dispatchGroup.leave()
-        }
-
-        dispatchGroup.enter()
-        loadCumulativeAmountData { result in
-            if case .failure(let error) = result {
-                errors.append(error)
-            }
-            dispatchGroup.leave()
-        }
-
-        dispatchGroup.notify(queue: .main) {
-            if errors.isEmpty {
-                completion(.success(())) // 모든 작업이 성공적으로 완료됨
-            } else {
-                completion(.failure(errors.first ?? .readError)) // 첫 번째 오류를 반환
-            }
-        }
-    }
-    
-    // MARK: - 누적 금액 데이터
-    private func loadCumulativeAmountData(
-        completion: @escaping Typealias.VoidCompletion)
-    {
-        
-        guard let versionID = self.getCurrentVersion else {
-            completion(.failure(.readError))
-            return
-        }
-        
-        self.roomsAPI.readCumulativeAmount(versionID: versionID) { [weak self] data in
-            switch data {
-            case .success(let moneyData):
-                print("cumulativeMoney 성공")
-                // [String : Int]
-                self?.cumulativeAmount = moneyData
-                completion(.success(()))
-                
-            // MARK: - Fix
-            case .failure(let errorEnum):
-                print("cumulativeMoney 실패")
-                completion(.failure(errorEnum))
-                break
-            }
-        }
-    }
-    
-    // MARK: - 페이백 데이터
-    private func loadPaybackData(
-        completion: @escaping Typealias.VoidCompletion)
-    {
-        guard let versionID = self.getCurrentVersion else {
-            completion(.failure(.readError))
-            return
-        }
-        
-        self.roomsAPI.readPayback(versionID: versionID) { [weak self] paybackData in
-            switch paybackData {
-            case .success(let data):
-                print("payback 성공")
-                self?.paybackData = data
-                completion(.success(()))
-                break
-                
-                
-                // MARK: - Fix
-            case .failure(let errorEnum):
-                print("payback 실패")
-                completion(.failure(errorEnum))
-                break
-            }
-        }
-    }
-    
-    
-    
-    
-    
-    
     
     // MARK: - 방의 데이터
     @MainActor
@@ -315,30 +199,30 @@ extension RoomDataManager {
     // MARK: - 유저 데이터
     // 콜백 함수 만들기(completion)
     // SettlementMoneyRoomVM에서 호출 됨
-    func loadRoomUsers(completion: @escaping Typealias.VoidCompletion) {
+    func loadRoomUsers(completion: @escaping (Result<Void, ErrorEnum>) -> Void) {
         // roomData 저장
         guard let roomID = self.currentRoomData?.roomID else { return }
         
         // 데이터베이스나 네트워크에서 RoomUser 데이터를 가져오는 로직
         self.roomsAPI.readRoomUsers(roomID: roomID) { [weak self] result in
-                switch result {
-                case .success(let users):
-                    print("users 성공")
-                    // [String : RoomUsers] 딕셔너리 저장
-                    self?.updateUsers(with: users)
-                    completion(.success(()))
-                    break
-                    // MARK: - Fix
-                case .failure(let errorEnum):
-                    print("users 실패")
-                    completion(.failure(errorEnum))
-                    break
-                }
+            switch result {
+            case .success(let users):
+                print("users 성공")
+                // [String : RoomUsers] 딕셔너리 저장
+                self?.updateUsers(with: users)
+                completion(.success(()))
+                break
+                
+            case .failure(let errorEnum):
+                print("users 실패")
+                completion(.failure(.readError))
+                break
             }
+        }
     }
     
     
-    func updateUsers(with newUsers: [String: User]) {
+    private func updateUsers(with newUsers: [String: User]) {
         // 현재 화면에 표시된 사용자 ID들
         let existingUserIDs = Set(userIDToIndexPathMap.keys)
 
@@ -405,7 +289,6 @@ extension RoomDataManager {
             self.userIDToIndexPathMap[viewModel.userID] = indexPath
             index += 1
         }
-
         // 노티피케이션 전송
         NotificationCenter.default.post(
             name: .userDataChanged,
@@ -414,6 +297,139 @@ extension RoomDataManager {
                 "added": addedUsers,
                 "removed": removedUsers,
                 "updated": updatedUsers
-            ])
+            ]
+        )
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+extension RoomDataManager {
+    // 두 데이터 로드 작업을 실행하고 모두 완료되면 콜백을 호출
+    func loadFinancialData() {
+        guard let versionID = self.getCurrentVersion else { return }
+        self.resetMoneyData()
+        self.loadCumulativeAmountData(versionID: versionID)
+        self.loadPaybackData(versionID: versionID)
+    }
+
+    // MARK: - 누적 금액 데이터
+    private func loadCumulativeAmountData(versionID: String) {
+        self.roomsAPI.readCumulativeAmount(versionID: versionID) { [weak self] data in
+            switch data {
+            case .success(let moneyData):
+                print("cumulativeMoney 성공")
+                self?.updateCumulativeAmount(moneyData)
+                dump(moneyData)
+                
+                self?.markAsLoaded(self?.cumulativeAmountLoadedKey ?? "")
+                self?.trySendNotification()
+            case .failure:
+                print("cumulativeMoney 실패")
+                break
+            }
+        }
+    }
+
+    // MARK: - 페이백 데이터
+    private func loadPaybackData(versionID: String) {
+        self.roomsAPI.readPayback(versionID: versionID) { [weak self] paybackData in
+            switch paybackData {
+            case .success(let data):
+                print("payback 성공")
+                self?.updatePayback(data)
+                self?.markAsLoaded(self?.paybackLoadedKey ?? "")
+                self?.trySendNotification()
+                break
+            case .failure:
+                print("payback 실패")
+                break
+            }
+        }
+    }
+
+    // 누적 금액 데이터 변경
+    private func updateCumulativeAmount(_ amount: [String: Int]) {
+        print(#function)
+        for (key, value) in amount {
+            guard let indexPath = self.userIDToIndexPathMap[key] else {
+                print("User not found in the mapping.")
+                continue
+            }
+            let index = indexPath.row
+            if index < self.cellViewModels.count {
+                self.cellViewModels[index].setCumulativeAmount(value)
+//                var existingVM = self.cellViewModels[index]
+//                existingVM.setCumulativeAmount(value)
+                self.changedIndexPaths.append(indexPath)
+            }
+        }
+    }
+
+    // 페이백 데이터 변경
+    private func updatePayback(_ payback: [String: Int]) {
+        for (key, value) in payback {
+            guard let indexPath = self.userIDToIndexPathMap[key] else {
+                print("User not found in the mapping.")
+                continue
+            }
+            let index = indexPath.row
+            if index < self.cellViewModels.count {
+                self.cellViewModels[index].setpayback(value)
+//                var existingVM = self.cellViewModels[index]
+//                existingVM.setpayback(value)
+                self.changedIndexPaths.append(indexPath)
+            }
+        }
+    }
+
+    
+    
+    // 상태 추적용 마킹 함수
+    private func markAsLoaded(_ key: String) {
+        self.loadedStates.insert(key)
+    }
+    
+    // 모든 데이터 로드 완료 여부 확인
+    private func allDataLoaded() -> Bool {
+        return self.loadedStates.contains(cumulativeAmountLoadedKey) && self.loadedStates.contains(paybackLoadedKey)
+    }
+    // 모든 데이터가 로드되었는지 확인하고 노티피케이션 전송
+    private func trySendNotification() {
+//        if self.allDataLoaded() {
+            print(#function)
+            dump(self.changedIndexPaths)
+            NotificationCenter.default.post(
+                name: .financialDataUpdated,
+                object: nil,
+                userInfo: ["updated": self.changedIndexPaths]
+            )
+            // 모든 데이터가 로드되었으므로 상태 초기화
+            self.resetMoneyData()
+//        }
+    }
+    
+    private func resetMoneyData() {
+        self.loadedStates.removeAll()
+        self.changedIndexPaths.removeAll()
     }
 }

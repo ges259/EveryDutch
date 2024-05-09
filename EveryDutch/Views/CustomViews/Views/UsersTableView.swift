@@ -72,6 +72,29 @@ final class UsersTableView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    
+    func userDataReload(at pendingIndexPaths: [String: [IndexPath]]) {
+        self.usersTableView.performBatchUpdates {
+            self.usersTableView.insertRows(
+                at: pendingIndexPaths["added"] ?? [],
+                with: .automatic)
+            self.usersTableView.deleteRows(
+                at: pendingIndexPaths["removed"] ?? [],
+                with: .automatic)
+            self.usersTableView.reloadRows(
+                at: pendingIndexPaths["updated"] ?? [],
+                with: .automatic)
+        }
+    }
+    func moneyDataReload(at pendingIndexPaths: [String: [IndexPath]]) {
+        self.usersTableView.performBatchUpdates {
+            self.usersTableView.reloadRows(
+                at: pendingIndexPaths["updated"] ?? [],
+                with: .automatic)
+        }
+    }
+    
 }
     
     

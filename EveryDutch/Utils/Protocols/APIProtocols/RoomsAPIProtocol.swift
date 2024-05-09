@@ -19,11 +19,11 @@ protocol RoomsAPIProtocol: EditScreenAPIType {
     
     func readCumulativeAmount(
         versionID: String,
-        completion: @escaping Typealias
-            .RoomMoneyDataCompletion)
+        completion: @escaping (Result<[String: Int], ErrorEnum>) -> Void)
+    
     func readPayback(
         versionID: String,
-        completion: @escaping Typealias.PaybackCompletion)
+        completion: @escaping (Result<[String: Int], ErrorEnum>) -> Void)
     
     
 //    func readRoomUsers(roomID: String) async throws -> [String : User]

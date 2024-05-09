@@ -639,6 +639,7 @@ extension ReceiptWriteVM {
         try await self.receiptAPI.updateCumulativeMoney(
             versionID: versionID,
             moneyDict: self.usersMoneyDict)
+        // 페이백 업데이트
         try await self.receiptAPI.updatePayback(
             versionID: versionID,
             payerID: payerID, 
