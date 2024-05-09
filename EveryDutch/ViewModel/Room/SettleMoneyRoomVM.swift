@@ -12,35 +12,19 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
     
     
     
-    
-    private var pendingIndexPaths: [String: [IndexPath]] = [
-        "added": [],
-        "removed": [],
-        "updated": []
-    ]
-    
+    // 인덱스패스 데이터를 저장해두는 코드
+    private var pendingIndexPaths: [String: [IndexPath]] = [:]
+    // 바뀐 인덱스패스 데이터 저장
     func userDataChanged(_ userInfo: [String: [IndexPath]]) {
-        for (key, newIndexPaths) in userInfo {
-            if var existingIndexPaths = self.pendingIndexPaths[key] {
-                // 기존 배열에 새로운 인덱스 패스를 추가
-                existingIndexPaths.append(contentsOf: newIndexPaths)
-                // 기존 배열을 업데이트
-                self.pendingIndexPaths[key] = existingIndexPaths
-            } else {
-                // 키가 없을 경우 새로운 배열로 추가
-                self.pendingIndexPaths[key] = newIndexPaths
-            }
-        }
+        self.pendingIndexPaths.merge(userInfo) { _, new in new }
     }
     // 뷰모델에 저장된 변경 사항 반환
     func getPendingUpdates() -> [String: [IndexPath]] {
-        return pendingIndexPaths
+        return self.pendingIndexPaths
     }
     // 모든 대기 중인 변경 사항 초기화
     func resetPendingUpdates() {
-        self.pendingIndexPaths = ["added": [],
-                                  "removed": [],
-                                  "updated": []]
+        self.pendingIndexPaths.removeAll()
     }
     
     

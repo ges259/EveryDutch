@@ -103,7 +103,9 @@ final class SettleMoneyRoomVC: UIViewController {
     
     
     // MARK: - 프로퍼티
+    /// SettleMoneyRoomCoordProtocol
     private var coordinator: SettleMoneyRoomCoordProtocol
+    /// SettleMoneyRoomProtocol
     private var viewModel: SettleMoneyRoomProtocol
     
     /// 탑뷰의 높이 조절할 때 필요한 프로퍼티
@@ -118,12 +120,14 @@ final class SettleMoneyRoomVC: UIViewController {
     
     
 
-    //
+    /// 현재 화면이 Visible인지를 판단하는 변수
+    /// viewWillAppear와 viewWillDisappear에서 적용
     private var isViewVisible = false
     
     // MARK: - 라이프사이클
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         self.configureNotification()
         self.configureUI()
         self.configureAutoLayout()
@@ -148,13 +152,6 @@ final class SettleMoneyRoomVC: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.isViewVisible = false
-    }
-    // 모든 대기 중인 변경 사항을 적용
-    private func processPendingUpdates() {
-        print(#function)
-        self.usersTableView.userDataReload(at: self.viewModel.getPendingUpdates())
-        // 변경 사항 초기화
-        self.viewModel.resetPendingUpdates()
     }
 }
 
@@ -361,11 +358,20 @@ extension SettleMoneyRoomVC {
     }
     /// 노티피케이션을 통해 받은 변경사항을 바로 반영하거나 저장하는 메서드
     @objc private func handleUserDataChanged(notification: Notification) {
-        print(#function)
         guard let userInfo = notification.userInfo as? [String: [IndexPath]] else { return }
         self.viewModel.userDataChanged(userInfo)
         //
         if self.isViewVisible { self.processPendingUpdates() }
+    }
+    // 모든 대기 중인 변경 사항을 적용
+    private func processPendingUpdates() {
+        let indexPaths = self.viewModel.getPendingUpdates()
+        // 비어있다면, 아무 행동도 하지 않음
+        guard !indexPaths.isEmpty else { return }
+        // 테이블뷰 리로드
+        self.usersTableView.userDataReload(at: indexPaths)
+        // 변경 사항 초기화
+        self.viewModel.resetPendingUpdates()
     }
 }
     

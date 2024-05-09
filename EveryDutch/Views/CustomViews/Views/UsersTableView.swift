@@ -75,7 +75,19 @@ final class UsersTableView: UIView {
     
     
     func userDataReload(at pendingIndexPaths: [String: [IndexPath]]) {
+        
+        
+        if !((pendingIndexPaths["initialLoad"] ?? []).isEmpty) {
+            self.usersTableView.reloadData()
+            return
+        }
+        
         self.usersTableView.performBatchUpdates {
+            print(#function)
+            print(pendingIndexPaths["added"] ?? [])
+            print(pendingIndexPaths["removed"] ?? [])
+            print(pendingIndexPaths["updated"] ?? [])
+                
             self.usersTableView.insertRows(
                 at: pendingIndexPaths["added"] ?? [],
                 with: .automatic)

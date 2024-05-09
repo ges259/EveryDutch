@@ -12,9 +12,9 @@ import FirebaseDatabaseInternal
 // 방에 들어섰을 때
     // 방 유저 데이터 가져오기 ----- (Room_Users)
 extension Notification.Name {
-    static let cumulativeAmountUpdated = Notification.Name("cumulativeAmountUpdated")
-    static let paybackDataUpdated = Notification.Name("paybackDataUpdated")
-    static let roomUsersUpdated = Notification.Name("roomUsersUpdated")
+//    static let cumulativeAmountUpdated = Notification.Name("cumulativeAmountUpdated")
+//    static let paybackDataUpdated = Notification.Name("paybackDataUpdated")
+//    static let roomUsersUpdated = Notification.Name("roomUsersUpdated")
     static let userDataChanged = Notification.Name("userDataChanged")
     static let financialDataUpdated = Notification.Name("financialDataUpdated")
 }

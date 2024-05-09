@@ -10,13 +10,21 @@ import FirebaseDatabase
 
 import FirebaseAuth
 
+enum UserEvent<T> {
+    case added(T)
+    case removed(String)
+    case updated(T)
+    case initialLoad(T)
+}
+
+
 // 방에 들어섰을 때
     // 방 유저 데이터 가져오기 ----- (Room_Users)
 
 extension RoomsAPI {
     func readRoomUsers(
         roomID: String,
-        completion: @escaping (Result<UserEvent, ErrorEnum>) -> Void)
+        completion: @escaping (Result<UserEvent<[String: User]>, ErrorEnum>) -> Void)
     {
         // 반환될 RoomUsers 배열
         var roomUsers = [String : User]()
@@ -96,12 +104,13 @@ extension RoomsAPI {
     // 개별 사용자의 데이터 변경 및 삭제를 관찰하는 함수
     private func observeUserChanges(
         userID: String,
-        completion: @escaping (Result<UserEvent, ErrorEnum>) -> Void)
+        completion: @escaping (Result<UserEvent<[String: User]>, ErrorEnum>) -> Void)
     {
         let userPath = USER_REF.child(userID)
         
         // 노드 변경 시
         userPath.observe(.childChanged) { snapshot in
+            print(snapshot)
             guard let valueData = snapshot.value as? [String: Any] else {
                 completion(.failure(.readError))
                 return
@@ -117,20 +126,3 @@ extension RoomsAPI {
     }
 }
 
-enum UserEvent {
-    case added([String: User])
-    case removed(String)
-    case updated([String: User])
-    case initialLoad([String: User])
-    
-    var notificationName: String {
-        switch self {
-        case .added(_), .initialLoad(_):
-            return "added"
-        case .removed(_):
-            return "removed"
-        case .updated(_):
-            return "updated"
-        }
-    }
-}

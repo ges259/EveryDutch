@@ -63,7 +63,7 @@ extension DecorationAPIType {
         return try await withCheckedThrowingContinuation
         { (continuation: CheckedContinuation<Decoration?, Error>) in
             
-            CARD_DATA_REF
+            CARD_DECORATION_REF
                 .child(dataRequiredWhenInEidtMode)
                 .observeSingleEvent(of: .value) { snapshot in
                     
@@ -95,7 +95,7 @@ extension DecorationAPIType {
         
         return try await withCheckedThrowingContinuation
         { (continuation: CheckedContinuation<Void, Error>) in
-            CARD_DATA_REF
+            CARD_DECORATION_REF
                 .child(ref)
                 .updateChildValues(decorationDict) { error, _ in
                     if let _ = error {

@@ -222,10 +222,11 @@ extension RoomDataManager {
     }
     
     
-    private func updateUsers(with usersEvent: UserEvent) {
+    private func updateUsers(with usersEvent: UserEvent<[String: User]>) {
         
         switch usersEvent {
         case .updated(let toUpdate):
+            print("\(#function) ----- update")
             // 리턴할 인덱스패스
             var updatedIndexPaths = [IndexPath]()
             
@@ -238,14 +239,15 @@ extension RoomDataManager {
                     updatedIndexPaths.append(indexPath)
                 }
             }
-            
+            dump(updatedIndexPaths)
             self.postNotification(name: .userDataChanged,
-                                  eventType: .updated(toUpdate),
+                                  eventType: .updated,
                                   indexPath: updatedIndexPaths)
             
             
             // 데이터 초기 로드
         case .initialLoad(let userDict):
+            print("\(#function) ----- init")
             // 리턴할 인덱스패스
             var addedIndexPaths = [IndexPath]()
 
@@ -270,13 +272,14 @@ extension RoomDataManager {
                 self.userIDToIndexPathMap[userID] = indexPath
                 addedIndexPaths.append(indexPath)
             }
-            
+            dump(addedIndexPaths)
             self.postNotification(name: .userDataChanged,
-                                  eventType: .initialLoad(userDict),
+                                  eventType: .initialLoad,
                                   indexPath: addedIndexPaths)
             
             
         case .added(let toAdd):
+            print("\(#function) ----- add")
             // 리턴할 인덱스패스
             var addedIndexPaths = [IndexPath]()
             for (userID, user) in toAdd {
@@ -297,13 +300,14 @@ extension RoomDataManager {
                 self.roomUserDataDict[userID] = user
                 addedIndexPaths.append(indexPath)
             }
-            
+            dump(addedIndexPaths)
             self.postNotification(name: .userDataChanged,
-                                  eventType: .added(toAdd),
+                                  eventType: .added,
                                   indexPath: addedIndexPaths)
             
             
         case .removed(let userID):
+            print("\(#function) ----- remove")
             // 리턴할 인덱스패스
             var removedIndexPaths = [IndexPath]()
 
@@ -322,26 +326,47 @@ extension RoomDataManager {
                     self.userIDToIndexPathMap[userID] = newIndexPath
                 }
             }
+            dump(removedIndexPaths)
             self.postNotification(name: .userDataChanged,
-                                  eventType: .removed(userID),
+                                  eventType: .removed,
                                   indexPath: removedIndexPaths)
         }
     }
     
     private func postNotification(
         name: Notification.Name,
-        eventType: UserEvent,
+        eventType: NotificationInfoString,
         indexPath: [IndexPath])
     {
+        
+        print(#function)
+        print(indexPath)
+        print(self.cellViewModels.count)
+        
         // 노티피케이션 전송
         NotificationCenter.default.post(
-            name: .userDataChanged,
+            name: name,
             object: nil,
             userInfo: [eventType.notificationName: indexPath]
         )
     }
 }
 
+enum NotificationInfoString {
+    case updated
+    case added
+    case removed
+    case initialLoad
+    
+    var notificationName: String {
+        switch self {
+        case .initialLoad:  return "initialLoad"
+        case .added:        return "added"
+        case .removed:      return "removed"
+        case .updated:      return "updated"
+        }
+    }
+}
 
 
 
@@ -452,7 +477,7 @@ extension RoomDataManager {
     }
     // 모든 데이터가 로드되었는지 확인하고 노티피케이션 전송
     private func trySendNotification() {
-//        if self.allDataLoaded() {
+        if self.allDataLoaded() {
             print(#function)
             print(self.changedIndexPaths)
             print(self.changedIndexPaths.count)
@@ -464,7 +489,7 @@ extension RoomDataManager {
             )
             // 모든 데이터가 로드되었으므로 상태 초기화
             self.resetMoneyData()
-//        }
+        }
     }
     
     private func resetMoneyData() {

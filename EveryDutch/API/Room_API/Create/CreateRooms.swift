@@ -55,7 +55,6 @@ extension RoomsAPI {
         return try await withCheckedThrowingContinuation { continuation in
             // 새로운 방 생성 및 정보 업데이트
             ROOMS_REF
-                .child(uid)
                 .childByAutoId()
                 .updateChildValues(updatedDict) { error, ref in
                     
@@ -71,23 +70,23 @@ extension RoomsAPI {
     
     
     // MARK: - 방 정보 생성
-//    private func updateRoomThumbnail(
-//        with roomID: String,
-//        data: [String: Any])
-//    async throws {
-//        let ref = ROOMS_THUMBNAIL_REF.child(roomID)
-//        
-//        try await withCheckedThrowingContinuation
-//        { (continuation: CheckedContinuation<Void, Error>) in
-//            ref.updateChildValues(data) { error, _ in
-//                if error != nil {
-//                    continuation.resume(throwing: ErrorEnum.readError)
-//                } else {
-//                    continuation.resume(returning: ())
-//                }
-//            }
-//        }
-//    }
+    private func updateRoomThumbnail(
+        with roomID: String,
+        data: [String: Any])
+    async throws {
+        let ref = USER_ROOMSID.child(roomID)
+        
+        try await withCheckedThrowingContinuation
+        { (continuation: CheckedContinuation<Void, Error>) in
+            ref.updateChildValues(data) { error, _ in
+                if error != nil {
+                    continuation.resume(throwing: ErrorEnum.readError)
+                } else {
+                    continuation.resume(returning: ())
+                }
+            }
+        }
+    }
     
     
     
