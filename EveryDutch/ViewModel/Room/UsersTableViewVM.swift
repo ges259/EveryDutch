@@ -81,18 +81,8 @@ extension UsersTableViewVM {
     // MARK: - 셀 뷰모델 반환
     // cellViewModels 반환
     func cellViewModel(at index: Int) -> UsersTableViewCellVMProtocol {
-        return self.roomDataManager.getViewModel(index: index)
+        return self.roomDataManager.getUsersViewModel(index: index)
     }
-}
- 
-
-
-
-
-
-
-
-extension UsersTableViewVM {
     
     // MARK: - 테이블뷰 스크롤 여부
     var tableViewIsScrollEnabled: Bool {

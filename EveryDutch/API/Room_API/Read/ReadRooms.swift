@@ -14,7 +14,8 @@ import Firebase
     // user - 방 데이터 가져오기 ----- (Rooms_Thumbnail)
 extension RoomsAPI {
     
-    func readRooms(completion: @escaping (Result<UserEvent<[Rooms]>, ErrorEnum>) -> Void) {
+    // MARK: - observeSingleEvent
+    func readRooms(completion: @escaping (Result<UserEvent<Rooms>, ErrorEnum>) -> Void) {
         // 유저ID 가져오기
         guard let uid = Auth.auth().currentUser?.uid else {
             // 사용자가 로그인하지 않았을 경우의 에러 처리
@@ -24,7 +25,7 @@ extension RoomsAPI {
         
         let saveGroup = DispatchGroup()
         
-        var returnRooms = [Rooms]()
+        var returnRooms = [String: Rooms]()
         
         // roomID를 가져오기 위한 path
         let roomIDPaths = USER_ROOMSID.child(uid)
@@ -33,7 +34,7 @@ extension RoomsAPI {
             // 존재하는지 확인
             guard snapshot.exists() else {
                 // 스냅샷에 데이터가 존재하지 않는 경우, 빈 배열 반환
-                completion(.success(.initialLoad([])))
+                completion(.success(.initialLoad([:])))
                 return
             }
             guard let value = snapshot.value as? [String: Int] else {
@@ -45,7 +46,7 @@ extension RoomsAPI {
                 self.readRoomsData(roomID: key) { result in
                     switch result {
                     case .success(let room):
-                        returnRooms.append(room)
+                        returnRooms[key] = room
                     case .failure(_):
                         break
                     }
@@ -77,8 +78,20 @@ extension RoomsAPI {
     }
     
     
+    
+    
+    
+    // MARK: - observe
     // 개별 사용자의 데이터 변경을 관찰하는 함수
     func observeRoomChanges(
+        roomIDs: [String],
+        completion: @escaping (Result<UserEvent<Rooms>, ErrorEnum>) -> Void)
+    {
+        self.setObserveRooms(roomIDs: roomIDs, completion: completion)
+        self.setObserveUsersRoomsID(completion: completion)
+    }
+    
+    private func setObserveRooms(
         roomIDs: [String],
         completion: @escaping (Result<UserEvent<Rooms>, ErrorEnum>) -> Void)
     {
@@ -97,6 +110,43 @@ extension RoomsAPI {
             }
         }
     }
+    private func setObserveUsersRoomsID(completion: @escaping (Result<UserEvent<Rooms>, ErrorEnum>) -> Void) {
+        // 유저ID 가져오기
+        guard let uid = Auth.auth().currentUser?.uid else {
+            // 사용자가 로그인하지 않았을 경우의 에러 처리
+            completion(.failure(.readError))
+            return
+        }
+        
+        // roomID를 가져오기 위한 path
+        let roomIDPaths = USER_ROOMSID.child(uid)
+        
+        roomIDPaths.observe(.childAdded) { snapshot in
+            guard let roomID = snapshot.key as String? else {
+                completion(.failure(.readError))
+                return
+            }
+            
+            self.readRoomsData(roomID: roomID) { result in
+                switch result {
+                case .success(let room):
+                    completion(.success(.added([roomID: room])))
+                case .failure(_):
+                    completion(.failure(.readError))
+                }
+            }
+        }
+        roomIDPaths.observe(.childRemoved) { snapshot in
+            guard let userID = snapshot.key as String? else {
+                completion(.failure(.readError))
+                return
+            }
+            completion(.success(.removed(userID)))
+        }
+    }
+    
+    
+    
     
     
     

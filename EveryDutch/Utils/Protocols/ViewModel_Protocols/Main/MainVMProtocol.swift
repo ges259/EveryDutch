@@ -10,7 +10,6 @@ import UIKit
 protocol MainVMProtocol {
 //    var rooms: [Rooms] { get }
     func itemTapped(index: Int)
-    func addedRoom(room: Rooms) -> IndexPath 
     
 //    var isFloatingShow: Bool { get set }
     var getSpinRotation: CGAffineTransform { get }
@@ -32,5 +31,5 @@ protocol MainVMProtocol {
     var numberOfItems: Int { get }
     var collectionVeiwReloadClousure: (() -> Void)? { get set }
     
-    func cellViewModel(at index: Int) -> MainCollectionViewCellVM
+    func cellViewModel(at index: Int) -> MainCollectionViewCellVMProtocol
 }

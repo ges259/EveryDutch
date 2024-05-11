@@ -17,15 +17,15 @@ protocol RoomsAPIProtocol: EditScreenAPIType {
     func observeRoomAndUsers(
         roomID: String,
         userIDs: [String],
-        completion: @escaping (Result<UserEvent<[String: User]>, ErrorEnum>) -> Void)
+        completion: @escaping (Result<UserEvent<User>, ErrorEnum>) -> Void)
     
-    func readRooms(completion: @escaping (Result<UserEvent<[Rooms]>, ErrorEnum>) -> Void)
+    func readRooms(completion: @escaping (Result<UserEvent<Rooms>, ErrorEnum>) -> Void)
 //    func readRooms() async throws -> [Rooms]
     
     // *(((((
     func readRoomUsers(
         roomID: String,
-        completion: @escaping (Result<UserEvent<[String: User]>, ErrorEnum>) -> Void)
+        completion: @escaping (Result<UserEvent<User>, ErrorEnum>) -> Void)
 
     
     

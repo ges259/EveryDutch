@@ -76,7 +76,7 @@ extension MainCollectionViewCell {
         
         // viewModel을 사용하여 셀의 뷰를 업데이트.
         if let viewModel = viewModel {
-            self.titleLbl.text = viewModel.title
+//            self.titleLbl.text = viewModel.title
 //            self.timeLbl.text = viewModel.time_String
         }
     }

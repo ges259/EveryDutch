@@ -713,9 +713,9 @@
 			isa = PBXGroup;
 			children = (
 				5F6FDDE72B5067E700F09CCD /* RoomDataManager.swift */,
+				5FD5D6162BEF57F0008972A0 /* RoomDataManager+RoomData.swift */,
 				5FD5D6122BEF5576008972A0 /* RoomDataManager+RoomUsers.swift */,
 				5FD5D6142BEF5701008972A0 /* RoomDataManager+MoneyData.swift */,
-				5FD5D6162BEF57F0008972A0 /* RoomDataManager+RoomData.swift */,
 			);
 			path = UserManager;
 			sourceTree = "<group>";

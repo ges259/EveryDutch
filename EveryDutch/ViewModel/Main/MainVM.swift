@@ -10,47 +10,49 @@ import UIKit
 final class MainVM: MainVMProtocol {
     
     // MARK: - 모델
-    private var cellViewModels: [MainCollectionViewCellVM] = []
+    //    private var cellViewModels: [MainCollectionViewCellVM] = []
     
     // 1. 데이터를 받아서 cellViewModel에 넣는다.
-    private var rooms: [Rooms] = []
-//    var roomsAPI: RoomsAPIProtocol
+    //    private var rooms: [Rooms] = []
+    //    var roomsAPI: RoomsAPIProtocol
     
     
     
+    var roomDataManager: RoomDataManagerProtocol
     
+    
+    // MARK: - 플로팅 버튼 상태
+    private var isFloatingShow: Bool = false
+    
+    // MARK: - 플로팅 버튼 클로저
+    var onFloatingShowChanged: ((floatingType) -> Void)?
     
     
     
     
     // MARK: - 방의 개수
     var numberOfItems: Int {
-        return self.cellViewModels.count
+        return self.roomDataManager.getNumOfRooms
     }
     
     // MARK: - 컬렉션뷰 클로저
     var collectionVeiwReloadClousure: (() -> Void)?
     
-//    var addedRoomClousure: ((IndexPath) -> Void)?
-    
-    
-    
-    func addedRoom(room: Rooms) -> IndexPath {
-        self.makeOneCellViewModel(room: room)
-        
-        return IndexPath(item: 0, section: 0)
-    }
     
     
     
     
     
     
+    // MARK: - 셀의 뷰모델 반환
+     func cellViewModel(at index: Int) -> MainCollectionViewCellVMProtocol {
+         return self.roomDataManager.getRoomsViewModel(index: index)
+     }
     
     
     
     
-    var roomDataManager: RoomDataManagerProtocol
+    
     
     
     
@@ -73,56 +75,59 @@ final class MainVM: MainVMProtocol {
     func itemTapped(index: Int) {
         self.roomDataManager.saveCurrentRooms(index: index)
     }
+}
     
     
     
-    // MARK: - 플로팅 버튼 상태
-    private var isFloatingShow: Bool = false
-    
-    // MARK: - 플로팅 버튼 클로저
-    var onFloatingShowChanged: ((floatingType) -> Void)?
     
     
-    // MARK: - 플로팅 버튼 Alpha
+    
+    
+    
+    
+// MARK: - 플로팅 버튼
+extension MainVM {
+    /// 플로팅 버튼 Alpha
     private var getBtnAlpha: CGFloat {
         return self.isFloatingShow
         ? 1
         : 0
     }
-    // MARK: - 플로팅 버튼 상태 여부
+    
+    /// 플로팅 버튼 상태 여부
     var getIsFloatingStatus: Bool {
         return self.isFloatingShow
     }
     
-    // MARK: - 플로팅 버튼 위치 변경
+    /// 플로팅 버튼 위치 변경
     var getBtnTransform: CGAffineTransform {
         return self.isFloatingShow
         ? CGAffineTransform.identity
         : CGAffineTransform(translationX: 0, y: 80)
     }
     
-    // MARK: - 메뉴 버튼 회전
+    /// 메뉴 버튼 회전
     var getSpinRotation: CGAffineTransform {
         return self.isFloatingShow
         ? CGAffineTransform(rotationAngle: .pi - (.pi / 4))
         : CGAffineTransform.identity
     }
     
-    // MARK: - 메뉴 버튼 이미지
+    /// 메뉴 버튼 이미지
     var getMenuBtnImg: UIImage? {
         return self.isFloatingShow
         ? UIImage.plus_Img
         : UIImage.menu_Img
     }
     
-    // MARK: - 플로팅 버튼 토글
+    /// 플로팅 버튼 토글
     func toggleFloatingShow() {
         self.isFloatingShow.toggle()
         // 클로저 실행
         self.floatinBtnClosure()
     }
     
-    // MARK: - 플로팅 클로저 실행
+    /// 플로팅 클로저 실행
     private func floatinBtnClosure() {
         let show: Bool = self.getIsFloatingStatus
         let alpha: CGFloat = self.getBtnAlpha
@@ -145,8 +150,9 @@ extension MainVM {
     
     // MARK: - [API] 방의 데이터
     private func getRoomsData() {
-        self.rooms = self.roomDataManager.getRooms
-        self.makeCellsViewModel()
+//        self.rooms = self.roomDataManager.getRooms
+        // MARK: - Fix
+//        self.makeCellsViewModel()
     }
 }
     
@@ -163,30 +169,31 @@ extension MainVM {
 
 extension MainVM {
     
-    // MARK: - 셀의 데이터 만들기
-    private func makeCellsViewModel() {
-        // 예시 데이터 로드
-        self.cellViewModels = self.rooms.map {
-            MainCollectionViewCellVM(
-                title: $0.roomName,
-                imgUrl: $0.roomImg )
-        }
-        self.collectionVeiwReloadClousure?()
-    }
     
-    // MARK: - 새로운 셀 추가
-    private func makeOneCellViewModel(room: Rooms) {
-        
-        let cellVM = MainCollectionViewCellVM(
-            title: room.roomName,
-            imgUrl: room.roomImg)
-        self.cellViewModels.insert(cellVM, at: 0)
-        self.roomDataManager.addedRoom(room: room)
-    }
+    // MARK: - Fix
     
     
-    // MARK: - 셀의 데이터 반환
-     func cellViewModel(at index: Int) -> MainCollectionViewCellVM {
-         return self.cellViewModels[index]
-     }
+    
+//    // MARK: - 셀의 데이터 만들기
+//    private func makeCellsViewModel() {
+//        // 예시 데이터 로드
+//        self.cellViewModels = self.rooms.map {
+//            MainCollectionViewCellVM(
+//                title: $0.roomName,
+//                imgUrl: $0.roomImg )
+//        }
+//        self.collectionVeiwReloadClousure?()
+//    }
+//    
+//    // MARK: - 새로운 셀 추가
+//    private func makeOneCellViewModel(room: Rooms) {
+//        
+//        let cellVM = MainCollectionViewCellVM(
+//            title: room.roomName,
+//            imgUrl: room.roomImg)
+//        self.cellViewModels.insert(cellVM, at: 0)
+//        self.roomDataManager.addedRoom(room: room)
+//    }
+    
+    
 }

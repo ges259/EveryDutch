@@ -60,8 +60,8 @@ extension RoomDataManager {
                 continue
             }
             let index = indexPath.row
-            if index < self.cellViewModels.count {
-                self.cellViewModels[index].setCumulativeAmount(value)
+            if index < self.usersCellViewModels.count {
+                self.usersCellViewModels[index].setCumulativeAmount(value)
                 self.changedIndexPaths.append(indexPath)
             }
         }
@@ -75,8 +75,8 @@ extension RoomDataManager {
                 continue
             }
             let index = indexPath.row
-            if index < self.cellViewModels.count {
-                self.cellViewModels[index].setpayback(value)
+            if index < self.usersCellViewModels.count {
+                self.usersCellViewModels[index].setpayback(value)
                 self.changedIndexPaths.append(indexPath)
             }
         }
@@ -96,15 +96,9 @@ extension RoomDataManager {
     // 모든 데이터가 로드되었는지 확인하고 노티피케이션 전송
     private func trySendNotification() {
         if self.allDataLoaded() {
-            print(#function)
-            print(self.changedIndexPaths)
-            print(self.changedIndexPaths.count)
-            print("____________")
-            NotificationCenter.default.post(
-                name: .financialDataUpdated,
-                object: nil,
-                userInfo: ["updated": self.changedIndexPaths]
-            )
+            self.postNotification(name: .financialDataUpdated,
+                                  eventType: .updated,
+                                  indexPath: self.changedIndexPaths)
             // 모든 데이터가 로드되었으므로 상태 초기화
             self.resetMoneyData()
         }

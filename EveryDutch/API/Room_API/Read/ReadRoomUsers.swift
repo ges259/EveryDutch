@@ -11,13 +11,11 @@ import FirebaseDatabase
 import FirebaseAuth
 
 enum UserEvent<T> {
-    case added(T)
+    case added([String: T])
     case removed(String)
     case updated([String: [String: Any]])
     
-    
-    
-    case initialLoad(T)
+    case initialLoad([String: T])
 }
 
 
@@ -28,7 +26,7 @@ extension RoomsAPI {
     // MARK: - observeSingleEvent
     func readRoomUsers(
         roomID: String,
-        completion: @escaping (Result<UserEvent<[String: User]>, ErrorEnum>) -> Void)
+        completion: @escaping (Result<UserEvent<User>, ErrorEnum>) -> Void)
     {
         // 반환될 RoomUsers 배열
         var roomUsers = [String : User]()
@@ -92,14 +90,14 @@ extension RoomsAPI {
     func observeRoomAndUsers(
         roomID: String,
         userIDs: [String],
-        completion: @escaping (Result<UserEvent<[String: User]>, ErrorEnum>) -> Void)
+        completion: @escaping (Result<UserEvent<User>, ErrorEnum>) -> Void)
     {
         self.setObserveUsers(userIDs: userIDs, completion: completion)
         self.setObserveRoomUsers(roomID: roomID, completion: completion)
     }
     private func setObserveUsers(
         userIDs: [String],
-        completion: @escaping (Result<UserEvent<[String: User]>, ErrorEnum>) -> Void)
+        completion: @escaping (Result<UserEvent<User>, ErrorEnum>) -> Void)
     {
         
         for userID in userIDs {
@@ -125,7 +123,7 @@ extension RoomsAPI {
     
     private func setObserveRoomUsers(
         roomID: String,
-        completion: @escaping (Result<UserEvent<[String: User]>, ErrorEnum>) -> Void)
+        completion: @escaping (Result<UserEvent<User>, ErrorEnum>) -> Void)
     {
         let roomUsersRef = ROOM_USERS_REF.child(roomID)
         // 사용자 추가에 대한 옵저버

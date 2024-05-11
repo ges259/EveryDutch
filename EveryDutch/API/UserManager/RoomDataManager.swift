@@ -23,9 +23,19 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     
     /// roomID / versionID / roomNam / roomImg
-    var currentRoomData: Rooms?
     
-    var rooms: [Rooms] = []
+    
+//    var rooms: [Rooms] = []
+//    private var currentRoomData: Rooms?
+    
+    
+//    var currentRoom = [String: Rooms]()
+    // 현재 선택된 Rooms
+    var currentRoom: (roomID: String, room: Rooms)?
+    
+//    var roomDataDict =  [String: Rooms]()
+    var roomIDToIndexPathMap =  [String: IndexPath]()
+    var roomsCellViewModels = [MainCollectionViewCellVMProtocol]()
     
     
     
@@ -39,7 +49,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
     // UsersTableViewCell 관련 프로퍼티들
     // [UsersID : IndexPath]
     var userIDToIndexPathMap: [String: IndexPath] = [:]
-    var cellViewModels: [UsersTableViewCellVMProtocol] = []
+    var usersCellViewModels: [UsersTableViewCellVMProtocol] = []
     
     
     
@@ -61,33 +71,38 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     
     
-// MARK: - 유저 테이블
+// MARK: - User 정보
     
     
     
     // MARK: - 방의 개수
     var getNumOfRoomUsers: Int {
-        return self.cellViewModels.count
+        return self.usersCellViewModels.count
     }
     
     
     // MARK: - 뷰모델 리턴
-    func getViewModel(index: Int) -> UsersTableViewCellVMProtocol {
-        return self.cellViewModels[index]
+    func getUsersViewModel(index: Int) -> UsersTableViewCellVMProtocol {
+        return self.usersCellViewModels[index]
     }
     
     
     
-// MARK: - 특정 유저 정보 리턴
-    
+    // MARK: - 특정 유저 정보 리턴
     var getRoomUsersDict: RoomUserDataDict {
         return self.roomUserDataDict
     }
     
-    /// 인데스패스 리턴
-    func getUserIndexPath(userID: String) -> IndexPath? {
-        return self.userIDToIndexPathMap[userID]
+    /// Receipt가 필요한 화면에서 userID로 User의 정보를 알기 위해 사용
+    func getIdToRoomUser(usersID: String) -> User {
+        return self.roomUserDataDict[usersID]
+        ?? User(dictionary: [:])
     }
+    
+    /// 인데스패스 리턴
+//    func getUserIndexPath(userID: String) -> IndexPath? {
+//        return self.userIDToIndexPathMap[userID]
+//    }
     
     /// 누적 금액 리턴
     func getIDToCumulativeAmount(userID: String) -> Int {
@@ -99,50 +114,86 @@ final class RoomDataManager: RoomDataManagerProtocol {
         return self.paybackData?.payback[userID] ?? 0
     }
     
-    /// Receipt가 필요한 화면에서 userID로 User의 정보를 알기 위해 사용
-    func getIdToRoomUser(usersID: String) -> User {
-        return self.roomUserDataDict[usersID]
-        ?? User(dictionary: [:])
-    }
-    
-    
-    
-    
-    
-    
-// MARK: - 현재 방 정보
 
     
     
-    // MARK: - 방 데이터 가져가기
-    var getRooms: [Rooms] {
-        return self.rooms
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+// MARK: - Rooms 정보
+
+    
+    var getNumOfRooms: Int {
+        return self.roomsCellViewModels.count
     }
     
-    // MARK: - 방 데이터 추가
-    func addedRoom(room: Rooms) {
-        self.rooms.insert(room, at: 0)
+    func getRoomsViewModel(index: Int) -> MainCollectionViewCellVMProtocol {
+        return self.roomsCellViewModels[index]
     }
     
-    // MARK: - 선택된 현재 방 저장
+    
+    
+    
+    
+    
+    // MARK: - 현재 방
+    
+    
+    
+    // MARK: - 저장
     func saveCurrentRooms(index: Int) {
-        self.currentRoomData = self.rooms[index]
+        // 배열 범위 검사
+        guard index >= 0, index < self.roomsCellViewModels.count else {
+            print("Index out of range")
+            return
+        }
+        // 인덱스로부터 뷰모델 가져오기
+        let viewModel = self.roomsCellViewModels[index]
+        // 뷰모델로부터 roomID 추출
+        let roomID = viewModel.getRoomID
+        let roomData = viewModel.getRoom
+        // currentRoom 설정
+        self.currentRoom = (roomID: roomID, room: roomData)
     }
     
     // MARK: - 방의 이름
     var getCurrentRoomName: String? {
-        return self.currentRoomData?.roomID
+        let currentRoom = self.currentRoom?.room
+        return currentRoom?.roomName
     }
     
     // MARK: - 방 ID
     var getCurrentRoomsID: String? {
-        return self.currentRoomData?.roomID
+        return self.currentRoom?.roomID
     }
-    
+
     // MARK: - 버전 ID
     var getCurrentVersion: String? {
-        return self.currentRoomData?.versionID
+        let currentRoom = self.currentRoom?.room
+        return currentRoom?.versionID
     }
+    
+    
+    
+    
+    
+    
+    
     
     
     
@@ -157,7 +208,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
         
         print(#function)
         print(indexPath)
-        print(self.cellViewModels.count)
+        print(self.usersCellViewModels.count)
         
         // 노티피케이션 전송
         NotificationCenter.default.post(
@@ -186,4 +237,13 @@ enum NotificationInfoString {
         case .updated:      return "updated"
         }
     }
+}
+// 방에 들어섰을 때
+    // 방 유저 데이터 가져오기 ----- (Room_Users)
+extension Notification.Name {
+//    static let cumulativeAmountUpdated = Notification.Name("cumulativeAmountUpdated")
+//    static let paybackDataUpdated = Notification.Name("paybackDataUpdated")
+    static let roomDataChanged = Notification.Name("roomDataChanged")
+    static let userDataChanged = Notification.Name("userDataChanged")
+    static let financialDataUpdated = Notification.Name("financialDataUpdated")
 }

@@ -424,9 +424,11 @@ extension MainVC: UICollectionViewDataSource {
 extension MainVC {
     func makeRoom(room: Rooms) {
         print(#function)
-        let indexPath = self.viewModel.addedRoom(room: room)
         
-        self.collectionView.insertItems(at: [indexPath])
+        // MARK: - Fix
+//        let indexPath = self.viewModel.addedRoom(room: room)
+//        
+//        self.collectionView.insertItems(at: [indexPath])
     }
     
     

@@ -8,7 +8,15 @@
 import Foundation
 
 protocol MainCollectionViewCellVMProtocol {
-    var title: String { get }
-//    var time_String: String { get }
-    var img_Url: String { get }
+
+    
+    
+    var getRoom: Rooms { get }
+    var getRoomID: String { get }
+    
+    // MARK: - 데이터 업데이트
+    mutating func updateDecoration(deco: Decoration) 
+//    mutating func updateRoom(room: Rooms) -> Rooms 
+    
+    mutating func updateRoomData(_ data: [String: Any]) -> Rooms?
 }
