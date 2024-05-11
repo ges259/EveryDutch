@@ -54,6 +54,22 @@ final class MainVM: MainVMProtocol {
     
     
     
+    // 인덱스패스 데이터를 저장해두는 코드
+    private var pendingIndexPaths: [String: [IndexPath]] = [:]
+    // 바뀐 인덱스패스 데이터 저장
+    func userDataChanged(_ userInfo: [String: [IndexPath]]) {
+        self.pendingIndexPaths.merge(userInfo) { _, new in new }
+    }
+    // 뷰모델에 저장된 변경 사항 반환
+    func getPendingUpdates() -> [String: [IndexPath]] {
+        return self.pendingIndexPaths
+    }
+    // 모든 대기 중인 변경 사항 초기화
+    func resetPendingUpdates() {
+        self.pendingIndexPaths.removeAll()
+    }
+    
+    
     
     
     

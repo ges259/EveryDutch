@@ -56,7 +56,7 @@ extension RoomDataManager {
                     // 뷰모델에 바뀐 user데이터 저장
                     let room = self.roomsCellViewModels[indexPath.row].updateRoomData( changedData)
                     
-                    if let room = room {
+                    if let _ = room {
                         // [userID: User] 딕셔너리 데이터 업데이트
 //                        self.roomDataDict[userID] = room
                         updatedIndexPaths.append(indexPath)
@@ -83,6 +83,10 @@ extension RoomDataManager {
             
             // 모든 데이터 추가
             for (index, (roomID, room)) in userDict.enumerated() {
+                print("\(self) ----- \(#function)")
+                print(index)
+                print(roomID)
+                print(room)
                 // 인덱스 패스 생성
                 let indexPath = IndexPath(row: index, section: 0)
                 // 뷰모델 생성

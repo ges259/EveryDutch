@@ -25,11 +25,31 @@ extension RoomsAPI {
         
         let roomID = try await addUserToRoom(uid: uid)
         // Room에 정산방에 대한 데이터 저장
-        try await setRoomsData(roomID: roomID, dict: dict)
+        try await updateData(IdRef: roomID, dict: dict)
         // User_RoomsID에 uid를 설정하는 함수
         try await self.createRoomID(with: uid, at: roomID)
         
         return roomID
+    }
+    
+    
+    // MARK: - 정산방 유저 저장
+    private func addUserToRoom(uid: String) async throws -> String {
+        let ref = ROOM_USERS_REF.childByAutoId()
+        
+        return try await withCheckedThrowingContinuation
+        { (continuation: CheckedContinuation<String, Error>) in
+            ref.updateChildValues([uid: 0]) { error, _ in
+                guard error == nil,
+                      let roomID = ref.key
+                else {
+                    continuation.resume(throwing: ErrorEnum.readError)
+                    return
+                }
+                continuation.resume(returning: roomID)
+                
+            }
+        }
     }
     
     
@@ -60,24 +80,7 @@ extension RoomsAPI {
     
     
     
-    // MARK: - 정산방 유저 저장
-    private func addUserToRoom(uid: String) async throws -> String {
-        let ref = ROOM_USERS_REF.childByAutoId()
-        
-        return try await withCheckedThrowingContinuation
-        { (continuation: CheckedContinuation<String, Error>) in
-            ref.updateChildValues([uid: 0]) { error, _ in
-                guard error == nil,
-                      let roomID = ref.key
-                else {
-                    continuation.resume(throwing: ErrorEnum.readError)
-                    return
-                }
-                continuation.resume(returning: roomID)
-                
-            }
-        }
-    }
+
     
     
     

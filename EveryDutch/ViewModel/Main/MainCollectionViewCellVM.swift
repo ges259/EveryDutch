@@ -27,6 +27,10 @@ struct MainCollectionViewCellVM: MainCollectionViewCellVMProtocol {
         return self.room
     }
     
+    var getRoomTitle: String {
+        return self.room.roomName
+    }
+    
     
     
     

@@ -11,6 +11,7 @@ protocol MainCollectionViewCellVMProtocol {
 
     
     
+    var getRoomTitle: String { get }
     var getRoom: Rooms { get }
     var getRoomID: String { get }
     

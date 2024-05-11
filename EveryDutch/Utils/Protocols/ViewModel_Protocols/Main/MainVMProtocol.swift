@@ -32,4 +32,16 @@ protocol MainVMProtocol {
     var collectionVeiwReloadClousure: (() -> Void)? { get set }
     
     func cellViewModel(at index: Int) -> MainCollectionViewCellVMProtocol
+    
+    
+    
+    
+    
+
+    // 바뀐 인덱스패스 데이터 저장
+    func userDataChanged(_ userInfo: [String: [IndexPath]])
+    // 뷰모델에 저장된 변경 사항 반환
+    func getPendingUpdates() -> [String: [IndexPath]]
+    // 모든 대기 중인 변경 사항 초기화
+    func resetPendingUpdates()
 }

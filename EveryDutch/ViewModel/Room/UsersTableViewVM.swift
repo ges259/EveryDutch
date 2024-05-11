@@ -74,13 +74,13 @@ extension UsersTableViewVM {
     
     // MARK: - 유저 수
     var numbersOfUsers: Int {
-//        return self.cellViewModels.count
         return self.roomDataManager.getNumOfRoomUsers
     }
     
     // MARK: - 셀 뷰모델 반환
     // cellViewModels 반환
     func cellViewModel(at index: Int) -> UsersTableViewCellVMProtocol {
+        print(#function)
         return self.roomDataManager.getUsersViewModel(index: index)
     }
     

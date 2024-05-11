@@ -46,8 +46,12 @@ extension RoomsAPI {
                 self.readRoomsData(roomID: key) { result in
                     switch result {
                     case .success(let room):
+                        print("room 가져오기 성공")
+
+                        print(room)
                         returnRooms[key] = room
                     case .failure(_):
+                        print("room 가져오기 실패")
                         break
                     }
                     saveGroup.leave()

@@ -15,12 +15,11 @@ final class MainVC: UIViewController {
     
     // MARK: - 레이아웃
     /// 콜렉션뷰
-    private lazy var collectionView: UICollectionView = {
+    private var collectionView: UICollectionView = {
         let view = UICollectionView(
             frame: .zero,
             collectionViewLayout: UICollectionViewFlowLayout())
-        view.dataSource = self
-        view.delegate = self
+        
         view.backgroundColor = .clear
         view.showsVerticalScrollIndicator = false
         // 컬렉션뷰 레지스터 설정
@@ -96,6 +95,10 @@ final class MainVC: UIViewController {
     
     
     
+
+    /// 현재 화면이 Visible인지를 판단하는 변수
+    /// viewWillAppear와 viewWillDisappear에서 적용
+    private var isViewVisible = false
     
     
     
@@ -104,6 +107,7 @@ final class MainVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.configureNotification()
         self.configureAutoLayout()
         self.configureUI()
         self.configureAction()
@@ -121,10 +125,13 @@ final class MainVC: UIViewController {
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.isViewVisible = true
+        self.processPendingUpdates()
         self.navigationController?.navigationBar.isHidden = true
     }
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        self.isViewVisible = false
         self.navigationController?.navigationBar.isHidden = false
         
         if self.viewModel.getIsFloatingStatus {
@@ -155,6 +162,8 @@ extension MainVC {
             // 버튼을 화면 밖으로 위치시키기
             btn.transform = self.viewModel.getBtnTransform
         }
+        self.collectionView.dataSource = self
+        self.collectionView.delegate = self
         
         // 코너레디어스 설정
         self.menuBtn.clipsToBounds = true
@@ -233,12 +242,61 @@ extension MainVC {
     
     // MARK: - 클로저 설정
     private func configureClosure() {
-        self.viewModel.collectionVeiwReloadClousure = { [weak self] in
-            self?.collectionView.reloadData()
-        }
-        
         self.viewModel.onFloatingShowChanged = { [weak self] floatingType in
             self?.updateFloatingUI(type: floatingType)
+        }
+    }
+    // MARK: - 노티피케이션 설정
+    private func configureNotification() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(self.handleRoomDataChanged(notification:)),
+            name: .roomDataChanged,
+            object: nil)
+    }
+    @objc private func handleRoomDataChanged(notification: Notification) {
+        guard let userInfo = notification.userInfo as? [String: [IndexPath]] else { return }
+        self.viewModel.userDataChanged(userInfo)
+        if self.isViewVisible { self.processPendingUpdates() }
+    }
+    // 모든 대기 중인 변경 사항을 적용
+    private func processPendingUpdates() {
+        // 뷰모델에 저장된 인덱스 패스 가져오기
+        let indexPaths = self.viewModel.getPendingUpdates()
+        // 비어있다면, 아무 행동도 하지 않음
+        guard !indexPaths.isEmpty else { return }
+        // 콜레션뷰 리로드
+        indexPaths.forEach { (key: String, value: [IndexPath]) in
+            self.updateIndexPath(key: key, indexPaths: value)
+        }
+        // 변경 사항 초기화
+        self.viewModel.resetPendingUpdates()
+    }
+    
+    private func updateIndexPath(key: String, indexPaths: [IndexPath]) {
+        
+        // reloadData()는 performBatchUpdates에 포함하면 안 됨.
+        // 사실 MainVC는 initialLoad가 없어도 되지만, 혹시 몰라 넣어 놈
+        if key == NotificationInfoString.initialLoad.notificationName {
+            self.collectionView.reloadData()
+            return
+        }
+        
+        self.collectionView.performBatchUpdates {
+            switch key {
+            case NotificationInfoString.added.notificationName:
+                self.collectionView.insertItems(at: indexPaths)
+                break
+            case NotificationInfoString.updated.notificationName:
+                self.collectionView.reloadItems(at: indexPaths)
+                break
+            case NotificationInfoString.removed.notificationName:
+                self.collectionView.deleteItems(at: indexPaths)
+                break
+            default: 
+                print("\(self) ----- \(#function) ----- Error")
+                break
+            }
         }
     }
 }

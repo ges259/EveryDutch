@@ -75,40 +75,35 @@ final class UsersTableView: UIView {
     
     
     func userDataReload(at pendingIndexPaths: [String: [IndexPath]]) {
-        print("\(#function) ----- \(pendingIndexPaths)")
-        self.usersTableView.reloadData()
+        pendingIndexPaths.forEach { (key: String, value: [IndexPath]) in
+            self.updateIndexPath(key: key, indexPaths: value)
+        }
+    }
+    private func updateIndexPath(key: String, indexPaths: [IndexPath]) {
         
-        // MARK: - Fix
-        if !((pendingIndexPaths["initialLoad"] ?? []).isEmpty) {
+        // reloadData()는 performBatchUpdates에 포함하면 안 됨.
+        if key == NotificationInfoString.initialLoad.notificationName {
             self.usersTableView.reloadData()
             return
         }
         
-//        self.usersTableView.performBatchUpdates {
-//            print(#function)
-//            print(pendingIndexPaths["added"] ?? [])
-//            print(pendingIndexPaths["removed"] ?? [])
-//            print(pendingIndexPaths["updated"] ?? [])
-//                
-//            self.usersTableView.insertRows(
-//                at: pendingIndexPaths["added"] ?? [],
-//                with: .automatic)
-//            self.usersTableView.deleteRows(
-//                at: pendingIndexPaths["removed"] ?? [],
-//                with: .automatic)
-//            self.usersTableView.reloadRows(
-//                at: pendingIndexPaths["updated"] ?? [],
-//                with: .automatic)
-//        }
-    }
-    func moneyDataReload(at pendingIndexPaths: [String: [IndexPath]]) {
         self.usersTableView.performBatchUpdates {
-            self.usersTableView.reloadRows(
-                at: pendingIndexPaths["updated"] ?? [],
-                with: .automatic)
+            switch key {
+            case NotificationInfoString.added.notificationName:
+                self.usersTableView.insertRows(at: indexPaths, with: .automatic)
+                break
+            case NotificationInfoString.updated.notificationName:
+                self.usersTableView.reloadRows(at: indexPaths, with: .automatic)
+                break
+            case NotificationInfoString.removed.notificationName:
+                self.usersTableView.deleteRows(at: indexPaths, with: .automatic)
+                break
+            default:
+                print("\(self) ----- \(#function) ----- Error")
+                break
+            }
         }
     }
-    
 }
     
     
@@ -251,9 +246,11 @@ extension UsersTableView: UITableViewDataSource {
         
         let cellViewModel = self.viewModel.cellViewModel(
             at: indexPath.item)
-        
+        print("cellViewModel ----- \(cellViewModel)")
         cell.configureCell(with: cellViewModel,
                            firstBtnTapped: self.viewModel.isFirstBtnTapped)
+        
+        print("cellViewModel 끝")
         return cell
     }
 }
