@@ -51,6 +51,7 @@ extension RoomsAPI {
                     }
                     saveGroup.leave()
                 }
+                
             }
             
             saveGroup.notify(queue: .main) {
@@ -76,90 +77,26 @@ extension RoomsAPI {
     }
     
     
-    // 개별 사용자의 데이터 변경 및 삭제를 관찰하는 함수
-    private func observeRoomChanges(
-        userID: String,
-        completion: @escaping (Result<UserEvent<User>, ErrorEnum>) -> Void) 
+    // 개별 사용자의 데이터 변경을 관찰하는 함수
+    func observeRoomChanges(
+        roomIDs: [String],
+        completion: @escaping (Result<UserEvent<Rooms>, ErrorEnum>) -> Void)
     {
-        
-        
+        for roomID in roomIDs {
+            let roomPath = ROOMS_REF.child(roomID)
+            
+            roomPath.observe(.childChanged) { snapshot in
+                guard let value = snapshot.value else {
+                    completion(.failure(.readError))
+                    return
+                }
+                
+                let returnDict = [snapshot.key: value]
+                
+                completion(.success(.updated( [roomID: returnDict] )))
+            }
+        }
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-//    
-//    // MARK: - 모든 방 가져오기
-//    func readRooms() async throws -> [Rooms] {
-//        guard let uid = Auth.auth().currentUser?.uid else {
-//            // 사용자가 로그인하지 않았을 경우의 에러 처리
-//            throw ErrorEnum.readError
-//    
-//        }
-//        
-//        return try await withCheckedThrowingContinuation
-//        { (continuation: CheckedContinuation<[Rooms], Error>) in
-//            // let ROOMS_ID_REF = ref.child("Rooms")
-//            ROOMS_REF
-//                .child(uid)
-//                .observeSingleEvent(of: .value) { snapshot in
-//                    
-//                    guard snapshot.exists() else {
-//                        // 스냅샷에 데이터가 존재하지 않는 경우, 빈 배열 반환
-//                        continuation.resume(returning: [])
-//                        return
-//                    }
-//                    guard let valueDict = snapshot.value as? [String: [String: Any]] else {
-//                        continuation.resume(throwing: ErrorEnum.readError)
-//                        return
-//                    }
-//                    var rooms: [Rooms] = []
-//                    
-//                    for (roomID, roomInfoDict) in valueDict {
-//                        let room = Rooms(
-//                            roomID: roomID,
-//                            dictionary: roomInfoDict)
-//                        rooms.append(room)
-//                    }
-//                    continuation.resume(returning: rooms)
-//                }
-//        }
-//    }
-//    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     
     
@@ -169,6 +106,8 @@ extension RoomsAPI {
     // MARK: - 특정 방 가져오기
     func fetchData(dataRequiredWhenInEidtMode: String?) async throws -> EditProviderModel
     {
+        
+//        self.readRoomsData(roomID: dataRequiredWhenInEidtMode, completion: )
 //        let userDataDict = try await self.readYourOwnUserData()
 //        
 //        guard let user = userDataDict.values.first else {

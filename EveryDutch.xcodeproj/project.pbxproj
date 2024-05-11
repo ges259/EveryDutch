@@ -117,7 +117,7 @@
 		5F6F56252B8B610B009AD94B /* ReceiptWriteDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6F56242B8B610B009AD94B /* ReceiptWriteDelegate.swift */; };
 		5F6FDDE22B50568B00F09CCD /* ReceiptScreenUsersCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6FDDE12B50568B00F09CCD /* ReceiptScreenUsersCell.swift */; };
 		5F6FDDE42B505DD000F09CCD /* ReceiptScreenPanUsersCellVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6FDDE32B505DD000F09CCD /* ReceiptScreenPanUsersCellVM.swift */; };
-		5F6FDDE82B5067E700F09CCD /* UserManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6FDDE72B5067E700F09CCD /* UserManager.swift */; };
+		5F6FDDE82B5067E700F09CCD /* RoomDataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F6FDDE72B5067E700F09CCD /* RoomDataManager.swift */; };
 		5F70069D2B3B57450028DC8B /* UsersTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F70069C2B3B57450028DC8B /* UsersTableViewCell.swift */; };
 		5F71FEEA2BB6DB510005FC7A /* Decoration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F71FEE92BB6DB510005FC7A /* Decoration.swift */; };
 		5F71FEED2BB723BD0005FC7A /* DecorationAPIType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F71FEEC2BB723BD0005FC7A /* DecorationAPIType.swift */; };
@@ -196,6 +196,9 @@
 		5FC196BB2B629224005CC369 /* CheckUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FC196BA2B629224005CC369 /* CheckUser.swift */; };
 		5FC648452B42EB8000C451BF /* ReceiptWriteCoordProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FC648442B42EB8000C451BF /* ReceiptWriteCoordProtocol.swift */; };
 		5FC648472B42EB9500C451BF /* ReceiptWriteCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FC648462B42EB9500C451BF /* ReceiptWriteCoordinator.swift */; };
+		5FD5D6132BEF5576008972A0 /* RoomDataManager+RoomUsers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD5D6122BEF5576008972A0 /* RoomDataManager+RoomUsers.swift */; };
+		5FD5D6152BEF5701008972A0 /* RoomDataManager+MoneyData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD5D6142BEF5701008972A0 /* RoomDataManager+MoneyData.swift */; };
+		5FD5D6172BEF57F0008972A0 /* RoomDataManager+RoomData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD5D6162BEF57F0008972A0 /* RoomDataManager+RoomData.swift */; };
 		5FDA5D942B615097007D7BAD /* CalendarDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FDA5D932B615097007D7BAD /* CalendarDelegate.swift */; };
 		5FE3DE8F2B39CA9B008D58AE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE3DE8E2B39CA9B008D58AE /* AppDelegate.swift */; };
 		5FE3DE912B39CA9B008D58AE /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE3DE902B39CA9B008D58AE /* SceneDelegate.swift */; };
@@ -336,7 +339,7 @@
 		5F6F56242B8B610B009AD94B /* ReceiptWriteDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptWriteDelegate.swift; sourceTree = "<group>"; };
 		5F6FDDE12B50568B00F09CCD /* ReceiptScreenUsersCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptScreenUsersCell.swift; sourceTree = "<group>"; };
 		5F6FDDE32B505DD000F09CCD /* ReceiptScreenPanUsersCellVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptScreenPanUsersCellVM.swift; sourceTree = "<group>"; };
-		5F6FDDE72B5067E700F09CCD /* UserManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserManager.swift; sourceTree = "<group>"; };
+		5F6FDDE72B5067E700F09CCD /* RoomDataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomDataManager.swift; sourceTree = "<group>"; };
 		5F70069C2B3B57450028DC8B /* UsersTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersTableViewCell.swift; sourceTree = "<group>"; };
 		5F71FEE92BB6DB510005FC7A /* Decoration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Decoration.swift; sourceTree = "<group>"; };
 		5F71FEEC2BB723BD0005FC7A /* DecorationAPIType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecorationAPIType.swift; sourceTree = "<group>"; };
@@ -413,6 +416,9 @@
 		5FC196BA2B629224005CC369 /* CheckUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckUser.swift; sourceTree = "<group>"; };
 		5FC648442B42EB8000C451BF /* ReceiptWriteCoordProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptWriteCoordProtocol.swift; sourceTree = "<group>"; };
 		5FC648462B42EB9500C451BF /* ReceiptWriteCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptWriteCoordinator.swift; sourceTree = "<group>"; };
+		5FD5D6122BEF5576008972A0 /* RoomDataManager+RoomUsers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RoomDataManager+RoomUsers.swift"; sourceTree = "<group>"; };
+		5FD5D6142BEF5701008972A0 /* RoomDataManager+MoneyData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RoomDataManager+MoneyData.swift"; sourceTree = "<group>"; };
+		5FD5D6162BEF57F0008972A0 /* RoomDataManager+RoomData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RoomDataManager+RoomData.swift"; sourceTree = "<group>"; };
 		5FDA5D932B615097007D7BAD /* CalendarDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarDelegate.swift; sourceTree = "<group>"; };
 		5FE3DE8B2B39CA9B008D58AE /* EveryDutch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EveryDutch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5FE3DE8E2B39CA9B008D58AE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -706,7 +712,10 @@
 		5F4FA7212B553BD4009EE4F4 /* UserManager */ = {
 			isa = PBXGroup;
 			children = (
-				5F6FDDE72B5067E700F09CCD /* UserManager.swift */,
+				5F6FDDE72B5067E700F09CCD /* RoomDataManager.swift */,
+				5FD5D6122BEF5576008972A0 /* RoomDataManager+RoomUsers.swift */,
+				5FD5D6142BEF5701008972A0 /* RoomDataManager+MoneyData.swift */,
+				5FD5D6162BEF57F0008972A0 /* RoomDataManager+RoomData.swift */,
 			);
 			path = UserManager;
 			sourceTree = "<group>";
@@ -1425,7 +1434,7 @@
 				5F8513E72B4D6E9300A5B22D /* ReadVersion.swift in Sources */,
 				5F56C74C2B3D84CF00266C12 /* UIDevice+Ext.swift in Sources */,
 				5F5AFBD62B4947B400BBBB9D /* SettlementTableViewCellVMProtocol.swift in Sources */,
-				5F6FDDE82B5067E700F09CCD /* UserManager.swift in Sources */,
+				5F6FDDE82B5067E700F09CCD /* RoomDataManager.swift in Sources */,
 				5F8513F92B4D7FA200A5B22D /* CreateUsers.swift in Sources */,
 				5F0A2AB22B755EEF00ABDD59 /* AppCoordProtocol.swift in Sources */,
 				5FE3DED62B39F416008D58AE /* EditScreenCoordProtocol.swift in Sources */,
@@ -1531,6 +1540,7 @@
 				5F1AC30B2BA0E69200E34CAC /* SearchUser.swift in Sources */,
 				5FC648452B42EB8000C451BF /* ReceiptWriteCoordProtocol.swift in Sources */,
 				5F5EEFAA2B87A772004C2BA4 /* NodataViewType.swift in Sources */,
+				5FD5D6132BEF5576008972A0 /* RoomDataManager+RoomUsers.swift in Sources */,
 				5F0BCE322B5313AA007A3564 /* ReceiptScreenPanVMProtocol.swift in Sources */,
 				5FB4F70A2B433DEF002F6CF3 /* MainVC.swift in Sources */,
 				5F729BFF2B6D293500F3DDCA /* TableFooterView.swift in Sources */,
@@ -1591,6 +1601,7 @@
 				5FB4F70B2B433DEF002F6CF3 /* RoomSettingVC.swift in Sources */,
 				5F46896D2B6E5494001352FA /* RoomEditEnum.swift in Sources */,
 				5FFF661B2B529E35000A5EC4 /* PeopleSelectionPanVM.swift in Sources */,
+				5FD5D6172BEF57F0008972A0 /* RoomDataManager+RoomData.swift in Sources */,
 				5F294B432B4DA4BE00396B6E /* DatabaseConstants.swift in Sources */,
 				5FFF66172B51B378000A5EC4 /* TableCellStackView.swift in Sources */,
 				5FE3DEB02B39CB4A008D58AE /* MainVMProtocol.swift in Sources */,
@@ -1599,6 +1610,7 @@
 				5F47CD082B3AD8F500FCBFA4 /* EditScreenVM.swift in Sources */,
 				5F6FDDE22B50568B00F09CCD /* ReceiptScreenUsersCell.swift in Sources */,
 				5F71FEED2BB723BD0005FC7A /* DecorationAPIType.swift in Sources */,
+				5FD5D6152BEF5701008972A0 /* RoomDataManager+MoneyData.swift in Sources */,
 				5F4FA7232B553C00009EE4F4 /* UserAPIProtocol.swift in Sources */,
 				5FE8A2F12BDD271D0072D3D9 /* ChromaControlStylable.swift in Sources */,
 				5F68487C2B441BB70015BFCC /* LoginScreenCoordProtocol.swift in Sources */,

@@ -77,7 +77,7 @@ extension RoomsAPI {
         guard let uid = Auth.auth().currentUser?.uid else { return }
         let path = PAYBACK_REF.child(versionID).child(uid)
         
-        path.observe(.value) { snapshot in
+        path.observeSingleEvent(of: .value) { snapshot in
             // 데이터가 존재하지 않는 경우
             guard snapshot.exists() else {
                 // 빈 배열로 성공 응답

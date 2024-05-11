@@ -9,7 +9,15 @@ import Foundation
 
 protocol RoomsAPIProtocol: EditScreenAPIType {
     
+    // 개별 사용자의 데이터 변경을 관찰하는 함수
+    func observeRoomChanges(
+        roomIDs: [String],
+        completion: @escaping (Result<UserEvent<Rooms>, ErrorEnum>) -> Void)
     
+    func observeRoomAndUsers(
+        roomID: String,
+        userIDs: [String],
+        completion: @escaping (Result<UserEvent<[String: User]>, ErrorEnum>) -> Void)
     
     func readRooms(completion: @escaping (Result<UserEvent<[Rooms]>, ErrorEnum>) -> Void)
 //    func readRooms() async throws -> [Rooms]

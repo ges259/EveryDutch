@@ -14,6 +14,9 @@ enum UserEvent<T> {
     case added(T)
     case removed(String)
     case updated([String: [String: Any]])
+    
+    
+    
     case initialLoad(T)
 }
 
@@ -22,6 +25,7 @@ enum UserEvent<T> {
     // 방 유저 데이터 가져오기 ----- (Room_Users)
 
 extension RoomsAPI {
+    // MARK: - observeSingleEvent
     func readRoomUsers(
         roomID: String,
         completion: @escaping (Result<UserEvent<[String: User]>, ErrorEnum>) -> Void)
@@ -38,7 +42,6 @@ extension RoomsAPI {
                 completion(.failure(.readError))
                 return
             }
-            
             for key in value.keys {
                 saveGroup.enter()
                 
@@ -51,34 +54,10 @@ extension RoomsAPI {
                     }
                     saveGroup.leave()
                 }
-                
-                // 변경 및 삭제 이벤트를 위한 개별 옵저버 등록
-                self.observeUserChanges(userID: key, completion: completion)
             }
-
             saveGroup.notify(queue: .main) {
                 completion(.success(.initialLoad(roomUsers)))
             }
-        }
-        
-        // 사용자 추가에 대한 옵저버
-        roomUsersRef.observe(.childAdded) { snapshot in
-            guard let userID = snapshot.key as String? else { return }
-
-            self.fetchUserData(userID: userID) { result in
-                switch result {
-                case .success(let user):
-                    completion(.success(.added([userID: user])))
-                case .failure:
-                    break
-                }
-            }
-        }
-        
-        // 사용자 제거에 대한 옵저버
-        roomUsersRef.observe(.childRemoved) { snapshot in
-            guard let userID = snapshot.key as String? else { return }
-            completion(.success(.removed(userID)))
         }
     }
     
@@ -90,9 +69,6 @@ extension RoomsAPI {
         let path = USER_REF.child(userID)
         
         path.observeSingleEvent(of: .value) { snapshot in
-            print("\(#function) --- 1")
-            print(snapshot)
-            dump(snapshot.value)
             guard let valueData = snapshot.value as? [String: Any] else {
                 completion(.failure(.readError))
                 return
@@ -103,28 +79,78 @@ extension RoomsAPI {
         }
     }
     
-    // 개별 사용자의 데이터 변경 및 삭제를 관찰하는 함수
-    private func observeUserChanges(
-        userID: String,
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    // MARK: - observe
+    func observeRoomAndUsers(
+        roomID: String,
+        userIDs: [String],
         completion: @escaping (Result<UserEvent<[String: User]>, ErrorEnum>) -> Void)
     {
-        let userPath = USER_REF.child(userID)
+        self.setObserveUsers(userIDs: userIDs, completion: completion)
+        self.setObserveRoomUsers(roomID: roomID, completion: completion)
+    }
+    private func setObserveUsers(
+        userIDs: [String],
+        completion: @escaping (Result<UserEvent<[String: User]>, ErrorEnum>) -> Void)
+    {
         
-        // 노드 변경 시
-        userPath.observe(.childChanged) { snapshot in
-            guard let valueData = snapshot.value as? String else {
+        for userID in userIDs {
+            let userPath = USER_REF.child(userID)
+            
+            // 노드 변경 시
+            userPath.observe(.childChanged) { snapshot in
+                guard let valueData = snapshot.value as? String else {
+                    completion(.failure(.readError))
+                    return
+                }
+                
+                let value = [snapshot.key: valueData]
+                completion(.success(.updated( [userID: value] )))
+            }
+            
+            // 노드 삭제 시
+            userPath.observe(.childRemoved) { _ in
+                completion(.success(.removed(userID)))
+            }
+        }
+    }
+    
+    private func setObserveRoomUsers(
+        roomID: String,
+        completion: @escaping (Result<UserEvent<[String: User]>, ErrorEnum>) -> Void)
+    {
+        let roomUsersRef = ROOM_USERS_REF.child(roomID)
+        // 사용자 추가에 대한 옵저버
+        roomUsersRef.observe(.childAdded) { snapshot in
+            guard let userID = snapshot.key as String? else {
                 completion(.failure(.readError))
                 return
             }
-            
-            let value = [snapshot.key: valueData]
-            completion(.success(.updated( [userID: value] )))
+
+            self.fetchUserData(userID: userID) { result in
+                switch result {
+                case .success(let user):
+                    completion(.success(.added([userID: user])))
+                case .failure:
+                    completion(.failure(.readError))
+                }
+            }
         }
-        
-        // 노드 삭제 시
-        userPath.observe(.childRemoved) { _ in
+        // 사용자 제거에 대한 옵저버
+        roomUsersRef.observe(.childRemoved) { snapshot in
+            guard let userID = snapshot.key as String? else {
+                completion(.failure(.readError))
+                return
+            }
             completion(.success(.removed(userID)))
         }
     }
 }
-
