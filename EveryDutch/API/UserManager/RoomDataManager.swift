@@ -270,6 +270,7 @@ enum NotificationInfoString {
 // 방에 들어섰을 때
     // 방 유저 데이터 가져오기 ----- (Room_Users)
 extension Notification.Name {
+    static let numberOfUsersChanges = Notification.Name("numberOfUsersChanges")
     static let receiptDataChanged = Notification.Name("receiptDataChanged")
     static let roomDataChanged = Notification.Name("roomDataChanged")
     static let userDataChanged = Notification.Name("userDataChanged")

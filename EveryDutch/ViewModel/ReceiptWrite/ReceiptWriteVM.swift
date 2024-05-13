@@ -629,7 +629,7 @@ extension ReceiptWriteVM {
                 // 영수증 만들기 + 영수증ID 가져오기
                 let receiptKey = try await self.receiptAPI.createReceipt(
                     versionID: versionID,
-                    dictionary: self.receiptDataDict)
+                    dictionary: dict)
                 // User_Receipts에 영수증 ID 저장
                 try await self.receiptAPI.saveReceiptForUsers(
                     receiptID: receiptKey,

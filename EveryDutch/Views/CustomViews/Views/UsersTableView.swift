@@ -9,18 +9,19 @@ import UIKit
 import SnapKit
 
 final class UsersTableView: UIView {
-    
-    // MARK: - 버튼 레이아웃
+    // MARK: - 레이아웃
+    /// cumulativeAmount 버튼
     private var firstBtn: UIButton = UIButton.btnWithTitle(
         title: "누적 금액",
         font: UIFont.systemFont(ofSize: 14),
         backgroundColor: UIColor.normal_white)
-    
+    /// payback 버튼
     private var secondBtn: UIButton = UIButton.btnWithTitle(
         title: "받아야 할 돈",
         font: UIFont.systemFont(ofSize: 14),
         backgroundColor: UIColor.unselected_gray)
     
+    /// 버튼 스택뷰
     private lazy var btnStackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.firstBtn,
                            self.secondBtn],
@@ -29,9 +30,7 @@ final class UsersTableView: UIView {
         alignment: .fill,
         distribution: .fillEqually)
     
-    
-    
-    // MARK: - 유저 테이블뷰
+    /// 유저 테이블뷰
     private lazy var usersTableView: CustomTableView = {
         let view = CustomTableView()
         view.delegate = self
@@ -39,15 +38,10 @@ final class UsersTableView: UIView {
         view.register(
             UsersTableViewCell.self,
             forCellReuseIdentifier: Identifier.topViewTableViewCell)
-        
+        view.bounces = true
         view.isScrollEnabled = self.viewModel.tableViewIsScrollEnabled
         return view
     }()
-    
-    
-    
-    
-    
     
     
     
@@ -72,42 +66,10 @@ final class UsersTableView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    
-    func userDataReload(at pendingIndexPaths: [String: [IndexPath]]) {
-        pendingIndexPaths.forEach { (key: String, value: [IndexPath]) in
-            self.updateIndexPath(key: key, indexPaths: value)
-        }
-    }
-    private func updateIndexPath(key: String, indexPaths: [IndexPath]) {
-        
-        // reloadData()는 performBatchUpdates에 포함하면 안 됨.
-        if key == NotificationInfoString.initialLoad.notificationName {
-            self.usersTableView.reloadData()
-            return
-        }
-        
-        self.usersTableView.performBatchUpdates {
-            switch key {
-            case NotificationInfoString.added.notificationName:
-                self.usersTableView.insertRows(at: indexPaths, with: .automatic)
-                break
-            case NotificationInfoString.updated.notificationName:
-                self.usersTableView.reloadRows(at: indexPaths, with: .automatic)
-                break
-            case NotificationInfoString.removed.notificationName:
-                self.usersTableView.deleteRows(at: indexPaths, with: .automatic)
-                break
-            default:
-                print("\(self) ----- \(#function) ----- Error")
-                break
-            }
-        }
-    }
 }
-    
-    
- 
+
+
+
 
 
 
@@ -129,7 +91,7 @@ extension UsersTableView {
         self.secondBtn.setRoundedCorners(.rightTop, withCornerRadius: 10)
     }
     
-    
+    // MARK: - 오토레이아웃 설정
     private func configureAutoLayout() {
         self.addSubview(self.btnStackView)
         self.addSubview(self.usersTableView)
@@ -154,15 +116,8 @@ extension UsersTableView {
                 for: .touchUpInside)
         }
     }
-    
-    
-    // MARK: - 셀 생성
-    /// SettleMoneyRoomVC에서 데이터를 받아온 시점에서 뷰모델을 만드는 함수
-    func makeCellViewModel() {
-        
-        // MARK: - Fix
-//        self.viewModel.makeCellVM()
-        self.usersTableView.reloadData()
+    private func tableViewIsScrollEnabled() {
+        self.usersTableView.isScrollEnabled = self.viewModel.tableViewIsScrollEnabled
     }
 }
     
@@ -175,11 +130,8 @@ extension UsersTableView {
 
 
 
-// MARK: - 액션 메서드
-
+// MARK: - 상단 버튼 액션
 extension UsersTableView {
-    
-    // MARK: - 버튼 액션 메서드
     @objc private func btnTapped(_ sender: UIButton) {
         // 현재 눌린 버튼이 어떤 버튼인지 알아내기
         let btnBoolean = sender == self.firstBtn
@@ -191,7 +143,7 @@ extension UsersTableView {
         self.usersTableView.reloadData()
     }
     
-    // MARK: - 버튼 색상 설정 메서드
+    /// 버튼 색상 설정 메서드
     private func btnColorChange() {
         // 버튼의 색상을 가져옮 (어떤 버튼이 눌렸는 지에 따라 다랄짐
         let btnColor = self.viewModel.getBtnColor
@@ -245,5 +197,63 @@ extension UsersTableView: UITableViewDataSource {
         cell.configureCell(with: cellViewModel,
                            firstBtnTapped: self.viewModel.isFirstBtnTapped)
         return cell
+    }
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - 인덱스패스 리로드
+extension UsersTableView {
+    func userDataReload(at pendingIndexPaths: [String: [IndexPath]]) {
+        pendingIndexPaths.forEach { (key: String, value: [IndexPath]) in
+            self.updateIndexPath(key: key, indexPaths: value)
+        }
+    }
+    private func updateIndexPath(key: String, indexPaths: [IndexPath]) {
+        
+        // reloadData()는 performBatchUpdates에 포함하면 안 됨.
+        if key == NotificationInfoString.initialLoad.notificationName {
+            self.usersTableView.reloadData()
+            return
+        }
+        
+        self.usersTableView.performBatchUpdates { [weak self] in
+            guard let self = self else { return }
+            switch key {
+            case NotificationInfoString.added.notificationName:
+                self.usersTableView.insertRows(at: indexPaths, with: .automatic)
+                break
+            case NotificationInfoString.updated.notificationName:
+                self.usersTableView.reloadRows(at: indexPaths, with: .automatic)
+                break
+            case NotificationInfoString.removed.notificationName:
+                self.usersTableView.deleteRows(at: indexPaths, with: .automatic)
+                break
+            default:
+                print("\(self) ----- \(#function) ----- Error")
+                break
+            }
+        } completion: { [weak self] _ in
+            self?.numberOfUsersChanges(key: key)
+        }
+    }
+    
+    private func numberOfUsersChanges(key indexPathKey: String) {
+        // 업데이트가 아니라면,
+        guard indexPathKey != NotificationInfoString.updated.notificationName else { return }
+        // 높이 업데이트
+        self.usersTableView.isScrollEnabled = self.viewModel.tableViewIsScrollEnabled
+        // 노티피케이션 전송
+        NotificationCenter.default.post(
+            name: .numberOfUsersChanges,
+            object: nil,
+            userInfo: nil)
     }
 }

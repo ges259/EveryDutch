@@ -11,7 +11,7 @@ protocol SettleMoneyRoomProtocol {
     func cellViewModel(at index: Int) -> ReceiptTableViewCellVMProtocol
     var numberOfReceipt: Int { get }
     
-    var bottomBtnTitle: String { get }
+    
     var navTitle: String? { get }
     
     
