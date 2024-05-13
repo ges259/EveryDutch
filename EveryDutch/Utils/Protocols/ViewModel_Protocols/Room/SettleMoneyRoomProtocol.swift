@@ -13,8 +13,8 @@ protocol SettleMoneyRoomProtocol {
     
     var bottomBtnTitle: String { get }
     var navTitle: String? { get }
-    var isSearchMode: Bool { get set }
-    var isTopViewBtnIsHidden: Bool { get }
+    
+    
     
     
     

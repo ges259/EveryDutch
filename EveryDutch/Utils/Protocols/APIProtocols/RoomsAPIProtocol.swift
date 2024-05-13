@@ -49,6 +49,5 @@ protocol RoomsAPIProtocol: EditScreenAPIType {
         versionID: String) async throws
     
     
-    
     func removeRoomUsersAndUserObserver()
 }

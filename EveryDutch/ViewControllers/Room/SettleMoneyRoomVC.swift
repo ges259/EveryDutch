@@ -300,7 +300,7 @@ extension SettleMoneyRoomVC {
         self.bottomBtn.setTitle(self.viewModel.bottomBtnTitle, for: .normal)
         
         // 탑뷰 바텀 버튼을 숨길지 말지 결정
-        self.topViewBottomBtn.isHidden = self.viewModel.isTopViewBtnIsHidden
+//        self.topViewBottomBtn.isHidden = self.viewModel.isTopViewBtnIsHidden
         
         // 네비게이션 타이틀 설정
         self.navigationItem.title = self.viewModel.navTitle

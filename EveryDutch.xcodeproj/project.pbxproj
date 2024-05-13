@@ -162,6 +162,7 @@
 		5F8513FB2B4D7FAD00A5B22D /* DeleteUsers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F8513FA2B4D7FAD00A5B22D /* DeleteUsers.swift */; };
 		5F8513FD2B4D800000A5B22D /* DeleteVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F8513FC2B4D800000A5B22D /* DeleteVersion.swift */; };
 		5F864E752B9CDD95007AEA3B /* PaymentDetail.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F864E742B9CDD95007AEA3B /* PaymentDetail.swift */; };
+		5F86F6BF2BF2320000B9768D /* SettleMoneyTopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F86F6BE2BF2320000B9768D /* SettleMoneyTopView.swift */; };
 		5F87DF2A2B3C999D001D5B80 /* RoomSettingCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F87DF292B3C999D001D5B80 /* RoomSettingCoordinator.swift */; };
 		5F87DF2C2B3C99A3001D5B80 /* RoomSettingCoordProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F87DF2B2B3C99A3001D5B80 /* RoomSettingCoordProtocol.swift */; };
 		5F8AB54A2BCA65C3006161C2 /* ToolbarStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F8AB5492BCA65C3006161C2 /* ToolbarStackView.swift */; };
@@ -381,6 +382,7 @@
 		5F8513FA2B4D7FAD00A5B22D /* DeleteUsers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteUsers.swift; sourceTree = "<group>"; };
 		5F8513FC2B4D800000A5B22D /* DeleteVersion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteVersion.swift; sourceTree = "<group>"; };
 		5F864E742B9CDD95007AEA3B /* PaymentDetail.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentDetail.swift; sourceTree = "<group>"; };
+		5F86F6BE2BF2320000B9768D /* SettleMoneyTopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettleMoneyTopView.swift; sourceTree = "<group>"; };
 		5F87DF292B3C999D001D5B80 /* RoomSettingCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomSettingCoordinator.swift; sourceTree = "<group>"; };
 		5F87DF2B2B3C99A3001D5B80 /* RoomSettingCoordProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomSettingCoordProtocol.swift; sourceTree = "<group>"; };
 		5F8AB5492BCA65C3006161C2 /* ToolbarStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarStackView.swift; sourceTree = "<group>"; };
@@ -800,6 +802,7 @@
 			children = (
 				5FB4F7052B433DEF002F6CF3 /* SettleMoneyRoomVC.swift */,
 				5F614B3F2B4593AE00EF35CE /* ReceiptScreenPanVC.swift */,
+				5F86F6BE2BF2320000B9768D /* SettleMoneyTopView.swift */,
 			);
 			path = Room;
 			sourceTree = "<group>";
@@ -1537,6 +1540,7 @@
 				5F1AC30B2BA0E69200E34CAC /* SearchUser.swift in Sources */,
 				5FC648452B42EB8000C451BF /* ReceiptWriteCoordProtocol.swift in Sources */,
 				5F5EEFAA2B87A772004C2BA4 /* NodataViewType.swift in Sources */,
+				5F86F6BF2BF2320000B9768D /* SettleMoneyTopView.swift in Sources */,
 				5FD5D6132BEF5576008972A0 /* RoomDataManager+RoomUsers.swift in Sources */,
 				5F0BCE322B5313AA007A3564 /* ReceiptScreenPanVMProtocol.swift in Sources */,
 				5FB4F70A2B433DEF002F6CF3 /* MainVC.swift in Sources */,

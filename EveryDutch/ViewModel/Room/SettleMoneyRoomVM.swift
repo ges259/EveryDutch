@@ -27,40 +27,12 @@ final class IndexPathDataManager<T> {
 
 final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
     
+    // MARK: - 인덱스패스 프로퍼티
     private var userDataManager: IndexPathDataManager<User> = IndexPathDataManager()
     private var receiptDataManager: IndexPathDataManager<Receipt> = IndexPathDataManager()
-
-    // User data handling
-    func userDataChanged(_ userInfo: [String: [IndexPath]]) {
-        userDataManager.dataChanged(userInfo)
-    }
-
-    func getPendingUserDataIndexPaths() -> [String: [IndexPath]] {
-        return userDataManager.getPendingIndexPaths()
-    }
-
-    func resetPendingUserDataIndexPaths() {
-        userDataManager.resetIndexPaths()
-    }
-
-    // Receipt data handling
-    func receiptDataChanged(_ userInfo: [String: [IndexPath]]) {
-        receiptDataManager.dataChanged(userInfo)
-    }
-
-    func getPendingReceiptIndexPaths() -> [String: [IndexPath]] {
-        return receiptDataManager.getPendingIndexPaths()
-    }
-
-    func resetPendingReceiptIndexPaths() {
-        receiptDataManager.resetIndexPaths()
-    }
     
     
-    
-    
-    
-    // MARK: - 탑뷰의 높이
+    // MARK: - 탑뷰 프로퍼티
     /*
      인원 수에 따라 스택뷰의 maxHeight 크기 바꾸기
      - 바텀 앵커 : 35
@@ -83,26 +55,15 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
     }
     /// 탑뷰의 최소 크기
     let minHeight: CGFloat = 35
-    
-    
-    
-    
-    // MARK: - 탑뷰 토글
+    /// 탑뷰 토글 (- 탑뷰가 현재 열려있는지 확인하는)
     var isTopViewOpen: Bool = false
-    
-    var isSearchMode: Bool = false
-    
-    
-    var isTopViewBtnIsHidden: Bool {
-        return self.isSearchMode
-        ? true
-        : false
-    }
-    
-    // MARK: - 탑뷰 크기 조절
+
+    /// 탑뷰 크기 조절 변숫
     var initialHeight: CGFloat = 100
     var currentTranslation: CGPoint = .zero
     var currentVelocity: CGPoint = .zero
+    
+    
     
     var getMaxAndMinHeight: CGFloat {
         var height = self.initialHeight + currentTranslation.y
@@ -119,16 +80,24 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
    
     
     
+    
+    
+    
+    
+//    var isSearchMode: Bool = false
+//    
+//    
+//    var isTopViewBtnIsHidden: Bool {
+//        return self.isSearchMode
+//        ? true
+//        : false
+//    }
     var bottomBtnTitle: String {
-        return self.isSearchMode
-        ? "검색 설정"
-        : "영수증 작성"
+        return "영수증 작성"
     }
     
     var navTitle: String? {
-        return self.isSearchMode
-        ? "검색"
-        : self.roomDataManager.getCurrentRoomName
+        return self.roomDataManager.getCurrentRoomName
     }
     
     
@@ -136,7 +105,7 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
 
     
     
-    // MARK: - 셀의 뷰모델
+    
     // 정산내역 셀의 뷰모델
     
     
@@ -145,12 +114,14 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
     private var receiptAPI: ReceiptAPIProtocol
     
     
-    // MARK: - 레시피 개수
+    
+    
+    // MARK: - 영수증 테이블뷰
+    /// 영수증 개수
     var numberOfReceipt: Int {
         return self.roomDataManager.NumOfReceipts
     }
-    // MARK: - 셀 뷰모델 반환
-    // cellViewModels 반환
+    /// 영수증 셀의 뷰모델 반환
     func cellViewModel(at index: Int) -> ReceiptTableViewCellVMProtocol {
         return self.roomDataManager.getReceiptViewModel(index: index)
     }
@@ -166,4 +137,42 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
         self.roomDataManager.startLoadRoomData()
     }
     deinit { self.roomDataManager.removeRoomsUsersObserver() }
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - 인덱스패스
+extension SettleMoneyRoomVM {
+    // 유저 데이터 인덱스패스
+    func userDataChanged(_ userInfo: [String: [IndexPath]]) {
+        self.userDataManager.dataChanged(userInfo)
+    }
+
+    func getPendingUserDataIndexPaths() -> [String: [IndexPath]] {
+        return self.userDataManager.getPendingIndexPaths()
+    }
+
+    func resetPendingUserDataIndexPaths() {
+        self.userDataManager.resetIndexPaths()
+    }
+
+    // 영수증 데이터 인덱스패스
+    func receiptDataChanged(_ userInfo: [String: [IndexPath]]) {
+        self.receiptDataManager.dataChanged(userInfo)
+    }
+
+    func getPendingReceiptIndexPaths() -> [String: [IndexPath]] {
+        return self.receiptDataManager.getPendingIndexPaths()
+    }
+
+    func resetPendingReceiptIndexPaths() {
+        self.receiptDataManager.resetIndexPaths()
+    }
 }

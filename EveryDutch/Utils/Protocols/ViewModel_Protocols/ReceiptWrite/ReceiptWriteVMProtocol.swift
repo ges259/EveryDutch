@@ -17,7 +17,7 @@ protocol ReceiptWriteVMProtocol {
     var calculatePriceClosure: ((String?) -> Void)? { get set }
     
     var errorClosure: ((ErrorEnum) -> Void)?  { get set }
-    var makeReceiptClosure: ((Receipt) -> Void)? { get set }
+    var successMakeReceiptClosure: (() -> Void)? { get set }
     
     
     

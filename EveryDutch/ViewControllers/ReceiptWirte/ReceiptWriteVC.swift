@@ -327,7 +327,7 @@ extension ReceiptWriteVC {
     }
     
     private func successApiClosure() {
-        self.viewModel.makeReceiptClosure = { [weak self] receipt in
+        self.viewModel.successMakeReceiptClosure = { [weak self] in
             self?.coordinator.didFinish()
         }
     }

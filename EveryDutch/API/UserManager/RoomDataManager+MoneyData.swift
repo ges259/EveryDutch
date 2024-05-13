@@ -22,9 +22,8 @@ extension RoomDataManager {
             switch result {
             case .success(let moneyData):
                 print("cumulativeMoney 성공")
-                dump(moneyData)
                 self?.updateCumulativeAmount(moneyData)
-                self?.markAsLoaded(self?.cumulativeAmountLoadedKey ?? "")
+                self?.markAsLoaded(self?.cumulativeAmountLoadedKey)
                 self?.trySendNotification()
                 break
             case .failure:
@@ -41,7 +40,7 @@ extension RoomDataManager {
             case .success(let moneyData):
                 print("payback 성공")
                 self?.updatePayback(moneyData)
-                self?.markAsLoaded(self?.paybackLoadedKey ?? "")
+                self?.markAsLoaded(self?.paybackLoadedKey)
                 self?.trySendNotification()
                 break
                 
@@ -85,8 +84,8 @@ extension RoomDataManager {
     
     
     // 상태 추적용 마킹 함수
-    private func markAsLoaded(_ key: String) {
-        self.loadedStates.insert(key)
+    private func markAsLoaded(_ key: String?) {
+        self.loadedStates.insert(key ?? "")
     }
     
     // 모든 데이터 로드 완료 여부 확인

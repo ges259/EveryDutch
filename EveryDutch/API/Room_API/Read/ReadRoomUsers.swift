@@ -143,6 +143,11 @@ extension RoomsAPI {
         }
     }
     
+    
+    
+    
+    
+    // MARK: - removeObserver
     func removeRoomUsersAndUserObserver() {
         ROOM_USERS_REF.removeAllObservers()
         USER_REF.removeAllObservers()
@@ -150,8 +155,4 @@ extension RoomsAPI {
         CUMULATIVE_AMOUNT_REF.removeAllObservers()
         RECEIPT_REF.removeAllObservers()
     }
-    // roomID: String, usersKeys: [String]
 }
-
-
- 

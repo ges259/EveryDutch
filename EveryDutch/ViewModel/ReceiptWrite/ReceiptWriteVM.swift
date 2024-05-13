@@ -17,7 +17,7 @@ final class ReceiptWriteVM: ReceiptWriteVMProtocol {
     
     // MARK: - 클로저
     var errorClosure: ((ErrorEnum) -> Void)?
-    var makeReceiptClosure: ((Receipt) -> Void)?
+    var successMakeReceiptClosure: (() -> Void)?
     /// 디바운싱이 끝나면 VC에서 endEditing()를 호출하는 클로저
     var debouncingClosure: (() -> Void)?
     
@@ -510,71 +510,51 @@ extension ReceiptWriteVM {
 // MARK: - 유효성 검사
 extension ReceiptWriteVM {
     func validationData() {
-        // 실패 -> return
-        guard self.validateData() else { return }
-        print("성공!")
-        // 성공 -> api작업 시작
-        Task {
-            do {
-                // MARK: - Fix
-                try await self.startReceiptAPI()
-                
-                let dict = self.receiptDataDict.compactMapValues { $0 }
-                
-//                let receipt = Receipt(dictionary: dict)
-                
-                // API 작업 성공, 성공 결과를 completion으로 전달
-//                completion(.success(receipt))
-            } catch {
-                // API 작업 실패, 실패 결과를 completion으로 전달
-                print("API 작업 실패: \(error)")
-//                completion(.failure(.receiptAPIFailed(self.receiptDict)))
-            }
+        var errors: [String] = []
+        // 차례대로 유효성 검사 시작
+        // 날짜, 메모, 시간, 가격, 계산 검사
+        self.validateReceiptDetails(&errors)
+        // 선택된 유저들의 정보를 [userID : [ "pay" : 0] 형태로 변환
+        self.validatePaymentDetails(&errors)
+        // 현재 남은 금액이 0원인지 확인
+        self.validateCumulativeMoney(&errors)
+        // 선택된 유저 중 0원으로 설정되어있는 유저가 있는 지 확인
+        self.validateUserPayments(&errors)
+        // 현재 paymentDetails값이 모두 같다면, [payment_method : 1] 저장. 하나라도 다르다면, [payment_method : 0] 저장.
+        self.calculatePaymentMethod(&errors)
+        
+        // error 배열에 무언가 있다면(=에러가 있음)
+        if !errors.isEmpty {
+            // 모든 에러들을 처리
+            self.errorClosure?(.validationError(errors))
+        } else {
+            // api작업 시작
+            self.startReceiptAPI()
         }
     }
     
-    private func validateData() -> Bool {
-        var errors: [String] = []
-        
-        // 1번과 2번에 해당하는 검증
-        self.validateReceiptDetails(&errors)
-        // 추가 검증 로직들을 메소드로 분리
-        self.validatePaymentDetails(&errors)
-        self.validateCumulativeMoney(&errors)
-        self.validateUserPayments(&errors)
-        self.calculatePaymentMethod(&errors)
-        // 모든 에러들을 처리
-        if !errors.isEmpty {
-            self.errorClosure?(.validationError(errors))
-            return false
-        }
-        return true
-    }
-
+    /// 날짜, 메모, 시간, 가격, 계산 검사
     private func validateReceiptDetails(_ errors: inout [String]) {
         if let details = self.receiptWriteEnum.first?.validation(data: self.receiptDataDict) {
             errors.append(contentsOf: details)
             return
         }
     }
-
-
-    private func validateCumulativeMoney(_ errors: inout [String]) {
-        // 현재 남은 금액이 0원인지 확인
-        if self.calculateRemainingMoney != 0 {
-            errors.append(DatabaseConstants.culmulative_money)
-        }
-    }
     
-    /// 결제 세부 정보를 딕셔너리로 변환
+    /// 선택된 유저들의 정보를 [userID : [ "pay" : 0] 형태로 변환
     private func validatePaymentDetails(_ errors: inout [String]) {
-        let details = toDictionary()
+        // 선택된 유저가 있는지 확인
+            // 있다면, payment_detail 딕셔너리 구조로 만듦
+        let details = self.toDictionary()
+        
         if let details = details, !details.isEmpty {
             self.receiptDataDict[DatabaseConstants.payment_details] = details
         } else {
             errors.append(DatabaseConstants.payment_details)
         }
     }
+    
+    /// 선택된 유저가 있다면, [userID : [ "pay" : 0] 형태로 리턴하는 메서드
     private func toDictionary() -> [String: [String: Any]]?  {
         // 선택된 유저가 없다면 -> 리턴 nil
         guard !self.selectedUsers.isEmpty else { return nil }
@@ -586,7 +566,14 @@ extension ReceiptWriteVM {
         }
     }
     
+    /// 현재 남은 금액이 0원인지 확인
+    private func validateCumulativeMoney(_ errors: inout [String]) {
+        if self.calculateRemainingMoney != 0 {
+            errors.append(DatabaseConstants.culmulative_money)
+        }
+    }
     
+    /// 선택된 유저 중 0원으로 설정되어있는 유저가 있는 지 확인
     private func validateUserPayments(_ errors: inout [String]) {
         let hasZeroPriceUser = self.selectedUsers.contains { self.usersMoneyDict[$0.key] == 0 }
         if hasZeroPriceUser {
@@ -594,9 +581,9 @@ extension ReceiptWriteVM {
         }
     }
     
-    
-    
-    // MARK: - 결제 방식 계산
+    /// 현재 paymentDetails값이
+    /// 모두 같다면, [payment_method : 1] 저장.
+    /// 하나라도 다르다면, [payment_method : 0] 저장.
     private func calculatePaymentMethod(_ errors: inout [String]) {
         // paymentDetails 내의 모든 값이 동일한지 여부에 따라 결제 방식 결정
         guard let firstValue = self.usersMoneyDict.values.first else {
@@ -625,24 +612,44 @@ extension ReceiptWriteVM {
     
     // MARK: - 비동기 작업 시작
     // 비동기 작업을 시작하는 함수
-    func startReceiptAPI() async throws {
+    private func startReceiptAPI() {
+        
         // 버전, payerID 가져오기
         guard let versionID = self.roomDataManager.getCurrentVersion,
-                let payerID = self.getCurrentPayerID()
-        else { throw ErrorEnum.readError }
-        let receiptKey = try await self.receiptAPI.createReceipt(
-            versionID: versionID, 
-            dictionary: self.receiptDataDict)
-        try await self.receiptAPI.saveReceiptForUsers(
-            receiptID: receiptKey,
-            users: Array(self.usersMoneyDict.keys))
-        try await self.receiptAPI.updateCumulativeMoney(
-            versionID: versionID,
-            moneyDict: self.usersMoneyDict)
-        // 페이백 업데이트
-        try await self.receiptAPI.updatePayback(
-            versionID: versionID,
-            payerID: payerID, 
-            moneyDict: self.usersMoneyDict)
+              let payerID = self.getCurrentPayerID()
+        else {
+            self.errorClosure?(.readError)
+            return
+        }
+        
+        Task {
+            do {
+                // 딕셔너리의 값에 nil값이 있을 수 있으니 제외
+                let dict = self.receiptDataDict.compactMapValues { $0 }
+                // 영수증 만들기 + 영수증ID 가져오기
+                let receiptKey = try await self.receiptAPI.createReceipt(
+                    versionID: versionID,
+                    dictionary: self.receiptDataDict)
+                // User_Receipts에 영수증 ID 저장
+                try await self.receiptAPI.saveReceiptForUsers(
+                    receiptID: receiptKey,
+                    users: Array(self.usersMoneyDict.keys))
+                // 누적 금액 업데이트
+                try await self.receiptAPI.updateCumulativeMoney(
+                    versionID: versionID,
+                    moneyDict: self.usersMoneyDict)
+                // 페이백 업데이트
+                try await self.receiptAPI.updatePayback(
+                    versionID: versionID,
+                    payerID: payerID,
+                    moneyDict: self.usersMoneyDict)
+                // API 작업 성공, 성공 결과를 completion으로 전달
+                self.successMakeReceiptClosure?()
+            } catch {
+                // API 작업 실패, 실패 결과를 클로저를 통해 전달
+                print("API 작업 실패: \(error)")
+                self.errorClosure?(.readError)
+            }
+        }
     }
 }
