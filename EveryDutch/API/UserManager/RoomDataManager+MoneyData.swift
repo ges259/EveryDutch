@@ -11,20 +11,19 @@ extension RoomDataManager {
     // 두 데이터 로드 작업을 실행하고 모두 완료되면 콜백을 호출
     func loadFinancialData() {
         guard let versionID = self.getCurrentVersion else { return }
-        self.resetMoneyData()
+        self.resetDebounceState()
         self.loadCumulativeAmountData(versionID: versionID)
         self.loadPaybackData(versionID: versionID)
     }
-
+    
     // MARK: - 누적 금액 데이터
     private func loadCumulativeAmountData(versionID: String) {
         self.roomsAPI.readCumulativeAmount(versionID: versionID) { [weak self] result in
+            guard let self = self else { return }
             switch result {
             case .success(let moneyData):
                 print("cumulativeMoney 성공")
-                self?.updateCumulativeAmount(moneyData)
-                self?.markAsLoaded(self?.cumulativeAmountLoadedKey)
-                self?.trySendNotification()
+                self.updateCumulativeAmount(moneyData)
                 break
             case .failure:
                 print("cumulativeMoney 실패")
@@ -32,16 +31,15 @@ extension RoomDataManager {
             }
         }
     }
-
+    
     // MARK: - 페이백 데이터
     private func loadPaybackData(versionID: String) {
         self.roomsAPI.readPayback(versionID: versionID) { [weak self] result in
+            guard let self = self else { return }
             switch result {
             case .success(let moneyData):
                 print("payback 성공")
-                self?.updatePayback(moneyData)
-                self?.markAsLoaded(self?.paybackLoadedKey)
-                self?.trySendNotification()
+                self.updatePayback(moneyData)
                 break
                 
             case .failure:
@@ -50,61 +48,73 @@ extension RoomDataManager {
             }
         }
     }
-
-    // 누적 금액 데이터 변경
+    
+    /// 누적 금액 데이터 변경
     private func updateCumulativeAmount(_ amount: [String: Int]) {
         for (key, value) in amount {
-            guard let indexPath = self.userIDToIndexPathMap[key] else {
+            guard let indexPath = self.userIDToIndexPathMap[key],
+                  indexPath.row < self.usersCellViewModels.count
+            else {
                 print("User not found in the mapping.")
                 continue
             }
-            let index = indexPath.row
-            if index < self.usersCellViewModels.count {
-                self.usersCellViewModels[index].setCumulativeAmount(value)
-                self.changedIndexPaths.append(indexPath)
-            }
+            self.usersCellViewModels[indexPath.row].setCumulativeAmount(value)
+            self.saveChangedIndexPaths(indexPath: indexPath)
         }
+        self.triggerDebouncing()
     }
-
-    // 페이백 데이터 변경
+    
+    /// 페이백 데이터 변경
     private func updatePayback(_ payback: [String: Int]) {
         for (key, value) in payback {
-            guard let indexPath = self.userIDToIndexPathMap[key] else {
+            guard let indexPath = self.userIDToIndexPathMap[key],
+                  indexPath.row < self.usersCellViewModels.count
+            else {
                 print("User not found in the mapping.")
                 continue
             }
-            let index = indexPath.row
-            if index < self.usersCellViewModels.count {
-                self.usersCellViewModels[index].setpayback(value)
-                self.changedIndexPaths.append(indexPath)
-            }
+            self.usersCellViewModels[indexPath.row].setPayback(value)
+            self.saveChangedIndexPaths(indexPath: indexPath)
+        }
+        self.triggerDebouncing()
+    }
+    
+    /// 인덱스패스 저장
+    private func saveChangedIndexPaths(indexPath: IndexPath) {
+        // 인덱스패스가 포함되어있지 않다면
+        if !self.changedIndexPaths.contains(indexPath) {
+            // 이덱스패스 저장
+            self.changedIndexPaths.append(indexPath)
         }
     }
-
     
-    
-    // 상태 추적용 마킹 함수
-    private func markAsLoaded(_ key: String?) {
-        self.loadedStates.insert(key ?? "")
+    /// 디바운싱 시작
+    func triggerDebouncing() {
+        self.debounceWorkItem?.cancel()  // 기존에 스케줄된 작업이 있다면 취소
+        
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self = self else { return }
+            self.postDebounceNotification()
+        }
+        
+        self.debounceWorkItem = workItem
+        self.queue.asyncAfter(deadline: .now() + self.debounceInterval, execute: workItem)
     }
     
-    // 모든 데이터 로드 완료 여부 확인
-    private func allDataLoaded() -> Bool {
-        return self.loadedStates.contains(self.cumulativeAmountLoadedKey) && self.loadedStates.contains(self.paybackLoadedKey)
-    }
-    // 모든 데이터가 로드되었는지 확인하고 노티피케이션 전송
-    private func trySendNotification() {
-        if self.allDataLoaded() {
+    /// 디바운싱 완료 후 노티피케이션 전송
+    private func postDebounceNotification() {
+        DispatchQueue.main.async {
+            // 데이터 업데이트 후 노티피케이션 전송 로직은 유지
             self.postNotification(name: .financialDataUpdated,
                                   eventType: .updated,
                                   indexPath: self.changedIndexPaths)
-            // 모든 데이터가 로드되었으므로 상태 초기화
-            self.resetMoneyData()
+            self.resetDebounceState()
         }
     }
     
-    private func resetMoneyData() {
-        self.loadedStates = []
+    /// 디바운싱 상태 초기화
+    private func resetDebounceState() {
         self.changedIndexPaths = []
+        self.debounceWorkItem = nil
     }
 }

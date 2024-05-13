@@ -218,13 +218,6 @@ extension SettleMoneyRoomVC {
             name: .numberOfUsersChanges,
             object: nil)
     }
-    @objc private func numberOfUsersChanges() {
-        // 탑뷰가 열려있다면,
-        if self.viewModel.isTopViewOpen {
-            // 높이 업데이트
-            self.openTopView()
-        }
-    }
 }
     
     
@@ -271,6 +264,14 @@ extension SettleMoneyRoomVC {
         }
         if self.isViewVisible { self.processPendingUpdates() }
     }
+    
+    /// 유저의 수가 변경되었을 때, 탑뷰의 높이를 업데이트 하는 메서드
+    @objc private func numberOfUsersChanges() {
+        // 탑뷰 플래그를 true로 변경
+        self.viewModel.topViewHeightPlag = true
+        // 탑뷰의 높이를 업데이트
+        self.updateTopViewHeight()
+    }
 }
 
 
@@ -282,13 +283,18 @@ extension SettleMoneyRoomVC {
 
 
 
-// MARK: - 테이블 인덱스패스
+// MARK: - viewWillAppear 업데이트
 extension SettleMoneyRoomVC {
     /// 모든 대기 중인 변경 사항을 적용
     private func processPendingUpdates() {
+        // 유저 테이블 업데이트
         self.updateUsersTableView()
+        // 영수증 테이블 업데이트
         self.updateReceiptsTableView()
+        // 탑뷰의 높이를 업데이트
+        self.updateTopViewHeight()
     }
+    
     /// 유저 테이블뷰 리로드
     private func updateUsersTableView() {
         let userIndexPaths = self.viewModel.getPendingUserDataIndexPaths()
@@ -299,6 +305,7 @@ extension SettleMoneyRoomVC {
         // 변경 사항 초기화
         self.viewModel.resetPendingUserDataIndexPaths()
     }
+    
     /// 영수증 테이블뷰 리로드
     private func updateReceiptsTableView() {
         let receiptIndexPaths = self.viewModel.getPendingReceiptIndexPaths()
@@ -310,15 +317,21 @@ extension SettleMoneyRoomVC {
         }
         // 변경 사항 초기화
         self.viewModel.resetPendingReceiptIndexPaths()
+        
     }
     /// 영수증 테이블뷰 리로드 디테일
     private func reloadReceiptTableView(key: String, indexPaths: [IndexPath]) {
-        // reloadData()는 performBatchUpdates에 포함하면 안 됨.
-        if key == NotificationInfoString.initialLoad.notificationName {
-            self.receiptTableView.reloadData()
-            return
-        }
-        self.receiptTableView.performBatchUpdates {
+        DispatchQueue.main.async {
+            // reloadData()는 performBatchUpdates에 포함하면 안 됨.
+            if key == NotificationInfoString.initialLoad.notificationName {
+                self.receiptTableView.reloadData()
+                return
+            }
+            
+            self.viewModel.receiptDataCheck()
+            print("key ----- \(key)")
+            print("indexPaths ----- \(indexPaths)")
+            
             switch key {
             case NotificationInfoString.added.notificationName:
                 self.receiptTableView.insertRows(at: indexPaths, with: .automatic)
@@ -333,6 +346,22 @@ extension SettleMoneyRoomVC {
                 print("\(self) ----- \(#function) ----- Error")
                 break
             }
+            
+        }
+    }
+    
+    /// 탑뷰의 높이를 업데이트 하기 전, 검사
+    private func updateTopViewHeight() {
+        // 탑뷰의 업데이트 플레그가 true라면,
+        // 현재 화면이 보인다면,
+        // 탑뷰가 열려있다면,
+        if self.viewModel.topViewHeightPlag,
+           self.isViewVisible,
+            self.viewModel.isTopViewOpen
+        {
+            // 탑뷰의 높이 업데이트
+            self.openTopView()
+            self.viewModel.topViewHeightPlag = false
         }
     }
 }
@@ -454,11 +483,10 @@ extension SettleMoneyRoomVC: UITableViewDelegate {
     }
     func tableView(_ tableView: UITableView,
                    didSelectRowAt indexPath: IndexPath) {
-        // MARK: - Fix
         // 뷰모델에서 셀의 영수증 가져오기
-//        let receipt = self.viewModel.receipts[indexPath.row]
+        let receipt = self.viewModel.getReceipt(at: indexPath.row)
         // '영수증 화면'으로 화면 이동
-//        self.coordinator.ReceiptScreen(receipt: receipt)
+        self.coordinator.ReceiptScreen(receipt: receipt)
     }
 }
 

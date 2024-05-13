@@ -32,5 +32,5 @@ protocol UsersTableViewCellVMProtocol {
     mutating func updateUserData(_ user: [String: Any]) -> User?
     
     mutating func setCumulativeAmount(_ amount: Int)
-    mutating func setpayback(_ amount: Int)
+    mutating func setPayback(_ amount: Int)
 }

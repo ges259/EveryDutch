@@ -116,7 +116,7 @@ struct UsersTableViewCellVM: UsersTableViewCellVMProtocol {
     mutating func setCumulativeAmount(_ amount: Int) {
         self.cumulativeAmount = amount
     }
-    mutating func setpayback(_ amount: Int) {
+    mutating func setPayback(_ amount: Int) {
         self.paybackPrice = amount
     }
 }

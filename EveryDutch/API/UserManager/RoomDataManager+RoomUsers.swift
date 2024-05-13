@@ -41,10 +41,10 @@ extension RoomDataManager {
         guard let roomID = self.getCurrentRoomsID else { return }
         let usersKey = self.getRoomUsersKeyArray
         
-        self.roomsAPI.observeRoomAndUsers(roomID: roomID, userIDs: usersKey) { result in
+        self.roomsAPI.observeRoomAndUsers(roomID: roomID, userIDs: usersKey) { [weak self] result in
             switch result {
             case .success(let users):
-                self.updateUsers(with: users)
+                self?.updateUsers(with: users)
             case .failure(_):
                 break
             }

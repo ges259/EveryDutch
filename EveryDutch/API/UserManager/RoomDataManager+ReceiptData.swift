@@ -14,13 +14,13 @@ extension RoomDataManager {
         print("\(self) ----- \(#function) ----- 1")
         guard let versionID = self.getCurrentVersion else { return }
         print("\(self) ----- \(#function) ----- 2")
-        self.receiptAPI.readReceipt(versionID: versionID) { result in
+        self.receiptAPI.readReceipt(versionID: versionID) { [weak self] result in
             switch result {
             case .success(let initialLoad):
                 print("영수증 가져오기 성공")
-                DispatchQueue.main.async {
-                    self.updateReceipt(initialLoad)
-                }
+                
+                self?.updateReceipt(initialLoad)
+                
                 break
             case .failure(_):
                 print("영수증영수증 가져오기 실패")
@@ -32,11 +32,14 @@ extension RoomDataManager {
     // MARK: - 옵저버 설정
     private func setObserveReceipt() {
         guard let versionID = self.getCurrentVersion else { return }
-        self.receiptAPI.observeReceipt(versionID: versionID) { result in
+        
+        self.receiptAPI.observeReceipt(versionID: versionID) { [weak self] result in
             switch result {
             case .success(let rooms):
                 print("Receipt 옵저버 성공")
-                self.updateReceipt(rooms)
+                
+                self?.updateReceipt(rooms)
+                
             case .failure(_):
                 print("Receipt 옵저버 실패")
                 break
@@ -83,12 +86,12 @@ extension RoomDataManager {
                 let viewModel = ReceiptTableViewCellVM(receiptID: roomID,
                                                        receiptData: room)
                 // 뷰모델 저장
+//                self.receiptCellViewModels.insert(viewModel, at: 0)
                 self.receiptCellViewModels.append(viewModel)
                 // 인덱스패스 저장
                 self.receiptIDToIndexPathMap[roomID] = indexPath
                 addedIndexPaths.append(indexPath)
             }
-            // MARK: - Fix
             // observe 설정
             self.setObserveReceipt()
             print("addedIndexPaths ----- \(addedIndexPaths)")
@@ -104,8 +107,14 @@ extension RoomDataManager {
             for (roomID, room) in toAdd {
                 // 중복 추가 방지
                 guard self.receiptIDToIndexPathMap[roomID] == nil else { continue }
-                // 인덱스패스 생성
+                
+                print("self.receiptCellViewModels.count ----- \(self.receiptCellViewModels.count)")
+                print("receiptID ----- \(roomID)")
+                print("receipt ----- \(room)")
+                
+                // 인덱스패스 생성 (뷰모델 추가 전에 현재 count 사용)
                 let indexPath = IndexPath(row: self.receiptCellViewModels.count, section: 0)
+                
                 // 뷰모델 생성
                 let viewModel = ReceiptTableViewCellVM(receiptID: roomID,
                                                        receiptData: room)

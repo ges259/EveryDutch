@@ -8,6 +8,10 @@
 import Foundation
 
 protocol SettleMoneyRoomProtocol {
+    func receiptDataCheck() 
+    
+    
+    
     func cellViewModel(at index: Int) -> ReceiptTableViewCellVMProtocol
     var numberOfReceipt: Int { get }
     
@@ -15,7 +19,7 @@ protocol SettleMoneyRoomProtocol {
     var navTitle: String? { get }
     
     
-    
+    func getReceipt(at index: Int) -> Receipt
     
     
     
@@ -27,9 +31,10 @@ protocol SettleMoneyRoomProtocol {
     var currentVelocity: CGPoint { get set }
     var getMaxAndMinHeight: CGFloat { get }
     
+    var topViewHeightPlag: Bool { get set }
     
     
-//    var fetchUserClosure: ((RoomUserDataDictionary) -> Void)? { get set }
+    
     
     var minHeight: CGFloat { get }
     var maxHeight: CGFloat { get }
@@ -40,23 +45,13 @@ protocol SettleMoneyRoomProtocol {
     
     
     
-    
-    func userDataChanged(_ userInfo: [String: [IndexPath]])
-    
-//    // 모든 대기 중인 변경 사항 초기화
-//    func resetPendingUserIndexPaths()
-//    // 뷰모델에 저장된 변경 사항 반환
-//    func getPendingUserIndexPaths() -> [String: [IndexPath]]
-    
     // User data handling
-
+    func userDataChanged(_ userInfo: [String: [IndexPath]])
     func getPendingUserDataIndexPaths() -> [String: [IndexPath]]
-
     func resetPendingUserDataIndexPaths()
+    
     // Receipt data handling
     func receiptDataChanged(_ userInfo: [String: [IndexPath]])
-
     func getPendingReceiptIndexPaths() -> [String: [IndexPath]]
-
     func resetPendingReceiptIndexPaths()
 }

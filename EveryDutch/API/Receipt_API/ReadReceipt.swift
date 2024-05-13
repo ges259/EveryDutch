@@ -20,7 +20,7 @@ extension ReceiptAPI {
         RECEIPT_REF
             .child(versionID)
             .queryOrdered(byChild: DatabaseConstants.date)
-            .queryLimited(toLast: 3)
+//            .queryLimited(toLast: 3)
             .observeSingleEvent(of: .value) { snapshot in
                 
                 guard let allObjects = snapshot.children.allObjects as? [DataSnapshot] else { return }
@@ -34,8 +34,8 @@ extension ReceiptAPI {
                     }
                 }
                 
-                let returnTupleArray = Array(receiptsTupleArray.reversed())
-                completion(.success(.initialLoad(returnTupleArray)))
+//                let returnTupleArray = Array(receiptsTupleArray.reversed())
+                completion(.success(.initialLoad(receiptsTupleArray)))
             }
     }
     
@@ -55,20 +55,20 @@ extension ReceiptAPI {
                }
         }
         
-        path.observe(.childChanged) { snapshot in
-            if let dict = snapshot.value as? [String: Any] {
-                // [receiptID : [String: Any]]
-                // [String: Any] -> Receipt 객체를 만들 때 사용
-                completion(.success(.updated([snapshot.key: dict])))
-            } else {
-                completion(.failure(.readError))
-            }
-        }
-        
-        path.observe(.childRemoved) { snapshot in
-            let receiptID = snapshot.key
-            completion(.success(.removed(receiptID)))
-        }
+//        path.observe(.childChanged) { snapshot in
+//            if let dict = snapshot.value as? [String: Any] {
+//                // [receiptID : [String: Any]]
+//                // [String: Any] -> Receipt 객체를 만들 때 사용
+//                completion(.success(.updated([snapshot.key: dict])))
+//            } else {
+//                completion(.failure(.readError))
+//            }
+//        }
+//        
+//        path.observe(.childRemoved) { snapshot in
+//            let receiptID = snapshot.key
+//            completion(.success(.removed(receiptID)))
+//        }
     }
 }
 

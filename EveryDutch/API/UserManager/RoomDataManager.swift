@@ -27,6 +27,8 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     
     
+    
+    // MARK: - Rooms
     // 현재 선택된 Rooms
     var currentRoom: (roomID: String, room: Rooms)?
     var roomIDToIndexPathMap =  [String: IndexPath]()
@@ -35,7 +37,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     
     
-    
+    // MARK: - RoomUsrs
     /// [userID : User]로 이루어진 딕셔너리
     /// Receipt관련 화면에서 userID로 User의 데이터 사용
     /// ReceiptWriteVC에서 유저의 정보 사용
@@ -47,26 +49,46 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     
     
-    
-    
-    // 두 작업 완료 여부를 추적하는 플래그
-    // 플래그 대신 상태 추적을 위한 집합 사용
-    var loadedStates: Set<String> = []
-    let cumulativeAmountLoadedKey = "cumulativeAmount"
-    let paybackLoadedKey = "payback"
+    // MARK: - MoneyData
     // 바뀐 인덱스패스 저장
     var changedIndexPaths = [IndexPath]()
+    /// 디바운스 타이머
+    var debounceWorkItem: DispatchWorkItem?
+    let debounceInterval: CGFloat = 1.5  // 1.5초 후에 실행
+    let queue = DispatchQueue(label: "room-data-manager-queue")
+
+    
+
     
     
     
     
-    
+    // MARK: - Receipt
     /// 영수증 배열
     var receiptIDToIndexPathMap = [String: IndexPath]()
     // 영수증 테이블 셀의 뷰모델
     var receiptCellViewModels = [ReceiptTableViewCellVMProtocol]()
 
 
+    
+    // MARK: - 초기화
+    /// RoomUsers / User에 대한 observer를 삭제하는 메서드
+    func removeRoomsUsersObserver() {
+        self.roomsAPI.removeRoomUsersAndUserObserver()
+        self.resetRoomData()
+    }
+    func resetRoomData() {
+        self.roomUserDataDict.removeAll()
+        self.userIDToIndexPathMap.removeAll()
+        self.usersCellViewModels.removeAll()
+        
+        self.changedIndexPaths.removeAll()
+        self.debounceWorkItem = nil
+        self.receiptIDToIndexPathMap.removeAll()
+        self.receiptCellViewModels.removeAll()
+    }
+    
+    
     
     
     
@@ -108,10 +130,6 @@ final class RoomDataManager: RoomDataManagerProtocol {
     /// roomUserDataDict의 userID의 배열을 리턴하는 변수
     var getRoomUsersKeyArray: [String] {
         return Array(self.roomUserDataDict.keys)
-    }
-    /// RoomUsers / User에 대한 observer를 삭제하는 메서드
-    func removeRoomsUsersObserver() {
-        self.roomsAPI.removeRoomUsersAndUserObserver()
     }
 
     
@@ -197,18 +215,15 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     
     // MARK: - 영수증 정보
-    var NumOfReceipts: Int {
+    var getNumOfReceipts: Int {
         return self.receiptCellViewModels.count
     }
     func getReceiptViewModel(index: Int) -> ReceiptTableViewCellVMProtocol {
         return self.receiptCellViewModels[index]
     }
-    
-    
-    
-    
-    
-    
+    func getReceipt(at index: Int) -> Receipt {
+        return self.receiptCellViewModels[index].getReceipt
+    }
     
     func startLoadRoomData() {
         self.loadRoomUsers { [weak self] result in
@@ -217,6 +232,29 @@ final class RoomDataManager: RoomDataManagerProtocol {
             self.loadFinancialData()
         }
     }
+    
+    
+    func receiptDataCheck() {
+        print("____________________________")
+        print("____________________________")
+        print("____________________________")
+        print("____________________________")
+        print("____________________________")
+        print("____________________________")
+        print("영수증 개수")
+        print(self.receiptCellViewModels.count)
+        print("영수증 디테일")
+        dump(self.receiptCellViewModels)
+        print("____________________________")
+        print("____________________________")
+        print("____________________________")
+        print("____________________________")
+        print("____________________________")
+        print("____________________________")
+    }
+    
+    
+    
     
     
     
@@ -231,7 +269,9 @@ final class RoomDataManager: RoomDataManagerProtocol {
         
         print(#function)
         print(indexPath)
-        print(self.usersCellViewModels.count)
+        print(name)
+        print("self.usersCellViewModels.count ----- \(self.usersCellViewModels.count)")
+        print("self.receiptCellViewModels.count ----- \(self.receiptCellViewModels.count)")
         
         // 노티피케이션 전송
         NotificationCenter.default.post(

@@ -34,6 +34,10 @@ struct ReceiptTableViewCellVM: ReceiptTableViewCellVMProtocol {
         return self.receiptID
     }
     
+    var getReceipt: Receipt {
+        return self.receipt
+    }
+    
     mutating func updateReceipt(_ dict: [String: Any]) {
         self.receipt = Receipt(dictionary: dict)
     }

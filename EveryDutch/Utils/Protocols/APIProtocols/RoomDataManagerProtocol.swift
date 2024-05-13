@@ -10,6 +10,12 @@ import Foundation
 
 protocol RoomDataManagerProtocol {
     
+    func receiptDataCheck()
+    
+    
+    
+    
+    
     
     func startLoadRoomData()
     func loadReceipt()
@@ -40,11 +46,9 @@ protocol RoomDataManagerProtocol {
     
     
     // MARK: - Receipt
-    
-    // MARK: - 영수증 정보
-    var NumOfReceipts: Int { get }
+    var getNumOfReceipts: Int { get }
     func getReceiptViewModel(index: Int) -> ReceiptTableViewCellVMProtocol
-    
+    func getReceipt(at index: Int) -> Receipt
     
     
     

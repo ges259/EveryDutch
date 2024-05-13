@@ -216,32 +216,34 @@ extension UsersTableView {
             self.updateIndexPath(key: key, indexPaths: value)
         }
     }
+    
     private func updateIndexPath(key: String, indexPaths: [IndexPath]) {
-        
-        // reloadData()는 performBatchUpdates에 포함하면 안 됨.
-        if key == NotificationInfoString.initialLoad.notificationName {
-            self.usersTableView.reloadData()
-            return
-        }
-        
-        self.usersTableView.performBatchUpdates { [weak self] in
-            guard let self = self else { return }
-            switch key {
-            case NotificationInfoString.added.notificationName:
-                self.usersTableView.insertRows(at: indexPaths, with: .automatic)
-                break
-            case NotificationInfoString.updated.notificationName:
-                self.usersTableView.reloadRows(at: indexPaths, with: .automatic)
-                break
-            case NotificationInfoString.removed.notificationName:
-                self.usersTableView.deleteRows(at: indexPaths, with: .automatic)
-                break
-            default:
-                print("\(self) ----- \(#function) ----- Error")
-                break
+        DispatchQueue.main.async {
+            // reloadData()는 performBatchUpdates에 포함하면 안 됨.
+            if key == NotificationInfoString.initialLoad.notificationName {
+                self.usersTableView.reloadData()
+                return
             }
-        } completion: { [weak self] _ in
-            self?.numberOfUsersChanges(key: key)
+            
+            self.usersTableView.performBatchUpdates { [weak self] in
+                guard let self = self else { return }
+                switch key {
+                case NotificationInfoString.added.notificationName:
+                    self.usersTableView.insertRows(at: indexPaths, with: .automatic)
+                    break
+                case NotificationInfoString.updated.notificationName:
+                    self.usersTableView.reloadRows(at: indexPaths, with: .automatic)
+                    break
+                case NotificationInfoString.removed.notificationName:
+                    self.usersTableView.deleteRows(at: indexPaths, with: .automatic)
+                    break
+                default:
+                    print("\(self) ----- \(#function) ----- Error")
+                    break
+                }
+            } completion: { [weak self] _ in
+                self?.numberOfUsersChanges(key: key)
+            }
         }
     }
     

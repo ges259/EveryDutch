@@ -12,7 +12,7 @@ final class IndexPathDataManager<T> {
     private var indexPaths: [String: [IndexPath]] = [:]
 
     func dataChanged(_ userInfo: [String: [IndexPath]]) {
-        self.indexPaths.merge(userInfo) { _, new in new }
+        self.indexPaths.merge(userInfo) { new, _ in new }
     }
 
     func getPendingIndexPaths() -> [String: [IndexPath]] {
@@ -24,7 +24,7 @@ final class IndexPathDataManager<T> {
     }
 }
 
-
+// HoqSD6z7x0fy1r8AaGG86EgMPRA33
 final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
     
     // MARK: - 인덱스패스 프로퍼티
@@ -33,7 +33,9 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
     
     
     
-    
+    func receiptDataCheck() {
+        self.roomDataManager.receiptDataCheck()
+    }
     
     // MARK: - 탑뷰 프로퍼티
     /*
@@ -82,8 +84,8 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
         return self.roomDataManager.getCurrentRoomName
     }
     
-    
-    
+    /// 뷰모델에 플래그 만들어서, 처음 화면 들어올 때 등 아무때나 업데이트 되지 않도록 설정
+    var topViewHeightPlag: Bool = false
 
     
     
@@ -124,11 +126,15 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
 extension SettleMoneyRoomVM {
     /// 영수증 개수
     var numberOfReceipt: Int {
-        return self.roomDataManager.NumOfReceipts
+        return self.roomDataManager.getNumOfReceipts
     }
     /// 영수증 셀의 뷰모델 반환
     func cellViewModel(at index: Int) -> ReceiptTableViewCellVMProtocol {
         return self.roomDataManager.getReceiptViewModel(index: index)
+    }
+    
+    func getReceipt(at index: Int) -> Receipt {
+        return self.roomDataManager.getReceipt(at: index)
     }
     
     // MARK: - 인덱스패스
