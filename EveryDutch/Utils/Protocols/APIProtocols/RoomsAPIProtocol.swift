@@ -14,11 +14,11 @@ protocol RoomsAPIProtocol: EditScreenAPIType {
         roomIDs: [String],
         completion: @escaping (Result<DataChangeEvent<[String: Rooms]>, ErrorEnum>) -> Void)
     
-    func observeRoomAndUsers(
-        roomID: String,
-        userIDs: [String],
-        completion: @escaping (Result<DataChangeEvent<[String: User]>, ErrorEnum>) -> Void)
-    
+//    func observeRoomAndUsers(
+//        roomID: String,
+//        userIDs: [String],
+//        completion: @escaping (Result<DataChangeEvent<[String: User]>, ErrorEnum>) -> Void)
+//    
     func readRooms(completion: @escaping (Result<DataChangeEvent<[String: Rooms]>, ErrorEnum>) -> Void)
 //    func readRooms() async throws -> [Rooms]
     

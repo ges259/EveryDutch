@@ -31,23 +31,6 @@ extension RoomDataManager {
         }
     }
     
-    // MARK: - 옵저버 설정
-    private func setObserveRooms(with dict: [String: Rooms]) {
-        
-        let roomsKey = Array(dict.keys)
-        
-        guard !roomsKey.isEmpty else { return }
-        
-        self.roomsAPI.observerRoomsDataChanges(roomIDs: roomsKey) { result in
-            switch result {
-            case .success(let rooms):
-                self.updateRooms(rooms)
-            case .failure(_):
-                break
-            }
-        }
-    }
-    
     // MARK: - 업데이트 설정
     private func updateRooms(_ event: (DataChangeEvent<[String: Rooms]>)) {
         switch event {
@@ -92,8 +75,6 @@ extension RoomDataManager {
                 self.roomIDToIndexPathMap[roomID] = indexPath
                 addedIndexPaths.append(indexPath)
             }
-            // observer 설정
-            self.setObserveRooms(with: roomDict)
             print("addedIndexPaths ----- \(addedIndexPaths)")
             self.postNotification(name: .roomDataChanged,
                                   eventType: .initialLoad,
@@ -118,8 +99,6 @@ extension RoomDataManager {
                 self.roomIDToIndexPathMap[roomID] = indexPath
                 addedIndexPaths.append(indexPath)
             }
-            // 가져온 rooms에 대해 observer 설정
-//            self.setObserveRooms(with: toAdd)
             print("addedIndexPaths ----- \(addedIndexPaths)")
             self.postNotification(name: .roomDataChanged,
                                   eventType: .added,

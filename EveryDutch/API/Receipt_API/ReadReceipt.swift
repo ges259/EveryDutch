@@ -10,7 +10,7 @@ import FirebaseDatabaseInternal
 
 // Read
     // Receipt에서 데이터 가져오기 ----- (Receipt)
-
+//            .queryLimited(toLast: 3)
 extension ReceiptAPI {
 
     func readReceipt(

@@ -243,6 +243,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
             guard let self = self else { return }
             self.loadReceipt()
             self.loadFinancialData()
+            self.setObserveReceipt()
         }
     }
     

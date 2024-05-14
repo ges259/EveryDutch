@@ -11,9 +11,7 @@ extension RoomDataManager {
     
     // MARK: - 데이터 fetch
     func loadReceipt() {
-        print("\(self) ----- \(#function) ----- 1")
         guard let versionID = self.getCurrentVersion else { return }
-        print("\(self) ----- \(#function) ----- 2")
         self.receiptAPI.readReceipt(versionID: versionID) { [weak self] result in
             switch result {
             case .success(let initialLoad):
@@ -30,22 +28,14 @@ extension RoomDataManager {
     }
     
     // MARK: - 옵저버 설정
-    private func setObserveReceipt() {
+    func setObserveReceipt() {
         guard let versionID = self.getCurrentVersion else { return }
-        
         self.receiptAPI.observeReceipt(versionID: versionID) { [weak self] result in
             switch result {
             case .success(let rooms):
                 print("Receipt 옵저버 성공")
-                
                 self?.updateReceipt(rooms)
-                
-                switch rooms {
-                case .added(let tuple), .initialLoad(let tuple):
-//                    self?.setObserveRoomUsres(with: toAdd)
-                    break
-                default: break
-                }
+                break
                 
             case .failure(_):
                 print("Receipt 옵저버 실패")
@@ -98,8 +88,6 @@ extension RoomDataManager {
                 self.receiptIDToIndexPathMap[roomID] = indexPath
                 addedIndexPaths.append(indexPath)
             }
-            // observe 설정
-            self.setObserveReceipt()
             print("addedIndexPaths ----- \(addedIndexPaths)")
             self.postNotification(name: .receiptDataChanged,
                                   eventType: .initialLoad,
@@ -113,11 +101,6 @@ extension RoomDataManager {
             for (roomID, room) in toAdd {
                 // 중복 추가 방지
                 guard self.receiptIDToIndexPathMap[roomID] == nil else { continue }
-                
-                print("self.receiptCellViewModels.count ----- \(self.receiptCellViewModels.count)")
-                print("receiptID ----- \(roomID)")
-                print("receipt ----- \(room)")
-                
                 // 인덱스패스 생성 (뷰모델 추가 전에 현재 count 사용)
                 let indexPath = IndexPath(row: self.receiptCellViewModels.count, section: 0)
                 

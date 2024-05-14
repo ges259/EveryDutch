@@ -12,6 +12,8 @@ import FirebaseDatabaseInternal
 final class RoomsAPI: RoomsAPIProtocol, DecorationAPIType {
     static let shared: RoomsAPIProtocol = RoomsAPI()
     private init() {}
+    
+    var userObservers: [String: [UInt]] = [:]
 }
 
 

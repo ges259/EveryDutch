@@ -23,12 +23,13 @@ extension RoomsAPI {
             return
         }
         
-        let saveGroup = DispatchGroup()
         
         var returnRooms = [String: Rooms]()
-        
         // roomID를 가져오기 위한 path
         let roomIDPaths = USER_ROOMSID.child(uid)
+        
+        let saveGroup = DispatchGroup()
+        
         // roomID가져오기
         roomIDPaths.observeSingleEvent(of: .value) { snapshot in
             // 존재하는지 확인
@@ -46,12 +47,9 @@ extension RoomsAPI {
                 self.readRoomsData(roomID: key) { result in
                     switch result {
                     case .success(let room):
-                        print("room 가져오기 성공")
-
-                        print(room)
                         returnRooms[key] = room
+                        
                     case .failure(_):
-                        print("room 가져오기 실패")
                         break
                     }
                     saveGroup.leave()
