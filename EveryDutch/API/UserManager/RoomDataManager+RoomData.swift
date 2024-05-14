@@ -12,12 +12,14 @@ extension RoomDataManager {
     // MARK: - 데이터 fetch
     func loadRooms(completion: @escaping Typealias.VoidCompletion) {
         // 방 데이터 가져오기
-        self.roomsAPI.readRooms { result in
+        self.roomsAPI.readRooms { [weak self] result in
+            guard let self = self else { return }
             switch result {
             case .success(let initialLoad):
                 print("방 가져오기 성공")
                 DispatchQueue.main.async {
                     self.updateRooms(initialLoad)
+                    self.observeRooms()
                     completion(.success(()))
                 }
                 break
@@ -30,6 +32,28 @@ extension RoomDataManager {
             }
         }
     }
+    
+    // MARK: - 옵저버 설정
+    private func observeRooms() {
+        self.roomsAPI.setRoomObserver { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let observeData):
+                DispatchQueue.main.async {
+                    print("방 옵저버 가져오기 성공")
+                    self.updateRooms(observeData)
+                }
+                break
+                
+            case .failure(_):
+                DispatchQueue.main.async {
+                    print("방 옵저버 가져오기 실패")
+                }
+                break
+            }
+        }
+    }
+    
     
     // MARK: - 업데이트 설정
     private func updateRooms(_ event: (DataChangeEvent<[String: Rooms]>)) {
@@ -46,7 +70,6 @@ extension RoomDataManager {
                     updatedIndexPaths.append(indexPath)
                 }
             }
-            print("updatedIndexPaths ----- \(updatedIndexPaths)")
             self.postNotification(name: .roomDataChanged,
                                   eventType: .updated,
                                   indexPath: updatedIndexPaths)
@@ -75,7 +98,6 @@ extension RoomDataManager {
                 self.roomIDToIndexPathMap[roomID] = indexPath
                 addedIndexPaths.append(indexPath)
             }
-            print("addedIndexPaths ----- \(addedIndexPaths)")
             self.postNotification(name: .roomDataChanged,
                                   eventType: .initialLoad,
                                   indexPath: addedIndexPaths)
@@ -99,7 +121,6 @@ extension RoomDataManager {
                 self.roomIDToIndexPathMap[roomID] = indexPath
                 addedIndexPaths.append(indexPath)
             }
-            print("addedIndexPaths ----- \(addedIndexPaths)")
             self.postNotification(name: .roomDataChanged,
                                   eventType: .added,
                                   indexPath: addedIndexPaths)
@@ -126,7 +147,6 @@ extension RoomDataManager {
                     self.roomIDToIndexPathMap[roomID] = newIndexPath
                 }
             }
-            print("removedIndexPaths ----- \(removedIndexPaths)")
             self.postNotification(name: .roomDataChanged,
                                   eventType: .removed,
                                   indexPath: removedIndexPaths)

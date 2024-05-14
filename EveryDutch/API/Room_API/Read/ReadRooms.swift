@@ -48,7 +48,8 @@ extension RoomsAPI {
                     switch result {
                     case .success(let room):
                         returnRooms[key] = room
-                        
+                        // 각 RoomID에 옵저버 설정
+                        self.setRoomsDataObserver(roomID: key, completion: completion)
                     case .failure(_):
                         break
                     }
@@ -58,27 +59,6 @@ extension RoomsAPI {
             saveGroup.notify(queue: .main) {
                 completion(.success(.initialLoad(returnRooms)))
             }
-        }
-        roomIDPaths.observe(.childAdded) { snapshot in
-            guard let roomID = snapshot.key as String? else {
-                completion(.failure(.readError))
-                return
-            }
-            self.readRoomsData(roomID: roomID) { result in
-                switch result {
-                case .success(let room):
-                    completion(.success(.added([roomID: room])))
-                case .failure(_):
-                    completion(.failure(.readError))
-                }
-            }
-        }
-        roomIDPaths.observe(.childRemoved) { snapshot in
-            guard let userID = snapshot.key as String? else {
-                completion(.failure(.readError))
-                return
-            }
-            completion(.success(.removed(userID)))
         }
     }
     
@@ -100,29 +80,70 @@ extension RoomsAPI {
         }
     }
     
-    // MARK: - observer
+    
+    
+    
+    // MARK: - Rooms 옵저버
     // 개별 사용자의 데이터 변경을 관찰하는 함수
-    func observerRoomsDataChanges(
-        roomIDs: [String],
+    private func setRoomsDataObserver(
+        roomID: String,
         completion: @escaping (Result<DataChangeEvent<[String: Rooms]>, ErrorEnum>) -> Void)
     {
-        for roomID in roomIDs {
-            let roomPath = ROOMS_REF.child(roomID)
-            
-            roomPath.observe(.childChanged) { snapshot in
-                guard let value = snapshot.value else {
-                    completion(.failure(.readError))
-                    return
-                }
-                
-                let returnDict = [snapshot.key: value]
-                
-                completion(.success(.updated( [roomID: returnDict] )))
+        let roomPath = ROOMS_REF.child(roomID)
+        
+        roomPath.observe(.childChanged) { snapshot in
+            guard let value = snapshot.value else {
+                completion(.failure(.readError))
+                return
             }
+            
+            let returnDict = [snapshot.key: value]
+            
+            completion(.success(.updated( [roomID: returnDict] )))
         }
     }
     
     
+    
+    
+    // MARK: - Users_RoomsID 옵저버
+    func setRoomObserver(completion: @escaping (Result<DataChangeEvent<[String: Rooms]>, ErrorEnum>) -> Void)
+    {
+        guard let uid = Auth.auth().currentUser?.uid else {
+            // 사용자가 로그인하지 않았을 경우의 에러 처리
+            completion(.failure(.readError))
+            return
+        }
+        // roomID를 가져오기 위한 path
+        let roomIDPaths = USER_ROOMSID.child(uid)
+        
+        
+        roomIDPaths.observe(.childAdded) { snapshot in
+            guard let roomID = snapshot.key as String? else {
+                completion(.failure(.readError))
+                return
+            }
+            self.readRoomsData(roomID: roomID) { result in
+                switch result {
+                case .success(let room):
+                    completion(.success(.added([roomID: room])))
+                    // 새로 생긴 RoomID에 옵저버 설정
+                    self.setRoomsDataObserver(roomID: roomID, completion: completion)
+                case .failure(_):
+                    completion(.failure(.readError))
+                }
+            }
+        }
+        roomIDPaths.observe(.childRemoved) { snapshot in
+            guard let userID = snapshot.key as String? else {
+                completion(.failure(.readError))
+                return
+            }
+            completion(.success(.removed(userID)))
+        }
+    }
+    
+ 
     
     
     

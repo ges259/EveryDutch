@@ -23,10 +23,14 @@ extension RoomDataManager {
             switch result {
             case .success(let moneyData):
                 print("cumulativeMoney 성공")
-                self.updateCumulativeAmount(moneyData)
+                DispatchQueue.main.async {
+                    self.updateCumulativeAmount(moneyData)
+                }
                 break
             case .failure:
-                print("cumulativeMoney 실패")
+                DispatchQueue.main.async {
+                    print("cumulativeMoney 실패")
+                }
                 break
             }
         }
@@ -39,23 +43,26 @@ extension RoomDataManager {
             switch result {
             case .success(let moneyData):
                 print("payback 성공")
-                self.updatePayback(moneyData)
+                DispatchQueue.main.async {
+                    self.updatePayback(moneyData)
+                }
                 break
                 
             case .failure:
-                print("payback 실패")
+                DispatchQueue.main.async {
+                    print("payback 실패")
+                }
                 break
             }
         }
     }
-    
+    // User not found in the mapping
     /// 누적 금액 데이터 변경
     private func updateCumulativeAmount(_ amount: [String: Int]) {
         for (key, value) in amount {
             guard let indexPath = self.userIDToIndexPathMap[key],
                   indexPath.row < self.usersCellViewModels.count
             else {
-                print("User not found in the mapping.")
                 continue
             }
             self.usersCellViewModels[indexPath.row].setCumulativeAmount(value)
@@ -70,7 +77,7 @@ extension RoomDataManager {
             guard let indexPath = self.userIDToIndexPathMap[key],
                   indexPath.row < self.usersCellViewModels.count
             else {
-                print("User not found in the mapping.")
+                print("User not found in the mapping. ----- payback")
                 continue
             }
             self.usersCellViewModels[indexPath.row].setPayback(value)
@@ -81,9 +88,6 @@ extension RoomDataManager {
     
     /// 인덱스패스 저장
     private func saveChangedIndexPaths(indexPath: IndexPath) {
-        print("\(self) ----- \(#function)")
-        print(indexPath)
-        print("____________________________________________")
         // 인덱스패스가 포함되어있지 않다면
         if !self.changedIndexPaths.contains(indexPath) {
             // 이덱스패스 저장

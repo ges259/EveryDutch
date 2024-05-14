@@ -243,7 +243,6 @@ final class RoomDataManager: RoomDataManagerProtocol {
             guard let self = self else { return }
             self.loadReceipt()
             self.loadFinancialData()
-            self.setObserveReceipt()
         }
     }
     
@@ -258,6 +257,8 @@ final class RoomDataManager: RoomDataManagerProtocol {
         eventType: NotificationInfoString,
         indexPath: [IndexPath])
     {
+        // 비어있다면, 노티피케이션을 post하지 않음
+        guard !indexPath.isEmpty else { return }
         // 노티피케이션 전송
         NotificationCenter.default.post(
             name: name,

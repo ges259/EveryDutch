@@ -316,31 +316,25 @@ extension SettleMoneyRoomVC {
         }
         // 변경 사항 초기화
         self.viewModel.resetPendingReceiptIndexPaths()
-        
     }
     /// 영수증 테이블뷰 리로드 디테일
+    @MainActor
     private func reloadReceiptTableView(key: String, indexPaths: [IndexPath]) {
-        DispatchQueue.main.async {
-            // reloadData()는 performBatchUpdates에 포함하면 안 됨.
-            if key == NotificationInfoString.initialLoad.notificationName {
-                self.receiptTableView.reloadData()
-                return
-            }
-            switch key {
-            case NotificationInfoString.added.notificationName:
-                self.receiptTableView.insertRows(at: indexPaths, with: .automatic)
-                break
-            case NotificationInfoString.updated.notificationName:
-                self.receiptTableView.reloadRows(at: indexPaths, with: .automatic)
-                break
-            case NotificationInfoString.removed.notificationName:
-                self.receiptTableView.deleteRows(at: indexPaths, with: .automatic)
-                break
-            default:
-                print("\(self) ----- \(#function) ----- Error")
-                break
-            }
-            
+        switch key {
+        case NotificationInfoString.updated.notificationName:
+            self.receiptTableView.reloadRows(at: indexPaths, with: .automatic)
+            break
+        case NotificationInfoString.initialLoad.notificationName:
+            self.receiptTableView.reloadData()
+        case NotificationInfoString.added.notificationName:
+            self.receiptTableView.insertRows(at: indexPaths, with: .automatic)
+            break
+        case NotificationInfoString.removed.notificationName:
+            self.receiptTableView.deleteRows(at: indexPaths, with: .automatic)
+            break
+        default:
+            print("\(self) ----- \(#function) ----- Error")
+            break
         }
     }
     

@@ -16,7 +16,7 @@ extension RoomDataManager {
             switch result {
             case .success(let initialLoad):
                 print("영수증 가져오기 성공")
-                
+                self?.setObserveReceipt()
                 self?.updateReceipt(initialLoad)
                 
                 break
@@ -28,7 +28,7 @@ extension RoomDataManager {
     }
     
     // MARK: - 옵저버 설정
-    func setObserveReceipt() {
+    private func setObserveReceipt() {
         guard let versionID = self.getCurrentVersion else { return }
         self.receiptAPI.observeReceipt(versionID: versionID) { [weak self] result in
             switch result {
@@ -59,7 +59,6 @@ extension RoomDataManager {
                     updatedIndexPaths.append(indexPath)
                 }
             }
-            print("updatedIndexPaths ----- \(updatedIndexPaths)")
             self.postNotification(name: .receiptDataChanged,
                                   eventType: .updated,
                                   indexPath: updatedIndexPaths)
@@ -88,7 +87,6 @@ extension RoomDataManager {
                 self.receiptIDToIndexPathMap[roomID] = indexPath
                 addedIndexPaths.append(indexPath)
             }
-            print("addedIndexPaths ----- \(addedIndexPaths)")
             self.postNotification(name: .receiptDataChanged,
                                   eventType: .initialLoad,
                                   indexPath: addedIndexPaths)
@@ -113,7 +111,6 @@ extension RoomDataManager {
                 self.receiptIDToIndexPathMap[roomID] = indexPath
                 addedIndexPaths.append(indexPath)
             }
-            print("addedIndexPaths ----- \(addedIndexPaths)")
             self.postNotification(name: .receiptDataChanged,
                                   eventType: .added,
                                   indexPath: addedIndexPaths)
@@ -140,7 +137,6 @@ extension RoomDataManager {
                     self.receiptIDToIndexPathMap[roomID] = newIndexPath
                 }
             }
-            print("removedIndexPaths ----- \(removedIndexPaths)")
             self.postNotification(name: .receiptDataChanged,
                                   eventType: .removed,
                                   indexPath: removedIndexPaths)

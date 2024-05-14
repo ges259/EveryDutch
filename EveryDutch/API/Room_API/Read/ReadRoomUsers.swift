@@ -58,7 +58,38 @@ extension RoomsAPI {
                 completion(.success(.initialLoad(roomUsers)))
             }
         }
-        
+    }
+    
+    // MARK: - fetch Data
+    // 개별 사용자 데이터 가져오기
+    private func fetchUserData(
+        userID: String,
+        completion: @escaping (Result<User, ErrorEnum>) -> Void)
+    {
+        let path = USER_REF.child(userID)
+        path.observeSingleEvent(of: .value) { snapshot in
+            guard let valueData = snapshot.value as? [String: Any] else {
+                completion(.failure(.readError))
+                return
+            }
+            // User 객체 생성
+            let user = User(dictionary: valueData)
+            completion(.success(user))
+        }
+    }
+    
+    
+    
+    
+    
+    
+    
+    // MARK: - roomUsers 옵저버
+    func roomUsersObserver(
+        roomID: String,
+        completion: @escaping (Result<DataChangeEvent<[String: User]>, ErrorEnum>) -> Void)
+    {
+        let roomUsersRef = ROOM_USERS_REF.child(roomID)
         // 사용자 추가에 대한 옵저버
         roomUsersRef.observe(.childAdded) { snapshot in
             guard let userID = snapshot.key as String? else {
@@ -87,25 +118,8 @@ extension RoomsAPI {
         }
     }
     
-    // MARK: - fetch Data
-    // 개별 사용자 데이터 가져오기
-    private func fetchUserData(
-        userID: String,
-        completion: @escaping (Result<User, ErrorEnum>) -> Void)
-    {
-        let path = USER_REF.child(userID)
-        path.observeSingleEvent(of: .value) { snapshot in
-            guard let valueData = snapshot.value as? [String: Any] else {
-                completion(.failure(.readError))
-                return
-            }
-            // User 객체 생성
-            let user = User(dictionary: valueData)
-            completion(.success(user))
-        }
-    }
     
-    // MARK: - observer
+    // MARK: - users 옵저버
     private func setObserveUsers(
         userID: String,
         completion: @escaping (Result<DataChangeEvent<[String: User]>, ErrorEnum>) -> Void)

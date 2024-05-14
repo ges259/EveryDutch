@@ -216,36 +216,26 @@ extension UsersTableView {
             self.updateIndexPath(key: key, indexPaths: value)
         }
     }
-    
+    @MainActor
     private func updateIndexPath(key: String, indexPaths: [IndexPath]) {
-        DispatchQueue.main.async {
-            // reloadData()는 performBatchUpdates에 포함하면 안 됨.
-            if key == NotificationInfoString.initialLoad.notificationName {
-                self.usersTableView.reloadData()
-                return
-            }
-            print("\(self) ----- \(#function) ----- 1")
-            print(indexPaths)
-            self.usersTableView.performBatchUpdates { [weak self] in
-                guard let self = self else { return }
-                switch key {
-                case NotificationInfoString.added.notificationName:
-                    self.usersTableView.insertRows(at: indexPaths, with: .automatic)
-                    break
-                case NotificationInfoString.updated.notificationName:
-                    self.usersTableView.reloadRows(at: indexPaths, with: .automatic)
-                    break
-                case NotificationInfoString.removed.notificationName:
-                    self.usersTableView.deleteRows(at: indexPaths, with: .automatic)
-                    break
-                default:
-                    print("\(self) ----- \(#function) ----- Error")
-                    break
-                }
-            } completion: { [weak self] _ in
-                self?.numberOfUsersChanges(key: key)
-            }
+        switch key {
+        case NotificationInfoString.updated.notificationName:
+            self.usersTableView.reloadRows(at: indexPaths, with: .automatic)
+            break
+        case NotificationInfoString.initialLoad.notificationName:
+            self.usersTableView.reloadData()
+            break
+        case NotificationInfoString.added.notificationName:
+            self.usersTableView.insertRows(at: indexPaths, with: .automatic)
+            break
+        case NotificationInfoString.removed.notificationName:
+            self.usersTableView.deleteRows(at: indexPaths, with: .automatic)
+            break
+        default:
+            print("\(self) ----- \(#function) ----- Error")
+            break
         }
+        self.numberOfUsersChanges(key: key)
     }
     
     private func numberOfUsersChanges(key indexPathKey: String) {
@@ -260,3 +250,34 @@ extension UsersTableView {
             userInfo: nil)
     }
 }
+
+/*
+ 
+ 
+ DispatchQueue.main.async {
+     // reloadData()는 performBatchUpdates에 포함하면 안 됨.
+     if key == NotificationInfoString.initialLoad.notificationName {
+         self.usersTableView.reloadData()
+         return
+     }
+     self.usersTableView.performBatchUpdates { [weak self] in
+         guard let self = self else { return }
+         switch key {
+         case NotificationInfoString.added.notificationName:
+             self.usersTableView.insertRows(at: indexPaths, with: .automatic)
+             break
+         case NotificationInfoString.updated.notificationName:
+             self.usersTableView.reloadRows(at: indexPaths, with: .automatic)
+             break
+         case NotificationInfoString.removed.notificationName:
+             self.usersTableView.deleteRows(at: indexPaths, with: .automatic)
+             break
+         default:
+             print("\(self) ----- \(#function) ----- Error")
+             break
+         }
+     } completion: { [weak self] _ in
+         self?.numberOfUsersChanges(key: key)
+     }
+ }
+ */

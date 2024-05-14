@@ -45,13 +45,13 @@ extension ReceiptAPI {
         let path = RECEIPT_REF.child(versionID)
         
         path.observe(.childAdded) { snapshot in
-               if let dict = snapshot.value as? [String: Any] {
-                   let receipt = Receipt(dictionary: dict)
-                   let receiptTuple = (roomID: snapshot.key, receipt: receipt)
-                   completion(.success(.added([receiptTuple])))
-               } else {
-                   completion(.failure(.readError))
-               }
+            if let dict = snapshot.value as? [String: Any] {
+                let receipt = Receipt(dictionary: dict)
+                let receiptTuple = (roomID: snapshot.key, receipt: receipt)
+                completion(.success(.added([receiptTuple])))
+            } else {
+                completion(.failure(.readError))
+            }
         }
         
         path.observe(.childChanged) { snapshot in
