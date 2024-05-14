@@ -77,7 +77,7 @@ extension RoomsAPI {
     
     
     
-    // MARK: - observe
+    // MARK: - observer
     func observeRoomAndUsers(
         roomID: String,
         userIDs: [String],

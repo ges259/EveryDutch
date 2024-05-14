@@ -298,7 +298,6 @@ extension SettleMoneyRoomVC {
     /// 유저 테이블뷰 리로드
     private func updateUsersTableView() {
         let userIndexPaths = self.viewModel.getPendingUserDataIndexPaths()
-        
         guard !userIndexPaths.isEmpty else { return }
         // 유저 테이블뷰 리로드
         self.topView.userDataReload(at: userIndexPaths)
@@ -327,11 +326,6 @@ extension SettleMoneyRoomVC {
                 self.receiptTableView.reloadData()
                 return
             }
-            
-            self.viewModel.receiptDataCheck()
-            print("key ----- \(key)")
-            print("indexPaths ----- \(indexPaths)")
-            
             switch key {
             case NotificationInfoString.added.notificationName:
                 self.receiptTableView.insertRows(at: indexPaths, with: .automatic)

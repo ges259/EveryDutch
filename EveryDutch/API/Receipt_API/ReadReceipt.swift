@@ -34,7 +34,6 @@ extension ReceiptAPI {
                     }
                 }
                 
-//                let returnTupleArray = Array(receiptsTupleArray.reversed())
                 completion(.success(.initialLoad(receiptsTupleArray)))
             }
     }
@@ -55,20 +54,20 @@ extension ReceiptAPI {
                }
         }
         
-//        path.observe(.childChanged) { snapshot in
-//            if let dict = snapshot.value as? [String: Any] {
-//                // [receiptID : [String: Any]]
-//                // [String: Any] -> Receipt 객체를 만들 때 사용
-//                completion(.success(.updated([snapshot.key: dict])))
-//            } else {
-//                completion(.failure(.readError))
-//            }
-//        }
-//        
-//        path.observe(.childRemoved) { snapshot in
-//            let receiptID = snapshot.key
-//            completion(.success(.removed(receiptID)))
-//        }
+        path.observe(.childChanged) { snapshot in
+            if let dict = snapshot.value as? [String: Any] {
+                // [receiptID : [String: Any]]
+                // [String: Any] -> Receipt 객체를 만들 때 사용
+                completion(.success(.updated([snapshot.key: dict])))
+            } else {
+                completion(.failure(.readError))
+            }
+        }
+        
+        path.observe(.childRemoved) { snapshot in
+            let receiptID = snapshot.key
+            completion(.success(.removed(receiptID)))
+        }
     }
 }
 

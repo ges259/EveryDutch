@@ -40,6 +40,13 @@ extension RoomDataManager {
                 
                 self?.updateReceipt(rooms)
                 
+                switch rooms {
+                case .added(let tuple), .initialLoad(let tuple):
+//                    self?.setObserveRoomUsres(with: toAdd)
+                    break
+                default: break
+                }
+                
             case .failure(_):
                 print("Receipt 옵저버 실패")
                 break
@@ -86,7 +93,6 @@ extension RoomDataManager {
                 let viewModel = ReceiptTableViewCellVM(receiptID: roomID,
                                                        receiptData: room)
                 // 뷰모델 저장
-//                self.receiptCellViewModels.insert(viewModel, at: 0)
                 self.receiptCellViewModels.append(viewModel)
                 // 인덱스패스 저장
                 self.receiptIDToIndexPathMap[roomID] = indexPath

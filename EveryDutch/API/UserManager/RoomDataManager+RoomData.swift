@@ -32,8 +32,13 @@ extension RoomDataManager {
     }
     
     // MARK: - 옵저버 설정
-    private func setObserveRooms(roomsKey: [String]) {
-        self.roomsAPI.observeRoomChanges(roomIDs: roomsKey) { result in
+    private func setObserveRooms(with dict: [String: Rooms]) {
+        
+        let roomsKey = Array(dict.keys)
+        
+        guard !roomsKey.isEmpty else { return }
+        
+        self.roomsAPI.observerRoomsDataChanges(roomIDs: roomsKey) { result in
             switch result {
             case .success(let rooms):
                 self.updateRooms(rooms)
@@ -65,7 +70,7 @@ extension RoomDataManager {
             
             
             // 데이터 초기 로드
-        case .initialLoad(let userDict):
+        case .initialLoad(let roomDict):
             print("\(#function) ----- init")
             // 리턴할 인덱스패스
             var addedIndexPaths = [IndexPath]()
@@ -75,7 +80,7 @@ extension RoomDataManager {
             self.roomIDToIndexPathMap.removeAll()
             
             // 모든 데이터 추가
-            for (index, (roomID, room)) in userDict.enumerated() {
+            for (index, (roomID, room)) in roomDict.enumerated() {
                 // 인덱스 패스 생성
                 let indexPath = IndexPath(row: index, section: 0)
                 // 뷰모델 생성
@@ -87,10 +92,8 @@ extension RoomDataManager {
                 self.roomIDToIndexPathMap[roomID] = indexPath
                 addedIndexPaths.append(indexPath)
             }
-            // MARK: - Fix
-            let roomsKey = Array(userDict.keys)
-            // observe 설정
-            self.setObserveRooms(roomsKey: roomsKey)
+            // observer 설정
+            self.setObserveRooms(with: roomDict)
             print("addedIndexPaths ----- \(addedIndexPaths)")
             self.postNotification(name: .roomDataChanged,
                                   eventType: .initialLoad,
@@ -115,6 +118,8 @@ extension RoomDataManager {
                 self.roomIDToIndexPathMap[roomID] = indexPath
                 addedIndexPaths.append(indexPath)
             }
+            // 가져온 rooms에 대해 observer 설정
+//            self.setObserveRooms(with: toAdd)
             print("addedIndexPaths ----- \(addedIndexPaths)")
             self.postNotification(name: .roomDataChanged,
                                   eventType: .added,

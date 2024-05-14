@@ -10,9 +10,19 @@ import UIKit
 
 final class IndexPathDataManager<T> {
     private var indexPaths: [String: [IndexPath]] = [:]
-
+    
+    // 데이터 저장
     func dataChanged(_ userInfo: [String: [IndexPath]]) {
-        self.indexPaths.merge(userInfo) { new, _ in new }
+        for (key, newValues) in userInfo {
+            self.indexPaths[key, default: []] = self.mergeIndexPaths(indexPaths[key] ?? [], newValues)
+        }
+    }
+
+    private func mergeIndexPaths(
+        _ existingValues: [IndexPath], 
+        _ newValues: [IndexPath]) 
+    -> [IndexPath] {
+        return Array(Set(existingValues + newValues))
     }
 
     func getPendingIndexPaths() -> [String: [IndexPath]] {
@@ -33,9 +43,6 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
     
     
     
-    func receiptDataCheck() {
-        self.roomDataManager.receiptDataCheck()
-    }
     
     // MARK: - 탑뷰 프로퍼티
     /*

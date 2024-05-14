@@ -15,7 +15,21 @@ extension RoomsAPI {
         completion: @escaping (Result<[String: Int], ErrorEnum>) -> Void)
     {
         let path = CUMULATIVE_AMOUNT_REF.child(versionID)
-        
+        // 데이터가 변경되었을 때
+        path.observe(.childChanged) { snapshot in
+            guard snapshot.exists(),
+                  let key = snapshot.key as String?
+            else {
+                // 빈 배열로 성공 응답
+                completion(.failure(.readError))
+                return
+            }
+            
+            let value = snapshot.value as? Int ?? 0
+            // 단일 변경 사항을 전달
+            let updatedCumulativeAmount = [key: value]
+            completion(.success(updatedCumulativeAmount))
+        }
         // 데이터 초기 로드
         path.observeSingleEvent(of: .value) { snapshot in
             // 데이터가 존재하지 않는 경우
@@ -37,22 +51,6 @@ extension RoomsAPI {
             // 결과적으로 생성된 CumulativeAmount 배열
             completion(.success(cumulativeAmounts))
         }
-        
-        // 데이터가 변경되었을 때
-        path.observe(.childChanged) { snapshot in
-            guard snapshot.exists(),
-                  let key = snapshot.key as String?,
-                  let value = snapshot.value as? Int
-            else {
-                // 빈 배열로 성공 응답
-                completion(.failure(.readError))
-                return
-            }
-            
-            // 단일 변경 사항을 전달
-            let updatedCumulativeAmount = [key: value]
-            completion(.success(updatedCumulativeAmount))
-        }
     }
     
     
@@ -63,6 +61,21 @@ extension RoomsAPI {
     {
         guard let uid = Auth.auth().currentUser?.uid else { return }
         let path = PAYBACK_REF.child(versionID).child(uid)
+        
+        // 데이터가 변경되었을 때
+        path.observe(.childChanged) { snapshot in
+            guard snapshot.exists(),
+                  let key = snapshot.key as String?
+            else {
+                // 빈 배열로 성공 응답
+                completion(.failure(.readError))
+                return
+            }
+            let value = snapshot.value as? Int ?? 0
+            // 단일 변경 사항을 전달
+            let updatedCumulativeAmount = [key: value]
+            completion(.success(updatedCumulativeAmount))
+        }
         
         path.observeSingleEvent(of: .value) { snapshot in
             // 데이터가 존재하지 않는 경우
@@ -78,22 +91,6 @@ extension RoomsAPI {
             }
             // 완료 핸들러에 성공 결과 전달
             completion(.success(value))
-        }
-        
-        // 데이터가 변경되었을 때
-        path.observe(.childChanged) { snapshot in
-            guard snapshot.exists(),
-                  let key = snapshot.key as String?,
-                  let value = snapshot.value as? Int
-            else {
-                // 빈 배열로 성공 응답
-                completion(.failure(.readError))
-                return
-            }
-            
-            // 단일 변경 사항을 전달
-            let updatedCumulativeAmount = [key: value]
-            completion(.success(updatedCumulativeAmount))
         }
     }
 }

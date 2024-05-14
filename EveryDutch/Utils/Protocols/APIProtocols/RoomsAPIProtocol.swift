@@ -10,7 +10,7 @@ import Foundation
 protocol RoomsAPIProtocol: EditScreenAPIType {
     
     // 개별 사용자의 데이터 변경을 관찰하는 함수
-    func observeRoomChanges(
+    func observerRoomsDataChanges(
         roomIDs: [String],
         completion: @escaping (Result<DataChangeEvent<[String: Rooms]>, ErrorEnum>) -> Void)
     

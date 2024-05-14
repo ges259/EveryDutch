@@ -128,9 +128,9 @@ final class RoomDataManager: RoomDataManagerProtocol {
 //    }
     
     /// roomUserDataDict의 userID의 배열을 리턴하는 변수
-    var getRoomUsersKeyArray: [String] {
-        return Array(self.roomUserDataDict.keys)
-    }
+//    var getRoomUsersKeyArray: [String] {
+//        return Array(self.roomUserDataDict.keys)
+//    }
 
     
     
@@ -225,6 +225,19 @@ final class RoomDataManager: RoomDataManagerProtocol {
         return self.receiptCellViewModels[index].getReceipt
     }
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     func startLoadRoomData() {
         self.loadRoomUsers { [weak self] result in
             guard let self = self else { return }
@@ -232,28 +245,6 @@ final class RoomDataManager: RoomDataManagerProtocol {
             self.loadFinancialData()
         }
     }
-    
-    
-    func receiptDataCheck() {
-        print("____________________________")
-        print("____________________________")
-        print("____________________________")
-        print("____________________________")
-        print("____________________________")
-        print("____________________________")
-        print("영수증 개수")
-        print(self.receiptCellViewModels.count)
-        print("영수증 디테일")
-        dump(self.receiptCellViewModels)
-        print("____________________________")
-        print("____________________________")
-        print("____________________________")
-        print("____________________________")
-        print("____________________________")
-        print("____________________________")
-    }
-    
-    
     
     
     
@@ -266,13 +257,6 @@ final class RoomDataManager: RoomDataManagerProtocol {
         eventType: NotificationInfoString,
         indexPath: [IndexPath])
     {
-        
-        print(#function)
-        print(indexPath)
-        print(name)
-        print("self.usersCellViewModels.count ----- \(self.usersCellViewModels.count)")
-        print("self.receiptCellViewModels.count ----- \(self.receiptCellViewModels.count)")
-        
         // 노티피케이션 전송
         NotificationCenter.default.post(
             name: name,

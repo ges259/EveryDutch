@@ -56,81 +56,16 @@ extension RoomsAPI {
                     }
                     saveGroup.leave()
                 }
-                
             }
-            
             saveGroup.notify(queue: .main) {
                 completion(.success(.initialLoad(returnRooms)))
             }
         }
-    }
-    private func readRoomsData(
-        roomID: String,
-        completion: @escaping (Result<Rooms, ErrorEnum>) -> Void)
-    {
-        let path = ROOMS_REF.child(roomID)
-        
-        path.observeSingleEvent(of: .value) { snapshot in
-            guard let valueDict = snapshot.value as? [String: Any] else {
-                completion(.failure(.readError))
-                return
-            }
-            // Rooms 객체 생성
-            let room = Rooms(roomID: roomID, dictionary: valueDict)
-            completion(.success(room))
-        }
-    }
-    
-    
-    
-    
-    
-    // MARK: - observe
-    // 개별 사용자의 데이터 변경을 관찰하는 함수
-    func observeRoomChanges(
-        roomIDs: [String],
-        completion: @escaping (Result<DataChangeEvent<[String: Rooms]>, ErrorEnum>) -> Void)
-    {
-        self.setObserveRooms(roomIDs: roomIDs, completion: completion)
-        self.setObserveUsersRoomsID(completion: completion)
-    }
-    
-    private func setObserveRooms(
-        roomIDs: [String],
-        completion: @escaping (Result<DataChangeEvent<[String: Rooms]>, ErrorEnum>) -> Void)
-    {
-        for roomID in roomIDs {
-            let roomPath = ROOMS_REF.child(roomID)
-            
-            roomPath.observe(.childChanged) { snapshot in
-                guard let value = snapshot.value else {
-                    completion(.failure(.readError))
-                    return
-                }
-                
-                let returnDict = [snapshot.key: value]
-                
-                completion(.success(.updated( [roomID: returnDict] )))
-            }
-        }
-    }
-    private func setObserveUsersRoomsID(completion: @escaping (Result<DataChangeEvent<[String: Rooms]>, ErrorEnum>) -> Void) {
-        // 유저ID 가져오기
-        guard let uid = Auth.auth().currentUser?.uid else {
-            // 사용자가 로그인하지 않았을 경우의 에러 처리
-            completion(.failure(.readError))
-            return
-        }
-        
-        // roomID를 가져오기 위한 path
-        let roomIDPaths = USER_ROOMSID.child(uid)
-        
         roomIDPaths.observe(.childAdded) { snapshot in
             guard let roomID = snapshot.key as String? else {
                 completion(.failure(.readError))
                 return
             }
-            
             self.readRoomsData(roomID: roomID) { result in
                 switch result {
                 case .success(let room):
@@ -149,6 +84,45 @@ extension RoomsAPI {
         }
     }
     
+    // MARK: - Rooms 데이터 fetch
+    private func readRoomsData(
+        roomID: String,
+        completion: @escaping (Result<Rooms, ErrorEnum>) -> Void)
+    {
+        let path = ROOMS_REF.child(roomID)
+        
+        path.observeSingleEvent(of: .value) { snapshot in
+            guard let valueDict = snapshot.value as? [String: Any] else {
+                completion(.failure(.readError))
+                return
+            }
+            // Rooms 객체 생성
+            let room = Rooms(roomID: roomID, dictionary: valueDict)
+            completion(.success(room))
+        }
+    }
+    
+    // MARK: - observer
+    // 개별 사용자의 데이터 변경을 관찰하는 함수
+    func observerRoomsDataChanges(
+        roomIDs: [String],
+        completion: @escaping (Result<DataChangeEvent<[String: Rooms]>, ErrorEnum>) -> Void)
+    {
+        for roomID in roomIDs {
+            let roomPath = ROOMS_REF.child(roomID)
+            
+            roomPath.observe(.childChanged) { snapshot in
+                guard let value = snapshot.value else {
+                    completion(.failure(.readError))
+                    return
+                }
+                
+                let returnDict = [snapshot.key: value]
+                
+                completion(.success(.updated( [roomID: returnDict] )))
+            }
+        }
+    }
     
     
     

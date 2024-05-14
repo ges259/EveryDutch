@@ -10,7 +10,7 @@ import Foundation
 
 protocol RoomDataManagerProtocol {
     
-    func receiptDataCheck()
+    
     
     
     

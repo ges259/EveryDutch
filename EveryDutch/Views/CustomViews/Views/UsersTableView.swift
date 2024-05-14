@@ -224,7 +224,8 @@ extension UsersTableView {
                 self.usersTableView.reloadData()
                 return
             }
-            
+            print("\(self) ----- \(#function) ----- 1")
+            print(indexPaths)
             self.usersTableView.performBatchUpdates { [weak self] in
                 guard let self = self else { return }
                 switch key {

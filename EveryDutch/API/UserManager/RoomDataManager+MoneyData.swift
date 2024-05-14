@@ -81,6 +81,9 @@ extension RoomDataManager {
     
     /// 인덱스패스 저장
     private func saveChangedIndexPaths(indexPath: IndexPath) {
+        print("\(self) ----- \(#function)")
+        print(indexPath)
+        print("____________________________________________")
         // 인덱스패스가 포함되어있지 않다면
         if !self.changedIndexPaths.contains(indexPath) {
             // 이덱스패스 저장
@@ -115,6 +118,5 @@ extension RoomDataManager {
     /// 디바운싱 상태 초기화
     private func resetDebounceState() {
         self.changedIndexPaths = []
-        self.debounceWorkItem = nil
     }
 }

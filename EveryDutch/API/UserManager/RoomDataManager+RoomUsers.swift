@@ -34,13 +34,13 @@ extension RoomDataManager {
             }
         }
     }
-    
     // MARK: - 옵저버 설정
-    private func setObserveRoomUsres() {
+    private func setObserveRoomUsres(with dict: [String: User]) {
+        let usersKey = Array(dict.keys)
         // roomData 저장
-        guard let roomID = self.getCurrentRoomsID else { return }
-        let usersKey = self.getRoomUsersKeyArray
-        
+        guard let roomID = self.getCurrentRoomsID,
+              !usersKey.isEmpty
+        else { return }
         self.roomsAPI.observeRoomAndUsers(roomID: roomID, userIDs: usersKey) { [weak self] result in
             switch result {
             case .success(let users):
@@ -107,7 +107,7 @@ extension RoomDataManager {
             }
             
             // observe 설정
-            self.setObserveRoomUsres()
+            self.setObserveRoomUsres(with: userDict)
             
             print("addedIndexPaths ----- \(addedIndexPaths)")
             self.postNotification(name: .userDataChanged,
@@ -137,6 +137,10 @@ extension RoomDataManager {
                 self.roomUserDataDict[userID] = user
                 addedIndexPaths.append(indexPath)
             }
+            
+            // 새로 드러온 유저 옵저버 설정
+//            self.setObserveRoomUsres(with: toAdd)
+            
             print("addedIndexPaths ----- \(addedIndexPaths)")
             self.postNotification(name: .userDataChanged,
                                   eventType: .added,
