@@ -71,10 +71,43 @@ final class RoomDataManager: RoomDataManagerProtocol {
 
 
     
+    
+    
+    
+    
+    
+    
+    
+    func startLoadRoomData() {
+        self.loadRoomUsers { [weak self] result in
+            guard let self = self else { return }
+            self.loadReceipt()
+            self.loadFinancialData()
+        }
+    }
+    
+    // MARK: - 노티피케이션 Post
+    func postNotification(
+        name: Notification.Name,
+        eventType: NotificationInfoString,
+        indexPath: [IndexPath])
+    {
+        // 비어있다면, 노티피케이션을 post하지 않음
+        guard !indexPath.isEmpty else { return }
+        // 노티피케이션 전송
+        NotificationCenter.default.post(
+            name: name,
+            object: nil,
+            userInfo: [eventType.notificationName: indexPath]
+        )
+    }
+    
     // MARK: - 초기화
     /// RoomUsers / User에 대한 observer를 삭제하는 메서드
     func removeRoomsUsersObserver() {
+        // 옵저버 삭제
         self.roomsAPI.removeRoomUsersAndUserObserver()
+        // 정산방에 대한 데이터 삭제
         self.resetRoomData()
     }
     func resetRoomData() {
@@ -94,29 +127,26 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     
     
-// MARK: - User 정보
     
     
     
-    // MARK: - 방의 개수
+    // MARK: - User 정보
+    /// 방의 개수
     var getNumOfRoomUsers: Int {
         return self.usersCellViewModels.count
     }
     
-    
-    // MARK: - 뷰모델 리턴
+    /// 뷰모델 리턴
     func getUsersViewModel(index: Int) -> UsersTableViewCellVMProtocol {
         return self.usersCellViewModels[index]
     }
     
-    
-    
-    // MARK: - 특정 유저 정보 리턴
+    /// 특정 유저 정보 리턴
     var getRoomUsersDict: RoomUserDataDict {
         return self.roomUserDataDict
     }
     
-    /// Receipt가 필요한 화면에서 userID로 User의 정보를 알기 위해 사용
+    /// userID로 User의 정보를 알기 위해 사용
     func getIdToRoomUser(usersID: String) -> User {
         return self.roomUserDataDict[usersID]
         ?? User(dictionary: [:])
@@ -141,38 +171,17 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-// MARK: - Rooms 정보
-
-    
+    // MARK: - Rooms 정보
+    /// Room의 개수
     var getNumOfRooms: Int {
         return self.roomsCellViewModels.count
     }
-    
+    /// MainCollectionViewCellVMProtocol 리턴
     func getRoomsViewModel(index: Int) -> MainCollectionViewCellVMProtocol {
         return self.roomsCellViewModels[index]
     }
     
-    
-    
-    
-    
-    
-    // MARK: - 현재 방
-    
-    
-    
-    // MARK: - 저장
+    /// 현재 방 저장
     func saveCurrentRooms(index: Int) {
         // 배열 범위 검사
         guard index >= 0, index < self.roomsCellViewModels.count else {
@@ -186,24 +195,21 @@ final class RoomDataManager: RoomDataManagerProtocol {
                             room: viewModel.getRoom)
     }
     
-    // MARK: - 방의 이름
+    /// 방의 이름
     var getCurrentRoomName: String? {
         let currentRoom = self.currentRoom?.room
         return currentRoom?.roomName
     }
     
-    // MARK: - 방 ID
+    /// 방 ID 리턴
     var getCurrentRoomsID: String? {
         return self.currentRoom?.roomID
     }
 
-    // MARK: - 버전 ID
+    /// 버전 ID 리턴
     var getCurrentVersion: String? {
-        let currentRoom = self.currentRoom?.room
-        return currentRoom?.versionID
+        return self.currentRoom?.room.versionID
     }
-    
-    
     
     
     
@@ -215,56 +221,17 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     
     // MARK: - 영수증 정보
+    /// 영수증 개수
     var getNumOfReceipts: Int {
         return self.receiptCellViewModels.count
     }
+    /// 영수증 셀(ReceiptTableViewCellVMProtocol) 리턴
     func getReceiptViewModel(index: Int) -> ReceiptTableViewCellVMProtocol {
         return self.receiptCellViewModels[index]
     }
+    /// index를 받아 알맞는 영수증을 리턴
     func getReceipt(at index: Int) -> Receipt {
         return self.receiptCellViewModels[index].getReceipt
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    func startLoadRoomData() {
-        self.loadRoomUsers { [weak self] result in
-            guard let self = self else { return }
-            self.loadReceipt()
-            self.loadFinancialData()
-        }
-    }
-    
-    
-    
-    
-    
-    
-    // MARK: - 노티피케이션 Post
-    func postNotification(
-        name: Notification.Name,
-        eventType: NotificationInfoString,
-        indexPath: [IndexPath])
-    {
-        // 비어있다면, 노티피케이션을 post하지 않음
-        guard !indexPath.isEmpty else { return }
-        // 노티피케이션 전송
-        NotificationCenter.default.post(
-            name: name,
-            object: nil,
-            userInfo: [eventType.notificationName: indexPath]
-        )
     }
 }
 

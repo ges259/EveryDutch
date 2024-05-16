@@ -16,7 +16,11 @@ struct Receipt {
     var payer: String
     var paymentMethod: Int
     var paymentDetails: [PaymentDetail]
+    
+    
+    var payerName: String = "???"
 
+    // MARK: - init
     init(dictionary: [String: Any]) {
         self.type = dictionary[DatabaseConstants.type] as? Int ?? 0
         self.context = dictionary[DatabaseConstants.context] as? String ?? ""
@@ -50,5 +54,10 @@ struct Receipt {
             let done = detail[DatabaseConstants.done] as? Bool ?? false
             return PaymentDetail(userID: userID, pay: pay, done: done)
         }
+    }
+    
+    // MARK: - payerName 저장
+    mutating func updatePayerName(with user: User) {
+        self.payerName = user.userName
     }
 }

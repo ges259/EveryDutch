@@ -33,11 +33,8 @@ class InsetTextField: UITextField {
         self.autocapitalizationType = .none
         self.autocorrectionType = .no
         
-        
         if let placeholderText = placeholderText {
-            self.attributedPlaceholder = self.setAttributedText(
-                placeholderText: placeholderText,
-                placeholerColor: placeholerColor)
+            self.setPlaceholderText(text: placeholderText, color: placeholerColor)
         }
     }
     convenience init(placeholderText: String,
@@ -51,10 +48,19 @@ class InsetTextField: UITextField {
         self.keyboardType = keyboardType
         self.returnKeyType = keyboardReturnType
     }
-    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    func setPlaceholderText(
+        text: String,
+        color: UIColor = UIColor.placeholder_gray)
+    {
+        self.attributedPlaceholder = self.setAttributedText(
+            placeholderText: text,
+            placeholerColor: color)
+    }
+    
     
     // insetX와 insetY의 값에 따라서 텍스트영역을 조절하도록 바꿀 것
         // -> textRect를 오버리이드

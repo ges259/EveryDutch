@@ -18,7 +18,6 @@ final class ReceiptWriteDataCell: UITableViewCell {
     private lazy var textField: InsetTextField = {
         let tf = InsetTextField(
             backgroundColor: UIColor.normal_white,
-            placeholderText: "메모를 입력해 주세요.",
             insetX: 25)
         tf.delegate = self
         return tf
@@ -142,6 +141,8 @@ extension ReceiptWriteDataCell {
         self.configureTextFieldAutoLayout()
         self.configureNumOfCharLbl()
         self.configureTextFieldAction()
+        self.textField.setPlaceholderText(
+            text: "메모을 입력해 주세요.")
     }
 }
 
@@ -210,6 +211,8 @@ extension ReceiptWriteDataCell {
     
     // MARK: - 가격
     private func configurePriceEnumUI() {
+        self.textField.setPlaceholderText(
+            text: "가격을 입력해 주세요.")
         self.textField.keyboardType = .numberPad
     }
 }

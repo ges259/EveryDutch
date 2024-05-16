@@ -34,15 +34,15 @@ enum ReceiptWriteEnum: Int, CaseIterable {
     
     func createProviders(
         isReceiptWriteVC: Bool,
-        withData receipt: Receipt?) -> [Int: [ReceiptWriteCellVMProtocol]]
-    {
+        withData receipt: Receipt?)
+    -> [Int: [ReceiptWriteCellVMProtocol]] {
         var detailsDictionary: [Int: [ReceiptWriteCellVMProtocol]] = [:]
         
         ReceiptWriteEnum.allCases.forEach { roomEditEnum in
             switch roomEditEnum {
             case .receiptData:
                 let receiptData = ReceiptCellEnum.getDetails(
-                    isReceiptWriteVC: isReceiptWriteVC, 
+                    isReceiptWriteVC: isReceiptWriteVC,
                     receipt: receipt)
                 detailsDictionary[roomEditEnum.rawValue] = receiptData
                 break
@@ -115,14 +115,6 @@ enum ReceiptCellEnum: Int, CaseIterable, ReceiptWriteCellType {
     }
     
     
-//    static func getDetails(receipt: Receipt?) -> [ReceiptWriteCellVMProtocol] {
-//        return self.allCases.map
-//        { cellType -> (ReceiptWriteCellVMProtocol) in
-//            // MARK: - receipt 의존성 주입
-//            return ReceiptWriteDataCellVM(withReceiptEnum: cellType)
-//        }
-//    }
-    
     
     static func getDetails(isReceiptWriteVC: Bool, receipt: Receipt?) -> [ReceiptWriteCellVMProtocol] {
         return self.allCases
@@ -139,8 +131,28 @@ enum ReceiptCellEnum: Int, CaseIterable, ReceiptWriteCellType {
                 return ReceiptWriteDataCellVM(withReceiptEnum: cellType)
             }
     }
+    /*
+     // 나중에 영수증 수정하는 작업 시, 해당 코드 사용
+     static func getDetails(isReceiptWriteVC: Bool, receipt: Receipt?) -> [ReceiptWriteCellVMProtocol] {
+         return self.allCases
+             .filter { cellType -> Bool in
+                 // isReceiptWriteVC가 true일 경우 payment_Method를 제외
+                 if isReceiptWriteVC
+                     && cellType == .payment_Method {
+                     return false
+                 }
+                 return true
+             }
+             .map { cellType -> ReceiptWriteCellVMProtocol in
+                 let details = cellType.detail(from: receipt)
+                 // 이제 조건에 맞는 cellType만 가지고 ViewModel을 생성
+                 return ReceiptWriteDataCellVM(withReceiptEnum: cellType, details: details)
+             }
+     }
+     */
     
-    private func detail(from receipt: Receipt?) -> String? {
+    
+    func detail(from receipt: Receipt?) -> String? {
         guard let receipt = receipt else { return nil }
         
          switch self {
@@ -151,13 +163,25 @@ enum ReceiptCellEnum: Int, CaseIterable, ReceiptWriteCellType {
          case .time:
              return receipt.time
          case .price:
-             return NumberFormatter.localizedString(from: NSNumber(value: receipt.price), number: .currency)
+             return NumberFormatter.localizedString(
+                from: NSNumber(value: receipt.price),
+                number: .currency)
          case .payer:
-             return receipt.payer
+             return receipt.payerName
          case .payment_Method:
-             return "\(receipt.paymentMethod)"
+             return receipt.paymentMethod == 1
+             ? "1 / N"
+             : ""
          }
      }
 }
 
 
+
+//    static func getDetails(receipt: Receipt?) -> [ReceiptWriteCellVMProtocol] {
+//        return self.allCases.map
+//        { cellType -> (ReceiptWriteCellVMProtocol) in
+//            // MARK: - receipt 의존성 주입
+//            return ReceiptWriteDataCellVM(withReceiptEnum: cellType)
+//        }
+//    }

@@ -11,7 +11,8 @@ final class ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
     
     // 정산내역 셀의 뷰모델
     private var cellViewModels: [ReceiptScreenPanUsersCellVM] = []
-    // 데이터 셀의 데이터
+    /// 데이터 셀의 데이터
+    /// (type: ReceiptCellEnum, detail: String?)
     private var dataCellData: [ReceiptCellTypeTuple] = []
     
     
@@ -19,7 +20,7 @@ final class ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
     private var roomDataManager: RoomDataManagerProtocol
     
     
-    private let receipt: Receipt
+    private var receipt: Receipt
     
     
     
@@ -53,16 +54,20 @@ final class ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
     
     // MARK: - [공통] 셀의 높이
     func getCellHeight(section: Int) -> CGFloat {
-        return section == 1
-        ? 50
-        : 45
+        switch section {
+        case 0: return 45
+        case 1: return 50
+        default: return 0
+        }
     }
     
     // MARK: - [공통] 셀의 개수
     func getNumOfCell(section: Int) -> Int {
-        return section == 1
-        ? self.cellViewModels.count
-        : self.self.dataCellData.count
+        switch section {
+        case 0: return self.dataCellData.count
+        case 1: return self.cellViewModels.count
+        default: return 0
+        }
     }
     
     // MARK: - [공통] 섹션의 개수
@@ -106,14 +111,14 @@ final class ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
     
     // MARK: - 데이터 셀 데이터 설정
     private func makeDataCellData() {
+        // Recipet데이터 변경
+        let payerName = self.roomDataManager.getIdToRoomUser(usersID: self.receipt.payer)
+        self.receipt.updatePayerName(with: payerName)
         
-        
-        
-        // MARK: - Fix
-//        self.dataCellData = ReceiptCellEnum.allCases.map { enumCase -> ReceiptDataCell in
-//                let detail = enumCase.detail(from: receipt)
-//                return (type: enumCase, detail: detail)
-//            }
+        self.dataCellData = ReceiptCellEnum.allCases.map { enumCase -> ReceiptCellTypeTuple in
+            let detail = enumCase.detail(from: self.receipt)
+            return (type: enumCase, detail: detail)
+        }
     }
     
     // MARK: - 유저 셀 생성
@@ -123,8 +128,7 @@ final class ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
                     
         // 셀 만들기
         self.cellViewModels = paymentDetails.map { detail in
-            let user = self.roomDataManager.getIdToRoomUser(
-                usersID: detail.userID)
+            let user = self.roomDataManager.getIdToRoomUser(usersID: detail.userID)
             
             return ReceiptScreenPanUsersCellVM(
                 roomUser: user,

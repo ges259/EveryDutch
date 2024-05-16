@@ -128,7 +128,7 @@ extension RoomsAPI {
         let userPath = USER_REF.child(userID)
         
         // 노드 변경 시
-        let childChangedHandle = userPath.observe(.childChanged) { snapshot in
+        userPath.observe(.childChanged) { snapshot in
             guard let valueData = snapshot.value as? [String: Any] else {
                 completion(.failure(.readError))
                 return
@@ -138,30 +138,14 @@ extension RoomsAPI {
         }
         
         // 노드 삭제 시
-        let childRemovedHandle = userPath.observe(.childRemoved) { _ in
+        userPath.observe(.childRemoved) { _ in
             completion(.success(.removed(userID)))
         }
-        
-        // 옵저버 핸들을 저장
-        userObservers[userID, default: []].append(childChangedHandle)
-        userObservers[userID, default: []].append(childRemovedHandle)
     }
+    
+    
     
     // MARK: - removeObserver
-    private func removeObservers(forUserID userID: String) {
-        guard let handles = userObservers[userID] else { return }
-        let userPath = USER_REF.child(userID)
-        for handle in handles {
-            userPath.removeObserver(withHandle: handle)
-        }
-        userObservers[userID] = nil
-    }
-
-    
-    
-    
-    
-    
     func removeRoomUsersAndUserObserver() {
         ROOM_USERS_REF.removeAllObservers()
         USER_REF.removeAllObservers()
