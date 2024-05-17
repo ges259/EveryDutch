@@ -66,7 +66,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
     // MARK: - Receipt
     /// 영수증 배열
     var receiptIDToIndexPathMap = [String: IndexPath]()
-    // 영수증 테이블 셀의 뷰모델
+    /// 영수증 테이블 셀의 뷰모델
     var receiptCellViewModels = [ReceiptTableViewCellVMProtocol]()
 
 
@@ -232,6 +232,13 @@ final class RoomDataManager: RoomDataManagerProtocol {
     /// index를 받아 알맞는 영수증을 리턴
     func getReceipt(at index: Int) -> Receipt {
         return self.receiptCellViewModels[index].getReceipt
+    }
+    
+    func updateReceiptUserName(receipt: Receipt) -> Receipt {
+        let payerUser = self.getIdToRoomUser(usersID: receipt.payer)
+        var returndReceipt = receipt
+            returndReceipt.updatePayerName(with: payerUser)
+        return returndReceipt
     }
 }
 

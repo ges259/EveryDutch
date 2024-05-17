@@ -97,9 +97,10 @@ final class ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
         self.receipt = receipt
         self.roomDataManager = roomDataManager
         
-        self.makeUserCells()
         self.makeDataCellData()
+        self.makeUserCells()
     }
+    
     
     
     
@@ -112,11 +113,9 @@ final class ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
     // MARK: - 데이터 셀 데이터 설정
     private func makeDataCellData() {
         // Recipet데이터 변경
-        let payerName = self.roomDataManager.getIdToRoomUser(usersID: self.receipt.payer)
-        self.receipt.updatePayerName(with: payerName)
-        
+        let updatedReceipt = self.roomDataManager.updateReceiptUserName(receipt: self.receipt)
         self.dataCellData = ReceiptCellEnum.allCases.map { enumCase -> ReceiptCellTypeTuple in
-            let detail = enumCase.detail(from: self.receipt)
+            let detail = enumCase.detail(from: updatedReceipt)
             return (type: enumCase, detail: detail)
         }
     }

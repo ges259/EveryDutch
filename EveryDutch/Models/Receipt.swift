@@ -58,6 +58,8 @@ struct Receipt {
     
     // MARK: - payerName 저장
     mutating func updatePayerName(with user: User) {
-        self.payerName = user.userName
+        self.payerName = user.userName == ""
+        ? "???"
+        : user.userName
     }
 }

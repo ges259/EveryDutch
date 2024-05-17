@@ -52,6 +52,7 @@ protocol RoomDataManagerProtocol {
     
     
     
+    func updateReceiptUserName(receipt: Receipt) -> Receipt
     
     // MARK: - API
     func loadFinancialData()
