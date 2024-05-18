@@ -44,21 +44,12 @@ final class CardImageView: UIView {
     
     
     
-    
-    
-    
-    
-    
     // MARK: - 프로퍼티
     // 데코레이션 모델, 초기화 시 해당 데이터 사용
     var originalDecorationData: Decoration?
     
     var currentColorDict: [String: String] = [:]
     var currentImageDict: [String: UIImage] = [:]
-    
-    
-    
-    
     
     
     
@@ -86,10 +77,8 @@ final class CardImageView: UIView {
 
 
 // MARK: - 화면 설정
-
 extension CardImageView {
-    
-    // MARK: - UI 설정
+    /// UI 설정
     private func configureUI() {
         [self,
          self.blurView,
@@ -102,7 +91,7 @@ extension CardImageView {
         self.nameLbl.text = "DUCTCH"
     }
     
-    // MARK: - 오토레이아웃 설정
+    /// 오토레이아웃 설정
     private func configureAutoLayout() {
         [self.backgroundImg,
          self.blurView,
@@ -110,36 +99,42 @@ extension CardImageView {
          self.titleLbl,
          self.iconImg,
          self.lineView,
-         self.nameLbl].forEach { view in
-            self.addSubview(view)
+         self.nameLbl].forEach {
+            self.addSubview($0)
         }
-        
+        // 배경 이미지
         self.backgroundImg.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
+        // 타이틀 레이블
         self.titleLbl.snp.makeConstraints { make in
             make.top.leading.equalToSuperview().offset(20)
         }
+        // 화살표 이미지
         self.arrowImg.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(15)
             make.centerY.equalToSuperview().offset(-10)
             make.width.equalTo(10)
             make.height.equalTo(20)
         }
+        // 아이콘 이미지
         self.iconImg.snp.makeConstraints { make in
             make.leading.equalTo(self.arrowImg.snp.trailing).offset(12)
             make.centerY.equalTo(self.arrowImg)
             make.width.height.equalTo(45)
         }
+        // 라인 뷰
         self.lineView.snp.makeConstraints { make in
             make.top.equalTo(self.iconImg.snp.bottom).offset(10)
             make.leading.equalTo(self.iconImg.snp.leading)
             make.trailing.equalToSuperview().offset(-20)
             make.height.equalTo(2)
         }
+        // 이름 레이블
         self.nameLbl.snp.makeConstraints { make in
             make.trailing.bottom.equalToSuperview().offset(-20)
         }
+        // 블러 뷰
         self.blurView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
@@ -156,22 +151,20 @@ extension CardImageView {
 
 
 // MARK: - 초기 데이터 설정
-
 extension CardImageView {
-    
-    // MARK: - [방]
+    /// [방]
     func setupRoomData(data roomData: Rooms) {
         self.titleLbl.text = roomData.roomName
         self.nameLbl.text = roomData.versionID
     }
-
-    // MARK: - [유저]
+    
+    /// [유저]
     func setupUserData(data userData: User) {
         self.titleLbl.text = userData.userName
         self.nameLbl.text = userData.personalID
     }
-
-    // MARK: - [데코]
+    
+    /// [데코]
     func setupDecorationData(data decorationData: Decoration) {
         self.blurView.isHidden = decorationData.blur
         self.titleLbl.textColor = decorationData.getTitleColor
@@ -196,12 +189,14 @@ extension CardImageView {
     func saveCurrentData(type: DecorationCellType) {
         switch type {
         case .background:
+            // 이미지라면
             if let image = self.backgroundImg.image {
                 self.currentImageDict[DatabaseConstants.background_Image] = image
-                self.currentColorDict.removeValue(forKey: DatabaseConstants.background_Color)
+                self.currentColorDict.removeAll()
+                
             } else {
                 self.currentColorDict[DatabaseConstants.background_Color] = self.backgroundImg.backgroundColor?.toHexString()
-                self.currentImageDict.removeValue(forKey: DatabaseConstants.background_Image)
+                self.currentImageDict.removeAll()
             }
             break
         case .titleColor:
@@ -228,7 +223,7 @@ extension CardImageView {
 // MARK: - 데이터 리셋
 extension CardImageView {
     func resetDecorationData(type: DecorationCellType) {
-        
+        // 기본 색상 가져오기
         let color = UIColor(hex: self.getCurrentColor(type: type),
                             defaultColor: self.getDefaultColor(type: type))
         switch type {
@@ -251,7 +246,8 @@ extension CardImageView {
             break
             
         // blurEffect는 여기서 처리하지 않음
-        case .blurEffect: break
+        case .blurEffect:
+            break
         }
     }
     /// 현재 색상을 가져옴
@@ -270,14 +266,10 @@ extension CardImageView {
     /// 기본 색상을 가져옴
     private func getDefaultColor(type: DecorationCellType) -> UIColor {
         switch type {
-        case .background:
-            return .medium_Blue
-        case .titleColor:
-            return .black
-        case .nameColor:
-            return .placeholder_gray
-        case .blurEffect:
-            return .clear
+        case .background:   return .medium_Blue
+        case .titleColor:   return .black
+        case .nameColor:    return .placeholder_gray
+        case .blurEffect:   return .clear
         }
     }
 }
@@ -299,7 +291,8 @@ extension CardImageView {
             self.titleLbl.text = text
             break
             
-        case 1: self.nameLbl.text = text
+        case 1: 
+            self.nameLbl.text = text
             break
             
         default:
@@ -310,11 +303,16 @@ extension CardImageView {
 
 
 
-// MARK: - [데코] 데이터 업데이트
 
+
+
+
+
+
+
+// MARK: - [데코] 데이터 업데이트
 extension CardImageView {
-    
-    // MARK: - 분기 처리
+    /// 카드 업데이트 분기 처리
     func updateCardView(
         type: DecorationCellType,
         data: Any,
@@ -337,12 +335,12 @@ extension CardImageView {
         }
     }
     
-    // MARK: - 블러 효과 변경
+    /// 블러 효과 변경
     private func blurViewIsHidden(_ isHidden: Bool) {
         self.blurView.isHidden.toggle()
     }
     
-    // MARK: - 이미지 및 색상 변경
+    /// 이미지 및 색상 변경
     private func changeCardData(type: DecorationCellType,
                                 color: UIColor? = nil,
                                 image: UIImage? = nil) {

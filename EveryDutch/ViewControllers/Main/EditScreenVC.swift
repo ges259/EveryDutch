@@ -472,8 +472,6 @@ extension EditScreenVC: CardDataCellDelegate,
         // 이미지 피커 띄우기
         self.configureImagePicker(isOpen: true, with: image)
     }
-    
-    // MARK: - Fix
 }
     
     
@@ -485,39 +483,9 @@ extension EditScreenVC: CardDataCellDelegate,
     
     
 
-// MARK: - [데코] 셀 업데이트 분기처리
-
+// MARK: - [데코] 셀 업데이트
 extension EditScreenVC {
-    
-    // MARK: - 블러 효과 변경
-    private func blurEffectChanged() {
-        // 추후 변경 예정
-        let booleanData: Bool = false
-        
-        self.updatedDecorationCellUI(data: booleanData) { cell in
-            cell.blurEffectIsHidden(booleanData)
-        }
-    }
-    
-    // MARK: - 이미지
-    private func updateImage(image: UIImage) {
-        self.updatedDecorationCellUI(data: image) { cell in
-            cell.imgIsChanged(image: image)
-        }
-    }
-    
-    // MARK: - 색상
-    private func updateColor(color: UIColor) {
-        self.updatedDecorationCellUI(data: color) { cell in
-            cell.colorIsChanged(color: color)
-        }
-    }
-    
-    
-    
-    
-    // MARK: - [셀 UI 업데이트]
-    // 변경된 데이터 처리 및 셀 업데이트
+    /// 변경된 데이터 처리 및 셀 업데이트
     func updatedDecorationCellUI(
         data: Any?,
         updateAction: @escaping (CardDecorationCell) -> Void)
@@ -531,23 +499,32 @@ extension EditScreenVC {
             self.customAlert(alertEnum: .roomDataError) { _ in return }
             return
         }
-        
         // 변경된 데이터 저장
         self.viewModel.saveChangedData(data: data)
         // 셀 업데이트
-        self.updateDecorationCell(at: changedData.indexPath, withUpdateAction: updateAction)
-        // 카드 이미지 뷰를 업데이트
-        self.cardImgView.updateCardView(type: changedData.type, data: data, onFailure: self.errorType(_:))
+        if let cell = self.tableView.cellForRow(at: changedData.indexPath) as? CardDecorationCell {
+            updateAction(cell)
+        }
     }
-    
-    // MARK: - 셀 업데이트
-    // 클로저를 통해 셀을 변경한다.
-    private func updateDecorationCell(
-        at indexPath: IndexPath,
-        withUpdateAction action: (CardDecorationCell) -> Void)
-    {
-        if let cell = tableView.cellForRow(at: indexPath) as? CardDecorationCell {
-            action(cell)
+    /// 블러 효과 변경
+    private func blurEffectChanged() {
+        // 추후 변경 예정
+        let booleanData: Bool = false
+        
+        self.updatedDecorationCellUI(data: booleanData) { cell in
+            cell.blurEffectIsHidden(booleanData)
+        }
+    }
+    /// 이미지
+    private func updateImage(image: UIImage) {
+        self.updatedDecorationCellUI(data: image) { cell in
+            cell.imgIsChanged(image: image)
+        }
+    }
+    /// 색상
+    private func updateColor(color: UIColor) {
+        self.updatedDecorationCellUI(data: color) { cell in
+            cell.colorIsChanged(color: color)
         }
     }
 }
@@ -564,8 +541,8 @@ extension EditScreenVC {
 // MARK: - 피커 뷰 액션
 
 extension EditScreenVC {
-    // 메인 설정 함수는 필요에 따라 각 설정 메소드를 호출
-    private func setPickerState(type: EditScreenPicker, 
+    /// 메인 설정 함수는 필요에 따라 각 설정 메소드를 호출
+    private func setPickerState(type: EditScreenPicker,
                                 isOpen: Bool,
                                 image: UIImage? = nil,
                                 color: UIColor? = nil) {
@@ -576,14 +553,21 @@ extension EditScreenVC {
             self.configureColorPicker(isOpen: isOpen, with: color)
         }
     }
-    // 색상 피커 설정
+    /// 색상 피커 설정
     private func configureColorPicker(isOpen: Bool, with color: UIColor? = nil) {
-        self.customColorPicker.setupColor(color: color)
+        if isOpen {
+            self.customColorPicker.setupColor(color: color)
+        }
         self.setPickerMode(for: .colorPicker, isOpen: isOpen)
     }
-    // 이미지 피커 설정
+    /// 이미지 피커 설정
     private func configureImagePicker(isOpen: Bool, with image: UIImage? = nil) {
-        self.customImagePicker.setupImage(image: image)
+        // open이라면,
+        if isOpen {
+            // 이미지 피커에 이미지 저장
+            self.customImagePicker.setupImage(image: image)
+        }
+        // 피러 모드 설정
         self.setPickerMode(for: .imagePicker, isOpen: isOpen)
     }
     
@@ -657,28 +641,29 @@ extension EditScreenVC: CustomPickerDelegate {
     func done<T>(with data: T) {
         // 현재 타입 가져오기
         guard let currentType = self.viewModel.getDecorationCellTypeTuple() else { return }
+        // 현재 데이터(색상 또는 이미지) 저장
         self.cardImgView.saveCurrentData(type: currentType.type)
+        
         switch data {
         case let image as UIImage:
             self.processImage(image)
-            
+            break
         case let color as UIColor:
             self.processColor(color)
-            
+            break
         default:
             self.errorType(.readError)
+            break
         }
     }
-    
-    // 이미지 저장
+    /// 이미지 저장
     private func processImage(_ image: UIImage) {
         // [셀] - 이미지 바꾸기 및 바뀐 이미지 저장
         self.updateImage(image: image)
         // 이미지 피커 안 보이게 하기
         self.configureImagePicker(isOpen: false, with: image)
     }
-    
-    // 색상 저장
+    /// 색상 저장
     private func processColor(_ color: UIColor) {
         // [셀] - 이미지 바꾸기 및 바뀐 이미지 저장
         self.updateColor(color: color)

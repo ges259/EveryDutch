@@ -28,9 +28,12 @@ class CustomImageCropView: UIView, UIGestureRecognizerDelegate {
         let view = UIView()
             view.layer.borderColor = UIColor.white.cgColor
             view.backgroundColor = .clear
-            view.layer.borderWidth = 2.0
+            view.layer.borderWidth = 2.5
         return view
     }()
+    
+    private let overlayViewTop: UIView = UIView()
+    private let overlayViewBottom: UIView = UIView()
     
     private let pinchGR: UIPinchGestureRecognizer = UIPinchGestureRecognizer()
     private let panGR: UIPanGestureRecognizer = UIPanGestureRecognizer()
@@ -42,13 +45,14 @@ class CustomImageCropView: UIView, UIGestureRecognizerDelegate {
     // MARK: - 프로퍼티
     weak var delegate: CustomPickerDelegate?
     
-    
+    private var currentImage: UIImage?
     
     
     
     // MARK: - 라이프사이클
     override init(frame: CGRect) {
         super.init(frame: .zero)
+        
         self.setupView()
         self.setupLayout()
         self.setupGestureRecognizers()
@@ -58,20 +62,25 @@ class CustomImageCropView: UIView, UIGestureRecognizerDelegate {
     }
 }
 
-// MARK: - 기본 설정
+// MARK: - 화면 기본 설정
 extension CustomImageCropView {
-    
-    // MARK: - 화면 설정
+    /// 화면 설정
     private func setupView() {
         self.backgroundColor = UIColor.deep_Blue
         self.clipsToBounds = true
         self.setRoundedCorners(.top, withCornerRadius: 12)
+        
+        [self.overlayViewTop, self.overlayViewBottom].forEach {
+            $0.backgroundColor = .black.withAlphaComponent(0.5)
+        }
     }
     
-    // MARK: - 오토레이아웃 설정
+    /// 오토레이아웃 설정
     private func setupLayout() {
         self.addSubview(self.imageView)
         self.addSubview(self.cropArea)
+        self.addSubview(self.overlayViewTop)
+        self.addSubview(self.overlayViewBottom)
         self.addSubview(self.toolbar)
         
         self.toolbar.snp.makeConstraints { make in
@@ -90,18 +99,32 @@ extension CustomImageCropView {
         }
     }
     
-    // MARK: - 제스쳐 설정
+    /// 제스쳐 설정
     private func setupGestureRecognizers() {
         self.pinchGR.addTarget(self, action: #selector(self.pinch(_:)))
         self.panGR.addTarget(self, action: #selector(self.pan(_:)))
         self.imageView.addGestureRecognizer(self.pinchGR)
         self.imageView.addGestureRecognizer(self.panGR)
         self.imageView.isUserInteractionEnabled = true
-        self.cropArea.isUserInteractionEnabled = false
+        
+        [self.cropArea,
+         self.overlayViewTop,
+         self.overlayViewBottom].forEach {
+            $0.isUserInteractionEnabled = false
+        }
     }
 }
 
-// MARK: - 이미지 설정 및 크롭
+
+
+
+
+
+
+
+
+
+// MARK: - 화면에 들어설 때 설정
 extension CustomImageCropView {
     /// 이미지 설정
     func setupImage(image: UIImage?) {
@@ -111,7 +134,13 @@ extension CustomImageCropView {
         }
         self.imageView.image = image.fixedOrientation()
         self.updateImageViewHeight(aspectRatio: image.size.height / image.size.width)
+        // DispatchQueue.main.async를 사용함으로써 비동기 작업 후 오버레이 업데이트
+        // 만약 사용하지 않는다면, 정상적으로 작동하지 않음
+        DispatchQueue.main.async {
+            self.setupOverlayViews()
+        }
     }
+    
     /// 이미지의 높이를 설정
     private func updateImageViewHeight(aspectRatio: CGFloat) {
         self.imagePickrHeight.deactivate()
@@ -121,23 +150,20 @@ extension CustomImageCropView {
         self.layoutIfNeeded()
         self.changeCardImageView()
     }
-    /// 크롭 액션
-    private func cropImage() -> UIImage? {
-        guard let image = self.imageView.image else { return nil }
-        
-        let scaleFactor = image.size.width / self.imageView.frame.size.width
+    
+    /// overlayViews 설정
+    private func setupOverlayViews() {
         let cropFrame = self.cropArea.frame
-        
-        let x = (cropFrame.origin.x - self.imageView.frame.origin.x) * scaleFactor
-        let y = (cropFrame.origin.y - self.imageView.frame.origin.y) * scaleFactor
-        let width = cropFrame.size.width * scaleFactor
-        let height = cropFrame.size.height * scaleFactor
-        let cropRect = CGRect(x: x, y: y, width: width, height: height)
-        
-        guard let cgImage = image.cgImage?.cropping(to: cropRect) else { return nil }
-        let croppedImage = UIImage(cgImage: cgImage)
-        
-        return croppedImage.fixedOrientation()
+        self.overlayViewTop.frame = CGRect(
+            x: 0,
+            y: 0,
+            width: self.bounds.width,
+            height: cropFrame.minY)
+        self.overlayViewBottom.frame = CGRect(
+            x: 0,
+            y: cropFrame.maxY,
+            width: self.bounds.width,
+            height: self.bounds.height - cropFrame.maxY)
     }
 }
 
@@ -187,23 +213,13 @@ extension CustomImageCropView {
         }
         
         if wentOutOfAllowedBounds {
-            self.generateHapticFeedback()
-            UIView.animate(withDuration: 0.3) {
-                self.imageView.transform = transform
+            UIView.animate(withDuration: 0.3) { [weak self] in
+                self?.imageView.transform = transform
             }
         }
     }
     
-    func generateHapticFeedback() {
-        if #available(iOS 10.0, *) {
-            let generator = UIImpactFeedbackGenerator(style: .light)
-            generator.impactOccurred()
-        }
-    }
-}
-
-// MARK: - 팬 액션
-extension CustomImageCropView {
+    // MARK: - 팬 액션
     @objc func pan(_ sender: UIPanGestureRecognizer) {
         let translation = sender.translation(in: self)
         if let view = sender.view {
@@ -216,7 +232,15 @@ extension CustomImageCropView {
             self.adjustBounds()
         }
     }
-    
+}
+
+
+
+
+
+// MARK: - 위치 조정 액션 이후 메서드
+extension CustomImageCropView {
+    /// pinch 및 pan액선 후 위치 재조정
     private func adjustBounds() {
         let imageRect = self.imageView.frame
         let cropRect = self.cropArea.frame
@@ -245,12 +269,33 @@ extension CustomImageCropView {
         }
         self.changeCardImageView()
     }
-    
+    /// 이미지를 크롭 후, EditScreenVC(-> CardImgView)로 delegate 전달
     private func changeCardImageView() {
         guard let croppedImage = self.cropImage() else { return }
+        self.currentImage = croppedImage
         self.delegate?.changedCropLocation(data: croppedImage)
     }
+    /// 크롭 액션
+    private func cropImage() -> UIImage? {
+        guard let image = self.imageView.image else { return nil }
+        
+        let scaleFactor = image.size.width / self.imageView.frame.size.width
+        let cropFrame = self.cropArea.frame
+        
+        let x = (cropFrame.origin.x - self.imageView.frame.origin.x) * scaleFactor
+        let y = (cropFrame.origin.y - self.imageView.frame.origin.y) * scaleFactor
+        let width = cropFrame.size.width * scaleFactor
+        let height = cropFrame.size.height * scaleFactor
+        let cropRect = CGRect(x: x, y: y, width: width, height: height)
+        
+        guard let cgImage = image.cgImage?.cropping(to: cropRect) else { return nil }
+        let croppedImage = UIImage(cgImage: cgImage)
+        
+        return croppedImage.fixedOrientation()
+    }
     
+    
+    // 제스쳐 관련 설정
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
     }
@@ -272,7 +317,6 @@ extension CustomImageCropView: ToolbarDelegate {
     }
     
     func saveBtnTapped() {
-        guard let croppedImage = self.cropImage() else { return }
-        self.delegate?.done(with: croppedImage)
+        self.delegate?.done(with: self.currentImage)
     }
 }
