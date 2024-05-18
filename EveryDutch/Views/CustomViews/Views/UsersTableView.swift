@@ -98,7 +98,7 @@ extension UsersTableView {
         
         self.btnStackView.snp.makeConstraints { make in
             make.top.leading.trailing.equalToSuperview()
-            make.height.equalTo(34)
+//            make.height.equalTo(34)
         }
         self.usersTableView.snp.makeConstraints { make in
             make.top.equalTo(self.btnStackView.snp.bottom)

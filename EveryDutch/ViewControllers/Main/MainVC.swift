@@ -125,9 +125,12 @@ final class MainVC: UIViewController {
     }
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        self.navigationController?.navigationBar.isHidden = true
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         self.isViewVisible = true
         self.processPendingUpdates()
-        self.navigationController?.navigationBar.isHidden = true
     }
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
@@ -138,9 +141,7 @@ final class MainVC: UIViewController {
             self.menuBtnTapped()
         }
     }
-    deinit {
-        print("\(#function)-----\(self)")
-    }
+    deinit { print("\(#function)-----\(self)") }
 }
 
 

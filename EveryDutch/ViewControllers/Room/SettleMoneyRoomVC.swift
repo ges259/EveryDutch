@@ -27,7 +27,7 @@ final class SettleMoneyRoomVC: UIViewController {
             SettlementTableViewCell.self,
             forCellReuseIdentifier: Identifier.settlementTableViewCell)
         // 테이블뷰 셀이 아래->위로 보이도록 설정
-        view.transform = CGAffineTransform(rotationAngle: -.pi)
+//        view.transform = CGAffineTransform(rotationAngle: -.pi)
         view.backgroundColor = .clear
         view.bounces = true
         return view
@@ -85,8 +85,8 @@ final class SettleMoneyRoomVC: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         self.isViewVisible = true
         self.processPendingUpdates()
     }
@@ -149,7 +149,7 @@ extension SettleMoneyRoomVC {
         
         // 영수증 테이블뷰 (영수증)
         self.receiptTableView.snp.makeConstraints { make in
-            make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(self.viewModel.minHeight + 5)
+            make.top.greaterThanOrEqualTo(self.view.safeAreaLayoutGuide.snp.top).offset(self.viewModel.minHeight + 5)
             make.leading.equalToSuperview().offset(10)
             make.trailing.equalToSuperview().offset(-10)
             make.bottom.equalTo(self.bottomBtn.snp.top).offset(-5)
@@ -326,8 +326,11 @@ extension SettleMoneyRoomVC {
             break
         case NotificationInfoString.initialLoad.notificationName:
             self.receiptTableView.reloadData()
+            self.scrollToBottom()
+            break
         case NotificationInfoString.added.notificationName:
             self.receiptTableView.insertRows(at: indexPaths, with: .automatic)
+            self.scrollToBottom()
             break
         case NotificationInfoString.removed.notificationName:
             self.receiptTableView.deleteRows(at: indexPaths, with: .automatic)
@@ -337,7 +340,6 @@ extension SettleMoneyRoomVC {
             break
         }
     }
-    
     /// 탑뷰의 높이를 업데이트 하기 전, 검사
     private func updateTopViewHeight() {
         // 탑뷰의 업데이트 플레그가 true라면,
@@ -502,7 +504,7 @@ extension SettleMoneyRoomVC: UITableViewDataSource {
         // 셀의 뷰모델을 셀에 넣기
         cell.configureCell(with: cellViewModel)
         // 테이블을 뒤집었?으므로, 셀도 뒤집어준다.
-        cell.transform = CGAffineTransform(rotationAngle: -.pi)
+//        cell.transform = CGAffineTransform(rotationAngle: -.pi)
         return cell
     }
 }
@@ -526,6 +528,17 @@ extension SettleMoneyRoomVC {
             && self.viewModel.isTopViewOpen {
             // topView 닫기
             self.closeTopView()
+        }
+    }
+    /// ReceiptTableView를 제일 아래로 스크롤하는 메서드
+    /// reload가 끝난 후 스크롤 하기 위해 DispatchQueue.main.async 사용
+    private func scrollToBottom() {
+        DispatchQueue.main.async {
+            let numOfRows = self.receiptTableView.numberOfRows(inSection: 0)
+            self.receiptTableView.scrollToRow(
+                at: IndexPath(row: (numOfRows - 1), section: 0),
+                at: .bottom,
+                animated: true)
         }
     }
 }

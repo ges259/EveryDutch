@@ -14,6 +14,7 @@ final class CardImageView: UIView {
     private var backgroundImg: UIImageView = {
         let img = UIImageView()
         img.backgroundColor = UIColor.medium_Blue
+        img.contentMode = .scaleAspectFit
         return img
     }()
     private var titleLbl: CustomLabel = CustomLabel(

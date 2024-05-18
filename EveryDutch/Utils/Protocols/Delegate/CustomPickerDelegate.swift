@@ -5,7 +5,7 @@
 //  Created by 계은성 on 4/27/24.
 //
 
-import Foundation
+import UIKit
 
 protocol CustomPickerDelegate: AnyObject {
     func cancel(type: EditScreenPicker)

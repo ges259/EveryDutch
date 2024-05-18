@@ -66,13 +66,106 @@ extension UIImage {
     static let record_Img: UIImage? = UIImage(systemName: "tray.full")
     static let settlement_Img: UIImage? = UIImage(systemName: "doc.text.fill")
     static let x_Mark_Img: UIImage? = UIImage(systemName: "xmark")
-    
-    
+}
+
+
+
+
+
+
+
+
+
+
+extension UIImage {
+    // MARK: - 이미지를 아래 방향으로 고정
+    func fixedOrientation() -> UIImage? {
+        guard let cgImage = self.cgImage else { return nil }
+
+        // 이미지의 방향이 이미 올바른 경우 바로 반환
+        if self.imageOrientation == .up {
+            return self
+        }
+
+        var transform = CGAffineTransform.identity
+
+        // 이미지의 방향에 따른 변환 설정
+        switch self.imageOrientation {
+        case .down, .downMirrored:
+            // 아래쪽으로 향한 이미지를 180도 회전
+            transform = transform.translatedBy(x: self.size.width, y: self.size.height)
+            transform = transform.rotated(by: .pi)
+        case .left, .leftMirrored:
+            // 왼쪽으로 향한 이미지를 90도 시계 방향으로 회전
+            transform = transform.translatedBy(x: self.size.width, y: 0)
+            transform = transform.rotated(by: .pi / 2)
+        case .right, .rightMirrored:
+            // 오른쪽으로 향한 이미지를 90도 반시계 방향으로 회전
+            transform = transform.translatedBy(x: 0, y: self.size.height)
+            transform = transform.rotated(by: -.pi / 2)
+        case .up, .upMirrored:
+            break
+        @unknown default:
+            return self
+        }
+
+        // 좌우 반전된 이미지 처리
+        switch self.imageOrientation {
+        case .upMirrored, .downMirrored:
+            // 상하 반전
+            transform = transform.translatedBy(x: self.size.width, y: 0)
+            transform = transform.scaledBy(x: -1, y: 1)
+        case .leftMirrored, .rightMirrored:
+            // 좌우 반전
+            transform = transform.translatedBy(x: self.size.height, y: 0)
+            transform = transform.scaledBy(x: -1, y: 1)
+        case .up, .down, .left, .right:
+            break
+        @unknown default:
+            return self
+        }
+
+        // 색상 공간 설정
+        guard let colorSpace = cgImage.colorSpace else { return nil }
+        // 컨텍스트 생성
+        guard let context = CGContext(data: nil, width: Int(self.size.width), height: Int(self.size.height), bitsPerComponent: cgImage.bitsPerComponent, bytesPerRow: 0, space: colorSpace, bitmapInfo: cgImage.bitmapInfo.rawValue) else { return nil }
+
+        // 변환 적용
+        context.concatenate(transform)
+
+        // 이미지 그리기
+        switch self.imageOrientation {
+        case .left, .leftMirrored, .right, .rightMirrored:
+            // 가로와 세로를 바꿔서 그리기
+            context.draw(cgImage, in: CGRect(x: 0, y: 0, width: self.size.height, height: self.size.width))
+        default:
+            // 원래 크기로 그리기
+            context.draw(cgImage, in: CGRect(x: 0, y: 0, width: self.size.width, height: self.size.height))
+        }
+
+        // 새로운 이미지 생성
+        guard let newCGImage = context.makeImage() else { return nil }
+        return UIImage(cgImage: newCGImage)
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+extension UIImage {
     func toCIImage() -> CIImage? {
         return self.ciImage ?? CIImage(cgImage: self.cgImage!)
     }
-    
 }
+
 
 internal extension CIImage {
     func toUIImage() -> UIImage {

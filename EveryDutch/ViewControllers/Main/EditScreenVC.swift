@@ -17,7 +17,6 @@ import Photos
  Decoration이 저장이 안 됨
  */
 final class EditScreenVC: UIViewController {
-    
     // MARK: - 레이아웃
     /// 스크롤뷰
     private lazy var scrollView: UIScrollView = {
@@ -565,19 +564,6 @@ extension EditScreenVC {
 // MARK: - 피커 뷰 액션
 
 extension EditScreenVC {
-    
-    // MARK: - [ 열기 / 닫기 ]
-    private func configureImagePicker(isOpen: Bool, with image: UIImage? = nil) {
-        self.customImagePicker.setupImage(image: image)
-        self.setPickerMode(for: .imagePicker, isOpen: isOpen)
-    }
-
-    // 색상 피커 설정
-    private func configureColorPicker(isOpen: Bool, with color: UIColor? = nil) {
-        self.customColorPicker.setupColor(color: color)
-        self.setPickerMode(for: .colorPicker, isOpen: isOpen)
-    }
-
     // 메인 설정 함수는 필요에 따라 각 설정 메소드를 호출
     private func setPickerState(type: EditScreenPicker, 
                                 isOpen: Bool,
@@ -590,21 +576,28 @@ extension EditScreenVC {
             self.configureColorPicker(isOpen: isOpen, with: color)
         }
     }
+    // 색상 피커 설정
+    private func configureColorPicker(isOpen: Bool, with color: UIColor? = nil) {
+        self.customColorPicker.setupColor(color: color)
+        self.setPickerMode(for: .colorPicker, isOpen: isOpen)
+    }
+    // 이미지 피커 설정
+    private func configureImagePicker(isOpen: Bool, with image: UIImage? = nil) {
+        self.customImagePicker.setupImage(image: image)
+        self.setPickerMode(for: .imagePicker, isOpen: isOpen)
+    }
     
-    
-    
-    // MARK: - [ 높이 설정 ]
+    /// [공통] picker 타입에 따른 설정
     private func setPickerMode(for picker: EditScreenPicker, isOpen: Bool) {
         // 현재 상태 저장
         self.viewModel.savePickerState(picker: picker, isOpen: isOpen)
         // 스크롤뷰 설정 변경
         self.disableScrollAndMoveToTop(isOpen: isOpen)
-        // 이미지 피커의 높이 재설정
+        // 피커의 높이 재설정
         self.adjustPickerHeight(for: picker, isOpen: isOpen)
     }
-    
     /// 화면 상단 고정
-    func disableScrollAndMoveToTop(isOpen: Bool) {
+    private func disableScrollAndMoveToTop(isOpen: Bool) {
         if isOpen {
             // 스크롤뷰의 contentOffset을 (0,0)으로 설정하여 맨 위로 이동
             self.scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
@@ -612,7 +605,6 @@ extension EditScreenVC {
         // 스크롤 기능을 비활성화
         self.scrollView.isScrollEnabled = !isOpen
     }
-    
     /// 이미지 피커 높이 재설정
     private func adjustPickerHeight(for picker: EditScreenPicker, isOpen: Bool) {
         // 높이 설정
@@ -632,8 +624,6 @@ extension EditScreenVC {
         }
     }
 }
-
-
 
 
 
