@@ -450,20 +450,24 @@ extension EditScreenVC: UITableViewDataSource {
 extension EditScreenVC: CardDataCellDelegate,
                         ImagePickerDelegate {
     
+    // MARK: - 텍스트 변경
     func textData(cell: CardDataCell, type: EditCellType, text: String) {
         // 선택된 셀의 IndexPath 저장
-        let row = self.saveTextFieldsIndexPath(cell: cell)
+        // row가져오기 및 옵셔널 바인딩(존재하는지 확인)
+        guard let row = self.saveTextFieldsIndexPath(cell), 
+                row >= 0
+        else { return }
         // 변경된 텍스트 데이터 저장
         self.viewModel.saveChangedData(data: text)
         // 카드 텍스트 변경
-        self.cardImgView.updateDataCellText(indexPath: row, text: text)
+        self.cardImgView.updateDataCellText(index: row, text: text)
     }
-    private func saveTextFieldsIndexPath(cell: CardDataCell) -> Int {
+    private func saveTextFieldsIndexPath(_ cell: CardDataCell) -> Int? {
         if let indexPath = self.tableView.indexPath(for: cell) {
             self.viewModel.saveCurrentIndex(indexPath: indexPath)
             return indexPath.row
         }
-        return -1
+        return nil
     }
     
     
@@ -555,16 +559,18 @@ extension EditScreenVC {
     }
     /// 색상 피커 설정
     private func configureColorPicker(isOpen: Bool, with color: UIColor? = nil) {
+        // 피커를 여는 상황이라면,
         if isOpen {
+            // 색상 변경
             self.customColorPicker.setupColor(color: color)
         }
         self.setPickerMode(for: .colorPicker, isOpen: isOpen)
     }
     /// 이미지 피커 설정
     private func configureImagePicker(isOpen: Bool, with image: UIImage? = nil) {
-        // open이라면,
+        // 피커를 여는 상황이라면,
         if isOpen {
-            // 이미지 피커에 이미지 저장
+            // 이미지 변경
             self.customImagePicker.setupImage(image: image)
         }
         // 피러 모드 설정

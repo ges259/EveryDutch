@@ -143,7 +143,9 @@ extension CardDataCell: UITextFieldDelegate {
     // MARK: - 수정 끝
     func textFieldDidEndEditing(_ textField: UITextField) {
         guard let cellType = self.cellType else { return }
-        self.delegate?.textData(cell: self, type: cellType, text: textField.text ?? "")
+        self.delegate?.textData(cell: self, 
+                                type: cellType,
+                                text: textField.text ?? "")
     }
 }
 

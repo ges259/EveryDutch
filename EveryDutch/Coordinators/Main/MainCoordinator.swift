@@ -45,9 +45,7 @@ final class MainCoordinator: MainCoordProtocol{
     // MARK: - start
     // MainViewController 띄우기
     func start() {
-        DispatchQueue.main.async {
-            self.mainScreen()
-        }
+        self.mainScreen()
     }
     func startMakeUser() {
         self.mainScreen()

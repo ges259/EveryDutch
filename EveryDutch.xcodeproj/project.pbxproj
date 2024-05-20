@@ -684,6 +684,7 @@
 		5F1B974F2BD58F9200BAE2D0 /* ColorSelectView */ = {
 			isa = PBXGroup;
 			children = (
+				5F67CA692BD5ED6000FD5735 /* CustomColorPicker.swift */,
 				5F1B97522BD58FE300BAE2D0 /* SliderHandleView.swift */,
 				5F1B97542BD58FFB00BAE2D0 /* SliderTrackView.swift */,
 				5F1B97562BD5901300BAE2D0 /* ChromaBrightnessSlider.swift */,
@@ -880,7 +881,6 @@
 				5F2F7A772B3ECD91004B136F /* CardImageView.swift */,
 				5F729BFC2B6D291A00F3DDCA /* TableHeaderView.swift */,
 				5F729BFE2B6D293500F3DDCA /* TableFooterView.swift */,
-				5F67CA692BD5ED6000FD5735 /* CustomColorPicker.swift */,
 				5F2061212BE7359100AB44F2 /* CustomTimePicker.swift */,
 				5F2061232BE7542F00AB44F2 /* ReceiptWriteTableFooterView.swift */,
 			);

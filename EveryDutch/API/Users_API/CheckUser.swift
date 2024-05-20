@@ -16,22 +16,19 @@ final class AuthAPI: AuthAPIProtocol {
     
     // MARK: - 로그인 여부 확인
     func checkLogin() async throws {
-        guard let user = Auth.auth().currentUser else {
-            throw ErrorEnum.NotLoggedIn
-        }
-        
-        return try await withCheckedThrowingContinuation
-        { (continuation: CheckedContinuation<Void, Error>) in
-            USER_REF
-                .child(user.uid)
-                .observeSingleEvent(of: .value) { snapshot in
-                    guard snapshot.exists() else {
-                        continuation.resume(throwing: ErrorEnum.NoPersonalID)
-                        return
-                    }
-                    // 사용자 ID가 존재하면 정상적으로 계속 진행
+        print(#function)
+        return try await withCheckedThrowingContinuation { continuation in
+            Auth.auth().addStateDidChangeListener { _, user in
+                if let user = user {
+                    // 사용자가 로그인되어 있음
+                    print("User is logged in: \(user.uid)")
                     continuation.resume(returning: ())
+                } else {
+                    // 사용자가 로그인되어 있지 않음
+                    print("User is not logged in")
+                    continuation.resume(throwing: ErrorEnum.NotLoggedIn)
                 }
+            }
         }
     }
     

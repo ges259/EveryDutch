@@ -21,7 +21,9 @@ extension RoomDataManager {
                 
                 break
             case .failure(_):
-                print("영수증영수증 가져오기 실패")
+                DispatchQueue.main.async {
+                    print("영수증영수증 가져오기 실패")
+                }
                 break
             }
         }
@@ -38,7 +40,9 @@ extension RoomDataManager {
                 break
                 
             case .failure(_):
-                print("Receipt 옵저버 실패")
+                DispatchQueue.main.async {
+                    print("Receipt 옵저버 실패")
+                }
                 break
             }
         }

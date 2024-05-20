@@ -44,7 +44,11 @@ extension RoomsAPI {
             }
             for key in value.keys {
                 saveGroup.enter()
-                self.readRoomsData(roomID: key) { result in
+                self.readRoomsData(roomID: key) { [weak self] result in
+                    guard let self = self else {
+                        saveGroup.leave()
+                        return
+                    }
                     switch result {
                     case .success(let room):
                         returnRooms[key] = room
@@ -123,7 +127,8 @@ extension RoomsAPI {
                 completion(.failure(.readError))
                 return
             }
-            self.readRoomsData(roomID: roomID) { result in
+            self.readRoomsData(roomID: roomID) { [weak self] result in
+                guard let self = self else { return }
                 switch result {
                 case .success(let room):
                     completion(.success(.added([roomID: room])))

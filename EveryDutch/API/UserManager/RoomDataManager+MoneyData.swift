@@ -23,9 +23,8 @@ extension RoomDataManager {
             switch result {
             case .success(let moneyData):
                 print("cumulativeMoney 성공")
-                DispatchQueue.main.async {
-                    self.updateCumulativeAmount(moneyData)
-                }
+                self.updateCumulativeAmount(moneyData)
+                
                 break
             case .failure:
                 DispatchQueue.main.async {
@@ -90,7 +89,7 @@ extension RoomDataManager {
     private func saveChangedIndexPaths(indexPath: IndexPath) {
         // 인덱스패스가 포함되어있지 않다면
         if !self.changedIndexPaths.contains(indexPath) {
-            // 이덱스패스 저장
+            // 이덱스패스 저장1
             self.changedIndexPaths.append(indexPath)
         }
     }
@@ -110,13 +109,11 @@ extension RoomDataManager {
     
     /// 디바운싱 완료 후 노티피케이션 전송
     private func postDebounceNotification() {
-        DispatchQueue.main.async {
-            // 데이터 업데이트 후 노티피케이션 전송 로직은 유지
-            self.postNotification(name: .financialDataUpdated,
-                                  eventType: .updated,
-                                  indexPath: self.changedIndexPaths)
-            self.resetDebounceState()
-        }
+        // 데이터 업데이트 후 노티피케이션 전송 로직은 유지
+        self.postNotification(name: .financialDataUpdated,
+                              eventType: .updated,
+                              indexPath: self.changedIndexPaths)
+        self.resetDebounceState()
     }
     
     /// 디바운싱 상태 초기화

@@ -55,7 +55,8 @@ final class RoomDataManager: RoomDataManagerProtocol {
     /// 디바운스 타이머
     var debounceWorkItem: DispatchWorkItem?
     let debounceInterval: CGFloat = 1.5  // 1.5초 후에 실행
-    let queue = DispatchQueue(label: "room-data-manager-queue")
+    let queue = DispatchQueue(label: "room-data-manager-queue",
+                              qos: .userInitiated)
 
     
 
@@ -92,14 +93,16 @@ final class RoomDataManager: RoomDataManagerProtocol {
         eventType: NotificationInfoString,
         indexPath: [IndexPath])
     {
-        // 비어있다면, 노티피케이션을 post하지 않음
-        guard !indexPath.isEmpty else { return }
-        // 노티피케이션 전송
-        NotificationCenter.default.post(
-            name: name,
-            object: nil,
-            userInfo: [eventType.notificationName: indexPath]
-        )
+//        DispatchQueue.main.async {
+            // 비어있다면, 노티피케이션을 post하지 않음
+            guard !indexPath.isEmpty else { return }
+            // 노티피케이션 전송
+            NotificationCenter.default.post(
+                name: name,
+                object: nil,
+                userInfo: [eventType.notificationName: indexPath]
+            )
+//        }
     }
     
     // MARK: - 초기화

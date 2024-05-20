@@ -76,20 +76,22 @@ extension SplashScreenVC {
 
 extension SplashScreenVC {
     
-    // MARK: - 성공 시 메인 화면으로 이동
+    // MARK: - 성공 시
     private func configureSuccess() {
+        // 메인 화면으로 이동
         self.coordinator.mainScreen()
     }
     
     // MARK: - 에러 설정
+    @MainActor
     private func configureError(with errorType: ErrorEnum) {
         switch errorType {
         case .NotLoggedIn:
-            // MARK: - 유저 생성 화면으로 이동
+            // 유저 생성 화면으로 이동
             self.coordinator.selectALoginMethodScreen()
             break
             
-            // MARK: - 로그인 선택 화면으로 이동
+            // 로그인 선택 화면으로 이동
         case .NoPersonalID:
             self.coordinator.mainToMakeUser()
             break

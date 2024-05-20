@@ -17,7 +17,8 @@ final class CardImageView: UIView {
         img.contentMode = .scaleAspectFit
         return img
     }()
-    private var titleLbl: CustomLabel = CustomLabel(
+    private lazy var titleLbl: CustomLabel = CustomLabel(
+        text: self.defaultText(for: 0),
         font: .boldSystemFont(ofSize: 25))
     
     private var iconImg: UIImageView = UIImageView(
@@ -28,7 +29,8 @@ final class CardImageView: UIView {
     private var lineView: UIView = UIView.configureView(
         color: UIColor.deep_Blue)
     
-    private var nameLbl: CustomLabel = CustomLabel(
+    private lazy var nameLbl: CustomLabel = CustomLabel(
+        text: self.defaultText(for: 1),
         textColor: .placeholder_gray,
         font: UIFont.systemFont(ofSize: 13))
     
@@ -86,9 +88,6 @@ extension CardImageView {
             view.setRoundedCorners(.all, withCornerRadius: 10)
         }
         self.backgroundColor = .medium_Blue
-        // MARK: - Fix
-        self.titleLbl.text = "더치더치"
-        self.nameLbl.text = "DUCTCH"
     }
     
     /// 오토레이아웃 설정
@@ -285,18 +284,27 @@ extension CardImageView {
 
 // MARK: - [데이터] 데이터 업데이트
 extension CardImageView {
-    func updateDataCellText(indexPath: Int, text: String?) {
-        switch indexPath {
-        case 0:
-            self.titleLbl.text = text
-            break
-            
-        case 1: 
-            self.nameLbl.text = text
-            break
-            
+    func updateDataCellText(index: Int, text: String) {
+        let newText = text == ""
+        ? self.defaultText(for: index)
+        : text
+        
+        switch index {
+        case 0: self.titleLbl.text = newText
+        case 1: self.nameLbl.text = newText
         default:
             break
+        }
+    }
+    
+    private func defaultText(for index: Int) -> String {
+        switch index {
+        case 0:
+            return "더치더치"
+        case 1:
+            return "DUTCH"
+        default:
+            return ""
         }
     }
 }

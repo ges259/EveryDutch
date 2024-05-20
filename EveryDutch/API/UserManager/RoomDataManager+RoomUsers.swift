@@ -30,8 +30,10 @@ extension RoomDataManager {
                 break
                 
             case .failure(let errorEnum):
-                print("users 실패")
-                completion(.failure(errorEnum))
+                DispatchQueue.main.async {
+                    print("users 실패")
+                    completion(.failure(errorEnum))
+                }
                 break
             }
         }
@@ -50,7 +52,9 @@ extension RoomDataManager {
                 
                 break
             case .failure(_):
-                print("방 옵저버 가져오기 실패")
+                DispatchQueue.main.async {
+                    print("방 옵저버 가져오기 실패")
+                }
                 break
             }
         }
