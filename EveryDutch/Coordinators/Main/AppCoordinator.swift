@@ -34,7 +34,7 @@ final class AppCoordinator: AppCoordProtocol {
     init(nav: UINavigationController) {
         self.nav = nav
     }
-    
+    deinit { print("\(#function)-----\(self)") }
     
     // MARK: - Start
     func start() {
@@ -44,7 +44,6 @@ final class AppCoordinator: AppCoordProtocol {
     
     // MARK: - 스플레시 화면
     func splashScreen() {
-        
         let splashScreenVM = SplashScreenVM(
             authAPI: AuthAPI.shared,
             roomDataManager: RoomDataManager.shared)
@@ -61,7 +60,6 @@ final class AppCoordinator: AppCoordProtocol {
     // MARK: - 메인화면
     /// 메인화면으로 이동
     func mainScreen() {
-        
         let mainCoordinator = MainCoordinator(
             nav: self.nav)
         // 유저
@@ -72,7 +70,6 @@ final class AppCoordinator: AppCoordProtocol {
         
         self.transitionAndRemoveSplashVC()
     }
-    
     func mainToMakeUser() {
         let mainCoordinator = MainCoordinator(
             nav: self.nav)
@@ -105,11 +102,8 @@ final class AppCoordinator: AppCoordProtocol {
     
     
     // MARK: - didFinish
+    @MainActor
     func didFinish() {
         self.parentCoordinator?.removeChildCoordinator(child: self)
-    }
-    
-    deinit {
-        print("\(#function)-----\(self)")
     }
 }

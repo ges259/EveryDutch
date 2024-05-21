@@ -53,7 +53,7 @@ final class CustomColorPicker: UIView {
         super.init(frame: .zero)
         
         self.setupView()
-        self.setupAutoLayaout()
+        self.setupAutoLayout()
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -61,11 +61,17 @@ final class CustomColorPicker: UIView {
     
     
     
-    
-    
-    
-    
-    
+//    
+//    
+//    
+//    private lazy var pickerStackView: UIStackView = UIStackView.configureStv(
+//        arrangedSubviews: [self.colorPicker,
+//                           self.brightnessSlider],
+//        axis: .vertical,
+//        spacing: 20,
+//        alignment: .center,
+//        distribution: .fill)
+//    
     
     
     // MARK: - 화면 설정
@@ -76,37 +82,108 @@ final class CustomColorPicker: UIView {
         self.addShadow(shadowType: .top)
         
         self.setRoundedCorners(.top, withCornerRadius: 12)
-    }
-    
-    // MARK: - 오토레이아웃 설정
-    private func setupAutoLayaout() {
-        self.addSubview(self.colorPicker)
-        self.addSubview(self.brightnessSlider)
-        self.addSubview(self.toolbar)
         
         self.colorPicker.connect(self.brightnessSlider)
         self.colorPicker.addHandle(self.homeHandle)
+    }
+    
+    // MARK: - 오토레이아웃 설정
+    private var pickerStackViewWidthConstraint: Constraint!
+    
+
+    private func setupAutoLayout() {
+        self.addSubview(self.colorPicker)
+        self.addSubview(self.brightnessSlider)
+        self.addSubview(self.toolbar)
         
         self.toolbar.snp.makeConstraints { make in
             make.top.leading.trailing.equalToSuperview()
             make.height.equalTo(50)
         }
-        self.colorPicker.snp.makeConstraints { make in
-            make.size.equalTo(250)
-            make.center.equalToSuperview()
-        }
         self.brightnessSlider.snp.makeConstraints { make in
-            make.top.equalTo(self.colorPicker.snp.bottom).offset(30)
-            make.leading.trailing.equalTo(self.colorPicker)
-            make.height.equalTo(50)
+            make.bottom.equalToSuperview().offset(-30)
+            make.height.equalTo(40)
+            make.width.equalTo(UIScreen.main.bounds.width - 80)
+            make.centerX.equalToSuperview()
+        }
+        self.colorPicker.snp.makeConstraints { make in
+            make.top.equalTo(self.toolbar.snp.bottom).offset(10)
+            make.bottom.greaterThanOrEqualTo(self.brightnessSlider.snp.top).offset(-10)
+            make.centerX.equalToSuperview()
+            self.pickerStackViewWidthConstraint = make.width.greaterThanOrEqualTo(0).constraint
+            
         }
     }
     
-    func setupColor(color: UIColor?) {
-        
+    func updateConstraintsForExpandedState(isExpanded: Bool) {
+        if isExpanded {
+            self.pickerStackViewWidthConstraint?.deactivate()
+            self.colorPicker.snp.makeConstraints { make in
+                self.pickerStackViewWidthConstraint =
+                make.width.equalTo(self.colorPicker.frame.height).constraint
+            }
+            self.layoutIfNeeded()
+        }
     }
 }
 
+/*
+ // 마지막 성공 버전
+ self.brightnessSlider.snp.makeConstraints { make in
+     make.bottom.equalToSuperview().offset(-30)
+     make.height.equalTo(40)
+     make.width.equalTo(UIScreen.main.bounds.width - 60)
+     make.centerX.equalToSuperview()
+ }
+ self.colorPicker.snp.makeConstraints { make in
+     make.top.equalTo(self.toolbar.snp.bottom).offset(10)
+     make.bottom.greaterThanOrEqualTo(self.brightnessSlider.snp.top).offset(-10)
+     make.centerX.equalToSuperview()
+     self.pickerStackViewWidthConstraint = make.width.greaterThanOrEqualTo(0).constraint
+ }
+ func updateConstraintsForExpandedState(isExpanded: Bool) {
+     if isExpanded {
+         self.pickerStackViewWidthConstraint?.deactivate()
+         self.colorPicker.snp.makeConstraints { make in
+             self.pickerStackViewWidthConstraint =
+             make.width.equalTo(self.colorPicker.frame.height).constraint
+         }
+         self.layoutIfNeeded()
+     }
+ }
+ */
+
+/*
+ self.brightnessSlider.snp.makeConstraints { make in
+     make.bottom.equalToSuperview().offset(-30)
+     make.height.equalTo(40)
+     make.width.equalTo(UIScreen.main.bounds.width - 60)
+     make.centerX.equalToSuperview()
+ }
+ 
+ self.colorPicker.snp.makeConstraints { make in
+     make.top.equalTo(self.toolbar.snp.bottom).offset(30)
+     make.bottom.equalTo(self.brightnessSlider.snp.top).offset(-30)
+     make.centerX.equalToSuperview()
+     make.width.greaterThanOrEqualTo(UIScreen.main.bounds.width - 60)
+     self.customSize = make.height.greaterThanOrEqualTo(self.colorPicker.snp.width).constraint
+ */
+/*
+ 
+ self.brightnessSlider.snp.makeConstraints { make in
+     make.bottom.equalToSuperview().offset(-30)
+     make.height.equalTo(40)
+     make.leading.trailing.equalToSuperview().inset(30)
+ }
+ 
+ self.colorPicker.snp.makeConstraints { make in
+     make.top.equalTo(self.toolbar.snp.bottom).offset(30)
+     make.bottom.equalTo(self.brightnessSlider.snp.top).offset(-30)
+     make.centerX.equalToSuperview()
+     make.width.equalTo(self.colorPicker.snp.height)
+     make.width.greaterThanOrEqualTo(UIScreen.main.bounds.width - 60)
+ }
+ */
 
 
 

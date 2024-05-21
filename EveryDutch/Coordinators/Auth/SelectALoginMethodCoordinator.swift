@@ -36,54 +36,60 @@ final class SelectALoginMethodCoordinator: SelectALoginMethodCoordProtocol {
     
     // MARK: - 로그인 선택 화면
     private func selectALoginMethodScreen() {
-        let selectALoginMethodVM = SelectALoginMethodVM(
-            authAPI: AuthAPI.shared)
-        
-        let selectALoginMethodVC = SelectALoginMethodVC(
-            viewModel: selectALoginMethodVM,
-            coordinator: self)
-        
-        let selectALoginMethodNav = UINavigationController(
-            rootViewController: selectALoginMethodVC)
-        
-        selectALoginMethodNav.modalPresentationStyle = .fullScreen
-        
-        
-        let animated = self.nav.topViewController is MainVC
-        
-        self.nav.present(selectALoginMethodNav,
-                         animated: animated)
-        
-        // 네비게이션 컨트롤러 참조 저장
-        self.nav = selectALoginMethodNav
+        DispatchQueue.main.async {
+            let selectALoginMethodVM = SelectALoginMethodVM(
+                authAPI: AuthAPI.shared)
+            
+            let selectALoginMethodVC = SelectALoginMethodVC(
+                viewModel: selectALoginMethodVM,
+                coordinator: self)
+            
+            let selectALoginMethodNav = UINavigationController(
+                rootViewController: selectALoginMethodVC)
+            
+            selectALoginMethodNav.modalPresentationStyle = .fullScreen
+            
+            let animated = self.nav.topViewController is MainVC
+            
+            self.nav.present(selectALoginMethodNav,
+                             animated: animated)
+            
+            // 네비게이션 컨트롤러 참조 저장
+            self.nav = selectALoginMethodNav
+        }
     }
     
     
     // MARK: - 메인 화면
+    /// MainVC로 이동
     func navigateToMain() {
-        let mainCoordinator = MainCoordinator(
-            nav: self.nav)
-        self.childCoordinators.append(mainCoordinator)
-        
-        mainCoordinator.parentCoordinator = self
-        mainCoordinator.start()
-        
-        self.transitionAndRemoveVC(
-            from: self.nav,
-            viewControllerType: SelectALoginMethodVC.self)
+        DispatchQueue.main.async {
+            let mainCoordinator = MainCoordinator(
+                nav: self.nav)
+            self.childCoordinators.append(mainCoordinator)
+            
+            mainCoordinator.parentCoordinator = self
+            mainCoordinator.start()
+            
+            self.transitionAndRemoveVC(
+                from: self.nav,
+                viewControllerType: SelectALoginMethodVC.self)
+        }
     }
     
     
     // MARK: - 유저 생성 화면
+    /// MainVC를 거쳐 EditScreenVC로 이동
     func mainToMakeUser() {
-        let mainCoordinator = MainCoordinator(
-            nav: self.nav)
-        self.childCoordinators.append(mainCoordinator)
-        mainCoordinator.parentCoordinator = self
-        mainCoordinator.startMakeUser()
-        self.transitionAndRemoveVC(
-            from: self.nav,
-            viewControllerType: SelectALoginMethodVC.self)
+        DispatchQueue.main.async {
+            let mainCoordinator = MainCoordinator(nav: self.nav)
+            self.childCoordinators.append(mainCoordinator)
+            mainCoordinator.parentCoordinator = self
+            mainCoordinator.startMakeUser()
+            self.transitionAndRemoveVC(
+                from: self.nav,
+                viewControllerType: SelectALoginMethodVC.self)
+        }
     }
     
     func didFinish() {

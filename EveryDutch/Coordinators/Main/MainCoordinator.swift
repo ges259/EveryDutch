@@ -49,15 +49,14 @@ final class MainCoordinator: MainCoordProtocol{
     }
     func startMakeUser() {
         self.mainScreen()
-        self.profileEditScreen(isMakeUserMode: true)
+        self.ProfileEditScreen(isMakeUserMode: true)
     }
     
     
     // MARK: - 메인 화면
     private func mainScreen() {
         // 뷰모델 인스턴스 생성 (이 부분이 추가됨)
-        let mainViewModel = MainVM(
-            roomDataManager: RoomDataManager.shared)
+        let mainViewModel = MainVM(roomDataManager: RoomDataManager.shared)
         // 뷰컨트롤러 인스턴스 생성 및 뷰모델 주입
         let mainVC = MainVC(viewModel: mainViewModel,
                             coordinator: self)
@@ -100,13 +99,16 @@ final class MainCoordinator: MainCoordProtocol{
     
     
     
-    // MARK: - 프로필 수정 화면 (생성)
-    /// 플러스 버튼을 누르면 화면 이동
-    func profileEditScreen(isMakeUserMode: Bool = false) {
+    
+    
+    // MARK: - EditScreen
+    /// 프로필 생성 화면,
+    /// 첫 로그인 시 유저의 프로필을 생성할  때,
+    func ProfileEditScreen(isMakeUserMode: Bool = false) {
         // Main-Coordinator 생성
         let editScreenVCCoordinator = EditScreenCoordinator(
             nav: self.nav,
-            isProfileEdit: true,
+            isMakeProfile: true,
             isMakeUserMode: isMakeUserMode,
             DataRequiredWhenInEidtMode: nil)
         self.moveToEditScreenVCCoord(to: editScreenVCCoordinator)
@@ -115,11 +117,12 @@ final class MainCoordinator: MainCoordProtocol{
     
     
     // MARK: - 방 수정 스크린 (생성)
+    /// 플러스 버튼을 누르면 화면 이동
     func roomEditScreen() {
         // Main-Coordinator 생성
         let editScreenVCCoordinator = EditScreenCoordinator(
             nav: self.nav,
-            isProfileEdit: false, 
+            isMakeProfile: false, 
             DataRequiredWhenInEidtMode: nil)
         self.moveToEditScreenVCCoord(to: editScreenVCCoordinator)
     }
@@ -141,17 +144,19 @@ final class MainCoordinator: MainCoordProtocol{
     
     // MARK: - 로그인 선택 화면
     func selectALgoinMethodScreen() {
-        // SettleMoneyRoomCoordinator 생성
-        let selectALoginMethodCoordinator = SelectALoginMethodCoordinator(
-            nav: self.nav)
-        self.childCoordinators.append(selectALoginMethodCoordinator)
-        // 부모 코디네이터가 자신이라는 것을 명시 (뒤로가기 할 때 필요)
-        selectALoginMethodCoordinator.parentCoordinator = self
-        selectALoginMethodCoordinator.start()
-        
-        self.transitionAndRemoveVC(
-            from: self.nav,
-            viewControllerType: MainVC.self)
+        DispatchQueue.main.async {
+            // SettleMoneyRoomCoordinator 생성
+            let selectALoginMethodCoordinator = SelectALoginMethodCoordinator(
+                nav: self.nav)
+            self.childCoordinators.append(selectALoginMethodCoordinator)
+            // 부모 코디네이터가 자신이라는 것을 명시 (뒤로가기 할 때 필요)
+            selectALoginMethodCoordinator.parentCoordinator = self
+            selectALoginMethodCoordinator.start()
+            
+            self.transitionAndRemoveVC(
+                from: self.nav,
+                viewControllerType: MainVC.self)
+        }
     }
     
     

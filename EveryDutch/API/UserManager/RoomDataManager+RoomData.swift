@@ -16,14 +16,18 @@ extension RoomDataManager {
             guard let self = self else { return }
             switch result {
             case .success(let initialLoad):
-                print("방 가져오기 성공")
-                self.updateRooms(initialLoad)
-                self.observeRooms()
-                completion(.success(()))
+                DispatchQueue.main.async {
+                    print("방 가져오기 성공")
+                    self.updateRooms(initialLoad)
+                    self.observeRooms()
+                    completion(.success(()))
+                }
                 break
             case .failure(_):
-                print("방 가져오기 실패")
-                completion(.failure(.readError))
+                DispatchQueue.main.async {
+                    print("방 가져오기 실패")
+                    completion(.failure(.readError))
+                }
                 break
             }
         }

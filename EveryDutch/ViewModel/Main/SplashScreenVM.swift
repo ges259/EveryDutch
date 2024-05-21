@@ -47,9 +47,13 @@ final class SplashScreenVM: SplashScreenVMProtocol {
             guard let self = self else { return }
             switch result {
             case .success():
-                self.successClosure?()
+                DispatchQueue.main.async {
+                    self.successClosure?()
+                }
             case .failure(let error):
-                self.errorClosure?(error)
+                DispatchQueue.main.async {
+                    self.errorClosure?(error)
+                }
             }
         }
     }

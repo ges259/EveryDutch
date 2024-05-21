@@ -9,7 +9,7 @@ import UIKit
 
 protocol MainCoordProtocol: Coordinator {
     func startMakeUser()
-    func profileEditScreen(isMakeUserMode: Bool)
+    func ProfileEditScreen(isMakeUserMode: Bool)
     func roomEditScreen()
     
     func settlementMoneyRoomScreen()

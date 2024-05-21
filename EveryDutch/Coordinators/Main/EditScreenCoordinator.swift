@@ -50,14 +50,14 @@ final class EditScreenCoordinator: NSObject, EditScreenCoordProtocol {
     // MARK: - 라이프사이클
     // 의존성 주입
     init(nav: UINavigationController, 
-         isProfileEdit: Bool,
+         isMakeProfile: Bool,
          isMakeUserMode: Bool = false,
          DataRequiredWhenInEidtMode: String? = nil)
     {
         self.nav = nav
         self.isMakeUserMode = isMakeUserMode
         self.dataRequiredWhenInEidtMode = DataRequiredWhenInEidtMode
-        self.isProfileEdit = isProfileEdit
+        self.isProfileEdit = isMakeProfile
     }
     deinit { print("\(#function)-----\(self)") }
     
@@ -77,7 +77,6 @@ final class EditScreenCoordinator: NSObject, EditScreenCoordProtocol {
             let profileEditVM = EditScreenVM(
                 screenType: ProfileEditEnum.self,
                 dataRequiredWhenInEidtMode: self.dataRequiredWhenInEidtMode)
-            
             return EditScreenVC(viewModel: profileEditVM, coordinator: self)
         }
     }

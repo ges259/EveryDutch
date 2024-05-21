@@ -93,7 +93,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
         eventType: NotificationInfoString,
         indexPath: [IndexPath])
     {
-//        DispatchQueue.main.async {
+        DispatchQueue.main.async {
             // 비어있다면, 노티피케이션을 post하지 않음
             guard !indexPath.isEmpty else { return }
             // 노티피케이션 전송
@@ -102,7 +102,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
                 object: nil,
                 userInfo: [eventType.notificationName: indexPath]
             )
-//        }
+        }
     }
     
     // MARK: - 초기화

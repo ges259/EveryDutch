@@ -426,7 +426,7 @@ extension EditScreenVC: UITableViewDataSource {
             self.blurEffectChanged()
             break
         case .titleColor, .nameColor:
-            self.configureColorPicker(isOpen: true, with: nil)
+            self.configureColorPicker(isOpen: true)
             break
         case .background:
             // 이미지 권한 확인 -> 문제 없으면, 이미지 피커로 이동
@@ -554,17 +554,12 @@ extension EditScreenVC {
         case .imagePicker:
             self.configureImagePicker(isOpen: isOpen, with: image)
         case .colorPicker:
-            self.configureColorPicker(isOpen: isOpen, with: color)
+            self.configureColorPicker(isOpen: isOpen)
         }
     }
     /// 색상 피커 설정
-    private func configureColorPicker(isOpen: Bool, with color: UIColor? = nil) {
-        // 피커를 여는 상황이라면,
-        if isOpen {
-            // 색상 변경
-            self.customColorPicker.setupColor(color: color)
-        }
-        self.setPickerMode(for: .colorPicker, isOpen: isOpen)
+    private func configureColorPicker(isOpen: Bool) {        self.setPickerMode(for: .colorPicker, isOpen: isOpen)
+        self.customColorPicker.updateConstraintsForExpandedState(isExpanded: isOpen)
     }
     /// 이미지 피커 설정
     private func configureImagePicker(isOpen: Bool, with image: UIImage? = nil) {
@@ -608,6 +603,7 @@ extension EditScreenVC {
         case .colorPicker:
             self.colorPickrHeight.update(offset: height)
         }
+        
         // 애니메이션을 통한 화면 바꾸기
         UIView.animate(withDuration: 0.5) {
             self.view.layoutIfNeeded()
@@ -674,7 +670,7 @@ extension EditScreenVC: CustomPickerDelegate {
         // [셀] - 이미지 바꾸기 및 바뀐 이미지 저장
         self.updateColor(color: color)
         // 이미지 피커 안 보이게 하기
-        self.configureColorPicker(isOpen: false, with: color)
+        self.configureColorPicker(isOpen: false)
     }
 }
 

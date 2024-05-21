@@ -37,17 +37,18 @@ extension Coordinator {
         viewControllerType: T.Type,
         completion: (() -> Void)? = nil)
     {
-        
-        nav.transitionCoordinator?
-            .animate(
-                alongsideTransition: nil) { [weak self] _ in
-                    // 애니메이션이 완료되었을 때 실행될 작업
-                    self?.didFinish()
-                    
-                    nav.removeViewControllerOfType(
-                        viewControllerType)
-                    
-                    completion?()
-                }
+        DispatchQueue.main.async {
+            nav.transitionCoordinator?
+                .animate(
+                    alongsideTransition: nil) { [weak self] _ in
+                        // 애니메이션이 완료되었을 때 실행될 작업
+                        self?.didFinish()
+                        
+                        nav.removeViewControllerOfType(
+                            viewControllerType)
+                        
+                        completion?()
+                    }
+        }
     }
 }

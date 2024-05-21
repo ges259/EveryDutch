@@ -78,8 +78,10 @@ extension SplashScreenVC {
     
     // MARK: - 성공 시
     private func configureSuccess() {
-        // 메인 화면으로 이동
-        self.coordinator.mainScreen()
+        DispatchQueue.main.async {
+            // 메인 화면으로 이동
+            self.coordinator.mainScreen()
+        }
     }
     
     // MARK: - 에러 설정
