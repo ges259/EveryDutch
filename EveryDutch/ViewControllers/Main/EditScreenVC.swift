@@ -430,8 +430,22 @@ extension EditScreenVC: UITableViewDataSource {
             break
         case .background:
             // 이미지 권한 확인 -> 문제 없으면, 이미지 피커로 이동
-            self.requestPhotoLibraryAccess()
+            self.selectBackground()
             break
+        }
+    }
+    /// 배경 선택 셀 선택 시, 얼럿 창 띄우기
+    private func selectBackground() {
+        self.customAlert(alertStyle: .actionSheet, alertEnum: .backgroundSelect) { index in
+            switch index {
+            case 0: // 이미지
+                self.requestPhotoLibraryAccess()
+                break
+            case 1: // 색상
+                self.configureColorPicker(isOpen: true)
+                break
+            default: break
+            }
         }
     }
 }
@@ -558,7 +572,8 @@ extension EditScreenVC {
         }
     }
     /// 색상 피커 설정
-    private func configureColorPicker(isOpen: Bool) {        self.setPickerMode(for: .colorPicker, isOpen: isOpen)
+    private func configureColorPicker(isOpen: Bool) {
+        self.setPickerMode(for: .colorPicker, isOpen: isOpen)
         self.customColorPicker.updateConstraintsForExpandedState(isExpanded: isOpen)
     }
     /// 이미지 피커 설정
@@ -730,8 +745,7 @@ extension EditScreenVC {
         case .authorized, .limited:
             print("Authorized or Limited Access")
             // 권한이 이미 있음
-            self.selectBackground()
-            
+            self.coordinator.imagePickerScreen()
             // .notDetermined == [접근 제한되지 않음]
                 // 사용자가 아직 앱에 대한 사진 라이브러리 접근 권한을 결정하지 않은 상태
         case .notDetermined:
@@ -758,7 +772,7 @@ extension EditScreenVC {
         PHPhotoLibrary.requestAuthorization { newStatus in
             if newStatus == .authorized {
                 DispatchQueue.main.async {
-                    self.selectBackground()
+                    self.coordinator.imagePickerScreen()
                 }
             }
         }
@@ -771,21 +785,6 @@ extension EditScreenVC {
             guard let settingsUrl = URL(string: UIApplication.openSettingsURLString), UIApplication.shared.canOpenURL(settingsUrl)
             else { return }
             UIApplication.shared.open(settingsUrl, options: [:])
-        }
-    }
-    
-    // MARK: - 배경 선택 셀 선택 시
-    private func selectBackground() {
-        self.customAlert(alertStyle: .actionSheet, alertEnum: .backgroundSelect) { index in
-            switch index {
-            case 0: // 이미지
-                self.coordinator.imagePickerScreen()
-                break
-            case 1: // 색상
-                self.configureColorPicker(isOpen: true)
-                break
-            default: break
-            }
         }
     }
 }

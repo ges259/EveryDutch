@@ -11,32 +11,29 @@ import SnapKit
 final class CustomColorPicker: UIView {
     
     // MARK: - 레이아웃
+    /// 상단 툴바
     private lazy var toolbar: ToolbarStackView = {
         let toolbar = ToolbarStackView()
             toolbar.delegate = self
         return toolbar
     }()
-    
+    /// 색상 팔레트
     private lazy var colorPicker = {
         let picker = ChromaColorPicker()
             picker.delegate = self
+        // 컬러피커에 슬라이더 및 핸들 연결
+        picker.connect(self.brightnessSlider)
+        picker.addHandle(self.homeHandle)
         return picker
     }()
+    private var pickerStackViewWidthConstraint: Constraint!
+    
+    /// 하단 슬라이드
     private let brightnessSlider = ChromaBrightnessSlider()
+    /// 팔레트 위에 핸들
+    private lazy var homeHandle: ChromaColorHandle = ChromaColorHandle(color: .medium_Blue)
     
-    private lazy var homeHandle: ChromaColorHandle = {
-        let handle = ChromaColorHandle(color: .blue)
-            handle.accessoryView = imageView
-            handle.accessoryViewEdgeInsets = UIEdgeInsets(top: 2, left: 4, bottom: 4, right: 4)
-        return handle
-    }()
     
-    private let imageView: UIImageView = {
-        let img = UIImageView(image: UIImage.Exit_Img)
-            img.contentMode = .scaleAspectFit
-            img.tintColor = .white
-        return img
-    }()
     
     
     // MARK: - 프로퍼티
@@ -61,17 +58,6 @@ final class CustomColorPicker: UIView {
     
     
     
-//    
-//    
-//    
-//    private lazy var pickerStackView: UIStackView = UIStackView.configureStv(
-//        arrangedSubviews: [self.colorPicker,
-//                           self.brightnessSlider],
-//        axis: .vertical,
-//        spacing: 20,
-//        alignment: .center,
-//        distribution: .fill)
-//    
     
     
     // MARK: - 화면 설정
@@ -82,108 +68,54 @@ final class CustomColorPicker: UIView {
         self.addShadow(shadowType: .top)
         
         self.setRoundedCorners(.top, withCornerRadius: 12)
-        
-        self.colorPicker.connect(self.brightnessSlider)
-        self.colorPicker.addHandle(self.homeHandle)
     }
     
     // MARK: - 오토레이아웃 설정
-    private var pickerStackViewWidthConstraint: Constraint!
-    
-
     private func setupAutoLayout() {
         self.addSubview(self.colorPicker)
         self.addSubview(self.brightnessSlider)
         self.addSubview(self.toolbar)
-        
+        // 상단 툴바
         self.toolbar.snp.makeConstraints { make in
             make.top.leading.trailing.equalToSuperview()
             make.height.equalTo(50)
         }
+        // 하단 슬라이더
         self.brightnessSlider.snp.makeConstraints { make in
-            make.bottom.equalToSuperview().offset(-30)
+            make.bottom.equalToSuperview().offset(-45)
             make.height.equalTo(40)
-            make.width.equalTo(UIScreen.main.bounds.width - 80)
+            make.width.equalTo(UIScreen.main.bounds.width - 90)
             make.centerX.equalToSuperview()
         }
+        // 색상 팔레트
         self.colorPicker.snp.makeConstraints { make in
-            make.top.equalTo(self.toolbar.snp.bottom).offset(10)
-            make.bottom.greaterThanOrEqualTo(self.brightnessSlider.snp.top).offset(-10)
+            make.top.equalTo(self.toolbar.snp.bottom).offset(20)
+            make.bottom.greaterThanOrEqualTo(self.brightnessSlider.snp.top).offset(-20)
             make.centerX.equalToSuperview()
             self.pickerStackViewWidthConstraint = make.width.greaterThanOrEqualTo(0).constraint
-            
         }
     }
     
+    // MARK: - 높이 재설정
+    /// open상태일 때, customColorPicker의 높이를 재설정하는 함수
     func updateConstraintsForExpandedState(isExpanded: Bool) {
+        // open(isExpanded) 이라면,
         if isExpanded {
-            self.pickerStackViewWidthConstraint?.deactivate()
-            self.colorPicker.snp.makeConstraints { make in
-                self.pickerStackViewWidthConstraint =
-                make.width.equalTo(self.colorPicker.frame.height).constraint
+            // 현재 높이 가져오기
+            let currentHeight = self.colorPicker.frame.height
+            // 높이가 서로 다르다면,
+            if self.colorPicker.frame.width != currentHeight {
+                // constraint 비활성화
+                self.pickerStackViewWidthConstraint?.deactivate()
+                // constraint 다시 설정
+                self.colorPicker.snp.makeConstraints { make in
+                    self.pickerStackViewWidthConstraint = make.width.equalTo(currentHeight).constraint
+                }
+                self.layoutIfNeeded()
             }
-            self.layoutIfNeeded()
         }
     }
 }
-
-/*
- // 마지막 성공 버전
- self.brightnessSlider.snp.makeConstraints { make in
-     make.bottom.equalToSuperview().offset(-30)
-     make.height.equalTo(40)
-     make.width.equalTo(UIScreen.main.bounds.width - 60)
-     make.centerX.equalToSuperview()
- }
- self.colorPicker.snp.makeConstraints { make in
-     make.top.equalTo(self.toolbar.snp.bottom).offset(10)
-     make.bottom.greaterThanOrEqualTo(self.brightnessSlider.snp.top).offset(-10)
-     make.centerX.equalToSuperview()
-     self.pickerStackViewWidthConstraint = make.width.greaterThanOrEqualTo(0).constraint
- }
- func updateConstraintsForExpandedState(isExpanded: Bool) {
-     if isExpanded {
-         self.pickerStackViewWidthConstraint?.deactivate()
-         self.colorPicker.snp.makeConstraints { make in
-             self.pickerStackViewWidthConstraint =
-             make.width.equalTo(self.colorPicker.frame.height).constraint
-         }
-         self.layoutIfNeeded()
-     }
- }
- */
-
-/*
- self.brightnessSlider.snp.makeConstraints { make in
-     make.bottom.equalToSuperview().offset(-30)
-     make.height.equalTo(40)
-     make.width.equalTo(UIScreen.main.bounds.width - 60)
-     make.centerX.equalToSuperview()
- }
- 
- self.colorPicker.snp.makeConstraints { make in
-     make.top.equalTo(self.toolbar.snp.bottom).offset(30)
-     make.bottom.equalTo(self.brightnessSlider.snp.top).offset(-30)
-     make.centerX.equalToSuperview()
-     make.width.greaterThanOrEqualTo(UIScreen.main.bounds.width - 60)
-     self.customSize = make.height.greaterThanOrEqualTo(self.colorPicker.snp.width).constraint
- */
-/*
- 
- self.brightnessSlider.snp.makeConstraints { make in
-     make.bottom.equalToSuperview().offset(-30)
-     make.height.equalTo(40)
-     make.leading.trailing.equalToSuperview().inset(30)
- }
- 
- self.colorPicker.snp.makeConstraints { make in
-     make.top.equalTo(self.toolbar.snp.bottom).offset(30)
-     make.bottom.equalTo(self.brightnessSlider.snp.top).offset(-30)
-     make.centerX.equalToSuperview()
-     make.width.equalTo(self.colorPicker.snp.height)
-     make.width.greaterThanOrEqualTo(UIScreen.main.bounds.width - 60)
- }
- */
 
 
 

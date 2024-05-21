@@ -14,7 +14,13 @@ final class ChromaColorHandle: UIView, ChromaControlStylable {
     // MARK: - 레이아웃
     private let handleShape = CAShapeLayer()
     
-    
+    /// 핸들 위에 이미지
+    private let handleImage: UIImageView = {
+        let img = UIImageView(image: UIImage.Exit_Img)
+            img.contentMode = .scaleAspectFit
+            img.tintColor = .white
+        return img
+    }()
     
     
     
@@ -96,12 +102,15 @@ final class ChromaColorHandle: UIView, ChromaControlStylable {
     }
     
     
-    
+
     
     
     // MARK: - 화면 설정
     private func setupView() {
         self.layer.addSublayer(self.handleShape)
+        
+        self.accessoryView = handleImage
+        self.accessoryViewEdgeInsets = UIEdgeInsets(top: 2, left: 4, bottom: 4, right: 4)
     }
 
     // MARK: - 핸들 만들기

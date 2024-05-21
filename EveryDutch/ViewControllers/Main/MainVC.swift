@@ -312,33 +312,29 @@ extension MainVC {
 
 
 // MARK: - 플로팅 버튼 액션 설정
-
 extension MainVC {
-    
-    // MARK: - 메뉴 버튼 액션
+    /// 메뉴 버튼 액션
     @objc private func menuBtnTapped() {
         self.viewModel.toggleFloatingShow()
     }
-    
-    // MARK: - 프로필 액션
-    // 사람 이미지 버튼
+    /// 프로필 액션 (사람 이미지 버튼)
     @objc private func profileScreenBtnTapped() {
-//        do {
-//            try Auth.auth().signOut()
-//            print("로그아웃 성공")
-//        } catch {
-//            print("로그아웃 실패")
-//        }
-        self.coordinator.profileScreen()
+        // MARK: - Fix
+        do {
+            try Auth.auth().signOut()
+            print("로그아웃 성공")
+        } catch {
+            print("로그아웃 실패")
+        }
+//        self.coordinator.profileScreen()
     }
     
-    // MARK: - 방 생성 액션
-    // 플러스 버튼
+    /// 방 생성 액션 (플러스 버튼)
     @objc private func makeRoomScreenBtnTapped() {
         self.coordinator.roomEditScreen()
     }
     
-    // MARK: - 배경 액션
+    /// 배경 액션
     @objc private func floatingViewTappd() {
         self.menuBtnTapped()
     }
