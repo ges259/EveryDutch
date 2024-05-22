@@ -423,7 +423,9 @@ extension EditScreenVC: UITableViewDataSource {
     private func selectedDecorationTypeCell(type: DecorationCellType) {
         switch type {
         case .blurEffect:
+            // 카드 이미지 뷰 업데이트
             self.blurEffectChanged()
+            self.selectedBlur()
             break
         case .titleColor, .nameColor:
             self.configureColorPicker(isOpen: true)
@@ -434,7 +436,7 @@ extension EditScreenVC: UITableViewDataSource {
             break
         }
     }
-    /// 배경 선택 셀 선택 시, 얼럿 창 띄우기
+    /// .background(배경) 셀 선택 시, 얼럿 창 띄우기
     private func selectBackground() {
         self.customAlert(alertStyle: .actionSheet, alertEnum: .backgroundSelect) { index in
             switch index {
@@ -447,6 +449,10 @@ extension EditScreenVC: UITableViewDataSource {
             default: break
             }
         }
+    }
+    /// .blurEffect(블러효과) 셀 선택 시, 카드이미지뷰의 효과 바꾸기
+    private func selectedBlur() {
+        self.cardImgView.updateCardView(type: .blurEffect, data: true, onFailure: self.errorType(_:))
     }
 }
     
@@ -556,10 +562,10 @@ extension EditScreenVC {
 
 
 
-// MARK: - 피커 뷰 액션
+// MARK: - 피커 뷰 open / close
 
 extension EditScreenVC {
-    /// 메인 설정 함수는 필요에 따라 각 설정 메소드를 호출
+    /// [공통] 메인 설정 함수는 필요에 따라 각 설정 메소드를 호출
     private func setPickerState(type: EditScreenPicker,
                                 isOpen: Bool,
                                 image: UIImage? = nil,
@@ -571,12 +577,12 @@ extension EditScreenVC {
             self.configureColorPicker(isOpen: isOpen)
         }
     }
-    /// 색상 피커 설정
+    /// [color] 색상 피커 설정
     private func configureColorPicker(isOpen: Bool) {
         self.setPickerMode(for: .colorPicker, isOpen: isOpen)
         self.customColorPicker.updateConstraintsForExpandedState(isExpanded: isOpen)
     }
-    /// 이미지 피커 설정
+    /// [image] 이미지 피커 설정
     private func configureImagePicker(isOpen: Bool, with image: UIImage? = nil) {
         // 피커를 여는 상황이라면,
         if isOpen {
@@ -596,7 +602,7 @@ extension EditScreenVC {
         // 피커의 높이 재설정
         self.adjustPickerHeight(for: picker, isOpen: isOpen)
     }
-    /// 화면 상단 고정
+    /// [공통] 화면 상단 고정
     private func disableScrollAndMoveToTop(isOpen: Bool) {
         if isOpen {
             // 스크롤뷰의 contentOffset을 (0,0)으로 설정하여 맨 위로 이동
@@ -605,7 +611,7 @@ extension EditScreenVC {
         // 스크롤 기능을 비활성화
         self.scrollView.isScrollEnabled = !isOpen
     }
-    /// 이미지 피커 높이 재설정
+    /// [공통] 이미지 피커 높이 재설정
     private func adjustPickerHeight(for picker: EditScreenPicker, isOpen: Bool) {
         // 높이 설정
         let height = isOpen ? self.openImagePickerHeight : 0

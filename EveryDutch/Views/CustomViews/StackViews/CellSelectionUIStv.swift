@@ -24,9 +24,6 @@ final class CellSelectionUIStv: UIStackView {
         img.backgroundColor = .white
         return img
     }()
-//    .configureView(
-//        color: UIColor.white)
-    
     var isTappedView: UIView = UIView.configureView(
         color: UIColor.deep_Blue)
     
@@ -63,7 +60,6 @@ extension CellSelectionUIStv {
         
         self.isTappedView.isHidden = true
         
-        self.userNameLbl.text = "dfkj;asdkldfs"
         self.rightView.setRoundedCorners(.all, withCornerRadius: 26 / 2)
         self.isTappedView.setRoundedCorners(.all, withCornerRadius: 22.5 / 2)
     }
