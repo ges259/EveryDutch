@@ -16,19 +16,37 @@ struct Decoration {
     
     var backgroundImageUrl: String?
     
-    
     init(dictionary: [String: Any]) {
-        self.blur = dictionary[DatabaseConstants.blur_Effect] as? Bool ?? false
-        self.backgroundImageUrl = dictionary[DatabaseConstants.background_Image] as? String ?? ""
-        self.backgroundColor = dictionary[DatabaseConstants.background_Color] as? String ?? ""
-        self.nameColor = dictionary[DatabaseConstants.name_Color] as? String ?? ""
-        self.titleColor = dictionary[DatabaseConstants.title_Color] as? String ?? ""
-    }
+         self.blur = dictionary[DatabaseConstants.blur_Effect] as? Bool ?? false
+         self.nameColor = dictionary[DatabaseConstants.name_Color] as? String
+         self.titleColor = dictionary[DatabaseConstants.title_Color] as? String
+         
+         let backgroundString = dictionary[DatabaseConstants.background_Data] as? String
+         self.identifyBackground(input: backgroundString)
+     }
+
+     mutating func identifyBackground(input: String?) {
+         guard let input = input else { return }
+         // 입력 문자열에서 'background:'를 제거하고 트리밍
+         let trimmedInput = input.replacingOccurrences(of: "background:", with: "").trimmingCharacters(in: .whitespaces)
+         
+         // 색상 코드인지 확인
+         if trimmedInput.hasPrefix("#") && trimmedInput.count == 7 {
+             self.backgroundColor = trimmedInput
+             self.backgroundImageUrl = nil
+         }
+         // URL인지 확인
+         else if let url = URL(string: trimmedInput), url.scheme == "http" || url.scheme == "https" {
+             self.backgroundImageUrl = trimmedInput
+             self.backgroundColor = nil
+         }
+     }
+    
     
     
     var getBackgroundColor: UIColor? {
         return UIColor(hex: self.backgroundColor,
-                       defaultColor: .medium_Blue)
+                       defaultColor: .red)
     }
     var getTitleColor: UIColor? {
         return UIColor(hex: self.titleColor,

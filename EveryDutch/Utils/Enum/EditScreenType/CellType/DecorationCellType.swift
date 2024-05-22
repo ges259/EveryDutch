@@ -29,7 +29,7 @@ enum DecorationCellType: Int, EditCellType, CaseIterable {
     
     var databaseString: String {
         switch self {
-        case .background: return DatabaseConstants.background_Image
+        case .background: return DatabaseConstants.background_Data
         case .blurEffect: return DatabaseConstants.blur_Effect
         case .titleColor: return DatabaseConstants.title_Color
         case .nameColor: return DatabaseConstants.name_Color
@@ -50,9 +50,7 @@ enum DecorationCellType: Int, EditCellType, CaseIterable {
         case .background: return data?.backgroundImageUrl ?? nil
         case .blurEffect: return self.blurColor(bool: data?.blur)
         case .titleColor: return data?.titleColor
-//        case .titleColor: return ""
         case .nameColor: return data?.nameColor
-//        case .nameColor: return ""
         }
     }
     

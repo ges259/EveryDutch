@@ -13,12 +13,7 @@ import SnapKit
 final class MainCollectionViewCell: UICollectionViewCell {
     
     // MARK: - 레이아웃
-    private lazy var titleLbl: CustomLabel = CustomLabel(
-        font: UIFont.boldSystemFont(ofSize: 28))
-    
-    private lazy var timeLbl: CustomLabel = CustomLabel(
-        textColor: UIColor.gray,
-        font: UIFont.systemFont(ofSize: 13))
+    private var cardImageView: CardImageView = CardImageView()
         
     
     // MARK: - 프로퍼티
@@ -37,7 +32,6 @@ final class MainCollectionViewCell: UICollectionViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
 }
 // MARK: - 화면 설정
 
@@ -52,15 +46,9 @@ extension MainCollectionViewCell {
     
     // MARK: - 오토레이아웃 설정
     private func configureAutoLayout() {
-        self.addSubview(self.titleLbl)
-        self.addSubview(self.timeLbl)
-        
-        self.titleLbl.snp.makeConstraints { make in
-            make.top.leading.equalToSuperview().offset(20)
-        }
-        self.timeLbl.snp.makeConstraints { make in
-            make.top.equalTo(self.titleLbl.snp.bottom).offset(10)
-            make.leading.equalTo(self.titleLbl.snp.leading)
+        self.addSubview(self.cardImageView)
+        self.cardImageView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
         }
     }
 }
@@ -74,10 +62,10 @@ extension MainCollectionViewCell {
         // 뷰모델 저장
         self.viewModel = viewModel
         
-        // viewModel을 사용하여 셀의 뷰를 업데이트.
+        // viewModel을 사용하여 셀의 뷰를 업데이트.2
         if let viewModel = viewModel {
-            self.titleLbl.text = viewModel.getRoomTitle
-//            self.timeLbl.text = viewModel.time_String
+            self.cardImageView.setupRoomData(data: viewModel.getRoom)
+            self.cardImageView.setupDecorationData(data: viewModel.getDecoration)
         }
     }
 }

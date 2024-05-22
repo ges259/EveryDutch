@@ -31,11 +31,14 @@ final class RoomDataManager: RoomDataManagerProtocol {
     // MARK: - Rooms
     // 현재 선택된 Rooms
     var currentRoom: (roomID: String, room: Rooms)?
-    var roomIDToIndexPathMap =  [String: IndexPath]()
+    var roomIDToIndexPathMap = [String: IndexPath]()
     var roomsCellViewModels = [MainCollectionViewCellVMProtocol]()
     
     
-    
+    var changedRoomDataIndexPaths = [IndexPath]()
+//    var roomsDebounceWorkItem: DispatchWorkItem?
+//    let roomsQueue = DispatchQueue(label: "rooms-queue",
+//                                   qos: .userInitiated)
     
     // MARK: - RoomUsrs
     /// [userID : User]로 이루어진 딕셔너리
@@ -51,12 +54,12 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     // MARK: - MoneyData
     // 바뀐 인덱스패스 저장
-    var changedIndexPaths = [IndexPath]()
+    var changedReceiptIndexPaths = [IndexPath]()
     /// 디바운스 타이머
-    var debounceWorkItem: DispatchWorkItem?
+    var moneyDataDebounceWorkItem: DispatchWorkItem?
     let debounceInterval: CGFloat = 1.5  // 1.5초 후에 실행
-    let queue = DispatchQueue(label: "room-data-manager-queue",
-                              qos: .userInitiated)
+    let moneyDataQueue = DispatchQueue(label: "money-data-queue",
+                                       qos: .userInitiated)
 
     
 
@@ -118,8 +121,8 @@ final class RoomDataManager: RoomDataManagerProtocol {
         self.userIDToIndexPathMap.removeAll()
         self.usersCellViewModels.removeAll()
         
-        self.changedIndexPaths.removeAll()
-        self.debounceWorkItem = nil
+        self.changedReceiptIndexPaths.removeAll()
+        self.moneyDataDebounceWorkItem = nil
         self.receiptIDToIndexPathMap.removeAll()
         self.receiptCellViewModels.removeAll()
     }

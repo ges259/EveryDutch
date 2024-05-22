@@ -55,8 +55,8 @@ extension DecorationAPIType {
     
     
     // MARK: - 데코레이션 가져오기
-    func fetchDecoration(dataRequiredWhenInEidtMode: String?) async throws -> Decoration? {
-        guard let dataRequiredWhenInEidtMode = dataRequiredWhenInEidtMode else {
+    func fetchDecoration(dataRequiredWhenInEditMode: String?) async throws -> Decoration? {
+        guard let dataRequiredWhenInEidtMode = dataRequiredWhenInEditMode else {
             throw ErrorEnum.readError
         }
         
@@ -81,6 +81,29 @@ extension DecorationAPIType {
                 }
         }
     }
+    
+    
+    func fetchAllDecorations(IDs: [String]) async throws -> [String: Decoration?] {
+        return try await withThrowingTaskGroup(of: (String, Decoration?).self) { group in
+            var decoDictionary = [String: Decoration?]()
+            
+            for id in IDs {
+                group.addTask {
+                    let decoration = try await fetchDecoration(dataRequiredWhenInEditMode: id)
+                    return (id, decoration)
+                }
+            }
+            
+            for try await (id, decoration) in group {
+                decoDictionary[id] = decoration
+            }
+            
+            return decoDictionary
+        }
+    }
+    
+    
+    
     
     
     

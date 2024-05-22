@@ -49,7 +49,8 @@ final class CardImageView: UIView {
     // MARK: - 프로퍼티
     // 데코레이션 모델, 초기화 시 해당 데이터 사용
     var originalDecorationData: Decoration?
-    
+    var currentDecoration: Decoration?
+
     var currentColorDict: [String: String] = [:]
     var currentImageDict: [String: UIImage] = [:]
     
@@ -164,13 +165,15 @@ extension CardImageView {
     }
     
     /// [데코]
-    func setupDecorationData(data decorationData: Decoration) {
+    func setupDecorationData(data decorationData: Decoration?) {
+        guard let decorationData = decorationData else { return }
         self.blurView.isHidden = decorationData.blur
         self.titleLbl.textColor = decorationData.getTitleColor
         self.nameLbl.textColor = decorationData.getNameColor
+        self.backgroundImg.backgroundColor = decorationData.getBackgroundColor
         // MARK: - 이미지 설정
 //        self.backgroundImg.image = decorationData.
-        self.backgroundImg.backgroundColor = decorationData.getBackgroundColor
+        
     }
 }
 
@@ -190,11 +193,11 @@ extension CardImageView {
         case .background:
             // 이미지라면
             if let image = self.backgroundImg.image {
-                self.currentImageDict[DatabaseConstants.background_Image] = image
+                self.currentImageDict[DatabaseConstants.background_Data] = image
                 self.currentColorDict.removeAll()
                 
             } else {
-                self.currentColorDict[DatabaseConstants.background_Color] = self.backgroundImg.backgroundColor?.toHexString()
+                self.currentColorDict[DatabaseConstants.background_Data] = self.backgroundImg.backgroundColor?.toHexString()
                 self.currentImageDict.removeAll()
             }
             break
@@ -227,7 +230,7 @@ extension CardImageView {
                             defaultColor: self.getDefaultColor(type: type))
         switch type {
         case .background:
-            if let currentImage = self.currentImageDict[DatabaseConstants.background_Image] {
+            if let currentImage = self.currentImageDict[DatabaseConstants.background_Data] {
                 self.backgroundImg.image = currentImage
                 self.backgroundImg.backgroundColor = nil
             } else {
@@ -253,7 +256,7 @@ extension CardImageView {
     private func getCurrentColor(type: DecorationCellType) -> String? {
         switch type {
         case .background:
-            return self.currentColorDict[DatabaseConstants.background_Color] ?? self.originalDecorationData?.backgroundColor
+            return self.currentColorDict[DatabaseConstants.background_Data] ?? self.originalDecorationData?.backgroundColor
         case .titleColor:
             return self.currentColorDict[DatabaseConstants.title_Color] ?? self.originalDecorationData?.titleColor
         case .nameColor:
@@ -368,3 +371,18 @@ extension CardImageView {
         }
     }
 }
+
+
+
+/*
+ private func defaultText(for index: Int) -> String {
+     switch index {
+     case 0:
+         return "더치더치"
+     case 1:
+         return "DUTCH"
+     default:
+         return ""
+     }
+ }
+ */

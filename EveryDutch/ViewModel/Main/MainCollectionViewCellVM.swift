@@ -29,24 +29,20 @@ struct MainCollectionViewCellVM: MainCollectionViewCellVMProtocol {
     
     
     
-    // MARK: - 데이터 리턴
+    // MARK: - 데이터 반환
     var getRoomID: String {
         return self.roomID
     }
     var getRoom: Rooms {
         return self.room
     }
-    
-    var getRoomTitle: String {
-        return self.room.roomName
+    var getDecoration: Decoration? {
+        return self.decoration
     }
     
     
-    
-    
-    
     // MARK: - 데이터 업데이트
-    mutating func updateDecoration(deco: Decoration) {
+    mutating func updateDecoration(deco: Decoration?) {
         self.decoration = deco
     }
     

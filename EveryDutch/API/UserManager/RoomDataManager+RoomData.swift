@@ -19,6 +19,9 @@ extension RoomDataManager {
                 DispatchQueue.main.async {
                     print("방 가져오기 성공")
                     self.updateRooms(initialLoad)
+                    // Decoration가져오기
+                    
+                    // 옵저버 설정
                     self.observeRooms()
                     completion(.success(()))
                 }
@@ -59,10 +62,10 @@ extension RoomDataManager {
             // 리턴할 인덱스패스
             var updatedIndexPaths = [IndexPath]()
             
-            for (userID, changedData) in toUpdate {
-                if let indexPath = self.roomIDToIndexPathMap[userID] {
+            for (roomID, changedData) in toUpdate {
+                if let indexPath = self.roomIDToIndexPathMap[roomID] {
                     // 뷰모델에 바뀐 user데이터 저장
-                    self.roomsCellViewModels[indexPath.row].updateRoomData( changedData)
+                    self.roomsCellViewModels[indexPath.row].updateRoomData(changedData)
                     updatedIndexPaths.append(indexPath)
                 }
             }
@@ -94,6 +97,7 @@ extension RoomDataManager {
                 self.roomIDToIndexPathMap[roomID] = indexPath
                 addedIndexPaths.append(indexPath)
             }
+            self.fetchDecoration(roomDict: roomDict)
             self.postNotification(name: .roomDataChanged,
                                   eventType: .initialLoad,
                                   indexPath: addedIndexPaths)
@@ -147,6 +151,51 @@ extension RoomDataManager {
                                   eventType: .removed,
                                   indexPath: removedIndexPaths)
         }
+    }
+    
+    
+
+}
+
+
+
+// MARK: - Decoration
+extension RoomDataManager {
+    private func fetchDecoration(roomDict: [String : Rooms]) {
+        // roomDict에서 roomID를 추출하여 배열로 변환
+        let roomIDArray: [String] = Array(roomDict.keys)
+        
+        Task {
+            do {
+                // 비동기로 모든 Decoration 데이터를 가져옴
+                let decorationDict = try await self.roomsAPI.fetchAllDecorations(IDs: roomIDArray)
+                // 가져온 Decoration 데이터를 업데이트
+                self.updateDecoration(decorationDict: decorationDict)
+                // 데이터 변경 알림을 보냄
+                self.roomDataNotification()
+            } catch {
+                // 오류 발생 시 처리 (로그 출력 또는 사용자에게 알림 등)
+                print("Error fetching decorations: \(error)")
+            }
+        }
+    }
+    
+    private func updateDecoration(decorationDict: [String: Decoration?]) {
+        for (roomID, changedData) in decorationDict {
+            if let decoration = changedData,
+               let indexPath = self.roomIDToIndexPathMap[roomID] {
+                // 뷰모델에 바뀐 Decoration 데이터를 저장
+                self.roomsCellViewModels[indexPath.row].updateDecoration(deco: decoration)
+                // 변경된 데이터의 IndexPath를 저장
+                self.changedRoomDataIndexPaths.append(indexPath)
+            }
+        }
+    }
+    private func roomDataNotification() {
+        // 데이터 변경을 알리는 노티피케이션을 보냄
+        self.postNotification(name: .roomDataChanged,
+                              eventType: .updated,
+                              indexPath: self.changedRoomDataIndexPaths)
     }
 }
 

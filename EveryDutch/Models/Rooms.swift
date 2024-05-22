@@ -26,7 +26,6 @@ struct Rooms: EditProviderModel {
     }
     
     var nameText: String {
-//        return self.className
         return "더치더치"
     }
 }

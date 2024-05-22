@@ -480,6 +480,7 @@ extension EditScreenVC: CardDataCellDelegate,
         // 변경된 텍스트 데이터 저장
         self.viewModel.saveChangedData(data: text)
         // 카드 텍스트 변경
+//        self.cardImgView.updateDataCellText(index: row, text: text)
         self.cardImgView.updateDataCellText(index: row, text: text)
     }
     private func saveTextFieldsIndexPath(_ cell: CardDataCell) -> Int? {

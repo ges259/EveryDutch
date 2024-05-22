@@ -363,7 +363,7 @@ extension EditScreenVM {
     // MARK: - 데이터 가져오기
     private func fetchDatas() async throws {
         let data = try await self.api?.fetchData(dataRequiredWhenInEidtMode: self.dataRequiredWhenInEidtMode)
-        let decoration = try await self.api?.fetchDecoration(dataRequiredWhenInEidtMode: self.dataRequiredWhenInEidtMode)
+        let decoration = try await self.api?.fetchDecoration(dataRequiredWhenInEditMode: self.dataRequiredWhenInEidtMode)
         DispatchQueue.main.async {
             self.setupDataProviders(withData: data, decoration: decoration)
             self.decorationDataClosure?(decoration)

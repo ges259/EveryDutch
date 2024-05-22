@@ -11,7 +11,7 @@ extension RoomDataManager {
     // 두 데이터 로드 작업을 실행하고 모두 완료되면 콜백을 호출
     func loadFinancialData() {
         guard let versionID = self.getCurrentVersion else { return }
-        self.resetDebounceState()
+        self.resetMoneyDataDebounceState()
         self.loadCumulativeAmountData(versionID: versionID)
         self.loadPaybackData(versionID: versionID)
     }
@@ -67,7 +67,7 @@ extension RoomDataManager {
             self.usersCellViewModels[indexPath.row].setCumulativeAmount(value)
             self.saveChangedIndexPaths(indexPath: indexPath)
         }
-        self.triggerDebouncing()
+        self.triggerMoneyDataDebouncing()
     }
     
     /// 페이백 데이터 변경
@@ -82,42 +82,38 @@ extension RoomDataManager {
             self.usersCellViewModels[indexPath.row].setPayback(value)
             self.saveChangedIndexPaths(indexPath: indexPath)
         }
-        self.triggerDebouncing()
+        self.triggerMoneyDataDebouncing()
     }
     
     /// 인덱스패스 저장
     private func saveChangedIndexPaths(indexPath: IndexPath) {
         // 인덱스패스가 포함되어있지 않다면
-        if !self.changedIndexPaths.contains(indexPath) {
+        if !self.changedReceiptIndexPaths.contains(indexPath) {
             // 이덱스패스 저장1
-            self.changedIndexPaths.append(indexPath)
+            self.changedReceiptIndexPaths.append(indexPath)
         }
     }
     
+    // MARK: - 디바운싱
     /// 디바운싱 시작
-    func triggerDebouncing() {
-        self.debounceWorkItem?.cancel()  // 기존에 스케줄된 작업이 있다면 취소
+    private func triggerMoneyDataDebouncing() {
+        self.moneyDataDebounceWorkItem?.cancel()  // 기존에 스케줄된 작업이 있다면 취소
         
         let workItem = DispatchWorkItem { [weak self] in
             guard let self = self else { return }
-            self.postDebounceNotification()
+            // 데이터 업데이트 후 노티피케이션 전송
+            self.postNotification(name: .financialDataUpdated,
+                                  eventType: .updated,
+                                  indexPath: self.changedReceiptIndexPaths)
+            // 디바운싱 상태 초기화
+            self.resetMoneyDataDebounceState()
         }
         
-        self.debounceWorkItem = workItem
-        self.queue.asyncAfter(deadline: .now() + self.debounceInterval, execute: workItem)
+        self.moneyDataDebounceWorkItem = workItem
+        self.moneyDataQueue.asyncAfter(deadline: .now() + self.debounceInterval, execute: workItem)
     }
-    
-    /// 디바운싱 완료 후 노티피케이션 전송
-    private func postDebounceNotification() {
-        // 데이터 업데이트 후 노티피케이션 전송 로직은 유지
-        self.postNotification(name: .financialDataUpdated,
-                              eventType: .updated,
-                              indexPath: self.changedIndexPaths)
-        self.resetDebounceState()
-    }
-    
     /// 디바운싱 상태 초기화
-    private func resetDebounceState() {
-        self.changedIndexPaths = []
+    private func resetMoneyDataDebounceState() {
+        self.changedReceiptIndexPaths = []
     }
 }

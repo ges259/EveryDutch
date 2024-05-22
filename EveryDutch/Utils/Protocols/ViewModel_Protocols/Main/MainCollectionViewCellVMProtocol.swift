@@ -10,13 +10,13 @@ import Foundation
 protocol MainCollectionViewCellVMProtocol {
 
     
-    
-    var getRoomTitle: String { get }
+    // MARK: - 데이터 반환
     var getRoom: Rooms { get }
     var getRoomID: String { get }
+    var getDecoration: Decoration? { get }
     
     
     // MARK: - 데이터 업데이트
-    mutating func updateDecoration(deco: Decoration)
+    mutating func updateDecoration(deco: Decoration?)
     mutating func updateRoomData(_ data: [String: Any])
 }
