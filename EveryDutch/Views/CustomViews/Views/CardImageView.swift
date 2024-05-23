@@ -51,9 +51,8 @@ final class CardImageView: UIView {
     var originalDecorationData: Decoration?
     var currentDecoration: Decoration?
 
-    var currentColorDict: [String: String] = [:]
-    var currentImageDict: [String: UIImage] = [:]
-    
+    var currentColorDict: [DecorationCellType: String] = [:]
+    var currentImageDict: [DecorationCellType: UIImage] = [:]
     
     
     
@@ -193,19 +192,19 @@ extension CardImageView {
         case .background:
             // 이미지라면
             if let image = self.backgroundImg.image {
-                self.currentImageDict[DatabaseConstants.background_Data] = image
+                self.currentImageDict[.background] = image
                 self.currentColorDict.removeAll()
                 
             } else {
-                self.currentColorDict[DatabaseConstants.background_Data] = self.backgroundImg.backgroundColor?.toHexString()
+                self.currentColorDict[.background] = self.backgroundImg.backgroundColor?.toHexString()
                 self.currentImageDict.removeAll()
             }
             break
         case .titleColor:
-            self.currentColorDict[DatabaseConstants.title_Color] = self.titleLbl.textColor?.toHexString()
+            self.currentColorDict[.titleColor] = self.titleLbl.textColor?.toHexString()
             break
         case .nameColor:
-            self.currentColorDict[DatabaseConstants.name_Color] = self.nameLbl.textColor?.toHexString()
+            self.currentColorDict[.nameColor] = self.nameLbl.textColor?.toHexString()
             break
         case .blurEffect:
             break
@@ -227,10 +226,11 @@ extension CardImageView {
     func resetDecorationData(type: DecorationCellType) {
         // 기본 색상 가져오기
         let color = UIColor(hex: self.getCurrentColor(type: type),
-                            defaultColor: self.getDefaultColor(type: type))
+                            defaultColor: type.getDefaultColor())
+        
         switch type {
         case .background:
-            if let currentImage = self.currentImageDict[DatabaseConstants.background_Data] {
+            if let currentImage = self.currentImageDict[.background] {
                 self.backgroundImg.image = currentImage
                 self.backgroundImg.backgroundColor = nil
             } else {
@@ -256,22 +256,13 @@ extension CardImageView {
     private func getCurrentColor(type: DecorationCellType) -> String? {
         switch type {
         case .background:
-            return self.currentColorDict[DatabaseConstants.background_Data] ?? self.originalDecorationData?.backgroundColor
+            return self.currentColorDict[.background] ?? self.originalDecorationData?.backgroundColor
         case .titleColor:
-            return self.currentColorDict[DatabaseConstants.title_Color] ?? self.originalDecorationData?.titleColor
+            return self.currentColorDict[.titleColor] ?? self.originalDecorationData?.titleColor
         case .nameColor:
-            return self.currentColorDict[DatabaseConstants.name_Color] ?? self.originalDecorationData?.nameColor
+            return self.currentColorDict[.nameColor] ?? self.originalDecorationData?.nameColor
             
         case .blurEffect: return nil
-        }
-    }
-    /// 기본 색상을 가져옴
-    private func getDefaultColor(type: DecorationCellType) -> UIColor {
-        switch type {
-        case .background:   return .medium_Blue
-        case .titleColor:   return .black
-        case .nameColor:    return .placeholder_gray
-        case .blurEffect:   return .clear
         }
     }
 }

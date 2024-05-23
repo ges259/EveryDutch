@@ -35,7 +35,15 @@ enum DecorationCellType: Int, EditCellType, CaseIterable {
         case .nameColor: return DatabaseConstants.name_Color
         }
     }
-    
+    /// 기본 색상을 가져옴
+    func getDefaultColor() -> UIColor {
+        switch self {
+        case .background:   return .medium_Blue
+        case .titleColor:   return .black
+        case .nameColor:    return .placeholder_gray
+        case .blurEffect:   return .clear
+        }
+    }
     
     
     
