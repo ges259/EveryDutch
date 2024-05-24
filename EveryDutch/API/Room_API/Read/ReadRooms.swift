@@ -44,16 +44,10 @@ extension RoomsAPI {
             }
             for key in value.keys {
                 saveGroup.enter()
-                self.readRoomsData(roomID: key) { [weak self] result in
-                    guard let self = self else {
-                        saveGroup.leave()
-                        return
-                    }
+                self.readRoomsData(roomID: key) { result in
                     switch result {
                     case .success(let room):
                         returnRooms[key] = room
-                        // 각 RoomID에 옵저버 설정
-                        self.setRoomsDataObserver(roomID: key, completion: completion)
                     case .failure(_):
                         break
                     }
@@ -87,28 +81,29 @@ extension RoomsAPI {
     
     
     
-    // MARK: - Rooms 옵저버
+    // MARK: - Rooms 데이터 옵저버
+    
+    
+    
+    // MARK: - Fix
+    // 업데이트 시 두 번 호출 됨
     // 개별 사용자의 데이터 변경을 관찰하는 함수
-    private func setRoomsDataObserver(
-        roomID: String,
+    func setRoomsDataObserver(
+        roomIDs: [String],
         completion: @escaping (Result<DataChangeEvent<[String: Rooms]>, ErrorEnum>) -> Void)
     {
-        let roomPath = ROOMS_REF.child(roomID)
-        
-        roomPath.observe(.childChanged) { snapshot in
-            guard let value = snapshot.value else {
-                completion(.failure(.readError))
-                return
+        for roomID in roomIDs {
+            let roomPath = ROOMS_REF.child(roomID)
+            roomPath.observe(.childChanged) { snapshot in
+                guard let value = snapshot.value else {
+                    return
+                }
+                
+                let returnDict = [snapshot.key: value]
+                completion(.success(.updated([roomID: returnDict])))
             }
-            
-            let returnDict = [snapshot.key: value]
-            
-            completion(.success(.updated( [roomID: returnDict] )))
         }
     }
-    
-    
-    
     
     // MARK: - Users_RoomsID 옵저버
     func setRoomObserver(completion: @escaping (Result<DataChangeEvent<[String: Rooms]>, ErrorEnum>) -> Void)
@@ -127,13 +122,10 @@ extension RoomsAPI {
                 completion(.failure(.readError))
                 return
             }
-            self.readRoomsData(roomID: roomID) { [weak self] result in
-                guard let self = self else { return }
+            self.readRoomsData(roomID: roomID) { result in
                 switch result {
                 case .success(let room):
                     completion(.success(.added([roomID: room])))
-                    // 새로 생긴 RoomID에 옵저버 설정
-                    self.setRoomsDataObserver(roomID: roomID, completion: completion)
                 case .failure(_):
                     completion(.failure(.readError))
                 }

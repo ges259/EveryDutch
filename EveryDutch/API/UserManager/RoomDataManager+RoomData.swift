@@ -19,10 +19,11 @@ extension RoomDataManager {
                 DispatchQueue.main.async {
                     print("방 가져오기 성공")
                     self.updateRooms(initialLoad)
+                    // 옵저버 설정
+                    self.observeRoomsID()
+                    
                     // Decoration가져오기
                     
-                    // 옵저버 설정
-                    self.observeRooms()
                     completion(.success(()))
                 }
                 break
@@ -37,222 +38,166 @@ extension RoomDataManager {
     }
     
     // MARK: - 옵저버 설정
-    private func observeRooms() {
+    private func observeRoomsID() {
         self.roomsAPI.setRoomObserver { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let observeData):
-                print("방 옵저버 가져오기 성공")
+                print("방ID 옵저버 가져오기 성공")
                 self.updateRooms(observeData)
-                break
                 
             case .failure(_):
-                print("방 옵저버 가져오기 실패")
+                print("방ID 옵저버 가져오기 실패")
+            }
+        }
+    }
+    
+    
+    private func observeRoomsData(_ toUpdate: [String: Rooms]) {
+        let roomIDs: [String] = Array(toUpdate.keys)
+        self.roomsAPI.setRoomsDataObserver(roomIDs: roomIDs) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let event):
+                self.updateRooms(event)
+                print("방 데이터 옵저버 가져오기 성공")
+            case .failure(_):
+                print("방 데이터 옵저버 가져오기 실패")
                 break
             }
         }
     }
     
     
-    // MARK: - 업데이트 설정
+    // MARK: - 업데이트 분기처리
     private func updateRooms(_ event: (DataChangeEvent<[String: Rooms]>)) {
         switch event {
         case .updated(let toUpdate):
             print("\(#function) ----- update")
-            // 리턴할 인덱스패스
-            var updatedIndexPaths = [IndexPath]()
-            
-            for (roomID, changedData) in toUpdate {
-                if let indexPath = self.roomIDToIndexPathMap[roomID] {
-                    // 뷰모델에 바뀐 user데이터 저장
-                    self.roomsCellViewModels[indexPath.row].updateRoomData(changedData)
-                    updatedIndexPaths.append(indexPath)
-                }
-            }
-            self.postNotification(name: .roomDataChanged,
-                                  eventType: .updated,
-                                  indexPath: updatedIndexPaths)
+            self.handleUpdatedRoomsEvent(toUpdate)
             
             
             // 데이터 초기 로드
         case .initialLoad(let roomDict):
             print("\(#function) ----- init")
-            // 리턴할 인덱스패스
-            var addedIndexPaths = [IndexPath]()
-
-            // 초기 로드일 때 모든 데이터 초기화
-            self.roomsCellViewModels.removeAll()
-            self.roomIDToIndexPathMap.removeAll()
-            
-            // 모든 데이터 추가
-            for (index, (roomID, room)) in roomDict.enumerated() {
-                // 인덱스 패스 생성
-                let indexPath = IndexPath(row: index, section: 0)
-                // 뷰모델 생성
-                let viewModel = MainCollectionViewCellVM(roomID: roomID,
-                                                         room: room)
-                // 뷰모델 저장
-                self.roomsCellViewModels.append(viewModel)
-                // 인덱스패스 저장
-                self.roomIDToIndexPathMap[roomID] = indexPath
-                addedIndexPaths.append(indexPath)
-            }
-            self.fetchDecoration(roomDict: roomDict) {
-                print("fetchDecoration ----- \(#function)")
-                self.postNotification(name: .roomDataChanged,
-                                      eventType: .initialLoad,
-                                      indexPath: addedIndexPaths)
-            }
-            
+            self.handleInitialLoadRoomsEvent(roomDict)
             
         case .added(let toAdd):
             print("\(#function) ----- add")
-            // 리턴할 인덱스패스
-            var addedIndexPaths = [IndexPath]()
-            for (roomID, room) in toAdd {
-                // 중복 추가 방지
-                guard self.roomIDToIndexPathMap[roomID] == nil else { continue }
-                // 인덱스패스 생성
-                let indexPath = IndexPath(row: self.roomsCellViewModels.count, section: 0)
-                // 뷰모델 생성
-                let viewModel = MainCollectionViewCellVM(roomID: roomID,
-                                                         room: room)
-                // 뷰모델 저장
-                self.roomsCellViewModels.append(viewModel)
-                // 인덱스패스 업데이트
-                self.roomIDToIndexPathMap[roomID] = indexPath
-                addedIndexPaths.append(indexPath)
-            }
-            
-            self.fetchDecoration(roomDict: toAdd) {
-                print("fetchDecoration ----- \(#function)")
-                self.postNotification(name: .roomDataChanged,
-                                      eventType: .added,
-                                      indexPath: addedIndexPaths)
-            }
-            
+            self.handleAddedRoomsEvent(toAdd)
             
         case .removed(let roomID):
             print("\(#function) ----- remove")
-            // 리턴할 인덱스패스
-            var removedIndexPaths = [IndexPath]()
-
-            if let indexPath = self.roomIDToIndexPathMap[roomID] {
-                // 뷰모델 삭제
-                self.roomsCellViewModels.remove(at: indexPath.row)
-                // 인덱스패스 삭제
-                self.roomIDToIndexPathMap.removeValue(forKey: roomID)
-                // [String: User] 데이터 삭제
-                removedIndexPaths.append(indexPath)
-                // 삭제 후 인덱스 재정렬 (인덱스 매핑 최적화)
-                for row in indexPath.row..<self.roomsCellViewModels.count {
-                    // 새로운 인덱스패스 생성
-                    let newIndexPath = IndexPath(row: row, section: 0)
-                    // 해당 인덱스의 뷰모델에 있는 roomID를 가져옴
-                    let roomID = self.roomsCellViewModels[row].getRoomID
-                    self.roomIDToIndexPathMap[roomID] = newIndexPath
-                }
-            }
-            self.postNotification(name: .roomDataChanged,
-                                  eventType: .removed,
-                                  indexPath: removedIndexPaths)
-        }
-    }
-}
-
-
-
-// MARK: - RoomDataManager
-extension RoomDataManager {
-    private func fetchDecoration(roomDict: [String : Rooms],
-                                 completion: @escaping () -> Void) {
-        let roomIDArray: [String] = Array(roomDict.keys)
-        
-        self.roomsAPI.fetchAllDecorations(IDs: roomIDArray) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let event):
-                self.updateDecoration(event)
-                if case .initialLoad = event {
-                    self.observeDecoration(roomIDArray: roomIDArray)
-                    completion()
-                }
-            case .failure(_):
-                print("\(self) ----- \(#function) ----- Error")
-            }
+            self.handleRemovedRoomsEvent(roomID)
         }
     }
     
-    private func observeDecoration(roomIDArray: [String]) {
-        self.roomsAPI.observeDecorations(IDs: roomIDArray) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let event):
-                self.updateDecoration(event)
-            case .failure(_):
-                print("\(self) ----- \(#function) ----- Error")
-            }
-        }
-    }
     
-    private func updateDecoration(_ event: DataChangeEvent<[String: Decoration?]>) {
-        switch event {
-        case .updated(let toUpdate):
-            self.handleUpdatedDecoEvent(toUpdate)
-        case .initialLoad(let decorationDict):
-            self.handleInitialLoadDecoEvent(decorationDict)
-        case .added(let toAdd):
-            self.handleAddedDecoEvent(toAdd)
-        case .removed(let removed):
-            self.handleRemovedDecoEvent(removed)
-        }
-    }
-
-    private func handleUpdatedDecoEvent(_ toUpdate: [String: [String: Any]]) {
-        print("\(#function) ----- update")
+    // MARK: - 업데이트
+    private func handleUpdatedRoomsEvent(_ toUpdate: [String: [String: Any]]) {
+        // 리턴할 인덱스패스
         var updatedIndexPaths = [IndexPath]()
         
         for (roomID, changedData) in toUpdate {
             if let indexPath = self.roomIDToIndexPathMap[roomID] {
-                self.roomsCellViewModels[indexPath.row].updateDecoration(changedData)
+                // 뷰모델에 바뀐 user데이터 저장
+                self.roomsCellViewModels[indexPath.row].updateRoomData(changedData)
                 updatedIndexPaths.append(indexPath)
             }
         }
-        self.decorationUpdateNotification(updatedIndexPaths)
-    }
-
-    private func handleInitialLoadDecoEvent(_ decorationDict: [String: Decoration?]) {
-        for (roomID, changedData) in decorationDict {
-            if let decoration = changedData,
-               let indexPath = self.roomIDToIndexPathMap[roomID] {
-                self.roomsCellViewModels[indexPath.row].setupDecoration(deco: decoration)
-            }
-        }
-    }
-
-    private func handleAddedDecoEvent(_ toAdd: [String: Decoration?]) {
-        var addedIndexPaths = [IndexPath]()
         
-        for (roomID, changedData) in toAdd {
-            if let decoration = changedData,
-               let indexPath = self.roomIDToIndexPathMap[roomID] {
-                self.roomsCellViewModels[indexPath.row].setupDecoration(deco: decoration)
-                addedIndexPaths.append(indexPath)
-            }
-        }
-        self.decorationUpdateNotification(addedIndexPaths)
+        self.postNotification(name: .roomDataChanged,
+                              eventType: .updated,
+                              indexPath: updatedIndexPaths)
     }
+    
+    // MARK: - 초기 설정
+    private func handleInitialLoadRoomsEvent(_ roomDict: [String: Rooms]) {
+        // 리턴할 인덱스패스
+        var addedIndexPaths = [IndexPath]()
 
-    private func handleRemovedDecoEvent(_ removed: String) {
-        if let indexPath = self.roomIDToIndexPathMap[removed] {
-            self.roomsCellViewModels[indexPath.row].removeDecoration()
-            self.decorationUpdateNotification([indexPath])
+        // 초기 로드일 때 모든 데이터 초기화
+        self.roomsCellViewModels.removeAll()
+        self.roomIDToIndexPathMap.removeAll()
+        
+        // 모든 데이터 추가
+        for (index, (roomID, room)) in roomDict.enumerated() {
+            // 인덱스 패스 생성
+            let indexPath = IndexPath(row: index, section: 0)
+            // 뷰모델 생성
+            let viewModel = MainCollectionViewCellVM(roomID: roomID,
+                                                     room: room)
+            // 뷰모델 저장
+            self.roomsCellViewModels.append(viewModel)
+            // 인덱스패스 저장
+            self.roomIDToIndexPathMap[roomID] = indexPath
+            addedIndexPaths.append(indexPath)
+        }
+        // 방 데이터에 대한 옵저버 설정
+        self.observeRoomsData(roomDict)
+        
+        // MARK: - Fix
+        self.fetchDecoration(roomDict: roomDict) {
+            print("fetchDecoration ----- \(#function)")
+            self.postNotification(name: .roomDataChanged,
+                                  eventType: .initialLoad,
+                                  indexPath: addedIndexPaths)
         }
     }
     
-    private func decorationUpdateNotification(_ indexPath: [IndexPath]) {
+    // MARK: - 생성
+    private func handleAddedRoomsEvent(_ toAdd: [String: Rooms]) {
+        // 리턴할 인덱스패스
+        var addedIndexPaths = [IndexPath]()
+        for (roomID, room) in toAdd {
+            // 중복 추가 방지
+            guard self.roomIDToIndexPathMap[roomID] == nil else { continue }
+            // 인덱스패스 생성
+            let indexPath = IndexPath(row: self.roomsCellViewModels.count, section: 0)
+            // 뷰모델 생성
+            let viewModel = MainCollectionViewCellVM(roomID: roomID,
+                                                     room: room)
+            // 뷰모델 저장
+            self.roomsCellViewModels.append(viewModel)
+            // 인덱스패스 업데이트
+            self.roomIDToIndexPathMap[roomID] = indexPath
+            addedIndexPaths.append(indexPath)
+        }
+        // 방 데이터에 대한 옵저버 설정
+        self.observeRoomsData(toAdd)
+        
+        self.fetchDecoration(roomDict: toAdd) {
+            print("fetchDecoration ----- \(#function)")
+            self.postNotification(name: .roomDataChanged,
+                                  eventType: .added,
+                                  indexPath: addedIndexPaths)
+        }
+    }
+    
+    // MARK: - 삭제
+    private func handleRemovedRoomsEvent(_ roomID: String) {
+        print("\(#function) ----- remove")
+        // 리턴할 인덱스패스
+        var removedIndexPaths = [IndexPath]()
+
+        if let indexPath = self.roomIDToIndexPathMap[roomID] {
+            // 뷰모델 삭제
+            self.roomsCellViewModels.remove(at: indexPath.row)
+            // 인덱스패스 삭제
+            self.roomIDToIndexPathMap.removeValue(forKey: roomID)
+            // [String: User] 데이터 삭제
+            removedIndexPaths.append(indexPath)
+            // 삭제 후 인덱스 재정렬 (인덱스 매핑 최적화)
+            for row in indexPath.row..<self.roomsCellViewModels.count {
+                // 새로운 인덱스패스 생성
+                let newIndexPath = IndexPath(row: row, section: 0)
+                // 해당 인덱스의 뷰모델에 있는 roomID를 가져옴
+                let roomID = self.roomsCellViewModels[row].getRoomID
+                self.roomIDToIndexPathMap[roomID] = newIndexPath
+            }
+        }
         self.postNotification(name: .roomDataChanged,
-                              eventType: .updated,
-                              indexPath: indexPath)
+                              eventType: .removed,
+                              indexPath: removedIndexPaths)
     }
 }
