@@ -26,8 +26,6 @@ final class SettleMoneyRoomVC: UIViewController {
         view.register(
             SettlementTableViewCell.self,
             forCellReuseIdentifier: Identifier.settlementTableViewCell)
-        // 테이블뷰 셀이 아래->위로 보이도록 설정
-//        view.transform = CGAffineTransform(rotationAngle: -.pi)
         view.backgroundColor = .clear
         view.bounces = true
         return view
@@ -107,10 +105,8 @@ final class SettleMoneyRoomVC: UIViewController {
 
 
 // MARK: - 화면 설정
-
 extension SettleMoneyRoomVC {
-    
-    // MARK: - UI 설정
+    /// UI 설정
     private func configureUI() {
         // 배경화면 설정
         self.view.backgroundColor = UIColor.base_Blue
@@ -124,7 +120,7 @@ extension SettleMoneyRoomVC {
         self.receiptTableView.setRoundedCorners(.all, withCornerRadius: 10)
     }
     
-    // MARK: - 오토레이아웃 설정
+    /// 오토레이아웃 설정
     private func configureAutoLayout() {
         [self.receiptTableView,
          self.topView,
@@ -161,7 +157,7 @@ extension SettleMoneyRoomVC {
         }
     }
     
-    // MARK: - 액션 및 제스쳐 설정
+    /// 액션 및 제스쳐 설정
     private func configureAction() {
         // ********** 액션 **********
         // 왼쪽 네비게이션 바 - 액션
@@ -188,14 +184,14 @@ extension SettleMoneyRoomVC {
             target: self,
             action: #selector(self.scrollVertical))
         self.topView.addGestureRecognizer(topViewPanGesture)
-        // 네비게이션바 - 팬 재스쳐
+        // 네비게이션바 - 팬 재스쳐ㄴ
         let navPanGesture = UIPanGestureRecognizer(
             target: self,
             action: #selector(self.scrollVertical))
         self.navigationController?.navigationBar.addGestureRecognizer(navPanGesture)
     }
     
-    // MARK: - 노티피케이션 설정
+    /// 노티피케이션 설정
     private func configureNotification() {
         NotificationCenter.default.addObserver(
             self,
@@ -229,7 +225,7 @@ extension SettleMoneyRoomVC {
 
 
 
-// MARK: - 액션 함수 (화면 이동)
+// MARK: - 버튼 액션 함수
 extension SettleMoneyRoomVC {
     /// 바텀 버튼
     @objc private func bottomBtnTapped() {
@@ -245,7 +241,19 @@ extension SettleMoneyRoomVC {
     @objc private func backBtnTapped() {
         self.coordinator.didFinish()
     }
-    
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - viewWillAppear 업데이트
+extension SettleMoneyRoomVC {
     /// 노티피케이션을 통해 받은 변경사항을 바로 반영하거나 저장하는 메서드
     @objc private func handleDataChanged(notification: Notification) {
         guard let dataInfo = notification.userInfo as? [String: [IndexPath]] else { return }
@@ -265,26 +273,6 @@ extension SettleMoneyRoomVC {
         if self.isViewVisible { self.processPendingUpdates() }
     }
     
-    /// 유저의 수가 변경되었을 때, 탑뷰의 높이를 업데이트 하는 메서드
-    @objc private func numberOfUsersChanges() {
-        // 탑뷰 플래그를 true로 변경
-        self.viewModel.topViewHeightPlag = true
-        // 탑뷰의 높이를 업데이트
-        self.updateTopViewHeight()
-    }
-}
-
-
-
-
-
-
-
-
-
-
-// MARK: - viewWillAppear 업데이트
-extension SettleMoneyRoomVC {
     /// 모든 대기 중인 변경 사항을 적용
     private func processPendingUpdates() {
         // 유저 테이블 업데이트
@@ -366,9 +354,17 @@ extension SettleMoneyRoomVC {
 
 
 // MARK: - 탑뷰 크기 조절
-    
 extension SettleMoneyRoomVC {
+    /// 유저의 수가 변경되었을 때, 탑뷰의 높이를 업데이트 하는 메서드
+    /// 노티피케이션을 통해 전달 받음
+    @objc private func numberOfUsersChanges() {
+        // 탑뷰 플래그를 true로 변경
+        self.viewModel.topViewHeightPlag = true
+        // 탑뷰의 높이를 업데이트
+        self.updateTopViewHeight()
+    }
     
+    /// 탑뷰를 스크롤 했을 때, 메서드
     @objc private func scrollVertical(sender: UIPanGestureRecognizer) {
         let translation = sender.translation(in: view)
         let velocity = sender.velocity(in: view) // 스와이프 속도를 가져옵니다.
@@ -391,14 +387,14 @@ extension SettleMoneyRoomVC {
         }
     }
     
-    // MARK: - [시작 시]
+    /// 탑뷰 제스쳐 시작 시
     private func beganTopViewScroll() {
         // 제스처가 시작될 때 초기 높이를 저장
         self.viewModel.initialHeight = self.topViewHeight.constant
     }
     
-    // MARK: - [바뀌는 도중]
-    private func changedTopViewScroll(translation: CGPoint, 
+    /// 탑뷰 제스쳐 바뀌는 도중
+    private func changedTopViewScroll(translation: CGPoint,
                                       velocity: CGPoint) {
         self.viewModel.currentTranslation = translation
         self.viewModel.currentVelocity = velocity
@@ -409,7 +405,7 @@ extension SettleMoneyRoomVC {
         self.topViewHeight.constant = newHeight
     }
     
-    // MARK: - 탑뷰 최대 / 최소 크기 설정
+    /// 탑뷰 최대 / 최소 크기 설정
     private func endedTopViewScroll() {
         // 탑뷰가 닫혀 있고, 
         // 스와이프 방향이 아래로,
@@ -427,7 +423,7 @@ extension SettleMoneyRoomVC {
         }
     }
     
-    // MARK: - 탑뷰 열기 메서드
+    /// 탑뷰 열기 메서드
     @MainActor
     private func openTopView() {
         // 뷰모델 상태 true(open)으로 업데이트
@@ -440,7 +436,7 @@ extension SettleMoneyRoomVC {
         }
     }
     
-    // MARK: - 탑뷰 닫기 메서드
+    /// 탑뷰 닫기 메서드
     @MainActor
     private func closeTopView() {
         // 뷰모델 상태 false(close)으로 업데이트
@@ -503,8 +499,6 @@ extension SettleMoneyRoomVC: UITableViewDataSource {
         let cellViewModel = self.viewModel.cellViewModel(at: indexPath.item)
         // 셀의 뷰모델을 셀에 넣기
         cell.configureCell(with: cellViewModel)
-        // 테이블을 뒤집었?으므로, 셀도 뒤집어준다.
-//        cell.transform = CGAffineTransform(rotationAngle: -.pi)
         return cell
     }
 }

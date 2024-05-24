@@ -9,8 +9,6 @@ import UIKit
 import SnapKit
 import FirebaseAuth
 
-// MARK: - MainViewController
-
 final class MainVC: UIViewController {
     
     // MARK: - 레이아웃
@@ -111,7 +109,6 @@ final class MainVC: UIViewController {
         self.configureAutoLayout()
         self.configureUI()
         self.configureAction()
-        self.configureGesture()
         self.configureClosure()
     }
     init(viewModel: MainVMProtocol,
@@ -146,10 +143,8 @@ final class MainVC: UIViewController {
 
 
 // MARK: - 화면 설정
-
 extension MainVC {
-    
-    // MARK: - UI 설정
+    /// UI 설정
     private func configureUI() {
         // 배경 설정
         self.view.backgroundColor = UIColor.base_Blue
@@ -167,14 +162,11 @@ extension MainVC {
         self.collectionView.delegate = self
         
         // 코너레디어스 설정
-        self.menuBtn.clipsToBounds = true
-        self.menuBtn.layer.cornerRadius = 80 / 2
-        
-        self.noDataView.clipsToBounds = true
-        self.noDataView.layer.cornerRadius = 12
+        self.menuBtn.setRoundedCorners(.all, withCornerRadius: 80 / 2)
+        self.noDataView.setRoundedCorners(.all, withCornerRadius: 12)
     }
     
-    // MARK: - 오토레이아웃 설정
+    /// 오토레이아웃 설정
     private func configureAutoLayout() {
         [self.collectionView,
          self.floatingDimView,
@@ -217,7 +209,7 @@ extension MainVC {
         }
     }
     
-    // MARK: - 액션 설정
+    /// 액션 설정
     private func configureAction() {
         self.menuBtn.addTarget(
             self, 
@@ -231,23 +223,20 @@ extension MainVC {
             self, 
             action: #selector(self.makeRoomScreenBtnTapped),
             for: .touchUpInside)
-    }
-    
-    // MARK: - 제스처 설정
-    private func configureGesture() {
+        
         let tapGesture = UITapGestureRecognizer(
             target: self,
             action: #selector(self.floatingViewTappd))
         self.floatingDimView.addGestureRecognizer(tapGesture)
     }
     
-    // MARK: - 클로저 설정
+    /// 클로저 설정
     private func configureClosure() {
         self.viewModel.onFloatingShowChanged = { [weak self] floatingType in
             self?.updateFloatingUI(type: floatingType)
         }
     }
-    // MARK: - 노티피케이션 설정
+    /// 노티피케이션 설정
     private func configureNotification() {
         NotificationCenter.default.addObserver(
             self,
@@ -255,6 +244,19 @@ extension MainVC {
             name: .roomDataChanged,
             object: nil)
     }
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - viewWillAppear 업데이트
+extension MainVC {
     @objc private func handleRoomDataChanged(notification: Notification) {
         guard let userInfo = notification.userInfo as? [String: [IndexPath]] else { return }
         self.viewModel.userDataChanged(userInfo)
@@ -294,7 +296,7 @@ extension MainVC {
             case NotificationInfoString.removed.notificationName:
                 self.collectionView.deleteItems(at: indexPaths)
                 break
-            default: 
+            default:
                 print("\(self) ----- \(#function) ----- Error")
                 break
             }
@@ -320,13 +322,13 @@ extension MainVC {
     /// 프로필 액션 (사람 이미지 버튼)
     @objc private func profileScreenBtnTapped() {
         // MARK: - Fix
-        do {
-            try Auth.auth().signOut()
-            print("로그아웃 성공")
-        } catch {
-            print("로그아웃 실패")
-        }
-//        self.coordinator.profileScreen()
+//        do {
+//            try Auth.auth().signOut()
+//            print("로그아웃 성공")
+//        } catch {
+//            print("로그아웃 실패")
+//        }
+        self.coordinator.profileScreen()
     }
     
     /// 방 생성 액션 (플러스 버튼)
@@ -353,7 +355,7 @@ extension MainVC {
 
 extension MainVC {
     
-    // MARK: - 플로팅 액션
+    /// 플로팅 액션
     private func updateFloatingUI(type: floatingType) {
         // 메뉴버튼 이미지 돌리기
         self.menuBtnSpin()
@@ -363,7 +365,6 @@ extension MainVC {
         self.configureFloatingButtons(type: type)
     }
     
-    // MARK: - 메뉴 버튼 회전
     /// 메뉴버튼 이미지 돌리기 (Spin)
     private func menuBtnSpin() {
         // 돌리기(Spin)
@@ -372,7 +373,7 @@ extension MainVC {
         }
     }
     
-    // MARK: - 배경 (숨김/보임) 처리
+    /// 배경 (숨김/보임) 처리
     private func configureFloatingDimView(type: floatingType) {
         let image = self.viewModel.getMenuBtnImg
         self.floatingDimView.isHidden = !type.show
@@ -384,7 +385,7 @@ extension MainVC {
         }
     }
     
-    // MARK: - 버튼 (숨김/보임) 처리
+    /// 버튼 (숨김/보임) 처리
     private func configureFloatingButtons(type: floatingType) {
         // 버튼 애니메이션
         let buttons = type.show
@@ -462,33 +463,4 @@ extension MainVC: UICollectionViewDataSource {
         
         return cell
     }
-}
-
-
-
-
-
-
-
-
-
-
-// MARK: - 카트 스크린 델리게이트
-
-//extension MainVC: EditScreenDelegate {
-extension MainVC {
-    func makeRoom(room: Rooms) {
-        print(#function)
-        
-        // MARK: - Fix
-//        let indexPath = self.viewModel.addedRoom(room: room)
-//        
-//        self.collectionView.insertItems(at: [indexPath])
-    }
-    
-    
-//    // MARK: - 로그아웃
-//    func logout() {
-//        self.coordinator.selectALgoinMethodScreen()
-//    }
 }

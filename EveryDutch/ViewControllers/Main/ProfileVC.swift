@@ -104,15 +104,13 @@ final class ProfileVC: UIViewController {
 
 
 // MARK: - 화면 설정
-
 extension ProfileVC {
-    
-    // MARK: - UI 설정
+    /// UI 설정
     private func configureUI() {
         self.view.backgroundColor = .base_Blue
     }
     
-    // MARK: - 오토레이아웃 설정
+    /// 오토레이아웃 설정
     private func configureAutoLayout() {
         self.view.addSubview(self.scrollView)
         self.scrollView.addSubview(self.contentView)
@@ -124,18 +122,15 @@ extension ProfileVC {
             make.leading.trailing.equalToSuperview()
             make.bottom.equalToSuperview()
         }
-        
         // 컨텐트뷰
         self.contentView.snp.makeConstraints { make in
             make.edges.equalTo(self.scrollView.contentLayoutGuide)
             make.width.equalTo(self.scrollView.frameLayoutGuide)
         }
-        
         // 카드 이미지 뷰
         self.cardImgView.snp.makeConstraints { make in
             make.height.equalTo(self.cardHeight)
         }
-        
         // 스택뷰
         self.totalStackView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(2)
@@ -145,7 +140,7 @@ extension ProfileVC {
         }
     }
     
-    // MARK: - 액션 설정
+    /// 액션 설정
     private func configureAction() {
         // 버튼 생성
         let backButton = UIBarButtonItem(
@@ -165,7 +160,7 @@ extension ProfileVC {
         self.navigationItem.rightBarButtonItem = rightBtn
     }
     
-    // MARK: - 클로저 설정
+    /// 클로저 설정
     private func configureClosure() {
         self.viewModel.userDataClosure = { [weak self] userData in
             print(#function)
@@ -220,26 +215,21 @@ extension ProfileVC {
 
 
 // MARK: - 테이블뷰 델리게이트
-
 extension ProfileVC: UITableViewDelegate {
-    
-    // MARK: - 셀의 높이
-    /// 셀의 높이를 설정합니다.
+    /// 셀의 높이를 설정
     func tableView(_ tableView: UITableView, 
                    heightForRowAt indexPath: IndexPath)
     -> CGFloat {
         return 50
     }
     
-    // MARK: - 헤더뷰 설정
-    /// 헤더 뷰를 구성합니다.
+    /// 헤더 뷰를 구성
     func tableView(_ tableView: UITableView, 
                    viewForHeaderInSection section: Int)
     -> UIView? {
         return self.createHeaderView(for: section)
     }
     
-    // MARK: - 헤더뷰 생성
     /// 헤더 뷰를 생성합니다.
     private func createHeaderView(for section: Int) -> UIView {
         let title = self.viewModel.getHeaderTitle(section: section)
@@ -248,7 +238,6 @@ extension ProfileVC: UITableViewDelegate {
             tableHeaderEnum: .profileVC)
     }
     
-    // MARK: - 헤더 높이
     /// 헤더의 높이를 설정합니다.
     func tableView(_ tableView: UITableView,
                    heightForHeaderInSection section: Int)
@@ -256,7 +245,6 @@ extension ProfileVC: UITableViewDelegate {
         return 70
     }
     
-    // MARK: - 푸터뷰 설정
     /// 푸터 뷰를 구성합니다. 특정 조건을 만족하는 섹션에만 푸터를 설정합니다.
     func tableView(_ tableView: UITableView, 
                    viewForFooterInSection section: Int)
@@ -264,7 +252,6 @@ extension ProfileVC: UITableViewDelegate {
         return TableFooterView()
     }
     
-    // MARK: - 푸터뷰 높이
     /// 푸터의 높이를 설정합니다. 특정 조건을 만족할 때만 높이를 할당합니다.
     func tableView(_ tableView: UITableView, 
                    heightForFooterInSection section: Int)
@@ -283,16 +270,12 @@ extension ProfileVC: UITableViewDelegate {
 
 
 // MARK: - 테이블뷰 데이터소스
-
 extension ProfileVC: UITableViewDataSource {
-    
-    // MARK: - 섹션 수
     // 테이블 뷰의 섹션 수를 반환
     func numberOfSections(in tableView: UITableView) -> Int {
         return self.viewModel.getNumOfSection
     }
     
-    // MARK: - 셀의 개수
     // 각 섹션의 행 수를 반환
     func tableView(_ tableView: UITableView, 
                    numberOfRowsInSection section: Int)
@@ -301,7 +284,6 @@ extension ProfileVC: UITableViewDataSource {
             section: section)
     }
     
-    // MARK: - 셀 구성
     // 셀을 구성하는 함수
     func tableView(_ tableView: UITableView, 
                    cellForRowAt indexPath: IndexPath)
@@ -312,7 +294,6 @@ extension ProfileVC: UITableViewDataSource {
         if let type = self.viewModel.getCellData(indexPath: indexPath) {
             cell.configureCell(type)
         }
-        
         return cell
     }
 }

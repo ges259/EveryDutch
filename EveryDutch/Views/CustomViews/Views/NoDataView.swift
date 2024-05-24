@@ -31,10 +31,6 @@ final class NoDataView: UIView {
     
     
     
-    // MARK: - 프로퍼티
-    
-    
-    
     
     
     // MARK: - 라이프사이클
@@ -59,10 +55,8 @@ final class NoDataView: UIView {
 
 
 // MARK: - 화면 설정
-
 extension NoDataView {
-    
-    // MARK: - UI 설정
+    /// UI 설정
     func configureUIWithType(type: NodataViewType) {
         self.backgroundColor = type.getBackgroundColor
         self.isHidden = type.getIsHidden
@@ -71,7 +65,7 @@ extension NoDataView {
         self.noDataImg.tintColor = type.getTintColor
     }
     
-    // MARK: - 오토레이아웃 설정
+    /// 오토레이아웃 설정
     private func configureAutoLayout() {
         self.addSubview(self.stackView)
         self.stackView.snp.makeConstraints { make in

@@ -362,18 +362,3 @@ extension CardImageView {
         }
     }
 }
-
-
-
-/*
- private func defaultText(for index: Int) -> String {
-     switch index {
-     case 0:
-         return "더치더치"
-     case 1:
-         return "DUTCH"
-     default:
-         return ""
-     }
- }
- */

@@ -11,16 +11,14 @@ import PanModal
 
 final class CheckReceiptPanVC: UIViewController {
     // MARK: - 레이아웃
-    
+    /// 상단 레이블 ("아직 체크되지 않은 부분이 있어요")
     private var topLbl: CustomLabel = CustomLabel(
         text: "아직 체크되지 않은 부분이 있어요",
         font: UIFont.boldSystemFont(ofSize: 15),
         backgroundColor: UIColor.normal_white,
         textAlignment: .center)
     
-//    private var whiteView: UIView = UIView.configureView(
-//        color: UIColor.normal_white)
-    
+    /// 빠진 사항이 적힌 테이블
     private lazy var tableView: CustomTableView = {
         let view = CustomTableView()
         view.delegate = self
@@ -29,18 +27,16 @@ final class CheckReceiptPanVC: UIViewController {
         view.register(
             CheckReceiptPanCell.self,
             forCellReuseIdentifier: Identifier.checkReceiptPanCell)
-        
-        
-        
         return view
     }()
     
-    
+    /// 하단 버튼
     private var bottomBtn: UIButton = UIButton.btnWithTitle(
         title: "확인",
         font: UIFont.boldSystemFont(ofSize: 16),
         backgroundColor: UIColor.normal_white)
     
+    /// 토탈 스택뷰
     private lazy var totalStackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.topLbl,
                            self.tableView,
@@ -49,11 +45,6 @@ final class CheckReceiptPanVC: UIViewController {
         spacing: 4,
         alignment: .fill,
         distribution: .fill)
-    
-    
-    
-    
-
     
     
     
@@ -67,18 +58,13 @@ final class CheckReceiptPanVC: UIViewController {
     
     
     
-    
-    
-    
-    
-    
     // MARK: - 라이프사이클
     override func viewDidLoad() {
         super.viewDidLoad()
         
         self.configureUI()
         self.configureAutoLayout()
-        self.setupAction()
+        self.configureAction()
     }
     init(viewModel: CheckReceiptPanVMProtocol,
          coordinator: Coordinator) {
@@ -105,10 +91,8 @@ final class CheckReceiptPanVC: UIViewController {
 
 
 // MARK: - 화면 설정
-
 extension CheckReceiptPanVC {
-    
-    // MARK: - UI 설정
+    /// UI 설정
     private func configureUI() {
         // 배경 색상 설정
         self.view.backgroundColor = UIColor.deep_Blue
@@ -120,7 +104,7 @@ extension CheckReceiptPanVC {
         }
     }
     
-    // MARK: - 오토레이아웃 설정
+    /// 오토레이아웃 설정
     private func configureAutoLayout() {
         self.view.addSubview(self.totalStackView)
         
@@ -140,14 +124,21 @@ extension CheckReceiptPanVC {
             make.height.equalTo(55)
         }
     }
-    private func setupAction() {
+    
+    // 액션 설정
+    private func configureAction() {
         self.bottomBtn.addTarget(
             self,
             action: #selector(self.bottomBtnTapped),
             for: .touchUpInside)
     }
+    
+    
+    
+    
+    
+    // MARK: - 액션 설정
     @objc private func bottomBtnTapped() {
-//        self.coordinator.didFinish()
         self.dismiss(animated: true)
     }
 }
@@ -183,11 +174,6 @@ extension CheckReceiptPanVC: PanModalPresentable {
         return 23
     }
 }
-
-
-
-
-
 
 
 

@@ -127,10 +127,8 @@ final class EditScreenVC: UIViewController {
 
 
 // MARK: - 화면 설정
-
 extension EditScreenVC {
-    
-    // MARK: - UI 설정
+    /// UI 설정
     private func configureUI() {
         self.view.backgroundColor = UIColor.base_Blue
         
@@ -140,7 +138,7 @@ extension EditScreenVC {
         self.navigationItem.title = self.viewModel.getNavTitle
     }
     
-    // MARK: - 오토레이아웃 설정
+    /// 오토레이아웃 설정
     private func configureAutoLayout() {
         self.view.addSubview(self.scrollView)
         self.scrollView.addSubview(self.contentView)
@@ -191,7 +189,7 @@ extension EditScreenVC {
         }
     }
     
-    // MARK: - 액션 설정
+    /// 액션 설정
     private func configureAction() {
         self.bottomBtn.addTarget(
             self,
@@ -199,23 +197,7 @@ extension EditScreenVC {
             for: .touchUpInside)
     }
     
-    func configureBackBtn(isMakeMode: Bool) {
-        if isMakeMode {
-            self.navigationItem.hidesBackButton = true
-            return
-        }
-        
-        // 버튼 생성
-        let backButton = UIBarButtonItem(
-            image: .chevronLeft,
-            style: .done,
-            target: self,
-            action: #selector(self.backButtonTapped))
-        // 네비게이션 바의 왼쪽 아이템으로 설정
-        self.navigationItem.leftBarButtonItem = backButton
-    }
-    
-    // MARK: - 클로저 설정
+    /// 클로저 설정
     private func configureClosure() {
         self.viewModel.successDataClosure = { @MainActor [weak self] in
             print("\(#function) --- successDataClosure")
@@ -233,8 +215,24 @@ extension EditScreenVC {
         self.viewModel.decorationDataClosure = { [weak self] deco in
             self?.cardImgView.originalDecorationData = deco
         }
+    }
+    
+    /// 왼쪽 상단 뒤로가기 버튼 설정
+    /// isMakeMode가 true이 때만 설정
+    func configureBackBtn(isMakeMode: Bool) {
+        if isMakeMode {
+            self.navigationItem.hidesBackButton = true
+            return
+        }
         
-        
+        // 버튼 생성
+        let backButton = UIBarButtonItem(
+            image: .chevronLeft,
+            style: .done,
+            target: self,
+            action: #selector(self.backButtonTapped))
+        // 네비게이션 바의 왼쪽 아이템으로 설정
+        self.navigationItem.leftBarButtonItem = backButton
     }
 }
 
@@ -249,21 +247,19 @@ extension EditScreenVC {
 
 
 // MARK: - 액션 메서드
-
 extension EditScreenVC {
-    
-    // MARK: - 뒤로가기 버튼
+    /// 뒤로가기 버튼
     @objc private func backButtonTapped() {
         self.coordinator.didFinish()
     }
     
-    // MARK: - 하단 버튼
+    /// 하단 버튼
     @objc private func bottomBtnTapped() {
         self.view.endEditing(true)
         self.viewModel.validation()
     }
     
-    // MARK: - 에러 설정
+    /// 에러 설정
     @MainActor
     private func errorType(_ errorType: ErrorEnum) {
         switch errorType {
@@ -301,19 +297,15 @@ extension EditScreenVC: UIScrollViewDelegate {
 
 
 // MARK: - 테이블뷰 델리게이트
-
 extension EditScreenVC: UITableViewDelegate {
-    
-    // MARK: - 셀의 높이
-    /// 셀의 높이를 설정합니다.
+    /// 셀의 높이를 설정
     func tableView(_ tableView: UITableView,
                    heightForRowAt indexPath: IndexPath)
     -> CGFloat {
         return 60
     }
     
-    // MARK: - 헤더뷰 설정
-    /// 헤더 뷰를 구성합니다.
+    /// 헤더 뷰를 구성
     func tableView(_ tableView: UITableView,
                    viewForHeaderInSection section: Int)
     -> UIView? {
@@ -324,8 +316,7 @@ extension EditScreenVC: UITableViewDelegate {
             tableHeaderEnum: .profileVC)
     }
     
-    // MARK: - 헤더 높이
-    /// 헤더의 높이를 설정합니다.
+    /// 헤더의 높이를 설정
     func tableView(_ tableView: UITableView,
                    heightForHeaderInSection section: Int)
     -> CGFloat {
@@ -343,23 +334,20 @@ extension EditScreenVC: UITableViewDelegate {
 
 
 // MARK: - 테이블뷰 데이터소스
-
 extension EditScreenVC: UITableViewDataSource {
-    
-    // MARK: - 섹션 수
     // 테이블 뷰의 섹션 수를 반환
     func numberOfSections(in tableView: UITableView) -> Int {
         return self.viewModel.getNumOfSection
     }
     
-    // MARK: - 셀의 개수
+    /// 셀의 개수
     func tableView(_ tableView: UITableView,
                    numberOfRowsInSection section: Int)
     -> Int {
         return self.viewModel.getNumOfCell(section: section)
     }
     
-    // MARK: - cellForRowAt
+    /// cellForRowAt
     func tableView(_ tableView: UITableView,
                    cellForRowAt indexPath: IndexPath)
     -> UITableViewCell {
@@ -367,7 +355,7 @@ extension EditScreenVC: UITableViewDataSource {
         ? self.configureDataCell(indexPath: indexPath)
         : self.configureDecorationCell(indexPath: indexPath)
     }
-    /// [데이터 셀] 구성
+    /// cellForRowAt - [데이터 셀] 구성
     private func configureDataCell(
         indexPath: IndexPath)
     -> CardDataCell {
@@ -388,7 +376,7 @@ extension EditScreenVC: UITableViewDataSource {
         cell.delegate = self
         return cell
     }
-    /// [데코 셀] 구성
+    /// cellForRowAt - [데코 셀] 구성
     private func configureDecorationCell(
         indexPath: IndexPath)
     -> CardDecorationCell {
@@ -404,7 +392,7 @@ extension EditScreenVC: UITableViewDataSource {
         return cell
     }
     
-    // MARK: - didSelectRowAt
+    /// didSelectRowAt
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // 텍스트 필드를 수정 주이라면 -> 멈추기
         self.view.endEditing(true)
@@ -419,7 +407,7 @@ extension EditScreenVC: UITableViewDataSource {
         default: break
         }
     }
-    /// [데코 섹션] didSelectRowAt
+    /// didSelectRowAt - [데코 섹션]
     private func selectedDecorationTypeCell(type: DecorationCellType) {
         switch type {
         case .blurEffect:
@@ -436,7 +424,7 @@ extension EditScreenVC: UITableViewDataSource {
             break
         }
     }
-    /// .background(배경) 셀 선택 시, 얼럿 창 띄우기
+    /// didSelectRowAt - .background(배경) 셀 선택 시, 얼럿 창 띄우기
     private func selectBackground() {
         self.customAlert(alertStyle: .actionSheet, alertEnum: .backgroundSelect) { index in
             switch index {
@@ -450,7 +438,7 @@ extension EditScreenVC: UITableViewDataSource {
             }
         }
     }
-    /// .blurEffect(블러효과) 셀 선택 시, 카드이미지뷰의 효과 바꾸기
+    /// didSelectRowAt - .blurEffect(블러효과) 셀 선택 시, 카드이미지뷰의 효과 바꾸기
     private func selectedBlur() {
         self.cardImgView.updateCardView(type: .blurEffect, data: true, onFailure: self.errorType(_:))
     }
@@ -480,7 +468,6 @@ extension EditScreenVC: CardDataCellDelegate,
         // 변경된 텍스트 데이터 저장
         self.viewModel.saveChangedData(data: text)
         // 카드 텍스트 변경
-//        self.cardImgView.updateDataCellText(index: row, text: text)
         self.cardImgView.updateDataCellText(index: row, text: text)
     }
     private func saveTextFieldsIndexPath(_ cell: CardDataCell) -> Int? {
@@ -735,11 +722,10 @@ extension EditScreenVC: CustomPickerDelegate {
 
 
 
-// MARK: - [권한 설정]
+// MARK: - 이미지 권한 설정
 
 extension EditScreenVC {
-    
-    // MARK: - 이미지 권한 확인
+    /// 이미지 권한 확인
     func requestPhotoLibraryAccess() {
         // iOS 14 이상에서 사용할 수 있는 authorizationStatus(for:) 메서드 사용
         let status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
@@ -773,7 +759,7 @@ extension EditScreenVC {
         }
     }
     
-    // MARK: - 권한 요청
+    /// 권한 요청
     private func photoAccess() {
         // 권한 요청
         PHPhotoLibrary.requestAuthorization { newStatus in
@@ -785,7 +771,7 @@ extension EditScreenVC {
         }
     }
     
-    // MARK: - 설정으로 이동
+    /// 설정으로 이동
     private func showPhotoLibraryAccessDeniedAlert() {
         self.customAlert(alertEnum: .photoAccess) { _ in
             // 사용자를 앱의 설정 화면으로 이동

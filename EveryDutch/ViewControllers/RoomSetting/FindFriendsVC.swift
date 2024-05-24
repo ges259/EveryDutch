@@ -125,15 +125,13 @@ final class FindFriendsVC: UIViewController {
 
 
 // MARK: - 화면 설정
-
 extension FindFriendsVC {
-    
-    // MARK: - UI 설정
+    /// UI 설정
     private func configureUI() {
         self.view.backgroundColor = .base_Blue
     }
     
-    // MARK: - 오토레이아웃 설정
+    /// 오토레이아웃 설정
     private func configureAutoLayout() {
         [self.totalStackView,
          self.lineView,
@@ -180,7 +178,7 @@ extension FindFriendsVC {
         }
     }
     
-    // MARK: - 액션 설정
+    /// 액션 설정
     private func configureAction() {
         // 버튼 생성
         let backButton = UIBarButtonItem(
@@ -203,7 +201,7 @@ extension FindFriendsVC {
             for: .touchUpInside)
     }
     
-    // MARK: - 클로저 설정
+    /// 클로저 설정
     private func configureClosure() {
         // 검색 성공
         self.viewModel.searchSuccessClosure = { [weak self] user in

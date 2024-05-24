@@ -10,14 +10,11 @@ import SnapKit
 
 final class UsersTableViewCell: UITableViewCell {
     
-// MARK: - 레이아웃
-    
-    
-    
-    // MARK: - 스택뷰
+    // MARK: - 레이아웃
+    /// 스택뷰
     private var tableCellStv: TableCellStackView = TableCellStackView()
     
-    // MARK: - 오른쪽 이미지
+    /// 오른쪽 이미지
     private lazy var rightImg: UIImageView = {
         let img = UIImageView()
             img.tintColor = .black
@@ -57,17 +54,15 @@ final class UsersTableViewCell: UITableViewCell {
 
 
 // MARK: - 화면 설정
-
 extension UsersTableViewCell {
-    
-    // MARK: - UI 설정
+    /// UI 설정
     private func configureUI() {
         self.backgroundColor = .normal_white
         self.selectionStyle = .none
         self.separatorInset = .zero
     }
-
-    // MARK: - 뷰모델을 통한 셀 설정
+    
+    /// 뷰모델을 통한 셀 설정
     func configureCell(with viewModel: UsersTableViewCellVMProtocol?,
                        firstBtnTapped: Bool) {
         // 뷰모델 저장
@@ -85,7 +80,7 @@ extension UsersTableViewCell {
                               firstBtnTapped: firstBtnTapped)
     }
     
-    // MARK: - 스택뷰 오토레이아웃
+    /// 스택뷰 오토레이아웃
     private func configureStvAutoLayout(viewModel: UsersTableViewCellVMProtocol) {
         self.addSubview(self.tableCellStv)
         self.tableCellStv.snp.makeConstraints { make in
@@ -95,7 +90,7 @@ extension UsersTableViewCell {
         }
     }
     
-    // MARK: - 이미지 오토레이아웃
+    /// 이미지 오토레이아웃
     private func configureLeftImage() {
         self.tableCellStv.addArrangedSubview(self.rightImg)
         
@@ -106,7 +101,7 @@ extension UsersTableViewCell {
         }
     }
     
-    // MARK: - 스택뷰 데이터 설정
+    /// 스택뷰 데이터 설정
     private func setStackViewData(with viewModel: UsersTableViewCellVMProtocol,
                                   firstBtnTapped: Bool) {
         // 스택뷰 설정

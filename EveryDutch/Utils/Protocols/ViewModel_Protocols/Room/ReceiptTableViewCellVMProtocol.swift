@@ -8,11 +8,6 @@
 import Foundation
 
 protocol ReceiptTableViewCellVMProtocol {
-    var type: Int { get }
-    var context: String { get }
-    var time: String { get }
-    var price: Int { get }
-    var payer: String { get }
     
     
     var getReceiptID: String { get }

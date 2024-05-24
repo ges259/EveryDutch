@@ -15,12 +15,6 @@ final class SettleMoneyTopView: UIView {
         viewModel: UsersTableViewVM(
             roomDataManager: RoomDataManager.shared, .isSettleMoney))
     
-    /// 아래 방향 이미지 (5명 이상일 때 맨 밑으로 내리는 버튼)
-    private var arrowDownImg: UIImageView = {
-        let img = UIImageView(image: UIImage.arrow_down)
-            img.tintColor = .deep_Blue
-        return img
-    }()
     
     /// 탑뷰 하단 인디케이터
     private var topViewIndicator: UIView = UIView.configureView(
@@ -53,7 +47,6 @@ final class SettleMoneyTopView: UIView {
     
     private func configureAutoLayout() {
         self.addSubview(self.usersTableView)
-        self.addSubview(self.arrowDownImg)
         self.addSubview(self.topViewIndicator)
         
         // 탑뷰 스택뷰
@@ -62,13 +55,6 @@ final class SettleMoneyTopView: UIView {
             make.bottom.equalToSuperview().offset(-35)
             make.leading.equalToSuperview().offset(15)
             make.trailing.equalToSuperview().offset(-15)
-        }
-        
-        // 유저 테이블뷰 아래로 스크롤 버튼
-        self.arrowDownImg.snp.makeConstraints { make in
-            make.bottom.equalTo(self.usersTableView.snp.bottom).offset(-8)
-            make.width.height.equalTo(30)
-            make.centerX.equalToSuperview()
         }
         // 하단 인디케이터
         self.topViewIndicator.snp.makeConstraints { make in

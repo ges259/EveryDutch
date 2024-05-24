@@ -70,7 +70,6 @@ final class ReceiptScreenPanVC: UIViewController {
         
         self.configureUI()
         self.configureAutoLayout()
-        self.configureViewWithViewModel()
         self.configureAction()
         self.configureClosure()
     }
@@ -90,29 +89,23 @@ final class ReceiptScreenPanVC: UIViewController {
     }
 }
 
-// MARK: - 화면 설정
 
+
+
+
+
+
+
+
+
+// MARK: - 화면 설정
 extension ReceiptScreenPanVC {
-    
-    // MARK: - UI 설정
+    /// UI 설정
     private func configureUI() {
         self.view.backgroundColor = UIColor.deep_Blue
     }
     
-    private func configureViewWithViewModel() {
-        
-        
-//        self.payerStackVeiw.receiptInfoLbl.text = self.viewModel.getPayerName
-//        self.paymentMethodStackView.receiptInfoLbl.text = self.viewModel.getPayMethod
-//        
-//        let receipt = self.viewModel.getReceipt
-//        self.memoStackView.receiptInfoLbl.text = receipt.context
-//        self.dateStackView.receiptInfoLbl.text = receipt.date
-//        self.timeStackView.receiptInfoLbl.text = receipt.time
-//        self.priceStackView.receiptInfoLbl.text = "\(receipt.price)"
-    }
-    
-    // MARK: - 오토레이아웃 설정
+    /// 오토레이아웃 설정
     private func configureAutoLayout() {
         self.view.addSubview(self.scrollView)
         self.scrollView.addSubview(self.contentView)
@@ -138,13 +131,14 @@ extension ReceiptScreenPanVC {
         }
     }
     
-    // MARK: - 액션 설정
+    /// 액션 설정
     private func configureAction() {
         
     }
     
-    // MARK: - 클로저 설정
+    /// 클로저 설정
     private func configureClosure() {
+        
     }
 }
 
@@ -159,31 +153,28 @@ extension ReceiptScreenPanVC {
 
 // MARK: - 테이블뷰 델리게이트
 extension ReceiptScreenPanVC: UITableViewDelegate {
-    // MARK: - 셀의 높이
+    /// 셀의 높이
     func tableView(_ tableView: UITableView,
                    heightForRowAt indexPath: IndexPath)
     -> CGFloat {
-        return self.viewModel.getCellHeight(
-            section: indexPath.section)
+        return self.viewModel.getCellHeight(section: indexPath.section)
     }
     
-    // MARK: - 헤더 높이
-    /// 헤더의 높이를 설정합니다.
+    /// 헤더의 높이를 설정
     func tableView(_ tableView: UITableView,
                    heightForHeaderInSection section: Int)
     -> CGFloat {
         return 40
     }
     
-    // MARK: - 헤더뷰 설정
-    /// 헤더 뷰를 구성합니다.
+    /// 헤더 뷰를 구성
     func tableView(_ tableView: UITableView,
                    viewForHeaderInSection section: Int)
     -> UIView? {
         return self.createHeaderView(for: section)
     }
     
-    // MARK: - 헤더 만들기
+    /// 헤더 만들기
     private func createHeaderView(for section: Int) -> UIView {
         let title: String = self.viewModel.getHeaderTitle(section: section)
         
@@ -262,7 +253,7 @@ extension ReceiptScreenPanVC: UITableViewDataSource {
         : self.makeUsersCell(indexPath: indexPath)
     }
     
-    // MARK: - [데이터 셀]
+    /// cellForRowAt - [데이터 셀]
     private func makeDataCell(indexPath: IndexPath) -> ReceiptScreenDataCell{
         let cell = self.usersTableView.dequeueReusableCell(
             withIdentifier: Identifier.receiptDataCell,
@@ -275,7 +266,7 @@ extension ReceiptScreenPanVC: UITableViewDataSource {
         return cell
     }
     
-    // MARK: - [유저 셀]
+    /// cellForRowAt - [유저 셀]
     private func makeUsersCell(indexPath: IndexPath) -> ReceiptScreenUsersCell {
         let cell = self.usersTableView.dequeueReusableCell(
             withIdentifier: Identifier.receiptUserCell,

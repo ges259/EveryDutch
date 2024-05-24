@@ -125,10 +125,12 @@ extension SettlementTableViewCell {
         
         // viewModel을 사용하여 셀의 뷰를 업데이트.
         if let viewModel = viewModel {
-            self.contextLbl.text = viewModel.context
-            self.allPayerLbl.text = viewModel.payer
-            self.priceLbl.text = "\(viewModel.price)"
-            self.timeLbl.text = viewModel.time
+            let receipt = viewModel.getReceipt
+            
+            self.contextLbl.text = receipt.context
+            self.allPayerLbl.text = receipt.payer
+            self.priceLbl.text = "\(receipt.price)"
+            self.timeLbl.text = receipt.time
         }
     }
 }

@@ -44,16 +44,14 @@ class SplashScreenVC: UIViewController {
 
 
 // MARK: - 기본 설정
-
 extension SplashScreenVC {
-    
-    // MARK: - 화면 설정
+    /// 화면 설정
     private func configureUI() {
 //        self.view.backgroundColor = .base_Blue
         self.view.backgroundColor = .red
     }
     
-    // MARK: - 클로저 설정
+    /// 클로저 설정
     private func configureClosure() {
         self.viewModel.successClosure = { [weak self] in
             self?.configureSuccess()
@@ -73,11 +71,9 @@ extension SplashScreenVC {
 
 
 
-// MARK: - 화면 이동
-
+// MARK: - 클로저 함수
 extension SplashScreenVC {
-    
-    // MARK: - 성공 시
+    /// 성공 시
     private func configureSuccess() {
         DispatchQueue.main.async {
             // 메인 화면으로 이동
@@ -85,7 +81,7 @@ extension SplashScreenVC {
         }
     }
     
-    // MARK: - 에러 설정
+    /// 에러 설정
     @MainActor
     private func configureError(with errorType: ErrorEnum) {
         switch errorType {

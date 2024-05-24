@@ -11,12 +11,13 @@ import PanModal
 
 final class PeopleSelectionPanVC: UIViewController {
     // MARK: - 레이아웃
+    /// 상단 레이블
     private var topLbl: CustomLabel = CustomLabel(
         font: UIFont.boldSystemFont(ofSize: 15),
         backgroundColor: UIColor.normal_white,
         textAlignment: .center)
     
-    
+    /// 유저를 선택하는 테이블뷰
     private lazy var peopleSelectionTableView: CustomTableView = {
         let view = CustomTableView()
         view.delegate = self
@@ -27,7 +28,7 @@ final class PeopleSelectionPanVC: UIViewController {
         return view
     }()
     
-    
+    /// 하단 '확인' 버튼
     private var bottomBtn: UIButton = {
         let btn = UIButton.btnWithTitle(
             titleColor: UIColor.gray,
@@ -37,10 +38,7 @@ final class PeopleSelectionPanVC: UIViewController {
         return btn
     }()
     
-    
-    
-    
-    
+    /// 토탈 스택뷰
     private lazy var stackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.topLbl,
                            self.peopleSelectionTableView,
@@ -59,6 +57,8 @@ final class PeopleSelectionPanVC: UIViewController {
     private var viewModel: PeopleSelectionPanVMProtocol
     // PeopleSelection_Coordinator로 전달 됨.
     weak var delegate: PeopleSelectionDelegate?
+    
+    
     
     
     
@@ -87,11 +87,18 @@ final class PeopleSelectionPanVC: UIViewController {
     }
 }
 
-// MARK: - 화면 설정
 
+
+
+
+
+
+
+
+
+// MARK: - 화면 설정
 extension PeopleSelectionPanVC {
-    
-    // MARK: - UI 설정
+    /// UI 설정
     private func configureUI() {
         self.view.backgroundColor = UIColor.deep_Blue
         
@@ -103,7 +110,7 @@ extension PeopleSelectionPanVC {
         }
     }
     
-    // MARK: - 오토레이아웃 설정
+    /// 오토레이아웃 설정
     private func configureAutoLayout() {
         self.view.addSubview(self.stackView)
         // 스택뷰
@@ -121,13 +128,13 @@ extension PeopleSelectionPanVC {
         }
     }
     
-    // MARK: - 뷰모델을 통한 설정
+    /// 뷰모델을 통한 설정
     private func configureViewWithViewModel() {
         self.topLbl.text = self.viewModel.topLblText
         self.bottomBtn.setTitle(self.viewModel.bottomBtnText, for: .normal)
     }
     
-    // MARK: - 액션 설정
+    /// 액션 설정
     private func configureAction() {
         self.bottomBtn.addTarget(
             self,
@@ -135,7 +142,7 @@ extension PeopleSelectionPanVC {
             for: .touchUpInside)
     }
     
-    // MARK: - 클로저 설정
+    /// 클로저 설정
     private func configureClosure() {
         self.viewModel.bottomBtnClosure = { [weak self] in
             // self 옵셔널 바인딩
@@ -171,12 +178,12 @@ extension PeopleSelectionPanVC {
         : self.multipleModeDelegate()
     }
     
-    // MARK: - 단일 선택 모드 일 때
+    /// 단일 선택 모드 일 때
     private func singleModeDelegate() {
         self.delegate?.payerSelectedUser(
             addedUser: self.viewModel.addedUsers)
     }
-    // MARK: - 다중 선택 모드 일 때
+    /// 다중 선택 모드 일 때
     private func multipleModeDelegate() {
         self.delegate?.multipleModeSelectedUsers(
             addedusers: self.viewModel.addedUsers,
@@ -194,17 +201,15 @@ extension PeopleSelectionPanVC {
 
 
 // MARK: - 테이블뷰 델리게이트
-
 extension PeopleSelectionPanVC: UITableViewDelegate {
-    
-    // MARK: - 셀의 높이
+    /// 셀의 높이
     func tableView(_ tableView: UITableView,
                    heightForRowAt indexPath: IndexPath)
     -> CGFloat {
         return 45
     }
     
-    // MARK: - didSelectRowAt
+    /// didSelectRowAt
     func tableView(_ tableView: UITableView,
                    didSelectRowAt indexPath: IndexPath) {
         // 현재 모드 확인
@@ -217,7 +222,7 @@ extension PeopleSelectionPanVC: UITableViewDelegate {
             indexPath: indexPath)
     }
     
-    // MARK: - 단일 선택 모드일 때
+    /// 단일 선택 모드일 때
     private func singleModeDidSelectRowAt(index: Int) {
         self.viewModel.singleModeSelectionUser(
             index: index)
@@ -236,12 +241,7 @@ extension PeopleSelectionPanVC: UITableViewDelegate {
         }
     }
     
-    
-    
-    
-    
-    
-    // MARK: - 다중 선택 모드일 때
+    /// 다중 선택 모드일 때
     private func multipleModeDidSelectRowAt(indexPath: IndexPath) {
         // 선택된 유저 저장 또는 삭제
         self.viewModel.multipleModeSelectedUsers(index: indexPath.row)
@@ -257,17 +257,15 @@ extension PeopleSelectionPanVC: UITableViewDelegate {
 
 
 // MARK: - 테이블뷰 데이터소스
-
 extension PeopleSelectionPanVC: UITableViewDataSource {
-    
-    // MARK: - 셀의 개수
+    /// 셀의 개수
     func tableView(_ tableView: UITableView,
                    numberOfRowsInSection section: Int)
     -> Int {
         return self.viewModel.numOfUsers
     }
     
-    // MARK: - 셀 구성
+    /// 셀 구성
     func tableView(_ tableView: UITableView,
                    cellForRowAt indexPath: IndexPath)
     -> UITableViewCell {
@@ -289,7 +287,6 @@ extension PeopleSelectionPanVC: UITableViewDataSource {
         cell.configureCellData(isSingleMode: mode, 
                                isSelected: isSelected,
                                user: userEntry.value)
-        
         return cell
     }
 }

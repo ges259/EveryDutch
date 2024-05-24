@@ -11,7 +11,7 @@ import FSCalendar
 
 final class ReceiptWriteVC: UIViewController {
     
-    // MARK: - 스크롤뷰
+    // MARK: - 레이아웃
     /// 스크롤뷰
     private lazy var scrollView: UIScrollView = {
         let scrollView = UIScrollView()
@@ -24,7 +24,6 @@ final class ReceiptWriteVC: UIViewController {
     /// 컨텐트뷰 ( - 스크롤뷰)
     private lazy var contentView: UIView = UIView()
     
-    // MARK: - 캘린더
     /// 달력
     private lazy var calendar: CustomCalendar = {
         let calendar = CustomCalendar()
@@ -32,7 +31,7 @@ final class ReceiptWriteVC: UIViewController {
         return calendar
     }()
     
-    // MARK: - 테이블뷰
+    /// 선택된 유저 테이블뷰
     private lazy var tableView: CustomTableView = {
         let view = CustomTableView()
         view.register(
@@ -50,20 +49,20 @@ final class ReceiptWriteVC: UIViewController {
         view.sectionHeaderTopPadding = 7
         return view
     }()
-    // MARK: - 테이블뷰 푸터뷰
+    /// 테이블뷰 푸터뷰
     private lazy var tableFooterView: ReceiptWriteTableFooterView = {
         let view = ReceiptWriteTableFooterView()
         view.delegate = self
         return view
     }()
     
-    // MARK: - 유저 추가 버튼
+    /// 유저 추가 버튼
     private var addPersonBtn: UIButton = UIButton.btnWithTitle(
         title: "✓ 계산할 사람 선택",
         font: UIFont.systemFont(ofSize: 14),
         backgroundColor: UIColor.deep_Blue)
     
-    // MARK: - 토탈 스택뷰
+    /// 토탈 스택뷰
     private lazy var totalStackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.calendar,
                            self.tableView,
@@ -73,11 +72,11 @@ final class ReceiptWriteVC: UIViewController {
         alignment: .fill,
         distribution: .fill)
     
-    // MARK: - 완료 버튼
+    /// 하단 완료 버튼
     private lazy var bottomBtn: BottomButton = BottomButton(
         title: "완료")
     
-    // MARK: - 타임 피커
+    /// 타임 피커
     private lazy var timePicker: CustomTimePicker = {
         let picker = CustomTimePicker()
             picker.customTimePickerDelegate = self
@@ -142,10 +141,8 @@ final class ReceiptWriteVC: UIViewController {
 
 
 // MARK: - 화면 설정
-
 extension ReceiptWriteVC {
-    
-    // MARK: - UI 설정
+    /// UI 설정
     private func configureUI() {
         self.view.backgroundColor = UIColor.base_Blue
         
@@ -158,7 +155,7 @@ extension ReceiptWriteVC {
         self.totalStackView.setCustomSpacing(0, after: self.calendar)
     }
     
-    // MARK: - 오토레이아웃 설정
+    /// 오토레이아웃 설정
     private func configureAutoLayout() {
         self.view.addSubview(self.scrollView)
         self.scrollView.addSubview(self.contentView)
@@ -207,7 +204,7 @@ extension ReceiptWriteVC {
         }
     }
     
-    // MARK: - 액션 설정
+    /// 액션 설정
     private func configureAction() {
         // 뒤로가기 버튼
         let backButton = UIBarButtonItem(
@@ -235,7 +232,7 @@ extension ReceiptWriteVC {
         self.view.addGestureRecognizer(tapGesture)
     }
     
-    // MARK: - 노티피케이션 설정
+    /// 노티피케이션 설정
     private func configureNotification() {
         NotificationCenter.default.addObserver(
             self,
@@ -260,10 +257,8 @@ extension ReceiptWriteVC {
 
 
 // MARK: - 클로저 설정
-
 extension ReceiptWriteVC {
-    
-    // MARK: - [공통]
+    /// [공통]
     private func configureClosure() {
         self.calculatePriceClosure()
         self.debouncingClosure()
@@ -272,23 +267,21 @@ extension ReceiptWriteVC {
         self.successApiClosure()
     }
     
-    // MARK: - 금액 계산
+    /// 누적 금액 설정 클로저
     private func calculatePriceClosure() {
-        // 누적 금액 설정 클로저
         self.viewModel.calculatePriceClosure = { [weak self] total in
             self?.tableFooterView.setMoneyCountLabel(totalPrice: total)
         }
     }
     
-    // MARK: - 디바운싱
+    /// 키보드 디바운싱 클로저
     private func debouncingClosure() {
-        // 키보드 디바운싱의 클로저
         self.viewModel.debouncingClosure = { [weak self] in
             self?.endEditing()
         }
     }
     
-    // MARK: - 더치 버튼
+    /// 더치 버튼 클로저, 선택된 사용자 모두에게 같은 금액 배정
     private func dutchBtnClosure() {
         // 더치 버튼을 누르면, 실행되는 클로저
             // 테이블뷰를 리로드,
@@ -313,6 +306,8 @@ extension ReceiptWriteVC {
             CATransaction.commit()
         }
     }
+    
+    /// 에러 클로저,
     private func errorClosure() {
         self.viewModel.errorClosure = { errorType in
             switch errorType {
@@ -343,10 +338,8 @@ extension ReceiptWriteVC {
 
 
 // MARK: - 키보드 노티피케이션 액션
-
 extension ReceiptWriteVC {
-    
-    // MARK: - 키보드가 올라올 때
+    /// 키보드가 올라올 때
     @objc func keyboardWillShow(notification: NSNotification) {
         // 키보드의 높이 구하기
         if let keyboardSize = (notification
@@ -363,7 +356,7 @@ extension ReceiptWriteVC {
         }
     }
     
-    // MARK: - 키보드가 내려갈 때
+    /// 키보드가 내려갈 때
     @objc func keyboardWillHide() {
         // '테이블뷰 셀의 텍스트필드'를 수정하고 있다면,
         if self.viewModel.isUserDataTableEditing {
@@ -383,17 +376,15 @@ extension ReceiptWriteVC {
 
 
 
-// MARK: - 버튼 액션 ( 화면 이동 )
-
+// MARK: - 버튼 액션 메서드
 extension ReceiptWriteVC {
-    
-    // MARK: - 이전 화면 버튼 액션
+    /// 이전 화면 버튼 액션
     @objc private func backButtonTapped() {
         NotificationCenter.default.removeObserver(self)
         self.coordinator.didFinish()
     }
     
-    // MARK: - 사람 추가 버튼 액션
+    /// 사람 추가 버튼 액션
     @objc private func addPersonBtnTapped() {
         // 모든 키보드 내리기
         self.endEditing()
@@ -403,17 +394,7 @@ extension ReceiptWriteVC {
             peopleSelectionEnum: .multipleSelection)
     }
     
-    // MARK: - payer 액션
-    private func payerInfoLblTapped() {
-        // 모든 키보드 내리기
-        self.endEditing()
-        // 화면 전환
-        self.coordinator.peopleSelectionPanScreen(
-            users: self.viewModel.payer,
-            peopleSelectionEnum: .singleSelection)
-    }
-    
-    // MARK: - 영수증 확인 버튼 액션
+    /// 영수증 확인 버튼 액션 (하단 버튼)
     @objc private func bottomBtnTapped() {
         // 모든 키보드 내리기
         self.endEditing()
@@ -430,11 +411,8 @@ extension ReceiptWriteVC {
 
 
 
-// MARK: - 화면 설정 초기화
-
+// MARK: - 화면 인터페이스 초기화
 extension ReceiptWriteVC {
-    
-    // MARK: - 강제 편집 종료
     /// 인터페이스 초기화 및 키보드 숨김 처리
     /// - 스크롤뷰의 contentInset이 변경된 경우, 기본값으로 재설정
     /// - 타임피커가 표시된 경우, 숨김
@@ -453,8 +431,7 @@ extension ReceiptWriteVC {
         }
     }
     
-    // MARK: - 스클로뷰 contentInset 초기화
-    /// 스크롤뷰의 contentInset과 scrollIndicatorInsets를 초기화합니다.
+    /// 스크롤뷰의 contentInset과 scrollIndicatorInsets를 초기화
     private func resetScrollViewInsets() {
         // 자연스러운 감소를 위해, UIView.animate()사용
         UIView.animate(withDuration: 0.5) {
@@ -463,7 +440,6 @@ extension ReceiptWriteVC {
         }
     }
     
-    // MARK: - 타임피커 숨기기
     /// 타임피커를 숨김
     private func hideTimePicker(_ bool: Bool) {
         UIView.animate(withDuration: 0.5) {
@@ -472,7 +448,6 @@ extension ReceiptWriteVC {
         }
     }
 
-    // MARK: - 키보드 내리기
     /// 텍스트 입력 필드의 키보드를 내림
     private func dismissKeyboard() {
         self.view.endEditing(true)
@@ -488,18 +463,13 @@ extension ReceiptWriteVC {
 
 
 
-// MARK: - [payer] 1명 선택
+// MARK: - payer 선택
 
 extension ReceiptWriteVC {
-    
     func changePayerLblData(addedUsers: RoomUserDataDict) {
-        self.savePayer(addedUsers)
-        self.updatePayerCell()
-    }
-    
-    // MARK: - payer 저장
-    private func savePayer(_ addedUsers: RoomUserDataDict) {
+        // payer 저장
         self.viewModel.isPayerSelected(selectedUser: addedUsers)
+        self.updatePayerCell()
     }
 }
     
@@ -512,11 +482,9 @@ extension ReceiptWriteVC {
 
 
     
-// MARK: - [paymentDetail] 여러명 선택
-
+// MARK: - 계산할 사람 선택
 extension ReceiptWriteVC {
-    
-    // MARK: - 여러명 선택
+    /// 선택된 사람 및 선택 취소한 사람들의 셀 생성 및 제거
     func changeTableViewData(
         addedUsers: RoomUserDataDict,
         removedUsers: RoomUserDataDict)
@@ -532,7 +500,7 @@ extension ReceiptWriteVC {
         })
     }
     
-    // MARK: - 테이블뷰 푸터뷰 업데이트
+    /// 테이블뷰 푸터뷰의 높이 및 isHidden 업데이트
     private func updateTableFooterView() {
         let isHidden = self.viewModel.getNoDataViewIsHidden
         let btnColor = self.viewModel.dutchBtnBackgroundColor
@@ -548,7 +516,7 @@ extension ReceiptWriteVC {
         self.tableView.tableFooterView = self.tableView.tableFooterView
     }
     
-    // MARK: - 셀 생성
+    /// [선택된 사람 선택] 셀 생성
     private func tableViewInsertRows(addedUsers: RoomUserDataDict) {
         // 생성할 유저가 있다면,
         if !addedUsers.isEmpty {
@@ -562,7 +530,7 @@ extension ReceiptWriteVC {
         }
     }
     
-    // MARK: - 셀 삭제
+    /// [선택된 사람 선택] 셀 삭제
     private func tableViewDeleteRows(removedUsers: RoomUserDataDict) {
         // 삭제할 유저가 있다면,
         if !removedUsers.isEmpty {
@@ -639,18 +607,15 @@ extension ReceiptWriteVC {
 
 
 // MARK: - [테이블뷰] 델리게이트
-
 extension ReceiptWriteVC: UITableViewDelegate {
-    
-    // MARK: - 셀의 높이
+    /// 셀의 높이
     func tableView(_ tableView: UITableView,
                    heightForRowAt indexPath: IndexPath)
     -> CGFloat {
         return 45
     }
     
-    // MARK: - 헤더뷰 설정
-    /// 헤더 뷰를 구성합니다.
+    /// 헤더 뷰를 구성
     func tableView(_ tableView: UITableView,
                    viewForHeaderInSection section: Int)
     -> UIView? {
@@ -659,17 +624,16 @@ extension ReceiptWriteVC: UITableViewDelegate {
             title: title,
             tableHeaderEnum: .receiptWriteVC)
     }
-
-    // MARK: - 헤더 높이
-    /// 헤더의 높이를 설정합니다.
+    
+    /// 헤더의 높이를 설정
     func tableView(_ tableView: UITableView,
                    heightForHeaderInSection section: Int)
     -> CGFloat {
         return 70
     }
     
-    // MARK: - 푸터뷰 설정
-    func tableView(_ tableView: UITableView, 
+    /// 푸터뷰 설정
+    func tableView(_ tableView: UITableView,
                    viewForFooterInSection section: Int)
     -> UIView? {
         return section == 0
@@ -677,14 +641,14 @@ extension ReceiptWriteVC: UITableViewDelegate {
         : self.tableFooterView
     }
     
-    // MARK: - 푸터뷰 높이
-    func tableView(_ tableView: UITableView, 
+    /// 푸터뷰 높이
+    func tableView(_ tableView: UITableView,
                    heightForFooterInSection section: Int)
     -> CGFloat {
         return self.viewModel.getFooterViewHeight(section: section)
     }
     
-    // MARK: - 눌렸을 때 스크롤
+    /// 눌렸을 때 스크롤
     func tableView(_ tableView: UITableView,
                    didSelectRowAt indexPath: IndexPath)
     {
@@ -850,14 +814,12 @@ extension ReceiptWriteVC: UIScrollViewDelegate {
 
 
 // MARK: - [데이터 셀] 델리게이트
-
 extension ReceiptWriteVC: ReceiptWriteDataCellDelegate {
-    
-    // MARK: - 메모 셀
+    /// 메모 셀의 수정이 끝났을 때 호출되는 메서드
     func finishMemoTF(memo: String) {
         self.viewModel.saveMemo(context: memo)
     }
-    // MARK: - 가격 셀
+    /// 가격 셀의 수정이 끝났을 때 호출되는 메서드
     func finishPriceTF(price: Int) {
         // 뷰모델에 price값 저장
         self.viewModel.savePriceText(price: price)
@@ -865,6 +827,8 @@ extension ReceiptWriteVC: ReceiptWriteDataCellDelegate {
         self.tableFooterView.setMoneyCountLabel(totalPrice: self.viewModel.moneyCountLblText)
     }
     
+    
+    /// 어떤 셀이 눌렸는지 델리게이트를 통해 전달 받는 메서드
     func cellIsTapped(_ cell: ReceiptWriteDataCell, type: ReceiptCellEnum?) {
         guard let type = type else { return }
         switch type {
@@ -876,27 +840,32 @@ extension ReceiptWriteVC: ReceiptWriteDataCellDelegate {
         case .payment_Method: break
         }
     }
-    /// 날짜 셀
+    /// 날짜 셀이 눌렸을 때
     private func dateLblTapped() {
         self.scrollView.setContentOffset(CGPoint(x: 0, y: 0), animated: true)
     }
-    /// 시간 셀
+    /// 시간 셀이 눌렸을 때
     private func timeLblTapped() {
         /// 타임 레이블을 누르면 '타임 피커'가 보이도록 설정
         self.dismissKeyboard()
         self.hideTimePicker(false)
     }
-    /// payer 셀
-    private func payerLblTapped() {
-        self.payerInfoLblTapped()
+    /// 메모 셀이 눌렸을 때
+    private func memoTFTapped() {
+        self.scrollToTableViewCellBottom(indexPath: self.viewModel.findReceiptEnumIndex(.memo))
     }
-    /// 가격 셀
+    /// 가격 셀이 눌렸을 때
     private func priceTFTapped() {
         self.scrollToTableViewCellBottom(indexPath: self.viewModel.findReceiptEnumIndex(.price))
     }
-    /// 메모 셀
-    private func memoTFTapped() {
-        self.scrollToTableViewCellBottom(indexPath: self.viewModel.findReceiptEnumIndex(.memo))
+    /// payer 셀이 눌렸을 때
+    private func payerLblTapped() {
+        // 모든 키보드 내리기
+        self.endEditing()
+        // 화면 전환
+        self.coordinator.peopleSelectionPanScreen(
+            users: self.viewModel.payer,
+            peopleSelectionEnum: .singleSelection)
     }
 }
 
@@ -910,7 +879,6 @@ extension ReceiptWriteVC: ReceiptWriteDataCellDelegate {
 
 
 // MARK: - [유저 셀] 델리게이트
-
 extension ReceiptWriteVC: ReceiptWriteTableDelegate {
     /// [X버튼] 유저 삭제
     func rightBtnTapped(user: RoomUserDataDict?) {

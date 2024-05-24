@@ -78,10 +78,8 @@ final class UsersTableView: UIView {
 
 
 // MARK: - 화면 설정
-
 extension UsersTableView {
-    
-    // MARK: - UI설정
+    /// UI설정
     private func configureCornerRadius() {
         // 뷰(self)의 모서리
         self.setRoundedCorners(.all, withCornerRadius: 10)
@@ -91,14 +89,13 @@ extension UsersTableView {
         self.secondBtn.setRoundedCorners(.rightTop, withCornerRadius: 10)
     }
     
-    // MARK: - 오토레이아웃 설정
+    /// 오토레이아웃 설정
     private func configureAutoLayout() {
         self.addSubview(self.btnStackView)
         self.addSubview(self.usersTableView)
         
         self.btnStackView.snp.makeConstraints { make in
             make.top.leading.trailing.equalToSuperview()
-//            make.height.equalTo(34)
         }
         self.usersTableView.snp.makeConstraints { make in
             make.top.equalTo(self.btnStackView.snp.bottom)
@@ -106,7 +103,7 @@ extension UsersTableView {
         }
     }
     
-    // MARK: - 액션 설정
+    /// 액션 설정
     private func configureAction() {
         [self.firstBtn,
          self.secondBtn].forEach { btn in
@@ -115,9 +112,6 @@ extension UsersTableView {
                 action: #selector(self.btnTapped),
                 for: .touchUpInside)
         }
-    }
-    private func tableViewIsScrollEnabled() {
-        self.usersTableView.isScrollEnabled = self.viewModel.tableViewIsScrollEnabled
     }
 }
     
@@ -164,11 +158,14 @@ extension UsersTableView {
 
 // MARK: - 테이블뷰 델리게이트
 extension UsersTableView: UITableViewDelegate {
+    /// 셀의 높이
     func tableView(_ tableView: UITableView,
                    heightForRowAt indexPath: IndexPath)
     -> CGFloat {
         return 40
     }
+    
+    /// didSelectRowAt
     func tableView(_ tableView: UITableView,
                    didSelectRowAt indexPath: IndexPath) {
         print(#function)
@@ -179,12 +176,14 @@ extension UsersTableView: UITableViewDelegate {
 
 // MARK: - 테이블뷰 데이터소스
 extension UsersTableView: UITableViewDataSource {
+    /// 셀의 개수
     func tableView(_ tableView: UITableView,
                    numberOfRowsInSection section: Int)
     -> Int {
         return self.viewModel.numbersOfUsers
     }
     
+    /// cellForRowAt
     func tableView(_ tableView: UITableView,
                    cellForRowAt indexPath: IndexPath)
     -> UITableViewCell {
@@ -238,6 +237,7 @@ extension UsersTableView {
         self.numberOfUsersChanges(key: key)
     }
     
+    /// 유저의 수가 바뀐다면, 노티피케이션을 post하여 셀의 개수 변경
     private func numberOfUsersChanges(key indexPathKey: String) {
         // 업데이트가 아니라면,
         guard indexPathKey != NotificationInfoString.updated.notificationName else { return }
@@ -250,34 +250,3 @@ extension UsersTableView {
             userInfo: nil)
     }
 }
-
-/*
- 
- 
- DispatchQueue.main.async {
-     // reloadData()는 performBatchUpdates에 포함하면 안 됨.
-     if key == NotificationInfoString.initialLoad.notificationName {
-         self.usersTableView.reloadData()
-         return
-     }
-     self.usersTableView.performBatchUpdates { [weak self] in
-         guard let self = self else { return }
-         switch key {
-         case NotificationInfoString.added.notificationName:
-             self.usersTableView.insertRows(at: indexPaths, with: .automatic)
-             break
-         case NotificationInfoString.updated.notificationName:
-             self.usersTableView.reloadRows(at: indexPaths, with: .automatic)
-             break
-         case NotificationInfoString.removed.notificationName:
-             self.usersTableView.deleteRows(at: indexPaths, with: .automatic)
-             break
-         default:
-             print("\(self) ----- \(#function) ----- Error")
-             break
-         }
-     } completion: { [weak self] _ in
-         self?.numberOfUsersChanges(key: key)
-     }
- }
- */

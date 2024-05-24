@@ -8,25 +8,12 @@
 import Foundation
 
 struct ReceiptTableViewCellVM: ReceiptTableViewCellVMProtocol {
-    
-    var type: Int
-    var context: String
-    var time: String
-    var price: Int
-    var payer: String
-    
     private let receiptID: String
     private var receipt: Receipt
     
     init(receiptID: String, receiptData: Receipt) {
         self.receiptID = receiptID
         self.receipt = receiptData
-        
-        self.type = receiptData.type
-        self.context = receiptData.context
-        self.time = receiptData.time
-        self.price = receiptData.price
-        self.payer = receiptData.payer
     }
     
     

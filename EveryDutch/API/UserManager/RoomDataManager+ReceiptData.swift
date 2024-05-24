@@ -13,11 +13,12 @@ extension RoomDataManager {
     func loadReceipt() {
         guard let versionID = self.getCurrentVersion else { return }
         self.receiptAPI.readReceipt(versionID: versionID) { [weak self] result in
+            guard let self = self else { return }
             switch result {
             case .success(let initialLoad):
                 print("영수증 가져오기 성공")
-                self?.setObserveReceipt()
-                self?.updateReceipt(initialLoad)
+                self.setObserveReceipt()
+                self.updateReceipt(initialLoad)
                 
                 break
             case .failure(_):
@@ -33,10 +34,11 @@ extension RoomDataManager {
     private func setObserveReceipt() {
         guard let versionID = self.getCurrentVersion else { return }
         self.receiptAPI.observeReceipt(versionID: versionID) { [weak self] result in
+            guard let self = self else { return }
             switch result {
             case .success(let rooms):
                 print("Receipt 옵저버 성공")
-                self?.updateReceipt(rooms)
+                self.updateReceipt(rooms)
                 break
                 
             case .failure(_):
@@ -53,7 +55,6 @@ extension RoomDataManager {
         switch event {
         case .updated(let toUpdate):
             print("\(#function) ----- update")
-
             self.handleUpdatedReceiptEvent(toUpdate)
             
             // 데이터 초기 로드
