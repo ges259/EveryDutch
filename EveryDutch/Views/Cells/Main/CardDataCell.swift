@@ -8,6 +8,14 @@
 import UIKit
 import SnapKit
 
+// MARK: - CardDataCellDelegate
+protocol CardDataCellDelegate: AnyObject {
+    func textData(cell: CardDataCell, type: EditCellType, text: String)
+}
+
+
+
+// MARK: - CardDataCell
 final class CardDataCell: UITableViewCell {
     
     // MARK: - 레이아웃
@@ -100,34 +108,52 @@ extension CardDataCell {
 extension CardDataCell {
     
     // MARK: - 셀의 텍스트 설정
-    func setDetailLbl(type: EditCellTypeTuple?,
+    func setDetailLbl(cellTuple: EditCellTypeTuple?,
                       isFirst: Bool,
                       isLast: Bool)
     {
         if isFirst { self.configureTextFieldCorner() }
         if isLast { self.configureLastCell() }
         
-        guard let data = type else { return }
-        self.cellType = data.type
-        
-        self.detailLbl.text = data.type.getCellTitle
-        
-        self.textField.text = data.detail
+        guard let data = cellTuple else { return }
+        let type = data.type
+        // 현재 타입 저장
+        self.cellType = type
+        // 텍스트필드의 플레이스 홀더 설정
         self.textField.attributedPlaceholder = self.setAttributedText(
-            placeholderText: data.type.getTextFieldPlaceholder)
+            placeholderText: type.getTextFieldPlaceholder)
+        // 텍스트필드의 detail레이블 설정
+        self.detailLbl.text = type.getCellTitle
         
+        
+        // detatil이 있다면
+        if let text = data.detail,
+           !text.isEmpty {
+            self.textField.text = data.detail
+            self.delegateTextData()
+        }
     }
     
     // MARK: - 마지막 셀 모서리 설정
     private func configureLastCell() {
-        print(#function)
         self.setRoundedCorners(.bottom, withCornerRadius: 12)
     }
     
     // MARK: - 셀의 모서리 설정
     private func configureTextFieldCorner() {
-        print(#function)
         self.textField.setRoundedCorners(.leftTop, withCornerRadius: 12)
+    }
+    
+    
+    private func delegateTextData() {
+        guard let cellType = self.cellType,
+              let text = self.textField.text,
+              !text.isEmpty
+        else { return }
+        // 텍스트필드가 빈칸이 아니라면, 델리게이트 전달
+        self.delegate?.textData(cell: self,
+                                type: cellType,
+                                text: text)
     }
 }
 
@@ -144,16 +170,6 @@ extension CardDataCell {
 extension CardDataCell: UITextFieldDelegate {
     /// 수정 끝
     func textFieldDidEndEditing(_ textField: UITextField) {
-        guard let cellType = self.cellType else { return }
-        self.delegate?.textData(cell: self, 
-                                type: cellType,
-                                text: textField.text ?? "")
+        self.delegateTextData()
     }
-}
-
-
-// MARK: - CardDataCellDelegate
-protocol CardDataCellDelegate: AnyObject {
-    func textData(cell: CardDataCell, type: EditCellType, text: String)
-    
 }

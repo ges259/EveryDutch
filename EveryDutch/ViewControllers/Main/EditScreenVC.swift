@@ -111,6 +111,7 @@ final class EditScreenVC: UIViewController {
         self.viewModel = viewModel
         self.coordinator = coordinator
         super.init(nibName: nil, bundle: nil)
+        self.viewModel.initializeCellTypes()
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -213,7 +214,7 @@ extension EditScreenVC {
         }
         
         self.viewModel.decorationDataClosure = { [weak self] deco in
-            self?.cardImgView.originalDecorationData = deco
+            self?.cardImgView.setupOriginalDecorationData(deco)
         }
     }
     
@@ -371,7 +372,7 @@ extension EditScreenVC: UITableViewDataSource {
         let type = self.viewModel.cellTypes(indexPath: indexPath)
         
         // 셀의 텍스트 및 모서리 설정
-        cell.setDetailLbl(type: type,
+        cell.setDetailLbl(cellTuple: type,
                           isFirst: isFirst,
                           isLast: isLast)
         cell.delegate = self

@@ -10,12 +10,6 @@ import UIKit
 protocol ReceiptScreenPanVMProtocol {
     
     
-    
-    
-//    var currentNumOfUsers: Int { get }
-    var getPayMethod: String { get }
-//    func getDataCellTitle(index: Int) -> String?
-    
     func cellViewModel(at index: Int) -> ReceiptScreenPanUsersCellVM
     
     

@@ -48,11 +48,11 @@ final class CardImageView: UIView {
     
     // MARK: - 프로퍼티
     // 데코레이션 모델, 초기화 시 해당 데이터 사용
-    var originalDecorationData: Decoration?
-    var currentDecoration: Decoration?
+    private var originalDecorationData: Decoration?
+    private var currentDecoration: Decoration?
 
-    var currentColorDict: [DecorationCellType: String] = [:]
-    var currentImageDict: [DecorationCellType: UIImage] = [:]
+    private var currentColorDict: [DecorationCellType: String] = [:]
+    private var currentImageDict: [DecorationCellType: UIImage] = [:]
     
     
     
@@ -137,6 +137,13 @@ extension CardImageView {
         self.blurView.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
+    }
+    /// EditScreenVM에서 Decoration데이터를 가져왔을 때,
+    /// 해당 데이터를 저장 및 카드 이미지 변경
+    func setupOriginalDecorationData(_ deco: Decoration?) {
+        guard let deco = deco else { return }
+        self.originalDecorationData = deco
+        self.setupDecorationData(data: deco)
     }
 }
 

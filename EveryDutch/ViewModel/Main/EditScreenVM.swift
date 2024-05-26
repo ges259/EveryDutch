@@ -39,7 +39,7 @@ final class EditScreenVM: ProfileEditVMProtocol {
     
     
     // 객체 생성 또는 편집 화면인지 구분하는 플래그
-    private let isMake: Bool
+    private var isMake: Bool = false
     
     // 사용자에 의해 변경된 데이터를 저장하는 딕셔너리, DB에 저장할 예정
     private var textData: [String: Any?] = [:]
@@ -59,12 +59,11 @@ final class EditScreenVM: ProfileEditVMProtocol {
     
     
     
-    //    private var currentData: (textData: EditProviderModel?, decoration: Decoration?)?
     
     
     
-    // 제네릭 T의 모든 타입
     /*
+     제네릭 T의 모든 타입
      type
      - roomData / userData
      - cardDecoration
@@ -77,17 +76,19 @@ final class EditScreenVM: ProfileEditVMProtocol {
         screenType: T.Type,
         dataRequiredWhenInEidtMode: String? = nil)
     {
-        self.isMake = dataRequiredWhenInEidtMode == nil
+        // 생성 (비어있다면)
+        if dataRequiredWhenInEidtMode == nil {
+            self.isMake = true
+        // 업데이트 (존재한다면)
+        } else {
+            self.dataRequiredWhenInEidtMode = dataRequiredWhenInEidtMode
+        }
+        
         self.allCases = Array(T.allCases)
         
         self.api = self.allCases.first?.apiType
         
         self.setupDataProviders()
-        
-        if !self.isMake {
-            self.dataRequiredWhenInEidtMode = dataRequiredWhenInEidtMode
-            self.initializeCellTypes()
-        }
     }
     deinit { print("\(#function)-----\(self)") }
 }
@@ -112,7 +113,8 @@ extension EditScreenVM {
         self.updateDataClosure?()
     }
     /// '프로필 수정 화면'한정, 데이터를 가져오는 메서드
-    private func initializeCellTypes() {
+    func initializeCellTypes() {
+        guard !self.isMake else { return }
         Task {
             // 수정 -> 데이터 가져오기 ->> 셀 타입 초기화
             do {
@@ -299,8 +301,10 @@ extension EditScreenVM {
     func validation() {
         Task {
             do {
-                try await self.validateAll()
+                guard self.roomValidation() else { throw ErrorEnum.unknownError }
+                try await self.ApiOperation()
                 self.successDataClosure?()
+                
             } catch let error as ErrorEnum {
                 self.errorClosure?(error)
                 
@@ -308,27 +312,6 @@ extension EditScreenVM {
                 self.errorClosure?(ErrorEnum.unknownError)
             }
         }
-    }
-    /// 모든 유효성 검사 및 데이터 처리 함수
-    private func validateAll() async throws {
-        guard self.roomValidation() else { throw ErrorEnum.unknownError }
-        
-        // '수정' 화면이라면, 개인 ID 중복 확인
-        if self.allCases.first is ProfileEditEnum {
-            try await self.validatePersonalID()
-        }
-        
-        // 데이터 생성 또는 업데이트
-        let refIdString: String = self.isMake
-        ? try await self.createDataCellData()
-        : try await self.updateDataCellData()
-        
-        // 이미지 저장 및 URL 병합
-        try await self.saveImagesAndDecorationData()
-        // 색상 데이터 변환
-        self.updateColorDataToHex()
-        // 데코 데이터 업데이트
-        try await self.api?.updateDecoration(at: refIdString, with: self.decorationData)
     }
     
     /// 유효성 검사
@@ -354,8 +337,28 @@ extension EditScreenVM {
 
 
 // MARK: - API
-
 extension EditScreenVM {
+    /// 모든 유효성 검사 및 데이터 처리 함수
+    private func ApiOperation() async throws {
+        // '수정' 화면이라면, 개인 ID 중복 확인
+        if self.allCases.first is ProfileEditEnum {
+            try await self.validatePersonalID()
+        }
+        
+        // 데이터 생성 또는 업데이트
+        let refIdString: String = self.isMake
+        ? try await self.createDataCellData()
+        : try await self.updateDataCellData()
+        
+        // 이미지 저장 및 URL 병합
+        try await self.saveImagesAndDecorationData()
+        // 색상 데이터 변환
+        self.updateColorDataToHex()
+        // 데코 데이터 업데이트
+        try await self.api?.updateDecoration(at: refIdString, with: self.decorationData)
+    }
+    
+    
     
     // MARK: - Update
     private func updateDataCellData() async throws -> String {
@@ -369,14 +372,14 @@ extension EditScreenVM {
         return refID
     }
     
+    
+    
     // MARK: - Create
     // 데이터 셀 데이터를 생성하는 함수
     private func createDataCellData() async throws -> String {
         let dataDict = self.textData.compactMapValues { $0 }
         return try await self.api?.createData(dict: dataDict) ?? ""
     }
-    
-    
     
     
     
@@ -428,6 +431,10 @@ extension EditScreenVM {
             self.setupDataProviders(withData: data, decoration: decoration)
             self.decorationDataClosure?(decoration)
         }
+        print("__________________________1")
+        dump(data)
+        print("__________________________2")
+        dump(decoration)
+        print("__________________________3")
     }
-    
 }

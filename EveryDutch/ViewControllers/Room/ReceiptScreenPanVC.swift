@@ -258,9 +258,8 @@ extension ReceiptScreenPanVC: UITableViewDataSource {
         let cell = self.usersTableView.dequeueReusableCell(
             withIdentifier: Identifier.receiptDataCell,
             for: indexPath) as! ReceiptScreenDataCell
-        
-        let cellData = self.viewModel.getCellData(
-            index: indexPath.row)
+        // 데이터 셀의 데이터(튜플)을 가져옴
+        let cellData = self.viewModel.getCellData(index: indexPath.row)
         cell.configure(withReceiptEnum: cellData)
         
         return cell

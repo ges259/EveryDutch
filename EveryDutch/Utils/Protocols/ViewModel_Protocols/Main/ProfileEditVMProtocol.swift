@@ -23,7 +23,7 @@ protocol ProfileEditVMProtocol {
     func saveCurrentIndex(indexPath: IndexPath)
     func getCurrentType() -> EditCellType?
     
-    
+    func initializeCellTypes()
 //    var imagePickerIsOpen: Bool { get set }
     
     
