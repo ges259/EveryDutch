@@ -17,7 +17,28 @@ final class RoomsAPI: RoomsAPIProtocol, DecorationAPIType {
 
 extension RoomsAPI {
     
-    // MARK: - ROOMS_ID 생성 및 데이터 설정
+    // MARK: - 방 업데이트
+    func updateData(IdRef: String, dict: [String: Any]) async throws {
+        return try await withCheckedThrowingContinuation
+        { (continuation: CheckedContinuation<Void, Error>) in
+            // 새로운 방 생성 및 정보 업데이트
+            ROOMS_REF
+                .child(IdRef)
+                .updateChildValues(dict) { error, ref in
+                    
+                    guard error == nil else {
+                        continuation.resume(throwing: ErrorEnum.writeError)
+                        return
+                    }
+                    continuation.resume(returning: ())
+                }
+        }
+    }
+    
+    
+    
+    
+    // MARK: - 방 생성
     func createData(dict: [String: Any]) async throws  -> String {
         guard let uid = Auth.auth().currentUser?.uid else {
             throw ErrorEnum.readError
@@ -33,7 +54,7 @@ extension RoomsAPI {
     }
     
     
-    // MARK: - 정산방 유저 저장
+    // MARK: - RoomUsers
     private func addUserToRoom(uid: String) async throws -> String {
         let ref = ROOM_USERS_REF.childByAutoId()
         
@@ -52,48 +73,20 @@ extension RoomsAPI {
         }
     }
     
-    
-    
-    func updateData(IdRef: String, dict: [String: Any]) async throws {
+    // MARK: - Rooms
+    private func createRooms(
+        roomID: String,
+        dict: [String: Any]) async throws
+    {
         // 버전ID 생성 (현재 시간을 기준)
         let versionID = "\(Int(Date().timeIntervalSince1970))"
         // 딕셔너리에 현재 버전을 넣기
         var updatedDict: [String: Any] = dict
             updatedDict[DatabaseConstants.version_ID] = versionID
-        
-        return try await withCheckedThrowingContinuation
-        { (continuation: CheckedContinuation<Void, Error>) in
-            // 새로운 방 생성 및 정보 업데이트
-            ROOMS_REF
-                .child(IdRef)
-                .updateChildValues(updatedDict) { error, ref in
-                    
-                    guard error == nil else {
-                        continuation.resume(throwing: ErrorEnum.writeError)
-                        return
-                    }
-                    continuation.resume(returning: ())
-                }
-        }
+        try await self.updateData(IdRef: roomID, dict: dict)
     }
     
-    
-    
-    
-
-    
-    
-    
-    
-    // MARK: - 정산방 데이터 저장
-    private func setRoomsData(
-        roomID: String,
-        dict: [String: Any]) async throws
-    {
-        
-    }
-    
-    // MARK: - RoomsID 생성 및 저장
+    // MARK: - RoomsID
     private func createRoomID(
         with uid: String,
         at roomID: String

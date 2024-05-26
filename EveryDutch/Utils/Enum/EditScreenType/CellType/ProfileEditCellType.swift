@@ -7,11 +7,6 @@
 
 import Foundation
 
-//protocol ValidationType {
-//    func validation(dict: [String: Any?]) -> [String]
-//}
-
-
 // MARK: - ProfileEditCellType
 enum ProfileEditCellType: Int, EditCellType, CaseIterable {
     case nickName = 0
@@ -53,7 +48,8 @@ enum ProfileEditCellType: Int, EditCellType, CaseIterable {
     
     // MARK: - Detail
     static func getDetails(data: EditProviderModel?) -> [(type: EditCellType, detail: String?)] {
-        return ProfileEditCellType.allCases.map { cellType -> (type: EditCellType, detail: String?) in
+        return ProfileEditCellType.allCases.map 
+        { cellType -> (type: EditCellType, detail: String?) in
             return (type: cellType, detail: cellType.detail(for: data))
         }
     }

@@ -67,6 +67,8 @@ final class CheckReceiptPanVM: CheckReceiptPanVMProtocol {
             return "✓  정산방의 이름을 설정해 주세요."
         case DatabaseConstants.class_name:
             return "✓  모임의 이름을 설정해 주세요."
+        case DatabaseConstants.duplicatePersonalID:
+            return "✓  개인ID가 중복되었습니다."
         default:
             return "✓  정확히 입력해 주세요."
         }

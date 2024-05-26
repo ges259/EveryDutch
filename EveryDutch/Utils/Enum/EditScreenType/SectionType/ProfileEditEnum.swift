@@ -19,9 +19,9 @@ enum ProfileEditEnum: Int, EditScreenType, CaseIterable {
     {
         var detailsDictionary: [Int: [EditCellTypeTuple]] = [:]
         
-        RoomEditEnum.allCases.forEach { roomEditEnum in
+        ProfileEditEnum.allCases.forEach { roomEditEnum in
             switch roomEditEnum {
-            case .roomData:
+            case .userData:
                 let roomEditCellTypes = ProfileEditCellType.getDetails(data: data)
                 detailsDictionary[roomEditEnum.sectionIndex] = roomEditCellTypes
                 

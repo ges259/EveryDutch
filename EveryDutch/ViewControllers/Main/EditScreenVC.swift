@@ -369,6 +369,7 @@ extension EditScreenVC: UITableViewDataSource {
         
         // 셀의 타입 가져오기
         let type = self.viewModel.cellTypes(indexPath: indexPath)
+        
         // 셀의 텍스트 및 모서리 설정
         cell.setDetailLbl(type: type,
                           isFirst: isFirst,

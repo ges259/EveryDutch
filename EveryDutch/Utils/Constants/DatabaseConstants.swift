@@ -74,7 +74,5 @@ extension DatabaseConstants {
     static let name_Color: String = "name_Color"
     static let background_Data: String = "background_Data"
     
-    
-//    static let background_Image: String = "background_Image"
-//    static let background_Color: String = "background_Color"
+    static let duplicatePersonalID: String = "duplicatePersonalID"
 }

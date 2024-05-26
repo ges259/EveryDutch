@@ -26,9 +26,15 @@ final class CardDataCell: UITableViewCell {
     
     
     
+    
+    
     // MARK: - 프로퍼티
     private var cellType: EditCellType?
     weak var delegate: CardDataCellDelegate?
+    
+    
+    
+    
     
     // MARK: - 라이프사이클
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -39,6 +45,11 @@ final class CardDataCell: UITableViewCell {
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        self.textField.layer.cornerRadius = 0
+        self.layer.cornerRadius = 0
     }
 }
 
@@ -52,17 +63,15 @@ final class CardDataCell: UITableViewCell {
 
 
 // MARK: - 화면 설정
-
 extension CardDataCell {
-    
-    // MARK: - UI 설정
+    /// UI 설정
     private func configureUI() {
         self.selectionStyle = .none
         self.separatorInset = .zero
         self.backgroundColor = .medium_Blue
     }
     
-    // MARK: - 오토레이아웃 설정
+    /// 오토레이아웃 설정
     private func configureAutoLayout() {
         self.addSubview(self.detailLbl)
         self.contentView.addSubview(self.textField)
@@ -111,11 +120,13 @@ extension CardDataCell {
     
     // MARK: - 마지막 셀 모서리 설정
     private func configureLastCell() {
+        print(#function)
         self.setRoundedCorners(.bottom, withCornerRadius: 12)
     }
     
     // MARK: - 셀의 모서리 설정
     private func configureTextFieldCorner() {
+        print(#function)
         self.textField.setRoundedCorners(.leftTop, withCornerRadius: 12)
     }
 }
@@ -130,17 +141,8 @@ extension CardDataCell {
 
 
 // MARK: - 텍스트필드 델리게이트
-
 extension CardDataCell: UITextFieldDelegate {
-    
-    // MARK: - 수정 시작
-    func textFieldDidBeginEditing(_ textField: UITextField) {
-        print(#function)
-        
-        
-    }
-    
-    // MARK: - 수정 끝
+    /// 수정 끝
     func textFieldDidEndEditing(_ textField: UITextField) {
         guard let cellType = self.cellType else { return }
         self.delegate?.textData(cell: self, 
@@ -149,6 +151,8 @@ extension CardDataCell: UITextFieldDelegate {
     }
 }
 
+
+// MARK: - CardDataCellDelegate
 protocol CardDataCellDelegate: AnyObject {
     func textData(cell: CardDataCell, type: EditCellType, text: String)
     
