@@ -16,25 +16,26 @@ extension RoomDataManager {
     func loadRoomUsers(completion: @escaping (Result<Void, ErrorEnum>) -> Void) {
         // roomID가져오기
         guard let roomID = self.getCurrentRoomsID else { return }
-        
+        DispatchQueue.global(qos: .utility).async {
         // 데이터베이스나 네트워크에서 RoomUser 데이터를 가져오는 로직
-        self.roomsAPI.readRoomUsers(roomID: roomID) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let users):
-                print("users 성공")
-                // [String : RoomUsers] 딕셔너리 저장
-                self.updateUsers(with: users)
-                self.observeRoomUsers()
-                completion(.success(()))
-                break
-                
-            case .failure(let errorEnum):
-                DispatchQueue.main.async {
-                    print("users 실패")
-                    completion(.failure(errorEnum))
+            self.roomsAPI.readRoomUsers(roomID: roomID) { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let users):
+                    print("users 성공")
+                    // [String : RoomUsers] 딕셔너리 저장
+                    self.updateUsers(with: users)
+                    self.observeRoomUsers()
+                    completion(.success(()))
+                    break
+                    
+                case .failure(let errorEnum):
+                    DispatchQueue.main.async {
+                        print("users 실패")
+                        completion(.failure(errorEnum))
+                    }
+                    break
                 }
-                break
             }
         }
     }
@@ -42,20 +43,21 @@ extension RoomDataManager {
     // MARK: - 옵저버 설정
     private func observeRoomUsers() {
         guard let roomID = self.getCurrentRoomsID else { return }
-        
-        self.roomsAPI.roomUsersObserver(roomID: roomID) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let users):
-                print("방 옵저버 가져오기 성공")
-                self.updateUsers(with: users)
-                
-                break
-            case .failure(_):
-                DispatchQueue.main.async {
-                    print("방 옵저버 가져오기 실패")
+        DispatchQueue.global(qos: .utility).async {
+            self.roomsAPI.roomUsersObserver(roomID: roomID) { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let users):
+                    print("방 옵저버 가져오기 성공")
+                    self.updateUsers(with: users)
+                    
+                    break
+                case .failure(_):
+                    DispatchQueue.main.async {
+                        print("방 옵저버 가져오기 실패")
+                    }
+                    break
                 }
-                break
             }
         }
     }

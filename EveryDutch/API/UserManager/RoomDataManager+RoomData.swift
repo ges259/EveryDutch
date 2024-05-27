@@ -6,49 +6,11 @@
 //
 
 import Foundation
-/*
- // MARK: - 데이터 fetch
- func loadRooms(completion: @escaping Typealias.VoidCompletion) {
-     Task  {
-         await self.fetchRoomsData()
-         // 옵저버 설정
-         await self.observeRoomsID()
-         await self.fetchDecoration(roomDict: <#T##[String : Rooms]#>, completion: <#T##() -> Void#>)
-         
-         // Decoration가져오기
-         DispatchQueue.main.async {
-             completion(.success(()))
-         }
-     }
- }
- private func fetchRoomsData() async {
-     DispatchQueue.global(qos: .utility).async {
-         // 방 데이터 가져오기
-         self.roomsAPI.readRooms { [weak self] result in
-             guard let self = self else { return }
-             switch result {
-             case .success(let initialLoad):
-                 
-                 print("방 가져오기 성공")
-                 self.updateRooms(initialLoad)
-                 break
-             case .failure(_):
-                 DispatchQueue.main.async {
-                     print("방 가져오기 실패")
-//                        completion(.failure(.readError))
-                 }
-                 break
-             }
-         }
-     }
- }
- */
 
 extension RoomDataManager {
     
     // MARK: - 데이터 fetch
     func loadRooms(completion: @escaping Typealias.VoidCompletion) {
-        
         DispatchQueue.global(qos: .utility).async {
             // 방 데이터 가져오기
             self.roomsAPI.readRooms { [weak self] result in
@@ -75,17 +37,9 @@ extension RoomDataManager {
             }
         }
     }
-    private func fetchRoomsData() {
-        
-    }
-    
-    
-    
-    
     
     // MARK: - 옵저버 설정
     private func observeRoomsID() {
-        
         DispatchQueue.global(qos: .utility).async {
             self.roomsAPI.setRoomObserver { [weak self] result in
                 guard let self = self else { return }
@@ -101,7 +55,6 @@ extension RoomDataManager {
         }
     }
     
-    
     private func observeRoomsData(_ toUpdate: [String: Rooms]) {
         let roomIDs: [String] = Array(toUpdate.keys)
         
@@ -110,8 +63,8 @@ extension RoomDataManager {
                 guard let self = self else { return }
                 switch result {
                 case .success(let event):
-                    self.updateRooms(event)
                     print("방 데이터 옵저버 가져오기 성공")
+                    self.updateRooms(event)
                 case .failure(_):
                     print("방 데이터 옵저버 가져오기 실패")
                     break
@@ -156,7 +109,7 @@ extension RoomDataManager {
                 updatedIndexPaths.append(indexPath)
             }
         }
-        
+        // 노티피케이션 post
         self.postNotification(name: .roomDataChanged,
                               eventType: .updated,
                               indexPath: updatedIndexPaths)
@@ -186,10 +139,9 @@ extension RoomDataManager {
         }
         // 방 데이터에 대한 옵저버 설정
         self.observeRoomsData(roomDict)
-        
-        // MARK: - Fix
+        // 데코 데이터 업데이트
         self.fetchDecoration(roomDict: roomDict) {
-            print("fetchDecoration ----- \(#function)")
+            // 노티피케이션 post
             self.postNotification(name: .roomDataChanged,
                                   eventType: .initialLoad,
                                   indexPath: addedIndexPaths)
@@ -216,9 +168,9 @@ extension RoomDataManager {
         }
         // 방 데이터에 대한 옵저버 설정
         self.observeRoomsData(toAdd)
-        
+        // 데코 데이터 업데이트
         self.fetchDecoration(roomDict: toAdd) {
-            print("fetchDecoration ----- \(#function)")
+            // 노티피케이션 post
             self.postNotification(name: .roomDataChanged,
                                   eventType: .added,
                                   indexPath: addedIndexPaths)
@@ -227,7 +179,6 @@ extension RoomDataManager {
     
     // MARK: - 삭제
     private func handleRemovedRoomsEvent(_ roomID: String) {
-        print("\(#function) ----- remove")
         // 리턴할 인덱스패스
         var removedIndexPaths = [IndexPath]()
 
@@ -247,6 +198,7 @@ extension RoomDataManager {
                 self.roomIDToIndexPathMap[roomID] = newIndexPath
             }
         }
+        // 노티피케이션 post
         self.postNotification(name: .roomDataChanged,
                               eventType: .removed,
                               indexPath: removedIndexPaths)

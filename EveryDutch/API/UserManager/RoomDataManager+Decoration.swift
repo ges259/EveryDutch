@@ -18,6 +18,7 @@ extension RoomDataManager {
                 guard let self = self else { return }
                 switch result {
                 case .success(let event):
+                    print("fetchDecoration ----- \(#function)")
                     self.updateDecoration(event)
                     self.observeDecoration(roomIDArray: roomIDArray)
                     DispatchQueue.main.async {
@@ -74,6 +75,7 @@ extension RoomDataManager {
                 updatedIndexPaths.append(indexPath)
             }
         }
+        // 노티피케이션 post
         self.decorationUpdateNotification(updatedIndexPaths)
     }
     
@@ -98,6 +100,7 @@ extension RoomDataManager {
                 addedIndexPaths.append(indexPath)
             }
         }
+        // 노티피케이션 post
         self.decorationUpdateNotification(addedIndexPaths)
     }
     
@@ -105,6 +108,7 @@ extension RoomDataManager {
     private func handleRemovedDecoEvent(_ removed: String) {
         if let indexPath = self.roomIDToIndexPathMap[removed] {
             self.roomsCellViewModels[indexPath.row].removeDecoration()
+            // 노티피케이션 post
             self.decorationUpdateNotification([indexPath])
         }
     }

@@ -99,6 +99,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
         DispatchQueue.main.async {
             // 비어있다면, 노티피케이션을 post하지 않음
             guard !indexPath.isEmpty else { return }
+            print(#function)
             // 노티피케이션 전송
             NotificationCenter.default.post(
                 name: name,

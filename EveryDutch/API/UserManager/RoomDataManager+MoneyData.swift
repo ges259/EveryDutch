@@ -18,40 +18,44 @@ extension RoomDataManager {
     
     // MARK: - 누적 금액 데이터
     private func loadCumulativeAmountData(versionID: String) {
-        self.roomsAPI.readCumulativeAmount(versionID: versionID) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let moneyData):
-                print("cumulativeMoney 성공")
-                self.updateCumulativeAmount(moneyData)
-                
-                break
-            case .failure:
-                DispatchQueue.main.async {
-                    print("cumulativeMoney 실패")
+        DispatchQueue.global(qos: .utility).async {
+            self.roomsAPI.readCumulativeAmount(versionID: versionID) { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let moneyData):
+                    print("cumulativeMoney 성공")
+                    self.updateCumulativeAmount(moneyData)
+                    
+                    break
+                case .failure:
+                    DispatchQueue.main.async {
+                        print("cumulativeMoney 실패")
+                    }
+                    break
                 }
-                break
             }
         }
     }
     
     // MARK: - 페이백 데이터
     private func loadPaybackData(versionID: String) {
-        self.roomsAPI.readPayback(versionID: versionID) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let moneyData):
-                print("payback 성공")
-                DispatchQueue.main.async {
-                    self.updatePayback(moneyData)
+        DispatchQueue.global(qos: .utility).async {
+            self.roomsAPI.readPayback(versionID: versionID) { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let moneyData):
+                    print("payback 성공")
+                    DispatchQueue.main.async {
+                        self.updatePayback(moneyData)
+                    }
+                    break
+                    
+                case .failure:
+                    DispatchQueue.main.async {
+                        print("payback 실패")
+                    }
+                    break
                 }
-                break
-                
-            case .failure:
-                DispatchQueue.main.async {
-                    print("payback 실패")
-                }
-                break
             }
         }
     }

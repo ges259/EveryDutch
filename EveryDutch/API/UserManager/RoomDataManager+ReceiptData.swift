@@ -12,20 +12,22 @@ extension RoomDataManager {
     // MARK: - 데이터 fetch
     func loadReceipt() {
         guard let versionID = self.getCurrentVersion else { return }
-        self.receiptAPI.readReceipt(versionID: versionID) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let initialLoad):
-                print("영수증 가져오기 성공")
-                self.setObserveReceipt()
-                self.updateReceipt(initialLoad)
-                
-                break
-            case .failure(_):
-                DispatchQueue.main.async {
-                    print("영수증영수증 가져오기 실패")
+        DispatchQueue.global(qos: .utility).async {
+            self.receiptAPI.readReceipt(versionID: versionID) { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let initialLoad):
+                    print("영수증 가져오기 성공")
+                    self.setObserveReceipt()
+                    self.updateReceipt(initialLoad)
+                    
+                    break
+                case .failure(_):
+                    DispatchQueue.main.async {
+                        print("영수증영수증 가져오기 실패")
+                    }
+                    break
                 }
-                break
             }
         }
     }
@@ -33,19 +35,21 @@ extension RoomDataManager {
     // MARK: - 옵저버 설정
     private func setObserveReceipt() {
         guard let versionID = self.getCurrentVersion else { return }
-        self.receiptAPI.observeReceipt(versionID: versionID) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let rooms):
-                print("Receipt 옵저버 성공")
-                self.updateReceipt(rooms)
-                break
-                
-            case .failure(_):
-                DispatchQueue.main.async {
-                    print("Receipt 옵저버 실패")
+        DispatchQueue.global(qos: .utility).async {
+            self.receiptAPI.observeReceipt(versionID: versionID) { [weak self] result in
+                guard let self = self else { return }
+                switch result {
+                case .success(let rooms):
+                    print("Receipt 옵저버 성공")
+                    self.updateReceipt(rooms)
+                    break
+                    
+                case .failure(_):
+                    DispatchQueue.main.async {
+                        print("Receipt 옵저버 실패")
+                    }
+                    break
                 }
-                break
             }
         }
     }
