@@ -36,7 +36,7 @@ enum AlertEnum {
     
     case noImage
     
-    
+    case exitRoom
     // MARK: - 타이틀
     var title: String {
         switch self {
@@ -78,6 +78,8 @@ enum AlertEnum {
             return "블러 선택 오류"
         case .decorationSetError:
             return "카드 효과 변경 오류"
+        case .exitRoom:
+            return "정산방을 나가시겠습니까?"
         }
     }
     
@@ -117,7 +119,7 @@ enum AlertEnum {
     // MARK: - 취소 버튼 텍스트
     var cancelBtn: Bool {
         switch self {
-        case .photoAccess, .backgroundSelect:
+        case .photoAccess, .backgroundSelect, .exitRoom:
             return true
             
         default:

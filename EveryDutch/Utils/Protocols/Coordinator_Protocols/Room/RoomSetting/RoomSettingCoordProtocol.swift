@@ -8,7 +8,7 @@
 import Foundation
 
 protocol RoomSettingCoordProtocol: Coordinator {
-    func settlementScreen()
+//    func settlementScreen()
     func FindFriendsScreen()
-
+    func exitSuccess() 
 }

@@ -7,13 +7,13 @@
 
 import Foundation
 
-final class SettlementVM: SettlementVMProtocol {
-    private var roomDataManager: RoomDataManagerProtocol
-    
-    var users: RoomUserDataDict = [:]
-    
-    init(roomDataManager: RoomDataManagerProtocol) {
-        self.roomDataManager = roomDataManager
-         
-    }
-}
+//final class SettlementVM: SettlementVMProtocol {
+//    private var roomDataManager: RoomDataManagerProtocol
+//    
+//    var users: RoomUserDataDict = [:]
+//    
+//    init(roomDataManager: RoomDataManagerProtocol) {
+//        self.roomDataManager = roomDataManager
+//         
+//    }
+//}

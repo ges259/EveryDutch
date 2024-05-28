@@ -29,7 +29,9 @@ enum ErrorEnum: Error {
     // FindFriendsVC
     case userNotFound
     
-    
+    // DeleteRoomUsers
+    case roomUsersDeleteError
+    case userRoomsIDDeleteError
     
     
     // UpdateRooms + FindFriendsVC

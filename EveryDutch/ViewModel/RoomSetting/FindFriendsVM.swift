@@ -68,7 +68,7 @@ extension FindFriendsVM {
     
     /// 유저 검색
     private func performSearchUser(text: String?) async {
-        
+        let result: Result<User, ErrorEnum>
         do {
             guard let userID = text, !userID.isEmpty else {
                 throw ErrorEnum.searchIdError
@@ -78,17 +78,21 @@ extension FindFriendsVM {
             
             // 유저 검색
             let userDict = try await self.userAPI.searchUser(userID)
-            // 가져온 유저 데이터 옵셔널 바인딩
-            guard let user = userDict.values.first else {
-                throw ErrorEnum.searchFailed
-            }
-            // 가져온 유저 데이터를 저장
-            await self.updateCurrentUser(userDict, with: user)
+            // 유저 딕셔너리 저장 및 유저 데이터 가져오기
+            let user = try await self.updateCurrentUser(userDict)
+            result = .success(user)
             
         } catch let error as ErrorEnum {
-            self.error(error)
+            result = .failure(error)
+            
         } catch {
-            self.error(.unknownError)
+            result = .failure(.unknownError)
+        }
+        
+        self.handleResult(result) { [weak self] user in
+            guard let self = self else { return }
+            // 성공 처리 및 현재 사용자 업데이트
+            self.searchSuccessClosure?(user)
         }
     }
     
@@ -108,12 +112,15 @@ extension FindFriendsVM {
         }
     }
     
-    /// 성공 처리 및 현재 사용자 업데이트
-    private func updateCurrentUser(_ userDict: [String: User], with user: User) async {
-        DispatchQueue.main.async {
-            self.currentUser = userDict
-            self.searchSuccessClosure?(user)
+    
+    private func updateCurrentUser(_ userDict: [String: User]) async throws -> User {
+        // 가져온 유저 데이터 옵셔널 바인딩
+        guard let user = userDict.values.first else {
+            throw ErrorEnum.searchFailed
         }
+        // 가져온 유저 데이터를 저장
+        self.currentUser = userDict
+        return user
     }
 
     
@@ -126,6 +133,7 @@ extension FindFriendsVM {
     }
 
     private func performInviteUser() async {
+        let result: Result<Void, ErrorEnum>
         do {
             guard let userID = self.currentUser?.keys.first,
                   let roomID = self.roomDataManager.getCurrentRoomsID
@@ -135,20 +143,33 @@ extension FindFriendsVM {
             try await self.roomsAPI.updateNewMember(
                 userID: userID,
                 roomID: roomID)
+            result = .success(())
             
-            DispatchQueue.main.async {
-                self.inviteSuccessClosure?()
-            }
         } catch let error as ErrorEnum {
-            self.error(error)
+            result = .failure(error)
+            
         } catch {
-            self.error(.unknownError)
+            result = .failure(.unknownError)
+        }
+        
+        self.handleResult(result) { [weak self] _ in
+            guard let self = self else { return }
+            self.inviteSuccessClosure?()
         }
     }
     
-    private func error(_ error: ErrorEnum) {
+    
+    private func handleResult<T>(
+        _ result: Result<T, ErrorEnum>,
+        successAction: @escaping (T) -> Void
+    ) {
         DispatchQueue.main.async {
-            self.apiErrorClosure?(error)
+            switch result {
+            case .success(let value):
+                successAction(value)
+            case .failure(let error):
+                self.apiErrorClosure?(error)
+            }
         }
     }
 }

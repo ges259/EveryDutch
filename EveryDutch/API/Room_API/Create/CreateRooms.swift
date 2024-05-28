@@ -17,7 +17,7 @@ final class RoomsAPI: RoomsAPIProtocol, DecorationAPIType {
 
 extension RoomsAPI {
     
-    // MARK: - 방 업데이트
+    // MARK: - Rooms 업데이트
     func updateData(IdRef: String, dict: [String: Any]) async throws {
         return try await withCheckedThrowingContinuation
         { (continuation: CheckedContinuation<Void, Error>) in
@@ -43,9 +43,9 @@ extension RoomsAPI {
         guard let uid = Auth.auth().currentUser?.uid else {
             throw ErrorEnum.readError
         }
-        
+        // Room_Users에 데이터 업데이트
         let roomID = try await addUserToRoom(uid: uid)
-        // Room에 정산방에 대한 데이터 저장
+        // Rooms에 '정산방'에 대한 데이터 저장
         try await updateData(IdRef: roomID, dict: dict)
         // User_RoomsID에 uid를 설정하는 함수
         try await self.createRoomID(with: uid, at: roomID)
@@ -73,19 +73,6 @@ extension RoomsAPI {
         }
     }
     
-    // MARK: - Rooms
-    private func createRooms(
-        roomID: String,
-        dict: [String: Any]) async throws
-    {
-        // 버전ID 생성 (현재 시간을 기준)
-        let versionID = "\(Int(Date().timeIntervalSince1970))"
-        // 딕셔너리에 현재 버전을 넣기
-        var updatedDict: [String: Any] = dict
-            updatedDict[DatabaseConstants.version_ID] = versionID
-        try await self.updateData(IdRef: roomID, dict: dict)
-    }
-    
     // MARK: - RoomsID
     private func createRoomID(
         with uid: String,
@@ -106,6 +93,32 @@ extension RoomsAPI {
             }
         }
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    /*
+     // MARK: - Rooms
+     private func createRooms(
+         roomID: String,
+         dict: [String: Any]) async throws
+     {
+         // 버전ID 생성 (현재 시간을 기준)
+         let versionID = "\(Int(Date().timeIntervalSince1970))"
+         // 딕셔너리에 현재 버전을 넣기
+         var updatedDict: [String: Any] = dict
+             updatedDict[DatabaseConstants.version_ID] = versionID
+         try await self.updateData(IdRef: roomID, dict: dict)
+     }
+     */
 }
 
 
