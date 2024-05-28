@@ -150,16 +150,25 @@ extension RoomsAPI {
     // MARK: - 특정 방 가져오기
     func fetchData(dataRequiredWhenInEidtMode: String?) async throws -> EditProviderModel
     {
+        guard let roomID = dataRequiredWhenInEidtMode else {
+            throw ErrorEnum.readError
+        }
         
-//        self.readRoomsData(roomID: dataRequiredWhenInEidtMode, completion: )
-//        let userDataDict = try await self.readYourOwnUserData()
-//        
-//        guard let user = userDataDict.values.first else {
-//            throw ErrorEnum.userNotFound
-//        }
-//        
-//        let data = try await self.fetchDecoration(dataRequiredWhenInEidtMode: "")
+        let path = ROOMS_REF.child(roomID)
         
-        return Rooms(roomID: "", dictionary: [:])
+        
+        return try await withCheckedThrowingContinuation
+        { (continuation: CheckedContinuation<EditProviderModel, Error>) in
+            
+            path.observeSingleEvent(of: .value) { snapshot in
+                guard let valueDict = snapshot.value as? [String: Any] else {
+                    continuation.resume(throwing: ErrorEnum.readError)
+                    return
+                }
+                // Rooms 객체 생성
+                let room = Rooms(roomID: roomID, dictionary: valueDict)
+                continuation.resume(returning: room)
+            }
+        }
     }
 }

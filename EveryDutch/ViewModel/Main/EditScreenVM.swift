@@ -115,6 +115,7 @@ extension EditScreenVM {
     /// '프로필 수정 화면'한정, 데이터를 가져오는 메서드
     func initializeCellTypes() {
         guard !self.isMake else { return }
+        print(#function)
         Task {
             // 수정 -> 데이터 가져오기 ->> 셀 타입 초기화
             do {

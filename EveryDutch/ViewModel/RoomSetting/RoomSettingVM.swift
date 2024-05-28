@@ -23,9 +23,16 @@ final class RoomSettingVM: RoomSettingVMProtocol {
     
     
     
+    /// 사용자가 roomManager인지를 알려주는 변수
+    var checkIsRoomManager: Bool {
+        return self.roomDataManager.checkIsRoomManager
+    }
+     
     
     
-    
+    var getCurrentRoomID: String? {
+        return self.roomDataManager.getCurrentRoomsID
+    }
     
     
     func leaveRoom() {

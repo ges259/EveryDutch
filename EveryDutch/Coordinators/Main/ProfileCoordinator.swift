@@ -43,7 +43,7 @@ final class ProfileCoordinator: ProfileCoordProtocol {
     func editScreen(DataRequiredWhenInEidtMode: String?) {
         let editScreenVCCoordinator = EditScreenCoordinator(
             nav: self.nav,
-            isMakeProfile: true,
+            isUserDataMode: true,
             DataRequiredWhenInEidtMode: DataRequiredWhenInEidtMode)
         self.childCoordinators.append(editScreenVCCoordinator)
         // 부모 코디네이터가 자신이라는 것을 명시 (뒤로가기 할 때 필요)

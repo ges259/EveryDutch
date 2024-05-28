@@ -11,6 +11,8 @@ protocol RoomSettingVMProtocol {
 //    var makeCellClosure: (([RoomUsers]) -> Void)? { get set }
     
 //    func getUserData() -> RoomUserDataDict
+    var checkIsRoomManager: Bool { get }
+    var getCurrentRoomID: String? { get }
     
     var successLeaveRoom: (() -> Void)? { get set }
     var errorClosure: ((ErrorEnum) -> Void)? { get set }

@@ -208,15 +208,6 @@ extension RoomSettingVC {
 
 // MARK: - 버튼 액션 메서드
 extension RoomSettingVC {
-    // 설정 화면으로 이동
-    @objc private func roomSettingBtnTapped() {
-        // 방 설정 화면으로 이동
-//        self.coordinator.CardScreen()
-    }
-    // 유저 초대 화면으로 이동
-    @objc private func inviteBtnTapped() {
-        self.coordinator.FindFriendsScreen()
-    }
     // 뒤로가기 버튼 설정
     @objc private func backButtonTapped() {
         self.coordinator.didFinish()
@@ -225,8 +216,25 @@ extension RoomSettingVC {
     @objc private func exitBtnBtnTapped() {
         // 얼럿창 띄우기
         self.customAlert(alertEnum: .exitRoom) { _ in
+            // 확인 버튼을 누르면 -> 정산방에서 나가기
             self.viewModel.leaveRoom()
         }
-        // 정산방에서 나가기
+    }
+    // 유저 초대 화면으로 이동
+    @objc private func inviteBtnTapped() {
+        self.coordinator.FindFriendsScreen()
+    }
+    // 설정 화면으로 이동
+    @objc private func roomSettingBtnTapped() {
+        // roomManager라면
+        if self.viewModel.checkIsRoomManager {
+            // 방 설정 화면으로 이동
+            let roomID = self.viewModel.getCurrentRoomID
+            self.coordinator.roomEditScreen(DataRequiredWhenInEidtMode: roomID)
+            
+        } else {
+            // 얼럿창
+            self.customAlert(alertEnum: .isNotRoomManager) { _ in }
+        }
     }
 }

@@ -36,7 +36,11 @@ enum AlertEnum {
     
     case noImage
     
+    // RoomSettingVC
     case exitRoom
+    case isNotRoomManager
+    
+    
     // MARK: - 타이틀
     var title: String {
         switch self {
@@ -80,12 +84,14 @@ enum AlertEnum {
             return "카드 효과 변경 오류"
         case .exitRoom:
             return "정산방을 나가시겠습니까?"
+        case .isNotRoomManager:
+            return "정산방의 메니저만 수정할 수 있습니다."
         }
     }
     
     
     // MARK: - 메시지 텍스트
-    var message: String {
+    var messageText: String {
         switch self {
         case .photoAccess:
             return "앱에서 사진을 선택하기 위해서는 사진 라이브러리 접근 권한이 필요합니다. 설정에서 권한을 허용해주세요."
@@ -101,25 +107,24 @@ enum AlertEnum {
     
     
     // MARK: - 확인 버튼 텍스트
-    var buttons: [String] {
+    var doneButtonsTitle: [String] {
         switch self {
         case .backgroundSelect:
             return ["이미지 선택",
                     "색상 선택"]
         case .photoAccess:
             return ["설정으로 이동"]
-            
-        case .loginFail:
-            return ["확인"]
         default: 
             return ["확인"]
         }
     }
     
     // MARK: - 취소 버튼 텍스트
-    var cancelBtn: Bool {
+    var cancelBtnIsExist: Bool {
         switch self {
-        case .photoAccess, .backgroundSelect, .exitRoom:
+        case .photoAccess, 
+                .backgroundSelect,
+                .exitRoom:
             return true
             
         default:

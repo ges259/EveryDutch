@@ -11,6 +11,7 @@ import Foundation
 protocol RoomDataManagerProtocol {
     
     
+    var checkIsRoomManager: Bool { get }
     
     
     

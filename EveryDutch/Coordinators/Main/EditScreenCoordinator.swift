@@ -35,43 +35,46 @@ final class EditScreenCoordinator: NSObject, EditScreenCoordProtocol {
     
     
     
-    // 프로필 / 유저 모드를 구분
-    // true -> 프로필 모드
-    // false -> 유저 모드
-    private var isProfileEdit: Bool
-    // 수정 / 생성을 구분
-    // nil인 경우       -> 생성
-    // nil이 아닌 경우   -> 수정
+    /// 프로필 / 유저 모드를 구분.
+    /// true -> 정산방 모드,
+    /// false -> 유저 모드
+    private var isUserDataMode: Bool
+    /// 수정 / 생성을 구분
+    /// nil인 경우       -> 생성
+    /// nil이 아닌 경우   -> 수정
     private var dataRequiredWhenInEidtMode: String? = nil
-    // 유저 생성 모드 플래그
+    /// 유저 생성 모드 플래그 (첫 로그인 시에만 활성화)
     private var isMakeUserMode: Bool
     
     
     // MARK: - 라이프사이클
     // 의존성 주입
     init(nav: UINavigationController, 
-         isMakeProfile: Bool,
-         isMakeUserMode: Bool = false,
+         isUserDataMode: Bool,
+         isFistLoginMakeUser: Bool = false,
          DataRequiredWhenInEidtMode: String? = nil)
     {
         self.nav = nav
-        self.isMakeUserMode = isMakeUserMode
+        // 유저 / 정산방을 구분
+        self.isUserDataMode = isUserDataMode
+        // 유저 생성 화면 (첫 로그인 시에만 해당)
+        self.isMakeUserMode = isFistLoginMakeUser
+        // 수정 / 생성을 구분
         self.dataRequiredWhenInEidtMode = DataRequiredWhenInEidtMode
-        self.isProfileEdit = isMakeProfile
     }
     deinit { print("\(#function)-----\(self)") }
     
     
     // MARK: - start
     func start() {
-        self.isProfileEdit
-        ? self.startProfileEdit()
-        : self.startRoomEdit()
+        self.isUserDataMode
+        ? self.startUserDataMode()
+        : self.startRoomDataMode()
     }
     
     
     // MARK: - 프로필 화면
-    private func startProfileEdit() {
+    private func startUserDataMode() {
         self.moveToEditScreen {
             // ProfileEditEnum을 사용하여 ViewModel 생성
             let profileEditVM = EditScreenVM(
@@ -82,7 +85,7 @@ final class EditScreenCoordinator: NSObject, EditScreenCoordProtocol {
     }
 
     // MARK: - 방 생성 화면
-    private func startRoomEdit() {
+    private func startRoomDataMode() {
         self.moveToEditScreen {
             // RoomEditEnum을 사용하여 ViewModel 생성
             let roomEditVM = EditScreenVM(

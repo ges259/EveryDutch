@@ -12,47 +12,48 @@ import FirebaseDatabaseInternal
 final class RoomsAPI: RoomsAPIProtocol, DecorationAPIType {
     static let shared: RoomsAPIProtocol = RoomsAPI()
     private init() {}
+    
+    
+    
+    var getCurrentUserID: String? {
+        return Auth.auth().currentUser?.uid
+    }
 }
 
 
 extension RoomsAPI {
     
-    // MARK: - Rooms 업데이트
-    func updateData(IdRef: String, dict: [String: Any]) async throws {
-        return try await withCheckedThrowingContinuation
-        { (continuation: CheckedContinuation<Void, Error>) in
-            // 새로운 방 생성 및 정보 업데이트
-            ROOMS_REF
-                .child(IdRef)
-                .updateChildValues(dict) { error, ref in
-                    
-                    guard error == nil else {
-                        continuation.resume(throwing: ErrorEnum.writeError)
-                        return
-                    }
-                    continuation.resume(returning: ())
-                }
-        }
-    }
-    
-    
-    
-    
     // MARK: - 방 생성
     func createData(dict: [String: Any]) async throws  -> String {
-        guard let uid = Auth.auth().currentUser?.uid else {
+        guard let uid = self.getCurrentUserID else {
             throw ErrorEnum.readError
         }
         // Room_Users에 데이터 업데이트
         let roomID = try await addUserToRoom(uid: uid)
+        // Rooms에 저장할 필수 데이터를 업데이트
+        let updatedDict = await self.updateRoomDictData(uid: uid, dict: dict)
         // Rooms에 '정산방'에 대한 데이터 저장
-        try await updateData(IdRef: roomID, dict: dict)
+        try await updateData(IdRef: roomID, dict: updatedDict)
         // User_RoomsID에 uid를 설정하는 함수
         try await self.createRoomID(with: uid, at: roomID)
         
         return roomID
     }
     
+    // Rooms에 저장할 필수 데이터를 업데이트
+    private func updateRoomDictData(
+        uid: String,
+        dict: [String: Any]
+    ) async -> [String: Any] {
+        // 파라미터로 전달된 dict를 로컬 변수로 복사
+        var dataDict = dict
+        dataDict[DatabaseConstants.room_manager] = uid
+        // 버전 ID 업데이트
+        let versionID = "\(Int(Date().timeIntervalSince1970))"
+        dataDict[DatabaseConstants.version_ID] = versionID
+        
+        return dataDict
+    }
     
     // MARK: - RoomUsers
     private func addUserToRoom(uid: String) async throws -> String {
@@ -112,7 +113,7 @@ extension RoomsAPI {
          dict: [String: Any]) async throws
      {
          // 버전ID 생성 (현재 시간을 기준)
-         let versionID = "\(Int(Date().timeIntervalSince1970))"
+
          // 딕셔너리에 현재 버전을 넣기
          var updatedDict: [String: Any] = dict
              updatedDict[DatabaseConstants.version_ID] = versionID

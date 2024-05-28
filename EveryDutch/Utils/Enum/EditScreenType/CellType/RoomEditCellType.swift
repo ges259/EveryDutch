@@ -59,7 +59,7 @@ enum RoomEditCellType: Int, EditCellType, CaseIterable {
         guard let room = room as? Rooms else { return nil }
         switch self {
         case .roomName: return room.roomName
-        case .className: return room.roomName
+        case .className: return room.className
         }
     }
 }

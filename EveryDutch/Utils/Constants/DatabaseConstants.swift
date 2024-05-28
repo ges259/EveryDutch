@@ -64,7 +64,7 @@ extension DatabaseConstants {
     static let room_name: String = "room_name"
     static let class_name: String = "class_name"
     static let manager_name: String = "manager_name"
-    
+    static let room_manager: String = "room_manager"
     static let version_ID: String = "version_ID"
 }
 extension DatabaseConstants {

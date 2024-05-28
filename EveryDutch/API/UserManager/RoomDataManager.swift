@@ -35,10 +35,6 @@ final class RoomDataManager: RoomDataManagerProtocol {
     var roomsCellViewModels = [MainCollectionViewCellVMProtocol]()
     
     
-//    var changedRoomDataIndexPaths = [IndexPath]()
-//    var roomsDebounceWorkItem: DispatchWorkItem?
-//    let roomsQueue = DispatchQueue(label: "rooms-queue",
-//                                   qos: .userInitiated)
     
     // MARK: - RoomUsrs
     /// [userID : User]로 이루어진 딕셔너리
@@ -219,8 +215,14 @@ final class RoomDataManager: RoomDataManagerProtocol {
     }
     
     
-    
-    
+    var checkIsRoomManager: Bool {
+        guard let myUid = self.roomsAPI.getCurrentUserID,
+              let roomManager = self.currentRoom?.room.roomManager 
+        else {
+            return false
+        }
+        return myUid == roomManager
+    }
     
     
     

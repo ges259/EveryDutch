@@ -10,5 +10,6 @@ import Foundation
 protocol RoomSettingCoordProtocol: Coordinator {
 //    func settlementScreen()
     func FindFriendsScreen()
-    func exitSuccess() 
+    func exitSuccess()
+    func roomEditScreen(DataRequiredWhenInEidtMode roomID: String?)
 }

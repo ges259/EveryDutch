@@ -108,8 +108,8 @@ final class MainCoordinator: MainCoordProtocol{
         // Main-Coordinator 생성
         let editScreenVCCoordinator = EditScreenCoordinator(
             nav: self.nav,
-            isMakeProfile: true,
-            isMakeUserMode: isMakeUserMode,
+            isUserDataMode: true,
+            isFistLoginMakeUser: isMakeUserMode,
             DataRequiredWhenInEidtMode: nil)
         self.moveToEditScreenVCCoord(to: editScreenVCCoordinator)
     }
@@ -122,7 +122,7 @@ final class MainCoordinator: MainCoordProtocol{
         // Main-Coordinator 생성
         let editScreenVCCoordinator = EditScreenCoordinator(
             nav: self.nav,
-            isMakeProfile: false, 
+            isUserDataMode: false, 
             DataRequiredWhenInEidtMode: nil)
         self.moveToEditScreenVCCoord(to: editScreenVCCoordinator)
     }

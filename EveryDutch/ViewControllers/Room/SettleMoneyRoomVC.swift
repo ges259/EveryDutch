@@ -321,7 +321,9 @@ extension SettleMoneyRoomVC {
             self.scrollToBottom()
             break
         case NotificationInfoString.removed.notificationName:
+            // MARK: - Fix
             self.receiptTableView.deleteRows(at: indexPaths, with: .automatic)
+//            self.receiptTableView.reloadData()
             break
         default:
             print("\(self) ----- \(#function) ----- Error")

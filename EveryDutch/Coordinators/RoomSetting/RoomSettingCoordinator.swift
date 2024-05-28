@@ -45,6 +45,8 @@ final class RoomSettingCoordinator: RoomSettingCoordProtocol{
 //        // 코디네이터에게 화면이동을 지시
 //        settlementCoordinator.start()
 //    }
+    
+    // MARK: - 초대 화면
     func FindFriendsScreen() {
         // Settlement-Coordinator 생성
         let findFriendsCoordinator = FindFriendsCoordinator(
@@ -55,10 +57,23 @@ final class RoomSettingCoordinator: RoomSettingCoordProtocol{
         // 코디네이터에게 화면이동을 지시
         findFriendsCoordinator.start()
     }
-    
+    // MARK: - 나가기
     func exitSuccess() {
         self.nav.popToRootViewController(animated: true)
         self.parentCoordinator?.removeChildCoordinator(child: self)
+    }
+    
+    // MARK: - 설정
+    func roomEditScreen(DataRequiredWhenInEidtMode roomID: String?) {
+        let editScreenVCCoordinator = EditScreenCoordinator(
+            nav: self.nav,
+            isUserDataMode: false, // 정산방
+            DataRequiredWhenInEidtMode: roomID) // 수정
+        self.childCoordinators.append(editScreenVCCoordinator)
+        // 부모 코디네이터가 자신이라는 것을 명시 (뒤로가기 할 때 필요)
+        editScreenVCCoordinator.parentCoordinator = self
+        // 코디네이터에게 화면이동을 지시
+        editScreenVCCoordinator.start()
     }
     
     
