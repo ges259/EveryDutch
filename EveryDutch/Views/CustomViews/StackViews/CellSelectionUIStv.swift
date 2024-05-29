@@ -50,8 +50,27 @@ final class CellSelectionUIStv: UIStackView {
     }
 }
 
+
+
+
+
+
+
+
+
+
+// MARK: - 화면 설정
 extension CellSelectionUIStv {
-    // MARK: - UI 설정
+    /// 초기 설정
+    private func configureUIWithEnum() {
+        if self.stvEnum == .peopleSelection {
+            self.insertArrangedSubview(self.profileImg, at: 0)
+            self.profileImg.snp.makeConstraints { make in
+                make.width.height.equalTo(21)
+            }
+        }
+    }
+    /// UI 설정
     private func configureStv() {
         self.spacing = 7
         self.axis = .horizontal
@@ -64,7 +83,7 @@ extension CellSelectionUIStv {
         self.isTappedView.setRoundedCorners(.all, withCornerRadius: 22.5 / 2)
     }
     
-    // MARK: - 오토레이아웃 설정
+    /// 오토레이아웃 설정
     private func configureAutoLayout() {
         [self.userNameLbl,
          self.rightView].forEach { view in
@@ -82,22 +101,16 @@ extension CellSelectionUIStv {
         }
     }
     
-    private func configureUIWithEnum() {
-        if self.stvEnum == .peopleSelection {
-            self.insertArrangedSubview(self.profileImg, at: 0)
-            self.profileImg.snp.makeConstraints { make in
-                make.width.height.equalTo(21)
-            }
-        }
-    }
     
     
-    func configureData(profile: UIImage? = nil,
-                       userName: String) {
-        
-        
-        
-    }
+    
+    
+    
+    // MARK: - 화면 데이터 설정
+//    func configureData(profile: UIImage? = nil,
+//                       userName: String) {
+//        
+//    }
     
     func isTapped(color: UIColor) {
         self.isTappedView.isHidden = false

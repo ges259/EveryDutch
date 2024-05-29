@@ -8,6 +8,9 @@
 import UIKit
 import SnapKit
 
+
+
+
 final class ReceiptWriteDataCell: UITableViewCell {
     
     // MARK: - 스택뷰
@@ -315,45 +318,6 @@ extension ReceiptWriteDataCell {
     @objc private func labelTapped() {
         self.delegate?.cellIsTapped(self, type: self.viewModel?.getReceiptEnum)
     }
-    
-    
-    
-    
-    
-    @objc private func textFieldIsChanged() {
-        guard let type = self.viewModel?.getReceiptEnum else { return }
-        
-        switch type {
-        case .memo:
-            self.memoInfoTFDidChanged()
-        case .price:
-            self.priceInfoTFDidChanged()
-        default: break
-        }
-    }
-    
-    
-    // MARK: - 가격 텍스트필드
-    private func priceInfoTFDidChanged() {
-        guard let currentText = self.textField.text else { return }
-
-        // 포매팅된 문자열로 텍스트 필드 업데이트
-        self.textField.text = self.viewModel?.formatPriceForEditing(currentText)
-    }
-    
-    // MARK: - 메모 텍스트필드
-    private func memoInfoTFDidChanged() {
-        // MARK: - Fix
-        guard let count = self.textField.text?.count else { return }
-        if count > 12 {
-            self.textField.deleteBackward()
-            
-        } else {
-            // 글자 수 레이블 업데이트
-            self.numOfCharLbl.text = self.viewModel?.updateMemoCount(
-                count: count)
-        }
-    }
 }
 
 
@@ -369,8 +333,41 @@ extension ReceiptWriteDataCell {
 
 extension ReceiptWriteDataCell: UITextFieldDelegate {
     
-    // MARK: - 수정 시작 시
-    /// priceInfoTF의 수정을 시작할 때 ',' 및 '원'을 제거하는 메서드
+    @objc private func textFieldIsChanged() {
+        guard let type = self.viewModel?.getReceiptEnum else { return }
+        
+        switch type {
+        case .memo:
+            self.memoInfoTFDidChanged()
+        case .price:
+            self.priceInfoTFDidChanged()
+        default: break
+        }
+    }
+    
+    
+    /// 가격 텍스트필드
+    private func priceInfoTFDidChanged() {
+        guard let currentText = self.textField.text else { return }
+
+        // 포매팅된 문자열로 텍스트 필드 업데이트
+        self.textField.text = self.viewModel?.formatPriceForEditing(currentText)
+    }
+    /// 메모 텍스트필드
+    private func memoInfoTFDidChanged() {
+        // MARK: - Fix
+        guard let count = self.textField.text?.count else { return }
+        if count > 12 {
+            self.textField.deleteBackward()
+            
+        } else {
+            // 글자 수 레이블 업데이트
+            self.numOfCharLbl.text = self.viewModel?.updateMemoCount(
+                count: count)
+        }
+    }
+    
+    /// 수정 시작 시 ',' 및 '원'을 제거하는 메서드
     func textFieldDidBeginEditing(_ textField: UITextField) {
         // 텍스트필드가 눌렸다고 delegate 전달
         self.delegate?.cellIsTapped(self, type: self.viewModel?.getReceiptEnum)
@@ -387,7 +384,6 @@ extension ReceiptWriteDataCell: UITextFieldDelegate {
             priceText: self.textField.text)
     }
     
-    // MARK: - 수정이 끝났을 때
     /// 텍스트 필드 수정이 끝났을 때
     func textFieldDidEndEditing(_ textField: UITextField) {
         // 텍스트 필드의 현재 텍스트를 변수에 저장
@@ -406,15 +402,13 @@ extension ReceiptWriteDataCell: UITextFieldDelegate {
         }
     }
     
-    // MARK: - [저장] 메모 텍스트필드
+    /// [저장] 메모 텍스트필드
     private func finishMemoTF(text: String?) {
         if let text = text, text != "" {
             self.delegate?.finishMemoTF(memo: text)
         }
     }
     
-    
-    // MARK: - [저장] 가격 텍스트필드
     /// 가격 텍스트필드의 수정이 끝났을 때 호출되는 메서드
     private func finishPriceTF(text: String?) {
         // Int값으로 바꾸기

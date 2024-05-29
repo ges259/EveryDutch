@@ -17,9 +17,12 @@ final class CardImageView: UIView {
         img.contentMode = .scaleAspectFit
         return img
     }()
-    private lazy var titleLbl: CustomLabel = CustomLabel(
-        text: self.defaultText(for: 0),
-        font: .boldSystemFont(ofSize: 25))
+    private var blurView: UIView = {
+        let view = UIView.configureView(
+            color: .white.withAlphaComponent(0.38))
+        view.isHidden = true
+        return view
+    }()
     
     private var iconImg: UIImageView = UIImageView(
         image: UIImage(named: "DutchIcon"))
@@ -29,18 +32,18 @@ final class CardImageView: UIView {
     private var lineView: UIView = UIView.configureView(
         color: UIColor.deep_Blue)
     
+    
+    private lazy var titleLbl: CustomLabel = CustomLabel(
+        text: self.defaultText(for: 0),
+        font: .boldSystemFont(ofSize: 25))
     private lazy var nameLbl: CustomLabel = CustomLabel(
         text: self.defaultText(for: 1),
         textColor: .placeholder_gray,
-        font: UIFont.systemFont(ofSize: 13))
+        font: UIFont.systemFont(ofSize: 13),
+        textAlignment: .right)
     
     
-    private var blurView: UIView = {
-        let view = UIView.configureView(
-            color: .white.withAlphaComponent(0.38))
-        view.isHidden = true
-        return view
-    }()
+
     
     
     
@@ -105,10 +108,11 @@ extension CardImageView {
         self.backgroundImg.snp.makeConstraints { make in
             make.edges.equalToSuperview()
         }
-        // 타이틀 레이블
-        self.titleLbl.snp.makeConstraints { make in
-            make.top.leading.equalToSuperview().offset(20)
+        // 블러 뷰
+        self.blurView.snp.makeConstraints { make in
+            make.edges.equalToSuperview()
         }
+        
         // 화살표 이미지
         self.arrowImg.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(15)
@@ -129,13 +133,16 @@ extension CardImageView {
             make.trailing.equalToSuperview().offset(-20)
             make.height.equalTo(2)
         }
+        
+        // 타이틀 레이블
+        self.titleLbl.snp.makeConstraints { make in
+            make.top.leading.equalToSuperview().offset(20)
+            make.trailing.equalToSuperview().offset(-20)
+        }
         // 이름 레이블
         self.nameLbl.snp.makeConstraints { make in
             make.trailing.bottom.equalToSuperview().offset(-20)
-        }
-        // 블러 뷰
-        self.blurView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
+            make.leading.equalToSuperview().offset(20)
         }
     }
     /// EditScreenVM에서 Decoration데이터를 가져왔을 때,

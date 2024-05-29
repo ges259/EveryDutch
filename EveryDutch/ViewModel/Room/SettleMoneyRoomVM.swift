@@ -59,8 +59,10 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
         let usersCount = self.roomDataManager.getNumOfRoomUsers
         // 셀당 40
         let tableHeight: Int = (usersCount * 40)
-        // 테이블뷰의 최대 크기(200) + 나머지 크기(134)
-        let totalHeight: Int = 84 + min(tableHeight, 200)
+        
+        // + 나머지 크기: (84)
+        // + 테이블뷰의 셀 크기: 4명(160) + 반칸 (20)
+        let totalHeight: Int = 84 + min(tableHeight, 180)
         return CGFloat(totalHeight)
     }
     /// 탑뷰의 최소 크기

@@ -56,6 +56,7 @@ final class CardDataCell: UITableViewCell {
     }
     override func prepareForReuse() {
         super.prepareForReuse()
+        // 셀이 재사용 되기 전, UI 초기화
         self.textField.layer.cornerRadius = 0
         self.layer.cornerRadius = 0
     }

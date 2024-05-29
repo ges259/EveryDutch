@@ -172,3 +172,9 @@ extension RoomsAPI {
         }
     }
 }
+
+
+// personal_ID
+// user_name
+
+// 이미 존재 -> 카드 숨기지 않고 얼럿창만
