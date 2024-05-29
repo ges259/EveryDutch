@@ -8,43 +8,35 @@
 import UIKit
 
 class InsetTextField: UITextField {
-    var insetX: CGFloat = 0 {
+    var insetX: CGFloat = 16 {
         didSet {
             layoutIfNeeded()
         }
     }
-    var insetY: CGFloat = 0 {
+    var insetY: CGFloat = 16 {
         didSet {
             layoutIfNeeded()
         }
     }
     
     
-    init(backgroundColor: UIColor,
-         placeholerColor: UIColor = UIColor.placeholder_gray,
-         placeholderText: String? = nil,
-         insetX: CGFloat = 16) {
+    init() {
         super.init(frame: .zero)
         
         self.font = UIFont.systemFont(ofSize: 13)
-        self.backgroundColor = backgroundColor
-        self.insetX = insetX
         
         self.autocapitalizationType = .none
         self.autocorrectionType = .no
-        
-        if let placeholderText = placeholderText {
-            self.setPlaceholderText(text: placeholderText, color: placeholerColor)
-        }
     }
     convenience init(placeholderText: String,
+                     backgroundColor: UIColor,
                      keyboardType: UIKeyboardType,
                      keyboardReturnType: UIReturnKeyType,
                      insertX: CGFloat = 16) {
-        self.init(backgroundColor: UIColor.normal_white,
-                   placeholerColor: UIColor.placeholder_gray,
-                   placeholderText: placeholderText,
-                   insetX: insertX)
+        self.init()
+        self.insetX = insertX
+        self.backgroundColor = backgroundColor
+        self.setPlaceholderText(text: placeholderText)
         self.keyboardType = keyboardType
         self.returnKeyType = keyboardReturnType
     }

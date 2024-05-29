@@ -20,11 +20,11 @@ final class ReceiptWriteUsersCell: UITableViewCell {
     /// 가격 텍스트필드
     lazy var priceTf: InsetTextField = {
         let tf = InsetTextField(
-            placeholderText: "가격을 입력해 주세요.",
+            placeholderText: "가격을 입력해 주세요.", 
+            backgroundColor: .medium_Blue,
             keyboardType: .numberPad,
             keyboardReturnType: .done,
             insertX: 25)
-        tf.backgroundColor = UIColor.medium_Blue
         tf.isHidden = true
         tf.alpha = 0
         tf.delegate = self

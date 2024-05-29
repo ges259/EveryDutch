@@ -16,22 +16,21 @@ protocol CardDataCellDelegate: AnyObject {
 
 
 // MARK: - CardDataCell
+
 final class CardDataCell: UITableViewCell {
     
     // MARK: - 레이아웃
-    // 디테일 레이블
+    /// 디테일 레이블
     private var detailLbl: CustomLabel = CustomLabel(
         leftInset: 20)
-    // 텍스트 필드
-    private lazy var textField: InsetTextField = {
-        let tf = InsetTextField(
-            backgroundColor: .normal_white,
-            placeholerColor: .lightGray)
-        tf.delegate = self
+    /// 텍스트 필드
+    private lazy var textField: CustomTextField = {
+        let tf = CustomTextField(TF_MAX_COUNT: 12)
+        tf.backgroundColor = .normal_white
+        tf.customTextFieldDelegate = self
         tf.isUserInteractionEnabled = true
         return tf
     }()
-    
     
     
     
@@ -121,8 +120,7 @@ extension CardDataCell {
         // 현재 타입 저장
         self.cellType = type
         // 텍스트필드의 플레이스 홀더 설정
-        self.textField.attributedPlaceholder = self.setAttributedText(
-            placeholderText: type.getTextFieldPlaceholder)
+        self.textField.setupUI(placeholerText: type.getTextFieldPlaceholder)
         // 텍스트필드의 detail레이블 설정
         self.detailLbl.text = type.getCellTitle
         
@@ -130,7 +128,8 @@ extension CardDataCell {
         // detatil이 있다면
         if let text = data.detail,
            !text.isEmpty {
-            self.textField.text = data.detail
+            self.textField.setTFText(data.detail)
+            self.textField.seteupNumOfCharLbl()
             self.delegateTextData()
         }
     }
@@ -148,7 +147,7 @@ extension CardDataCell {
     
     private func delegateTextData() {
         guard let cellType = self.cellType,
-              let text = self.textField.text,
+              let text = self.textField.currentText,
               !text.isEmpty
         else { return }
         // 텍스트필드가 빈칸이 아니라면, 델리게이트 전달
@@ -168,9 +167,9 @@ extension CardDataCell {
 
 
 // MARK: - 텍스트필드 델리게이트
-extension CardDataCell: UITextFieldDelegate {
+extension CardDataCell: CustomTextFieldDelegate {
     /// 수정 끝
-    func textFieldDidEndEditing(_ textField: UITextField) {
+    func textFieldDidEndEditing(_ text: String?) {
         self.delegateTextData()
     }
 }

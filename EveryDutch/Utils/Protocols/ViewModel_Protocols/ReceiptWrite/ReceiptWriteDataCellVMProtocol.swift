@@ -12,9 +12,9 @@ protocol ReceiptWriteDataCellVMProtocol: ReceiptWriteCellVMProtocol {
     var getReceiptEnum: ReceiptCellEnum { get }
     var TF_MAX_COUNT: Int { get }
     func updateMemoCount(count: Int) -> String
+    var returnTextFieldMaxCount: Int? { get }
     
-    
-    var isTfBeginEditing: Bool { get }
+    var isPriceType: Bool { get }
     var isMemoType: Bool { get }
     func removeAllFormat(priceText: String?) -> Int
     

@@ -14,13 +14,9 @@ final class FindFriendsVC: UIViewController {
     
     // MARK: - 레이아웃
     /// 텍스트필드
-    private var textField: InsetTextField = InsetTextField(
-        backgroundColor: UIColor.clear,
-        placeholderText: "친구 개인 ID")
-    /// 글자 수 레이블
-    private var numOfCharLbl: CustomLabel = CustomLabel(
-        text: "0 / 8",
-        font: UIFont.systemFont(ofSize: 13))
+    private lazy var textField: CustomTextField = CustomTextField(
+        TF_MAX_COUNT: 8,
+        placeholder: "친구 개인 ID로 검색")
     
     
     
@@ -54,10 +50,9 @@ final class FindFriendsVC: UIViewController {
     /// 상단 스택뷰
     private lazy var topStackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.textField,
-                           self.numOfCharLbl,
                            self.searchBtn],
         axis: .horizontal,
-        spacing: 20,
+        spacing: 0,
         alignment: .fill,
         distribution: .fill)
     
@@ -142,10 +137,6 @@ extension FindFriendsVC {
          self.lineView,
          self.inviteBottomBtn].forEach { view in
             self.view.addSubview(view)
-        }
-        // 글자 수 레이블
-        self.numOfCharLbl.snp.makeConstraints { make in
-            make.width.equalTo(40)
         }
         // 검색 버튼
         self.searchBtn.snp.makeConstraints { make in
@@ -313,8 +304,9 @@ extension FindFriendsVC {
     
     /// 검색 버튼
     @objc private func searchBtnTapped() {
+        let currentText = self.textField.currentText
         // 유저 검색
-        self.viewModel.searchUser(text: self.textField.text)
+        self.viewModel.searchUser(text: currentText)
     }
     
     /// 하단 버튼

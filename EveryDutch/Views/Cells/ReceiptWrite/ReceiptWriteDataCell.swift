@@ -10,20 +10,23 @@ import SnapKit
 
 final class ReceiptWriteDataCell: UITableViewCell {
     // MARK: - 레이아웃
-    /// 스택뷰
+    /// 좌측 [이미지 + 레이블] 스택뷰
     private lazy var cellStv: ReceiptLblStackView = ReceiptLblStackView(
         receiptEnum: self.viewModel?.getReceiptEnum ?? .time)
     
     /// 텍스트필드
     private lazy var textField: CustomTextField = {
-        let tf = CustomTextField()
+        let maxCount = self.viewModel?.returnTextFieldMaxCount
+        let tf = CustomTextField(insetX: 25,
+                                 TF_MAX_COUNT: maxCount)
         tf.customTextFieldDelegate = self
         return tf
     }()
     
-    /// 레이블
+    /// 우측 레이블
     private lazy var label: CustomLabel = CustomLabel(
         textColor: UIColor.black,
+        font: UIFont.systemFont(ofSize: 12.5),
         backgroundColor: UIColor.normal_white,
         leftInset: 25)
     
@@ -167,14 +170,18 @@ extension ReceiptWriteDataCell {
     /// 메모
     private func configureMemoUI() {
         self.configureTextFieldAutoLayout()
-        self.textField.setPlaceholderText("메모을 입력해 주세요.")
+        self.textField.setupUI(
+            placeholerText: "메모을 입력해 주세요.")
     }
     
     /// 가격
     private func configurePriceUI() {
         self.configureTextFieldAutoLayout()
-        self.textField.setPlaceholderText("가격을 입력해 주세요.")
-        self.textField.setKeyboardType(.numberPad)
+        
+        self.textField.setupUI(
+            placeholerText: "가격을 입력해 주세요.",
+            keyboardType: .numberPad,
+            numOfcharLblIsHidden: true)
     }
     
     /// 계산
@@ -244,9 +251,9 @@ extension ReceiptWriteDataCell: CustomTextFieldDelegate {
         // 텍스트필드가 눌렸다고 delegate 전달
         self.delegate?.cellIsTapped(self, type: self.viewModel?.getReceiptEnum)
         
-        // 현재 enum이 '가격'일 때
+        // 현재 enum이 '가격(price)'일 때
         // textField가 빈칸이 아니라면,
-        guard self.viewModel?.isTfBeginEditing ?? false,
+        guard self.viewModel?.isPriceType ?? false,
               text != "" else { return }
 
         let formattingText = self.viewModel?.removeWonFormat(
@@ -299,8 +306,7 @@ extension ReceiptWriteDataCell: CustomTextFieldDelegate {
     
     /// 텍스트필드가 바뀌었을 때
     func textFieldIsChanged(_ text: String?) {
-        guard let type = self.viewModel?.getReceiptEnum,
-                type == .price else { return }
+        guard self.viewModel?.isPriceType ?? false else { return }
         self.priceInfoTFDidChanged(text)
     }
     /// 가격 텍스트필드

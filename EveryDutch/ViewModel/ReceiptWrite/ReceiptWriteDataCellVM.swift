@@ -52,13 +52,17 @@ final class ReceiptWriteDataCellVM: ReceiptWriteDataCellVMProtocol {
         return "\(count) / \(self.TF_MAX_COUNT)"
     }
     
-    var isTfBeginEditing: Bool {
+    var isPriceType: Bool {
         return self.receiptEnum == .price
         ? true
         : false
     }
     
-    
+    var returnTextFieldMaxCount: Int? {
+        return self.isMemoType
+        ? 12
+        : nil
+    }
     
     
     
