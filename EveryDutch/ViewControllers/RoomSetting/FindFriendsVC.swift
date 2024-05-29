@@ -21,6 +21,11 @@ final class FindFriendsVC: UIViewController {
     private var numOfCharLbl: CustomLabel = CustomLabel(
         text: "0 / 8",
         font: UIFont.systemFont(ofSize: 13))
+    
+    
+    
+    
+    
     /// 검색 버튼
     private var searchBtn: UIButton = {
         let btn = UIButton.btnWithTitle(

@@ -8,34 +8,24 @@
 import UIKit
 import SnapKit
 
-
-
-
 final class ReceiptWriteDataCell: UITableViewCell {
-    
-    // MARK: - 스택뷰
+    // MARK: - 레이아웃
+    /// 스택뷰
     private lazy var cellStv: ReceiptLblStackView = ReceiptLblStackView(
         receiptEnum: self.viewModel?.getReceiptEnum ?? .time)
     
-    // MARK: - 텍스트필드
-    private lazy var textField: InsetTextField = {
-        let tf = InsetTextField(
-            backgroundColor: UIColor.normal_white,
-            insetX: 25)
-        tf.delegate = self
+    /// 텍스트필드
+    private lazy var textField: CustomTextField = {
+        let tf = CustomTextField()
+        tf.customTextFieldDelegate = self
         return tf
     }()
     
-    // MARK: - 레이블
+    /// 레이블
     private lazy var label: CustomLabel = CustomLabel(
+        textColor: UIColor.black,
         backgroundColor: UIColor.normal_white,
         leftInset: 25)
-    
-    // MARK: - 글자 수 레이블
-    private lazy var numOfCharLbl: CustomLabel = CustomLabel(
-        text: "0 / \(self.viewModel?.TF_MAX_COUNT ?? 12)",
-        font: UIFont.systemFont(ofSize: 13))
-    
     
     
     
@@ -49,6 +39,11 @@ final class ReceiptWriteDataCell: UITableViewCell {
     
     
     // MARK: - 라이프사이클
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        self.cellStv.layer.cornerRadius = 0
+        self.layer.cornerRadius = 0
+    }
     func configureCell(viewModel: ReceiptWriteDataCellVMProtocol?) {
         self.viewModel = viewModel
         
@@ -56,30 +51,17 @@ final class ReceiptWriteDataCell: UITableViewCell {
         self.configureAutoLayout()
         self.configureViewWithEnum()
     }
-}
-
-
-
-
-
-
-
-
-
-
-// MARK: - Helper_Functions
-
-extension ReceiptWriteDataCell {
-    
-    // MARK: - 레이블 텍스트 설정
-    func setLabelText(text: String?) {
-        self.label.textColor = UIColor.black
-        self.label.text = text
+    /// 첫 번째 셀
+    func configureFirstCell() {
+        // 스택뷰의 모서리 설정
+        self.cellStv.setRoundedCorners(.rightTop, withCornerRadius: 10)
     }
-    
-    // MARK: - 날짜 텍스트 설정
-    func setDateString(date: Date) {
-        self.configureDateString(date: date)
+    /// 마지막 셀
+    func configureLastCell() {
+        // 스택뷰의 모서리 설정
+        self.cellStv.setRoundedCorners(.rightBottom, withCornerRadius: 10)
+        // 셀의 모서리 설정
+        self.setRoundedCorners(.bottom, withCornerRadius: 10)
     }
 }
 
@@ -93,76 +75,8 @@ extension ReceiptWriteDataCell {
 
 
 // MARK: - 화면 설정
-
 extension ReceiptWriteDataCell {
-    
-    // MARK: - Enum에 따른 설정
-    private func configureViewWithEnum() {
-        guard let receiptEnum = self.viewModel?.getReceiptEnum else { return }
-        
-        switch receiptEnum {
-        case .date:     self.configureDateUI()
-        case .time:     self.configureTimeUI()
-        case .payer:    self.configurePayerUI()
-        case .price:    self.configurePriceUI()
-        case .memo:     self.configureMemoUI()
-        case .payment_Method: break
-        }
-    }
-    
-    // MARK: - 날짜
-    private func configureDateUI() {
-        self.configureLabelAutoLayout()
-        self.configureLabelAction()
-        self.configureDateString()
-    }
-    
-    // MARK: - 시간
-    private func configureTimeUI() {
-        self.configureLabelAutoLayout()
-        self.configureLabelAction()
-        self.configureTimeEnumUI()
-    }
-    
-    // MARK: - Payer
-    private func configurePayerUI() {
-        self.configureLabelAutoLayout()
-        self.configureLabelAction()
-
-        self.configurePayerEnumUI()
-    }
-    
-    // MARK: - 가격
-    private func configurePriceUI() {
-        self.configureTextFieldAutoLayout()
-        self.configureTextFieldAction()
-        self.configurePriceEnumUI()
-    }
-    
-    // MARK: - 메모
-    private func configureMemoUI() {
-        self.configureTextFieldAutoLayout()
-        self.configureNumOfCharLbl()
-        self.configureTextFieldAction()
-        self.textField.setPlaceholderText(
-            text: "메모을 입력해 주세요.")
-    }
-}
-
-
-
-
-    
-    
-    
-    
-    
-
-// MARK: - UI 설정
-
-extension ReceiptWriteDataCell {
-    
-    // MARK: - [공통]
+    /// UI 설정
     private func configureUI() {
         self.selectionStyle = .none
         self.separatorInset = .zero
@@ -171,69 +85,7 @@ extension ReceiptWriteDataCell {
         self.cellStv.backgroundColor = .medium_Blue
     }
     
-    
-    
-    
-    
-    // MARK: - 첫 번째 셀
-    func configureFirstCell() {
-        // 스택뷰의 모서리 설정
-        self.cellStv.setRoundedCorners(.rightTop, withCornerRadius: 10)
-    }
-    
-    // MARK: - 마지막 셀
-    func configureLastCell() {
-        // 스택뷰의 모서리 설정
-        self.cellStv.setRoundedCorners(.rightBottom, withCornerRadius: 10)
-        // 셀의 모서리 설정
-        self.setRoundedCorners(.bottom, withCornerRadius: 10)
-    }
-    
-    
-    
-    
-    
-    // MARK: - 날짜
-    private func configureDateString(date: Date = Date()) {
-        self.label.text = Date.returnYearString(date: date)
-    }
-    
-    // MARK: - 시간
-    private func configureTimeEnumUI() {
-        // 레이블 텍스트 설정
-        self.label.text = self.viewModel?.getCurrentTime()
-    }
-    
-    // MARK: - payer
-    private func configurePayerEnumUI() {
-        self.label.attributedText = NSAttributedString.configure(
-            text: "계산한 사람을 설정해 주세요.",
-            color: UIColor.placeholder_gray, 
-            font: UIFont.systemFont(ofSize: 13))
-    }
-    
-    // MARK: - 가격
-    private func configurePriceEnumUI() {
-        self.textField.setPlaceholderText(
-            text: "가격을 입력해 주세요.")
-        self.textField.keyboardType = .numberPad
-    }
-}
-
-
-
-
-    
-    
-    
-    
-    
-    
-// MARK: - [오토레이아웃]
-
-extension ReceiptWriteDataCell {
-    
-    // MARK: - [공통]
+    /// [공통] 오토레이아웃 설정
     private func configureAutoLayout() {
         self.addSubview(self.cellStv)
         self.cellStv.snp.makeConstraints { make in
@@ -243,7 +95,7 @@ extension ReceiptWriteDataCell {
         }
     }
     
-    // MARK: - 텍스트필드
+    /// 텍스트필드 오토레이아웃 설정
     private func configureTextFieldAutoLayout() {
         self.addSubview(self.textField)
         self.textField.snp.makeConstraints { make in
@@ -252,39 +104,18 @@ extension ReceiptWriteDataCell {
         }
     }
     
-    // MARK: - 글자 수
-    private func configureNumOfCharLbl() {
-        self.addSubview(self.numOfCharLbl)
-        // 글자 수 세는 레이블
-        self.numOfCharLbl.snp.makeConstraints { make in
-            make.trailing.equalToSuperview().offset(-25)
-            make.centerY.equalToSuperview()
-        }
-    }
-    
-    // MARK: - 레이블
+    /// 레이블 오토레이아웃 설정
     private func configureLabelAutoLayout() {
         self.addSubview(self.label)
         self.label.snp.makeConstraints { make in
             make.leading.equalTo(self.cellStv.snp.trailing)
             make.top.trailing.bottom.equalToSuperview()
         }
+        // 레이블 액션 설정
+        self.configureLabelAction()
     }
-}
-
-
-
     
-    
-    
-    
-    
-    
-    
-// MARK: - [액션 설정]
-
-extension ReceiptWriteDataCell {
-    
+    /// 레이블 액션 설정
     private func configureLabelAction() {
         // '계산한 사람' 레이블 제스처 생성
         let dateGesture = UITapGestureRecognizer(
@@ -293,13 +124,91 @@ extension ReceiptWriteDataCell {
         self.label.isUserInteractionEnabled = true
         self.label.addGestureRecognizer(dateGesture)
     }
+}
+
+
+
 
     
-    private func configureTextFieldAction() {
-        self.textField.addTarget(
-            self,
-            action: #selector(self.textFieldIsChanged),
-            for: .editingChanged)
+
+
+
+
+
+// MARK: - Enum에 따른 화면 설정
+extension ReceiptWriteDataCell {
+    private func configureViewWithEnum() {
+        // 현재 type가져오기
+        guard let receiptEnum = self.viewModel?.getReceiptEnum else { return }
+        // type 분기처리
+        switch receiptEnum {
+        case .date:     self.configureDateUI()
+        case .time:     self.configureTimeUI()
+        case .memo:     self.configureMemoUI()
+        case .price:    self.configurePriceUI()
+        case .payer:    self.configurePayerUI()
+        case .payment_Method: break
+        }
+    }
+    
+    /// 날짜
+    private func configureDateUI() {
+        self.configureLabelAutoLayout()
+        self.setDateString()
+    }
+    
+    /// 시간
+    private func configureTimeUI() {
+        self.configureLabelAutoLayout()
+        // 레이블 텍스트 설정
+        self.label.text = self.viewModel?.getCurrentTime()
+    }
+    
+    /// 메모
+    private func configureMemoUI() {
+        self.configureTextFieldAutoLayout()
+        self.textField.setPlaceholderText("메모을 입력해 주세요.")
+    }
+    
+    /// 가격
+    private func configurePriceUI() {
+        self.configureTextFieldAutoLayout()
+        self.textField.setPlaceholderText("가격을 입력해 주세요.")
+        self.textField.setKeyboardType(.numberPad)
+    }
+    
+    /// 계산
+    private func configurePayerUI() {
+        self.configureLabelAutoLayout()
+        
+        self.label.attributedText = NSAttributedString.configure(
+            text: "계산한 사람을 설정해 주세요.",
+            color: UIColor.placeholder_gray,
+            font: UIFont.systemFont(ofSize: 13))
+    }
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - 셀 업데이트
+// 뷰컨트롤러에서 셀을 업에이트하는 함수들
+extension ReceiptWriteDataCell {
+    /// 레이블 텍스트 설정
+    func setLabelText(text: String?) {
+        self.label.text = text
+    }
+    
+    /// 날짜 텍스트 설정
+    func setDateString(date: Date = Date()) {
+        let dateText = Date.returnYearString(date: date)
+        self.label.text = dateText
     }
 }
     
@@ -307,13 +216,12 @@ extension ReceiptWriteDataCell {
     
     
     
-    
-    
-    
-    
-    
-// MARK: - [액션]
 
+
+    
+    
+    
+// MARK: - 액션
 extension ReceiptWriteDataCell {
     @objc private func labelTapped() {
         self.delegate?.cellIsTapped(self, type: self.viewModel?.getReceiptEnum)
@@ -330,64 +238,31 @@ extension ReceiptWriteDataCell {
 
 
 // MARK: - 텍스트필드 델리게이트
-
-extension ReceiptWriteDataCell: UITextFieldDelegate {
-    
-    @objc private func textFieldIsChanged() {
-        guard let type = self.viewModel?.getReceiptEnum else { return }
-        
-        switch type {
-        case .memo:
-            self.memoInfoTFDidChanged()
-        case .price:
-            self.priceInfoTFDidChanged()
-        default: break
-        }
-    }
-    
-    
-    /// 가격 텍스트필드
-    private func priceInfoTFDidChanged() {
-        guard let currentText = self.textField.text else { return }
-
-        // 포매팅된 문자열로 텍스트 필드 업데이트
-        self.textField.text = self.viewModel?.formatPriceForEditing(currentText)
-    }
-    /// 메모 텍스트필드
-    private func memoInfoTFDidChanged() {
-        // MARK: - Fix
-        guard let count = self.textField.text?.count else { return }
-        if count > 12 {
-            self.textField.deleteBackward()
-            
-        } else {
-            // 글자 수 레이블 업데이트
-            self.numOfCharLbl.text = self.viewModel?.updateMemoCount(
-                count: count)
-        }
-    }
-    
-    /// 수정 시작 시 ',' 및 '원'을 제거하는 메서드
-    func textFieldDidBeginEditing(_ textField: UITextField) {
+extension ReceiptWriteDataCell: CustomTextFieldDelegate {
+    /// 수정이 시작됐을 때
+    func textFieldDidBeginEditing(_ text: String?) {
         // 텍스트필드가 눌렸다고 delegate 전달
         self.delegate?.cellIsTapped(self, type: self.viewModel?.getReceiptEnum)
         
-        
-        // MARK: - Fix
         // 현재 enum이 '가격'일 때
         // textField가 빈칸이 아니라면,
         guard self.viewModel?.isTfBeginEditing ?? false,
-              self.textField.text != "" else { return }
+              text != "" else { return }
 
+        let formattingText = self.viewModel?.removeWonFormat(
+            priceText: text)
         // textField에 있는 '~원' 형식을 제거
-        self.textField.text = self.viewModel?.removeWonFormat(
-            priceText: self.textField.text)
+        self.textField.setTFText(formattingText)
     }
     
-    /// 텍스트 필드 수정이 끝났을 때
-    func textFieldDidEndEditing(_ textField: UITextField) {
+    
+    
+    
+    
+    /// 수정이 끝났을 때
+    func textFieldDidEndEditing(_ text: String?) {
         // 텍스트 필드의 현재 텍스트를 변수에 저장
-        let savedText = textField.text
+        let savedText = text
         // 메모 텍스트필드일 때
         if self.viewModel?.isMemoType ?? false {
 
@@ -401,14 +276,12 @@ extension ReceiptWriteDataCell: UITextFieldDelegate {
             self.finishPriceTF(text: savedText)
         }
     }
-    
     /// [저장] 메모 텍스트필드
     private func finishMemoTF(text: String?) {
         if let text = text, text != "" {
             self.delegate?.finishMemoTF(memo: text)
         }
     }
-    
     /// 가격 텍스트필드의 수정이 끝났을 때 호출되는 메서드
     private func finishPriceTF(text: String?) {
         // Int값으로 바꾸기
@@ -416,6 +289,25 @@ extension ReceiptWriteDataCell: UITextFieldDelegate {
         // 뷰컨트롤러로 전달
         self.delegate?.finishPriceTF(price: priceInt)
         // 텍스트필드에 ',' 및 '원'형식 설정
-        self.textField.text = self.viewModel?.priceInfoTFText(price: priceInt)
+        let formattingText = self.viewModel?.priceInfoTFText(price: priceInt)
+        self.textField.setTFText(formattingText)
+    }
+    
+    
+    
+    
+    
+    /// 텍스트필드가 바뀌었을 때
+    func textFieldIsChanged(_ text: String?) {
+        guard let type = self.viewModel?.getReceiptEnum,
+                type == .price else { return }
+        self.priceInfoTFDidChanged(text)
+    }
+    /// 가격 텍스트필드
+    private func priceInfoTFDidChanged(_ text: String?) {
+        guard let currentText = text else { return }
+        // 포매팅된 문자열로 텍스트 필드 업데이트
+        let formattingText = self.viewModel?.formatPriceForEditing(currentText)
+        self.textField.setTFText(formattingText)
     }
 }
