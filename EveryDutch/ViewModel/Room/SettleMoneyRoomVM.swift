@@ -120,6 +120,11 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
         self.roomDataManager.startLoadRoomData()
     }
     deinit { self.roomDataManager.removeRoomsUsersObserver() }
+    
+    // MARK: - API
+    func loadMoreReceiptData() {
+        self.roomDataManager.loadMoreReceiptData()
+    }
 }
 
 

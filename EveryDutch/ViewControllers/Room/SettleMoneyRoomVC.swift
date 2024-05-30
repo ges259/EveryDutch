@@ -322,8 +322,8 @@ extension SettleMoneyRoomVC {
             break
         case NotificationInfoString.removed.notificationName:
             // MARK: - Fix
-            self.receiptTableView.deleteRows(at: indexPaths, with: .automatic)
-//            self.receiptTableView.reloadData()
+//            self.receiptTableView.deleteRows(at: indexPaths, with: .automatic)
+            self.receiptTableView.reloadData()
             break
         default:
             print("\(self) ----- \(#function) ----- Error")
@@ -462,7 +462,6 @@ extension SettleMoneyRoomVC {
 
 
 // MARK: - 테이블뷰 델리게이트
-
 extension SettleMoneyRoomVC: UITableViewDelegate {
     func tableView(_ tableView: UITableView,
                    heightForRowAt indexPath: IndexPath)
@@ -475,6 +474,19 @@ extension SettleMoneyRoomVC: UITableViewDelegate {
         let receipt = self.viewModel.getReceipt(at: indexPath.row)
         // '영수증 화면'으로 화면 이동
         self.coordinator.ReceiptScreen(receipt: receipt)
+    }
+    func tableView(_ tableView: UITableView, 
+                   willDisplay cell: UITableViewCell,
+                   forRowAt indexPath: IndexPath)
+    {
+        // 마지막 셀
+        if indexPath.row == self.viewModel.numberOfReceipt - 1 {
+            self.loadMoreData()
+        }
+    }
+    
+    private func loadMoreData() {
+        self.viewModel.loadMoreReceiptData()
     }
 }
 

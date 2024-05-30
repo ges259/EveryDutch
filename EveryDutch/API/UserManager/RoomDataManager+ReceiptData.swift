@@ -24,13 +24,30 @@ extension RoomDataManager {
                     break
                 case .failure(_):
                     DispatchQueue.main.async {
-                        print("영수증영수증 가져오기 실패")
+                        print("영수증 가져오기 실패")
                     }
                     break
                 }
             }
         }
     }
+    
+    func loadMoreReceiptData() {
+        guard let versionID = self.getCurrentVersion else { return }
+        self.receiptAPI.loadMoreReceipts(versionID: versionID) { [weak self] result in
+            guard let self = self else { return     }
+            switch result {
+            case .success(let loadData):
+                self.updateReceipt(loadData)
+            case .failure(_):
+                DispatchQueue.main.async {
+                    print("영수증 추가적으로 가져오기 실패")
+                }
+            }
+        }
+    }
+    
+    
     
     // MARK: - 옵저버 설정
     private func setObserveReceipt() {
@@ -83,8 +100,8 @@ extension RoomDataManager {
         // 리턴할 인덱스패스
         var updatedIndexPaths = [IndexPath]()
         
-        for (userID, changedData) in toUpdate {
-            if let indexPath = self.receiptIDToIndexPathMap[userID] {
+        for (receiptID, changedData) in toUpdate {
+            if let indexPath = self.receiptIDToIndexPathMap[receiptID] {
                 // 뷰모델에 바뀐 user데이터 저장
                 self.receiptCellViewModels[indexPath.row].updateReceipt(changedData)
                 updatedIndexPaths.append(indexPath)
@@ -105,16 +122,16 @@ extension RoomDataManager {
         self.receiptIDToIndexPathMap.removeAll()
         
         // 모든 데이터 추가
-        for (index, (roomID, room)) in userDict.enumerated() {
+        for (index, (receiptID, room)) in userDict.enumerated() {
             // 인덱스 패스 생성
             let indexPath = IndexPath(row: index, section: 0)
             // 뷰모델 생성
-            let viewModel = ReceiptTableViewCellVM(receiptID: roomID,
+            let viewModel = ReceiptTableViewCellVM(receiptID: receiptID,
                                                    receiptData: room)
             // 뷰모델 저장
             self.receiptCellViewModels.append(viewModel)
             // 인덱스패스 저장
-            self.receiptIDToIndexPathMap[roomID] = indexPath
+            self.receiptIDToIndexPathMap[receiptID] = indexPath
             addedIndexPaths.append(indexPath)
         }
         self.postNotification(name: .receiptDataChanged,
@@ -126,19 +143,19 @@ extension RoomDataManager {
     private func handleAddedReceiptEvent(_ toAdd: [ReceiptTuple]) {
         // 리턴할 인덱스패스
         var addedIndexPaths = [IndexPath]()
-        for (roomID, room) in toAdd {
+        for (receiptID, room) in toAdd {
             // 중복 추가 방지
-            guard self.receiptIDToIndexPathMap[roomID] == nil else { continue }
+            guard self.receiptIDToIndexPathMap[receiptID] == nil else { continue }
             // 인덱스패스 생성 (뷰모델 추가 전에 현재 count 사용)
             let indexPath = IndexPath(row: self.receiptCellViewModels.count, section: 0)
             
             // 뷰모델 생성
-            let viewModel = ReceiptTableViewCellVM(receiptID: roomID,
+            let viewModel = ReceiptTableViewCellVM(receiptID: receiptID,
                                                    receiptData: room)
             // 뷰모델 저장
             self.receiptCellViewModels.append(viewModel)
             // 인덱스패스 업데이트
-            self.receiptIDToIndexPathMap[roomID] = indexPath
+            self.receiptIDToIndexPathMap[receiptID] = indexPath
             addedIndexPaths.append(indexPath)
         }
         self.postNotification(name: .receiptDataChanged,
@@ -147,15 +164,15 @@ extension RoomDataManager {
     }
     
     // MARK: - 삭제
-    private func handleRemovedReceiptEvent(_ roomID: String) {
+    private func handleRemovedReceiptEvent(_ receiptID: String) {
         // 리턴할 인덱스패스
         var removedIndexPaths = [IndexPath]()
 
-        if let indexPath = self.receiptIDToIndexPathMap[roomID] {
+        if let indexPath = self.receiptIDToIndexPathMap[receiptID] {
             // 뷰모델 삭제
             self.receiptCellViewModels.remove(at: indexPath.row)
             // 인덱스패스 삭제
-            self.receiptIDToIndexPathMap.removeValue(forKey: roomID)
+            self.receiptIDToIndexPathMap.removeValue(forKey: receiptID)
             // [String: User] 데이터 삭제
             removedIndexPaths.append(indexPath)
             // 삭제 후 인덱스 재정렬 (인덱스 매핑 최적화)
@@ -163,8 +180,8 @@ extension RoomDataManager {
                 // 새로운 인덱스패스 생성
                 let newIndexPath = IndexPath(row: row, section: 0)
                 // 해당 인덱스의 뷰모델에 있는 roomID를 가져옴
-                let roomID = self.receiptCellViewModels[row].getReceiptID
-                self.receiptIDToIndexPathMap[roomID] = newIndexPath
+                let newReceiptID = self.receiptCellViewModels[row].getReceiptID
+                self.receiptIDToIndexPathMap[newReceiptID] = newIndexPath
             }
         }
         self.postNotification(name: .receiptDataChanged,

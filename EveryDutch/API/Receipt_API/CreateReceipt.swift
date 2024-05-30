@@ -15,6 +15,8 @@ import FirebaseDatabase
 class ReceiptAPI: ReceiptAPIProtocol, CrashlyticsLoggable {
     static let shared: ReceiptAPIProtocol = ReceiptAPI()
     private init() {}
+    
+    var lastKey: String?
 }
 
 

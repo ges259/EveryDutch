@@ -41,8 +41,8 @@ protocol SettleMoneyRoomProtocol {
     var isTopViewOpen: Bool { get set }
     
     
-    
-    
+    // MARK: - API
+    func loadMoreReceiptData()
     
     
     // User data handling

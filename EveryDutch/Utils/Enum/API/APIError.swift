@@ -11,7 +11,7 @@ enum ErrorEnum: Error {
     
     case changeEditDataError
     
-    
+    case noMoreData
     case validationError(_ databaseString: [String])
     
     case writeError

@@ -17,11 +17,6 @@ final class FindFriendsVC: UIViewController {
     private lazy var textField: CustomTextField = CustomTextField(
         TF_MAX_COUNT: 8,
         placeholder: "친구 개인 ID로 검색")
-    
-    
-    
-    
-    
     /// 검색 버튼
     private var searchBtn: UIButton = {
         let btn = UIButton.btnWithTitle(
@@ -31,7 +26,6 @@ final class FindFriendsVC: UIViewController {
         btn.setRoundedCorners(.all, withCornerRadius: 10)
         return btn
     }()
-        
     /// 하단 선
     private var lineView: UIView = UIView.configureView(
         color: UIColor.deep_Blue)
@@ -53,9 +47,9 @@ final class FindFriendsVC: UIViewController {
                            self.searchBtn],
         axis: .horizontal,
         spacing: 0,
-        alignment: .fill,
+        alignment: .center,
         distribution: .fill)
-    
+    /// 전체 스택뷰
     private lazy var totalStackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.topStackView,
                            self.noDataView,
@@ -129,6 +123,7 @@ extension FindFriendsVC {
     /// UI 설정
     private func configureUI() {
         self.view.backgroundColor = .base_Blue
+        self.setInviteBottonBtn()
     }
     
     /// 오토레이아웃 설정
@@ -141,23 +136,24 @@ extension FindFriendsVC {
         // 검색 버튼
         self.searchBtn.snp.makeConstraints { make in
             make.width.equalTo(80)
-        }
-        // 검색 하단 버튼
-        self.lineView.snp.makeConstraints { make in
-            make.height.equalTo(2)
-            make.top.equalTo(self.totalStackView.snp.top).offset(38)
-            make.leading.equalTo(self.totalStackView)
-            make.trailing.equalTo(self.totalStackView).offset(-20)
+            make.height.equalTo(40)
         }
         // 상단 스택뷰
-        self.topStackView.snp.makeConstraints { make in
-            make.height.equalTo(40)
+        self.textField.snp.makeConstraints { make in
+            make.height.equalTo(50)
         }
         // 전체 스택뷰
         self.totalStackView.snp.makeConstraints { make in
             make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(2)
             make.leading.equalToSuperview().offset(10)
             make.trailing.equalToSuperview().offset(-10)
+        }
+        // 검색 하단 버튼
+        self.lineView.snp.makeConstraints { make in
+            make.height.equalTo(2)
+            make.top.equalTo(self.searchBtn.snp.bottom).offset(-2)
+            make.leading.equalTo(self.totalStackView)
+            make.trailing.equalTo(self.totalStackView).offset(-20)
         }
         // 카드 이미지 뷰
         self.cardImgView.snp.makeConstraints { make in
@@ -275,13 +271,20 @@ extension FindFriendsVC {
     /// 카드 이미지뷰를 숨길지 결정하는 메서드
     private func cardImgViewIsHidden(_ isHidden: Bool) {
         // 정상적으로 적용
+        // 카드 이미지뷰 보이게 할지 설정
         self.cardImgView.isHidden = isHidden
         // 반대로 적용
+        // noDataView 화면에 보이게할지 설정
         self.noDataView.isHidden = !isHidden
-        
-        // 반대로 적용
-        self.inviteBottomBtn.isEnabled = !isHidden
-        let color: UIColor = isHidden ? .medium_Blue : .deep_Blue
+        // 바텀 하단 버튼 설정
+        self.setInviteBottonBtn(isHidden)
+    }
+    /// 바텀 하단 버튼 설정
+    private func setInviteBottonBtn(_ isEnable: Bool = true) {
+        // 바텀 하단 버튼 isEnable 설정
+        self.inviteBottomBtn.isEnabled = !isEnable
+        // 바텀 하단 버튼 색상 설정
+        let color: UIColor = isEnable ? .medium_Blue : .deep_Blue
         self.inviteBottomBtn.backgroundColor = color
     }
 }

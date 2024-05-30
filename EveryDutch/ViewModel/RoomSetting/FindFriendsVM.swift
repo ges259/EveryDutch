@@ -46,6 +46,20 @@ final class FindFriendsVM: FindFriendsVMProtocol {
         self.userAPI = userAPI
         self.roomsAPI = roomsAPI
     }
+    
+    private func handleResult<T>(
+        _ result: Result<T, ErrorEnum>,
+        successAction: @escaping (T) -> Void
+    ) {
+        DispatchQueue.main.async {
+            switch result {
+            case .success(let value):
+                successAction(value)
+            case .failure(let error):
+                self.apiErrorClosure?(error)
+            }
+        }
+    }
 }
 
 
@@ -57,11 +71,8 @@ final class FindFriendsVM: FindFriendsVMProtocol {
 
 
 
-// MARK: - API
-
+// MARK: - 유저 검색
 extension FindFriendsVM {
-    
-    // MARK: - 유저 검색
     func searchUser(text: String?) {
         Task { await self.performSearchUser(text: text) }
     }
@@ -102,7 +113,7 @@ extension FindFriendsVM {
         if userID.contains(where: { $0.isWhitespace }) {
             throw ErrorEnum.containsWhitespace
         }
-
+        
         // 특수 문자 검사 (알파벳, 숫자, 밑줄(_) 허용)
         let allowedCharacters = CharacterSet.alphanumerics.union(.init(charactersIn: "_"))
         let userIDCharacterSet = CharacterSet(charactersIn: userID)
@@ -112,7 +123,7 @@ extension FindFriendsVM {
         }
     }
     
-    
+    /// 유저 딕셔너리 저장 및 유저 데이터 가져오기
     private func updateCurrentUser(_ userDict: [String: User]) async throws -> User {
         // 가져온 유저 데이터 옵셔널 바인딩
         guard let user = userDict.values.first else {
@@ -122,12 +133,19 @@ extension FindFriendsVM {
         self.currentUser = userDict
         return user
     }
+}
+    
+ 
 
-    
-    
-    
-    
-    // MARK: - 유저 초대
+
+
+
+
+
+
+
+// MARK: - 유저 초대
+extension FindFriendsVM {
     func inviteUser() {
         Task { await self.performInviteUser() }
     }
@@ -155,21 +173,6 @@ extension FindFriendsVM {
         self.handleResult(result) { [weak self] _ in
             guard let self = self else { return }
             self.inviteSuccessClosure?()
-        }
-    }
-    
-    
-    private func handleResult<T>(
-        _ result: Result<T, ErrorEnum>,
-        successAction: @escaping (T) -> Void
-    ) {
-        DispatchQueue.main.async {
-            switch result {
-            case .success(let value):
-                successAction(value)
-            case .failure(let error):
-                self.apiErrorClosure?(error)
-            }
         }
     }
 }

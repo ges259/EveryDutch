@@ -56,7 +56,7 @@ typealias ProfileTypeCell = (type: ProfileType, detail: String?)
 typealias EditCellTypeTuple = (type: any EditCellType, detail: String?)
 
 
-typealias ReceiptTuple = (roomID: String, receipt: Receipt)
+typealias ReceiptTuple = (receiptID: String, receipt: Receipt)
 
 
 

@@ -50,7 +50,7 @@ protocol RoomDataManagerProtocol {
     var getNumOfReceipts: Int { get }
     func getReceiptViewModel(index: Int) -> ReceiptTableViewCellVMProtocol
     func getReceipt(at index: Int) -> Receipt
-    
+    func loadMoreReceiptData()
     
     
     func updateReceiptUserName(receipt: Receipt) -> Receipt
