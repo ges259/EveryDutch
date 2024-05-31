@@ -8,7 +8,7 @@
 import Foundation
 protocol ReceiptAPIProtocol {
     
-    
+    func resetData()
     
     func createReceipt(versionID: String,
                        dictionary: [String: Any?]) async throws -> String
@@ -30,7 +30,7 @@ protocol ReceiptAPIProtocol {
         completion: @escaping (Result<DataChangeEvent<[ReceiptTuple]>, ErrorEnum>) -> Void)
     func loadMoreReceipts(
         versionID: String,
-        completion: @escaping (Result<DataChangeEvent<[ReceiptTuple]>, ErrorEnum>) -> Void)
+        completion: @escaping (Result<[ReceiptTuple], ErrorEnum>) -> Void)
     
     
     

@@ -68,9 +68,8 @@ final class RoomDataManager: RoomDataManagerProtocol {
     var receiptIDToIndexPathMap = [String: IndexPath]()
     /// 영수증 테이블 셀의 뷰모델
     var receiptCellViewModels = [ReceiptTableViewCellVMProtocol]()
+    var hasMoreData: Bool = true
 
-
-    
     
     
     
@@ -122,6 +121,9 @@ final class RoomDataManager: RoomDataManagerProtocol {
         self.moneyDataDebounceWorkItem = nil
         self.receiptIDToIndexPathMap.removeAll()
         self.receiptCellViewModels.removeAll()
+        
+        self.receiptAPI.resetData()
+        self.hasMoreData = true
     }
     
     

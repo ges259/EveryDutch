@@ -12,19 +12,21 @@ import FirebaseDatabaseInternal
     // Receipt에서 데이터 가져오기 ----- (Receipt)
 //            .queryLimited(toLast: 3)
 extension ReceiptAPI {
-
     func readReceipt(
         versionID: String,
-        completion: @escaping (Result<DataChangeEvent<[ReceiptTuple]>, ErrorEnum>) -> Void)
-    {
+        completion: @escaping (Result<DataChangeEvent<[ReceiptTuple]>, ErrorEnum>) -> Void
+    ) {
         RECEIPT_REF
             .child(versionID)
             .queryOrdered(byChild: DatabaseConstants.date)
-            .queryLimited(toLast: 7)
+            .queryLimited(toLast: 8)
             .observeSingleEvent(of: .value) { snapshot in
                 
-                guard let allObjects = snapshot.children.allObjects as? [DataSnapshot] else { return }
-                
+                guard let allObjects = snapshot.children.allObjects as? [DataSnapshot] else {
+                    completion(.failure(.readError))
+                    return
+                }
+                print("가져온 receipt 갯수 ----- \(allObjects.count)")
                 var receiptsTupleArray = [(receiptID: String, receipt: Receipt)]()
                 
                 allObjects.forEach { snapshot in
@@ -33,33 +35,52 @@ extension ReceiptAPI {
                         receiptsTupleArray.append((receiptID: snapshot.key, receipt: receipt))
                     }
                 }
-                // 마지막 항목의 키를 저장
-                self.lastKey = allObjects.last?.key
                 
+                // 데이터를 순서대로 유지하여 최신 데이터가 마지막에 오도록 합니다.
+                receiptsTupleArray.reverse()
+                
+                // 마지막 항목의 키를 저장
+                if let lastSnapshot = allObjects.first {
+                    if let date = lastSnapshot.childSnapshot(forPath: DatabaseConstants.date).value as? Int {
+                        self.lastKey = "\(date)_\(lastSnapshot.key)"
+                    }
+                }
+                
+                print("lastKey ----- \(self.lastKey ?? "Error")")
                 completion(.success(.initialLoad(receiptsTupleArray)))
             }
     }
     
-    
-    
-    
     func loadMoreReceipts(
         versionID: String,
-        completion: @escaping (Result<DataChangeEvent<[ReceiptTuple]>, ErrorEnum>) -> Void)
-    {
+        completion: @escaping (Result<[ReceiptTuple], ErrorEnum>) -> Void
+    ) {
+        print(#function)
         guard let lastKey = self.lastKey else {
             completion(.failure(.noMoreData))
             return
         }
+
+        let parts = lastKey.split(separator: "_")
+        guard parts.count == 2,
+              let lastDate = Int(parts.first ?? "") 
+        else {
+            completion(.failure(.readError))
+            return
+        }
         
+        let lastID = String(parts.last ?? "")
         RECEIPT_REF
             .child(versionID)
             .queryOrdered(byChild: DatabaseConstants.date)
-            .queryEnding(atValue: lastKey)
-            .queryLimited(toLast: 6) // 마지막 항목 포함해서 가져오기 때문에 6개로 설정
+            .queryEnding(beforeValue: lastDate)
+            .queryLimited(toLast: 8)
             .observeSingleEvent(of: .value) { snapshot in
                 
-                guard let allObjects = snapshot.children.allObjects as? [DataSnapshot] else { return }
+                guard let allObjects = snapshot.children.allObjects as? [DataSnapshot] else {
+                    completion(.failure(.readError))
+                    return
+                }
                 
                 var receiptsTupleArray = [(receiptID: String, receipt: Receipt)]()
                 
@@ -70,21 +91,22 @@ extension ReceiptAPI {
                     }
                 }
                 
-                // 마지막 항목 제거 (이미 로드된 항목)
-                if !receiptsTupleArray.isEmpty {
-                    receiptsTupleArray.removeFirst()
+                // 데이터를 순서대로 유지하여 최신 데이터가 마지막에 오도록 합니다.
+                receiptsTupleArray.reverse()
+                
+                // 더 이상 데이터가 없으면 lastKey를 업데이트하지 않고 종료
+                if receiptsTupleArray.isEmpty {
+                    completion(.failure(.noMoreData))
+                } else {
+                    if let lastSnapshot = allObjects.first {
+                        if let date = lastSnapshot.childSnapshot(forPath: DatabaseConstants.date).value as? Int {
+                            self.lastKey = "\(date)_\(lastSnapshot.key)"
+                        }
+                    }
+                    completion(.success(receiptsTupleArray))
                 }
-                
-                // 새로운 마지막 항목의 키를 저장
-                self.lastKey = allObjects.last?.key
-                
-                completion(.success(.added(receiptsTupleArray)))
             }
     }
-    
-    
-    
-    
     
     
     func observeReceipt(

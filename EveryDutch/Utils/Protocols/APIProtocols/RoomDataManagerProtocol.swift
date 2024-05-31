@@ -9,39 +9,31 @@ import Foundation
 
 
 protocol RoomDataManagerProtocol {
-    
-    
     var checkIsRoomManager: Bool { get }
-    
-    
-    
-    
-    
-    
-    func startLoadRoomData()
-    func loadReceipt()
     
     
     // MARK: - Rooms
     var getNumOfRooms: Int { get }
     func getRoomsViewModel(index: Int) -> MainCollectionViewCellVMProtocol
     
-    
     func saveCurrentRooms(index: Int)
     var getCurrentRoomsID: String? { get }
     var getCurrentVersion: String? { get }
     var getCurrentRoomName: String? { get }
+    // API
+    func startLoadRoomData()
     
     
     
     // MARK: - RoomUsers
-    
-    
     var getNumOfRoomUsers: Int { get }
-    func getUsersViewModel(index: Int) -> UsersTableViewCellVMProtocol
     var getRoomUsersDict: RoomUserDataDict { get }
+    func getUsersViewModel(index: Int) -> UsersTableViewCellVMProtocol
     func getIdToRoomUser(usersID: String) -> User
     func removeRoomsUsersObserver()
+    // API
+    func loadRoomUsers(completion: @escaping (Result<Void, ErrorEnum>) -> Void)
+    func loadRooms(completion: @escaping Typealias.VoidCompletion)
     
     
     
@@ -50,15 +42,8 @@ protocol RoomDataManagerProtocol {
     var getNumOfReceipts: Int { get }
     func getReceiptViewModel(index: Int) -> ReceiptTableViewCellVMProtocol
     func getReceipt(at index: Int) -> Receipt
-    func loadMoreReceiptData()
-    
-    
     func updateReceiptUserName(receipt: Receipt) -> Receipt
-    
-    // MARK: - API
-    func loadFinancialData()
-    
-    
-    func loadRoomUsers(completion: @escaping (Result<Void, ErrorEnum>) -> Void)
-    func loadRooms(completion: @escaping Typealias.VoidCompletion)
+    // API
+    func loadReceipt()
+    func loadMoreReceiptData()
 }

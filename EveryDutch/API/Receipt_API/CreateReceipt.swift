@@ -17,6 +17,9 @@ class ReceiptAPI: ReceiptAPIProtocol, CrashlyticsLoggable {
     private init() {}
     
     var lastKey: String?
+    func resetData() {
+        self.lastKey = nil
+    }
 }
 
 

@@ -28,6 +28,7 @@ final class SettleMoneyRoomVC: UIViewController {
             forCellReuseIdentifier: Identifier.settlementTableViewCell)
         view.backgroundColor = .clear
         view.bounces = true
+        view.transform = CGAffineTransform(rotationAngle: .pi)
         return view
     }()
     /// 탑뷰의 높이 조절할 때 필요한 프로퍼티
@@ -318,7 +319,7 @@ extension SettleMoneyRoomVC {
             break
         case NotificationInfoString.added.notificationName:
             self.receiptTableView.insertRows(at: indexPaths, with: .automatic)
-            self.scrollToBottom()
+//            self.scrollToBottom()
             break
         case NotificationInfoString.removed.notificationName:
             // MARK: - Fix
@@ -480,11 +481,11 @@ extension SettleMoneyRoomVC: UITableViewDelegate {
                    forRowAt indexPath: IndexPath)
     {
         // 마지막 셀
+        //
         if indexPath.row == self.viewModel.numberOfReceipt - 1 {
             self.loadMoreData()
         }
     }
-    
     private func loadMoreData() {
         self.viewModel.loadMoreReceiptData()
     }
@@ -499,6 +500,7 @@ extension SettleMoneyRoomVC: UITableViewDataSource {
     /// 셀의 개수
     func tableView(_ tableView: UITableView,
                    numberOfRowsInSection section: Int) -> Int {
+        print(self.viewModel.numberOfReceipt)
         return self.viewModel.numberOfReceipt
     }
     /// cellForRowAt
@@ -513,6 +515,7 @@ extension SettleMoneyRoomVC: UITableViewDataSource {
         let cellViewModel = self.viewModel.cellViewModel(at: indexPath.item)
         // 셀의 뷰모델을 셀에 넣기
         cell.configureCell(with: cellViewModel)
+        cell.transform = CGAffineTransform(rotationAngle: .pi)
         return cell
     }
 }
@@ -540,12 +543,12 @@ extension SettleMoneyRoomVC {
     }
     /// ReceiptTableView를 제일 아래로 스크롤하는 메서드
     /// reload가 끝난 후 스크롤 하기 위해 DispatchQueue.main.async 사용
+    ///  테이블뷰와 셀을 뒤집었기 때문에 [위로 스크롤]은 -> [하단으로 스크롤]이 됨
     private func scrollToBottom() {
         DispatchQueue.main.async {
-            let numOfRows = self.receiptTableView.numberOfRows(inSection: 0)
             self.receiptTableView.scrollToRow(
-                at: IndexPath(row: (numOfRows - 1), section: 0),
-                at: .bottom,
+                at: IndexPath(row: 0, section: 0),
+                at: .top,
                 animated: true)
         }
     }
