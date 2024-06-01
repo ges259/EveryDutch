@@ -6,31 +6,29 @@
 //
 
 import Foundation
+
 extension RoomDataManager {
     
     // MARK: - 데이터 fetch
     func loadReceipt() {
         guard let versionID = self.getCurrentVersion else { return }
         DispatchQueue.global(qos: .utility).async {
-            self.receiptAPI.readReceipt(versionID: versionID) { [weak self] result in
+            self.receiptAPI.readReceipts(versionID: versionID) { [weak self] result in
                 guard let self = self else { return }
                 switch result {
                 case .success(let initialLoad):
                     print("영수증 가져오기 성공")
                     self.updateReceipt(initialLoad)
-                    break
                 case .failure(_):
                     DispatchQueue.main.async {
                         print("영수증 가져오기 실패")
                     }
-                    break
                 }
             }
         }
     }
-    
+    /// 데이터를 추가적으로 가져오는 코드
     func loadMoreReceiptData() {
-        
         guard self.hasMoreData,
               let versionID = self.getCurrentVersion else { return }
         DispatchQueue.global(qos: .utility).async {
@@ -55,57 +53,7 @@ extension RoomDataManager {
         }
     }
     
-    // MARK: - 생성
-    private func handleAddedMoreReceiptData(_ toAdd: [ReceiptTuple]) {
-        print("\(#function) ----- 1")
-        dump(toAdd)
-        if toAdd.isEmpty {
-            self.hasMoreData = false
-            return
-        }
-        print("\(#function) ----- 2")
-        // 리턴할 인덱스패스
-        var addedIndexPaths = [IndexPath]()
-        let currentCount = self.receiptCellViewModels.count
-        
-        for (index, (receiptID, room)) in toAdd.enumerated() {
-            // 중복 추가 방지
-            guard self.receiptIDToIndexPathMap[receiptID] == nil else { continue }
-            // 인덱스패스 생성
-            let indexPath = IndexPath(row: currentCount + index, section: 0)
-            
-            // 뷰모델 생성
-            let viewModel = ReceiptTableViewCellVM(receiptID: receiptID, receiptData: room)
-            // 뷰모델 저장
-            self.receiptCellViewModels.append(viewModel)
-            // 인덱스패스 업데이트
-            self.receiptIDToIndexPathMap[receiptID] = indexPath
-            addedIndexPaths.append(indexPath)
-        }
-        print("\(#function) ----- 3")
-        self.postNotification(name: .receiptDataChanged, eventType: .added, indexPath: addedIndexPaths)
-    }
-    
-    // MARK: - 옵저버 설정
-    func setObserveReceipt() {
-        guard let versionID = self.getCurrentVersion else { return }
-        DispatchQueue.global(qos: .utility).async {
-            self.receiptAPI.observeReceipt(versionID: versionID) { [weak self] result in
-                guard let self = self else { return }
-                switch result {
-                case .success(let rooms):
-                    print("Receipt 옵저버 성공")
-                    self.updateReceipt(rooms)
-                    break
-                case .failure(_):
-                    DispatchQueue.main.async {
-                        print("Receipt 옵저버 실패")
-                    }
-                    break
-                }
-            }
-        }
-    }
+
     
     // MARK: - 업데이트 설정
     private func updateReceipt(_ event: DataChangeEvent<[ReceiptTuple]>) {
@@ -129,6 +77,8 @@ extension RoomDataManager {
     
     // MARK: - 업데이트
     private func handleUpdatedReceiptEvent(_ toUpdate: [String: [String: Any]]) {
+        if toUpdate.isEmpty { return }
+        
         // 리턴할 인덱스패스
         var updatedIndexPaths = [IndexPath]()
         
@@ -144,6 +94,8 @@ extension RoomDataManager {
     
     // MARK: - 초기 설정
     private func handleInitialLoadReceiptEvent(_ userDict: [ReceiptTuple]) {
+        if userDict.isEmpty { return }
+        
         // 리턴할 인덱스패스
         var addedIndexPaths = [IndexPath]()
         
@@ -173,6 +125,12 @@ extension RoomDataManager {
     
     // MARK: - 생성
     private func handleAddedReceiptEvent(_ toAdd: [ReceiptTuple]) {
+        
+        print("_________________________________________")
+        print("toAdd ----- \(toAdd)")
+        print("_________________________________________")
+        if toAdd.isEmpty { return }
+
         // 리턴할 인덱스패스
         var addedIndexPaths = [IndexPath]()
         for (receiptID, room) in toAdd {
@@ -189,9 +147,34 @@ extension RoomDataManager {
             self.receiptIDToIndexPathMap[receiptID] = indexPath
             addedIndexPaths.append(indexPath)
         }
-        print(addedIndexPaths.count)
-        print("hasMoreData ----- \(self.hasMoreData)")
-        print("영수증 개수 ----- \(self.getNumOfReceipts)")
+        
+        self.postNotification(name: .receiptDataChanged, eventType: .added, indexPath: addedIndexPaths)
+    }
+    /// 데이터를 추가적으로 가져올 때
+    private func handleAddedMoreReceiptData(_ toAdd: [ReceiptTuple]) {
+        print(#function)
+        if toAdd.isEmpty {
+            self.hasMoreData = false
+            return
+        }
+        // 리턴할 인덱스패스
+        var addedIndexPaths = [IndexPath]()
+        let currentCount = self.receiptCellViewModels.count
+        
+        for (index, (receiptID, room)) in toAdd.enumerated() {
+            // 중복 추가 방지
+            guard self.receiptIDToIndexPathMap[receiptID] == nil else { continue }
+            // 인덱스패스 생성
+            let indexPath = IndexPath(row: currentCount + index, section: 0)
+            
+            // 뷰모델 생성
+            let viewModel = ReceiptTableViewCellVM(receiptID: receiptID, receiptData: room)
+            // 뷰모델 저장
+            self.receiptCellViewModels.append(viewModel)
+            // 인덱스패스 업데이트
+            self.receiptIDToIndexPathMap[receiptID] = indexPath
+            addedIndexPaths.append(indexPath)
+        }
         self.postNotification(name: .receiptDataChanged, eventType: .added, indexPath: addedIndexPaths)
     }
     
@@ -220,3 +203,25 @@ extension RoomDataManager {
     }
 }
 
+
+
+// MARK: - 옵저버 설정
+//    func setObserveReceipt() {
+//        guard let versionID = self.getCurrentVersion else { return }
+//        DispatchQueue.global(qos: .utility).async {
+//            self.receiptAPI.observeReceipt(versionID: versionID) { [weak self] result in
+//                guard let self = self else { return }
+//                switch result {
+//                case .success(let rooms):
+//                    print("Receipt 옵저버 성공")
+//                    self.updateReceipt(rooms)
+//                    break
+//                case .failure(_):
+//                    DispatchQueue.main.async {
+//                        print("Receipt 옵저버 실패")
+//                    }
+//                    break
+//                }
+//            }
+//        }
+//    }

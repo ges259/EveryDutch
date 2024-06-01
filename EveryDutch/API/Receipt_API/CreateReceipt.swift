@@ -20,6 +20,8 @@ class ReceiptAPI: ReceiptAPIProtocol, CrashlyticsLoggable {
     func resetData() {
         self.lastKey = nil
     }
+    var observing = false
+    var lastDate: Int?
 }
 
 

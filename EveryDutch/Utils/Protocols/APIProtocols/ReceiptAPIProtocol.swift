@@ -25,7 +25,7 @@ protocol ReceiptAPIProtocol {
     
     
     
-    func readReceipt(
+    func readReceipts(
         versionID: String,
         completion: @escaping (Result<DataChangeEvent<[ReceiptTuple]>, ErrorEnum>) -> Void)
     func loadMoreReceipts(
@@ -34,7 +34,7 @@ protocol ReceiptAPIProtocol {
     
     
     
-    func observeReceipt(
-        versionID: String,
-        completion: @escaping (Result<DataChangeEvent<[ReceiptTuple]>, ErrorEnum>) -> Void)
+//    func observeReceipt(
+//        versionID: String,
+//        completion: @escaping (Result<DataChangeEvent<[ReceiptTuple]>, ErrorEnum>) -> Void)
 }

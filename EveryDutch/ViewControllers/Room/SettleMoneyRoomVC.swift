@@ -315,7 +315,9 @@ extension SettleMoneyRoomVC {
             break
         case NotificationInfoString.initialLoad.notificationName:
             self.receiptTableView.reloadData()
-            self.scrollToBottom()
+            self.reloadData {
+                self.scrollToBottom()
+            }
             break
         case NotificationInfoString.added.notificationName:
             self.receiptTableView.insertRows(at: indexPaths, with: .automatic)
@@ -330,6 +332,12 @@ extension SettleMoneyRoomVC {
             print("\(self) ----- \(#function) ----- Error")
             break
         }
+    }
+    private func reloadData(completion: @escaping () -> Void) {
+        CATransaction.begin()
+        CATransaction.setCompletionBlock(completion)
+        self.receiptTableView.reloadData()
+        CATransaction.commit()
     }
     /// 탑뷰의 높이를 업데이트 하기 전, 검사
     private func updateTopViewHeight() {
@@ -516,6 +524,12 @@ extension SettleMoneyRoomVC: UITableViewDataSource {
         // 셀의 뷰모델을 셀에 넣기
         cell.configureCell(with: cellViewModel)
         cell.transform = CGAffineTransform(rotationAngle: .pi)
+        
+        if indexPath.row == 0{
+            cell.backgroundColor = .red
+        } else {
+            cell.backgroundColor = .normal_white
+        }
         return cell
     }
 }
