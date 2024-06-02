@@ -36,5 +36,6 @@ protocol ReceiptAPIProtocol {
     
 //    func observeReceipt(
 //        versionID: String,
-//        completion: @escaping (Result<DataChangeEvent<[ReceiptTuple]>, ErrorEnum>) -> Void)
+//        completion: @escaping (Result<DataChangeEvent<[ReceiptTuple]>, ErrorEnum>) -> Void
+//    )
 }
