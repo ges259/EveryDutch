@@ -26,7 +26,6 @@ extension RoomDataManager {
                 }
             }
         }
-        
     }
     /// 데이터를 추가적으로 가져오는 코드
     func loadMoreReceiptData() {
@@ -205,7 +204,7 @@ extension RoomDataManager {
         self.postNotification(name: .receiptDataChanged, eventType: .removed, indexPath: removedIndexPaths)
     }
     private func updateIndexPaths(_ index: Int) {
-        for i in 0..<self.receiptCellViewModels.count {
+        for i in index..<self.receiptCellViewModels.count {
             // 해당 인덱스의 뷰모델에 있는 receiptID를 가져옴
             let receiptID = self.receiptCellViewModels[i].getReceiptID
             // 인덱스 재정렬

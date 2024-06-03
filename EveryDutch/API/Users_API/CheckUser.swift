@@ -26,31 +26,12 @@ final class AuthAPI: AuthAPIProtocol {
              throw ErrorEnum.NotLoggedIn
          }
      }
-     
-    // MARK: - 로그인 여부 확인
-//    func checkLogin() async throws {
-//        print(#function)
-//        return try await withCheckedThrowingContinuation 
-//        { (continuation: CheckedContinuation<Void, Error>) in
-//            Auth.auth().addStateDidChangeListener { _, user in
-//                if let user = user {
-//                    // 사용자가 로그인되어 있음
-//                    print("User is logged in: \(user.uid)")
-//                    continuation.resume(returning: ())
-//                } else {
-//                    // 사용자가 로그인되어 있지 않음
-//                    print("User is not logged in")
-//                    continuation.resume(throwing: ErrorEnum.NotLoggedIn)
-//                }
-//            }
-//        }
-//    }
     
     // MARK: - 익명 회원가입
     func signInAnonymously() async throws {
         return try await withCheckedThrowingContinuation
         { (continuation: CheckedContinuation<Void, Error>) in
-            // 익명 로그인 만들기.
+            // 익명 로그인 만들기
             Auth.auth().signInAnonymously { authResult, error in
                 // 에러가 떴다면,
                 // 유저 아이디 옵셔널 바인딩

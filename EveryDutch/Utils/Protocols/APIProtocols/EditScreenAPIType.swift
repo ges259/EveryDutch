@@ -8,7 +8,7 @@
 import Foundation
 import FirebaseDatabaseInternal
 
-protocol EditScreenAPIType: DecorationAPIType {
+protocol EditScreenAPIType: DecorationAPI {
     func createData(dict: [String: Any]) async throws -> String
     
     func updateData(IdRef: String, dict: [String: Any]) async throws

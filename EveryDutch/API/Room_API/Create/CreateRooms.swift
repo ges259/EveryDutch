@@ -9,7 +9,7 @@ import Foundation
 import FirebaseAuth
 import FirebaseDatabaseInternal
 
-final class RoomsAPI: RoomsAPIProtocol, DecorationAPIType {
+final class RoomsAPI: RoomsAPIProtocol, DecorationAPI {
     static let shared: RoomsAPIProtocol = RoomsAPI()
     private init() {}
     

@@ -53,8 +53,7 @@ extension UserAPI {
         return try await withCheckedThrowingContinuation
         { (continuation: CheckedContinuation<[String: User], Error>) in
             // 유저데이터 가져오기
-            USER_REF
-                .child(uid)
+            USER_REF.child(uid)
                 .observeSingleEvent(of: DataEventType.value) { snapshot  in
                     
                     do {

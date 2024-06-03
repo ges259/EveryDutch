@@ -33,7 +33,7 @@ class UsersTableViewVM: UsersTableViewVMProtocol {
     
     // MARK: - 룸 데이터 메니저
     private var roomDataManager: RoomDataManagerProtocol
-    var customTableEnum: UsersTableEnum
+    private var customTableEnum: UsersTableEnum
     
     
     

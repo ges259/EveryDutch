@@ -14,7 +14,43 @@ import Firebase
     // user - 방 데이터 가져오기 ----- (Rooms_Thumbnail)
 extension RoomsAPI {
     
-    // MARK: - observeSingleEvent
+    // MARK: - Rooms 데이터 fetch
+    func fetchData(dataRequiredWhenInEidtMode: String?) async throws -> EditProviderModel
+    {
+        guard let roomID = dataRequiredWhenInEidtMode else {
+            throw ErrorEnum.readError
+        }
+        return try await withCheckedThrowingContinuation
+        { (continuation: CheckedContinuation<EditProviderModel, Error>) in
+            self.readRoomsData(roomID: roomID) { result in
+                switch result {
+                case .success(let room):
+                    continuation.resume(returning: room)
+                case .failure(let error):
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
+    }
+    private func readRoomsData(
+        roomID: String,
+        completion: @escaping (Result<Rooms, ErrorEnum>) -> Void)
+    {
+        let path = ROOMS_REF.child(roomID)
+        
+        path.observeSingleEvent(of: .value) { snapshot in
+            guard let valueDict = snapshot.value as? [String: Any] else {
+                completion(.failure(.readError))
+                return
+            }
+            // Rooms 객체 생성
+            let room = Rooms(roomID: roomID, dictionary: valueDict)
+            completion(.success(room))
+        }
+    }
+    
+    
+    // MARK: - User_RoomsID 데이터 fetch
     func readRooms(completion: @escaping (Result<DataChangeEvent<[String: Rooms]>, ErrorEnum>) -> Void) {
         // 유저ID 가져오기
         guard let uid = Auth.auth().currentUser?.uid else {
@@ -60,23 +96,24 @@ extension RoomsAPI {
         }
     }
     
-    // MARK: - Rooms 데이터 fetch
-    private func readRoomsData(
-        roomID: String,
-        completion: @escaping (Result<Rooms, ErrorEnum>) -> Void)
-    {
-        let path = ROOMS_REF.child(roomID)
-        
-        path.observeSingleEvent(of: .value) { snapshot in
-            guard let valueDict = snapshot.value as? [String: Any] else {
-                completion(.failure(.readError))
-                return
-            }
-            // Rooms 객체 생성
-            let room = Rooms(roomID: roomID, dictionary: valueDict)
-            completion(.success(room))
-        }
-    }
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     
@@ -147,30 +184,7 @@ extension RoomsAPI {
     
     
     
-    // MARK: - 특정 방 가져오기
-    func fetchData(dataRequiredWhenInEidtMode: String?) async throws -> EditProviderModel
-    {
-        guard let roomID = dataRequiredWhenInEidtMode else {
-            throw ErrorEnum.readError
-        }
-        
-        let path = ROOMS_REF.child(roomID)
-        
-        
-        return try await withCheckedThrowingContinuation
-        { (continuation: CheckedContinuation<EditProviderModel, Error>) in
-            
-            path.observeSingleEvent(of: .value) { snapshot in
-                guard let valueDict = snapshot.value as? [String: Any] else {
-                    continuation.resume(throwing: ErrorEnum.readError)
-                    return
-                }
-                // Rooms 객체 생성
-                let room = Rooms(roomID: roomID, dictionary: valueDict)
-                continuation.resume(returning: room)
-            }
-        }
-    }
+
 }
 
 

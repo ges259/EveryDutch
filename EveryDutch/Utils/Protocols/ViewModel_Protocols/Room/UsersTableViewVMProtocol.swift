@@ -8,7 +8,7 @@
 import UIKit
 
 protocol UsersTableViewVMProtocol {
-    var customTableEnum: UsersTableEnum { get }
+    
     
     var numbersOfUsers: Int { get }
     
