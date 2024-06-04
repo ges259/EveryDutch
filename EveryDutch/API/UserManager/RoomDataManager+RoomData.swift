@@ -19,7 +19,7 @@ extension RoomDataManager {
                 case .success(let initialLoad):
                     
                     print("방 가져오기 성공")
-                    self.updateRooms(initialLoad)
+                    self.handleRoomEvent(initialLoad)
                     // 옵저버 설정
                     self.observeRoomsID()
                     // Decoration가져오기
@@ -41,12 +41,12 @@ extension RoomDataManager {
     // MARK: - 옵저버 설정
     private func observeRoomsID() {
         DispatchQueue.global(qos: .utility).async {
-            self.roomsAPI.setRoomObserver { [weak self] result in
+            self.roomsAPI.setUsersRoomsIDObserver { [weak self] result in
                 guard let self = self else { return }
                 switch result {
                 case .success(let observeData):
                     print("방ID 옵저버 가져오기 성공")
-                    self.updateRooms(observeData)
+                    self.handleRoomEvent(observeData)
                     
                 case .failure(_):
                     print("방ID 옵저버 가져오기 실패")
@@ -59,12 +59,12 @@ extension RoomDataManager {
         let roomIDs: [String] = Array(toUpdate.keys)
         
         DispatchQueue.global(qos: .utility).async {
-            self.roomsAPI.setRoomsDataObserver(roomIDs: roomIDs) { [weak self] result in
+            self.roomsAPI.setRoomsObserver(roomIDs: roomIDs) { [weak self] result in
                 guard let self = self else { return }
                 switch result {
                 case .success(let event):
                     print("방 데이터 옵저버 가져오기 성공")
-                    self.updateRooms(event)
+                    self.handleRoomEvent(event)
                 case .failure(_):
                     print("방 데이터 옵저버 가져오기 실패")
                     break
@@ -75,7 +75,7 @@ extension RoomDataManager {
     
     
     // MARK: - 업데이트 분기처리
-    private func updateRooms(_ event: (DataChangeEvent<[String: Rooms]>)) {
+    private func handleRoomEvent(_ event: (DataChangeEvent<[String: Rooms]>)) {
         switch event {
         case .updated(let toUpdate):
             print("\(#function) ----- update")

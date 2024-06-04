@@ -24,7 +24,7 @@ extension RoomDataManager {
                 case .success(let users):
                     print("users 성공")
                     // [String : RoomUsers] 딕셔너리 저장
-                    self.updateUsers(with: users)
+                    self.handleUserEvent(with: users)
                     self.observeRoomUsers()
                     completion(.success(()))
                     break
@@ -49,7 +49,7 @@ extension RoomDataManager {
                 switch result {
                 case .success(let users):
                     print("방 옵저버 가져오기 성공")
-                    self.updateUsers(with: users)
+                    self.handleUserEvent(with: users)
                     
                     break
                 case .failure(_):
@@ -62,7 +62,7 @@ extension RoomDataManager {
         }
     }
     // MARK: - 업데이트 분기처리
-    private func updateUsers(with usersEvent: DataChangeEvent<[String: User]>) {
+    private func handleUserEvent(with usersEvent: DataChangeEvent<[String: User]>) {
         
         switch usersEvent {
         case .updated(let toUpdate):

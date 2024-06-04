@@ -50,35 +50,6 @@ extension DecorationAPI {
             }
     }
     
-    func fetchAllDecorations(
-        IDs: [String],
-        completion: @escaping (Result<DataChangeEvent<[String: Decoration?]>, ErrorEnum>) -> Void)
-    {
-        var decoDictionary = [String: Decoration?]()
-        let dictionaryQueue = DispatchQueue(label: "com.yourapp.decoDictionaryQueue", attributes: .concurrent)
-        let saveGroup = DispatchGroup()
-        
-        for id in IDs {
-            saveGroup.enter()
-            self.fetchDecoration(with: id) { result in
-                dictionaryQueue.async(flags: .barrier) {
-                    switch result {
-                    case .success(let deco):
-                        decoDictionary[id] = deco
-                    case .failure(_):
-                        decoDictionary[id] = nil
-                    }
-                    saveGroup.leave()
-                }
-            }
-        }
-        
-        saveGroup.notify(queue: .main) {
-            completion(.success(.initialLoad(decoDictionary)))
-        }
-    }
-    
-    
     
     
     
@@ -90,34 +61,30 @@ extension DecorationAPI {
         for id in IDs {
             let userPath = CARD_DECORATION_REF.child(id)
             
-            userPath.observe(.childChanged) { snapshot in
-                guard let valueData = snapshot.value as? [String: Any] else {
-                    completion(.failure(.readError))
-                    return
-                }
-//                let decoration = Decoration(dictionary: valueData)
-                completion(.success(.updated([id: valueData])))
-            }
-            
-            userPath.observe(.childAdded) { snapshot in
+            // 전체 데이터를 가져오는 .value 이벤트
+            userPath.observe(.value) { snapshot in
+                print("Value changed for ID: \(id)")
+                print("Snapshot: \(snapshot)")
                 
-//                dump(snapshot)
-                guard let valueData = snapshot.value as? [String: String] else {
-                    completion(.failure(.noMoreData))
-                    return
+                if snapshot.exists() {
+                    guard let valueData = snapshot.value as? [String: Any] else {
+                        print("Failed to parse snapshot value as dictionary for ID: \(id)")
+                        completion(.failure(.readError))
+                        return
+                    }
+                    let decoration = Decoration(dictionary: valueData)
+                    completion(.success(.added([id: decoration])))
+                } else {
+                    // 스냅샷이 존재하지 않으면 데이터가 삭제된 것으로 간주
+                    completion(.success(.removed(id)))
                 }
-                let decoration = Decoration(dictionary: valueData)
-                completion(.success(.added([id: decoration])))
             }
             
+            // 데이터가 삭제될 때를 감지하는 .childRemoved 이벤트
             userPath.observe(.childRemoved) { snapshot in
+                print("Child removed for ID: \(id)")
                 completion(.success(.removed(id)))
             }
         }
     }
 }
-
-
-/*
- 
- */

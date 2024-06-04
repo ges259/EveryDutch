@@ -62,7 +62,6 @@ struct MainCollectionViewCellVM: MainCollectionViewCellVMProtocol {
               let key = deco.keys.first,
               let value = deco.values.first as? String
         else { return }
-        
         switch key {
         case DatabaseConstants.blur_Effect:
             self.decoration?.blur = false

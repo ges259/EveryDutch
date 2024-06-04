@@ -125,7 +125,7 @@ extension RoomsAPI {
     // MARK: - Fix
     // 업데이트 시 두 번 호출 됨
     // 개별 사용자의 데이터 변경을 관찰하는 함수
-    func setRoomsDataObserver(
+    func setRoomsObserver(
         roomIDs: [String],
         completion: @escaping (Result<DataChangeEvent<[String: Rooms]>, ErrorEnum>) -> Void)
     {
@@ -143,7 +143,7 @@ extension RoomsAPI {
     }
     
     // MARK: - Users_RoomsID 옵저버
-    func setRoomObserver(completion: @escaping (Result<DataChangeEvent<[String: Rooms]>, ErrorEnum>) -> Void)
+    func setUsersRoomsIDObserver(completion: @escaping (Result<DataChangeEvent<[String: Rooms]>, ErrorEnum>) -> Void)
     {
         guard let uid = Auth.auth().currentUser?.uid else {
             // 사용자가 로그인하지 않았을 경우의 에러 처리

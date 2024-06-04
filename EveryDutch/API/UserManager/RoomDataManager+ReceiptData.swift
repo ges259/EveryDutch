@@ -18,7 +18,7 @@ extension RoomDataManager {
                 switch result {
                 case .success(let initialLoad):
                     print("영수증 가져오기 성공")
-                    self.updateReceipt(initialLoad)
+                    self.handleReceiptEvent(initialLoad)
                 case .failure(_):
                     DispatchQueue.main.async {
                         print("영수증 가져오기 실패")
@@ -55,7 +55,7 @@ extension RoomDataManager {
     }
     
     // MARK: - 업데이트 분기처리
-    private func updateReceipt(_ event: DataChangeEvent<[ReceiptTuple]>) {
+    private func handleReceiptEvent(_ event: DataChangeEvent<[ReceiptTuple]>) {
         switch event {
         case .updated(let toUpdate):
             print("\(#function) ----- update")
