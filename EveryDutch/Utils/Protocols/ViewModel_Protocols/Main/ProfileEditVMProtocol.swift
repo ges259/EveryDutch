@@ -58,7 +58,7 @@ protocol ProfileEditVMProtocol {
     func getNumOfCell(section: Int) -> Int
     
     // MARK: - 셀에 사용할 타입 반환
-    func cellTypes(indexPath: IndexPath) -> EditCellTypeTuple?
+    func getCellTuple(indexPath: IndexPath) -> EditCellTypeTuple?
     
     // MARK: - 마지막 셀
     func getLastCell(indexPath: IndexPath) -> Bool

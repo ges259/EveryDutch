@@ -14,7 +14,8 @@ final class CardImageView: UIView {
     private var backgroundImg: UIImageView = {
         let img = UIImageView()
         img.backgroundColor = UIColor.medium_Blue
-        img.contentMode = .scaleAspectFit
+//        img.contentMode = .scaleAspectFit
+        img.contentMode = .scaleAspectFill
         return img
     }()
     private var blurView: UIView = {
@@ -52,7 +53,7 @@ final class CardImageView: UIView {
     // MARK: - 프로퍼티
     // 데코레이션 모델, 초기화 시 해당 데이터 사용
     private var originalDecorationData: Decoration?
-    private var currentDecoration: Decoration?
+//    private var currentDecoration: Decoration?
 
     private var currentColorDict: [DecorationCellType: String] = [:]
     private var currentImageDict: [DecorationCellType: UIImage] = [:]
@@ -180,13 +181,12 @@ extension CardImageView {
     /// [데코]
     func setupDecorationData(data decorationData: Decoration?) {
         guard let decorationData = decorationData else { return }
-        self.blurView.isHidden = decorationData.blur
+        self.blurView.isHidden = !decorationData.blur
         self.titleLbl.textColor = decorationData.getTitleColor
         self.nameLbl.textColor = decorationData.getNameColor
         self.backgroundImg.backgroundColor = decorationData.getBackgroundColor
         // MARK: - 이미지 설정
-//        self.backgroundImg.image = decorationData.
-        
+        self.backgroundImg.setImage(from: decorationData.backgroundImageUrl)
     }
 }
 
@@ -268,13 +268,15 @@ extension CardImageView {
     }
     /// 현재 색상을 가져옴
     private func getCurrentColor(type: DecorationCellType) -> String? {
+        let color = self.currentColorDict[type]
+        
         switch type {
         case .background:
-            return self.currentColorDict[.background] ?? self.originalDecorationData?.backgroundColor
+            return color ?? self.originalDecorationData?.backgroundColor
         case .titleColor:
-            return self.currentColorDict[.titleColor] ?? self.originalDecorationData?.titleColor
+            return color ?? self.originalDecorationData?.titleColor
         case .nameColor:
-            return self.currentColorDict[.nameColor] ?? self.originalDecorationData?.nameColor
+            return color ?? self.originalDecorationData?.nameColor
             
         case .blurEffect: return nil
         }

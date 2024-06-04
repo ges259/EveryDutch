@@ -25,28 +25,24 @@ struct Decoration {
          self.identifyBackground(input: backgroundString)
      }
 
-     mutating func identifyBackground(input: String?) {
-         guard let input = input else { return }
-         // 입력 문자열에서 'background:'를 제거하고 트리밍
-         let trimmedInput = input.replacingOccurrences(of: "background:", with: "").trimmingCharacters(in: .whitespaces)
-         
-         // 색상 코드인지 확인
-         if trimmedInput.hasPrefix("#") && trimmedInput.count == 7 {
-             self.backgroundColor = trimmedInput
-             self.backgroundImageUrl = nil
-         }
-         // URL인지 확인
-         else if let url = URL(string: trimmedInput), url.scheme == "http" || url.scheme == "https" {
-             self.backgroundImageUrl = trimmedInput
-             self.backgroundColor = nil
-         }
-     }
+    
+    mutating func identifyBackground(input: String?) {
+        guard let input = input else { return }
+        
+        if input.checkIsHexColor() {
+            self.backgroundColor = input
+            self.backgroundImageUrl = nil
+        } else {
+            self.backgroundImageUrl = input
+            self.backgroundColor = nil
+        }
+    }
     
     
-    
+
     var getBackgroundColor: UIColor? {
         return UIColor(hex: self.backgroundColor,
-                       defaultColor: .red)
+                       defaultColor: .clear)
     }
     var getTitleColor: UIColor? {
         return UIColor(hex: self.titleColor,

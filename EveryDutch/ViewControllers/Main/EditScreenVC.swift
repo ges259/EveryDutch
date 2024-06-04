@@ -202,19 +202,23 @@ extension EditScreenVC {
     private func configureClosure() {
         self.viewModel.successDataClosure = { @MainActor [weak self] in
             print("\(#function) --- successDataClosure")
-            self?.coordinator.didFinish()
+            guard let self = self else { return }
+            self.coordinator.didFinish()
         }
         
         self.viewModel.updateDataClosure = { @MainActor [weak self] in
-            self?.tableView.reloadData()
+            guard let self = self else { return }
+            self.tableView.reloadData()
         }
         
         self.viewModel.errorClosure = { [weak self] errorType in
-            self?.errorType(errorType)
+            guard let self = self else { return }
+            self.errorType(errorType)
         }
         
         self.viewModel.decorationDataClosure = { [weak self] deco in
-            self?.cardImgView.setupOriginalDecorationData(deco)
+            guard let self = self else { return }
+            self.cardImgView.setupOriginalDecorationData(deco)
         }
     }
     
@@ -369,10 +373,10 @@ extension EditScreenVC: UITableViewDataSource {
         let isLast = self.viewModel.getLastCell(indexPath: indexPath)
         
         // 셀의 타입 가져오기
-        let type = self.viewModel.cellTypes(indexPath: indexPath)
+        let cellTuple = self.viewModel.getCellTuple(indexPath: indexPath)
         
         // 셀의 텍스트 및 모서리 설정
-        cell.setDetailLbl(cellTuple: type,
+        cell.setDetailLbl(cellTuple: cellTuple,
                           isFirst: isFirst,
                           isLast: isLast)
         cell.delegate = self
@@ -387,9 +391,9 @@ extension EditScreenVC: UITableViewDataSource {
             for: indexPath) as! CardDecorationCell
         let isLast = self.viewModel.getLastCell(indexPath: indexPath)
         // 셀의 타입 가져오기
-        let type = self.viewModel.cellTypes(indexPath: indexPath)
+        let cellTuple = self.viewModel.getCellTuple(indexPath: indexPath)
         // 셀의 텍스트 설정
-        cell.setDetailLbl(type: type, isLast: isLast)
+        cell.setDetailLbl(cellTuple: cellTuple, isLast: isLast)
         
         return cell
     }

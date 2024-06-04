@@ -24,8 +24,8 @@ extension RoomDataManager {
                     DispatchQueue.main.async {
                         completion()
                     }
-                case .failure(_):
-                    print("\(self) ----- \(#function) ----- Error")
+                case .failure(let error):
+                    print("error ----- \(#function) ----- \(error)")
                 }
             }
         }
@@ -40,8 +40,8 @@ extension RoomDataManager {
                 switch result {
                 case .success(let event):
                     self.updateDecoration(event)
-                case .failure(_):
-                    print("\(self) ----- \(#function) ----- Error")
+                case .failure(let error):
+                    print("error ----- \(#function) ----- \(error)")
                 }
             }
         }
@@ -66,7 +66,7 @@ extension RoomDataManager {
     
     // MARK: - 업데이트
     private func handleUpdatedDecoEvent(_ toUpdate: [String: [String: Any]]) {
-        
+        print(#function)
         var updatedIndexPaths = [IndexPath]()
         
         for (roomID, changedData) in toUpdate {
@@ -81,6 +81,7 @@ extension RoomDataManager {
     
     // MARK: - 초기 설정
     private func handleInitialLoadDecoEvent(_ decorationDict: [String: Decoration?]) {
+        print(#function)
         for (roomID, changedData) in decorationDict {
             if let decoration = changedData,
                let indexPath = self.roomIDToIndexPathMap[roomID] {

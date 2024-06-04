@@ -69,17 +69,38 @@ extension CardDecorationCell {
     
     // MARK: - 데이터 및 UI 업데이트
     /// 데이터 설정
-    func setDetailLbl(type: EditCellTypeTuple?,
+    func setDetailLbl(cellTuple: EditCellTypeTuple?,
                       isLast: Bool) {
-        guard let data = type else { return }
-        self.cellStv.userNameLbl.text = data.type.getCellTitle
+        guard let cellTuple = cellTuple else { return }
+        self.cellStv.userNameLbl.text = cellTuple.type.getCellTitle
         
         // 마지막 셀 모서리 설정
         if isLast { self.setRoundedCorners(.bottom, withCornerRadius: 12) }
+        
+        
+        //
+        guard let type = cellTuple.type as? DecorationCellType,
+                let detailString = cellTuple.detail else { return }
+        let color = UIColor(hex: detailString,
+                            defaultColor: .clear)
+        switch type {
+        case .background:
+            if detailString.checkIsHexColor() {
+                self.colorIsChanged(color: color)
+            } else {
+                self.cellStv.rightView.setImage(from: detailString)
+            }
+            
+        case .titleColor, .nameColor:
+            self.colorIsChanged(color: color)
+            break
+        case .blurEffect:
+            break
+        }
     }
     
     /// 오른쪽 뷰의 색을 바꾸는 메서드
-    func colorIsChanged(color: UIColor) {
+    func colorIsChanged(color: UIColor? = .clear) {
         self.cellStv.rightView.image = nil
         self.cellStv.isTapped(color: color)
     }
@@ -93,5 +114,25 @@ extension CardDecorationCell {
     /// 색상 넣기
     func blurEffectIsHidden(_ isHidden: Bool) {
         self.cellStv.isTappedView.isHidden.toggle()
+    }
+}
+
+
+extension String {
+    func checkIsHexColor() -> Bool {
+        // 입력 문자열에서 'background:'를 제거하고 트리밍
+        let trimmedInput = self.replacingOccurrences(of: "background:", with: "").trimmingCharacters(in: .whitespaces)
+        
+        // 색상 코드인지 확인
+        if trimmedInput.hasPrefix("#") && trimmedInput.count == 7 {
+            return true
+        }
+        // URL인지 확인
+        else if let url = URL(string: trimmedInput), url.scheme == "http" || url.scheme == "https" {
+            return false
+        }
+        
+        // 위의 두 경우에 해당하지 않으면 false
+        return false
     }
 }

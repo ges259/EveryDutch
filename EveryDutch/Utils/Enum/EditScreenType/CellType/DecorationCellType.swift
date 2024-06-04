@@ -55,14 +55,18 @@ enum DecorationCellType: Int, EditCellType, CaseIterable {
     }
     private func detail(for data: Decoration?) -> String? {
         switch self {
-        case .background: return data?.backgroundImageUrl ?? nil
-        case .blurEffect: return self.blurColor(bool: data?.blur)
-        case .titleColor: return data?.titleColor
-        case .nameColor: return data?.nameColor
+        case .background: 
+            return data?.backgroundImageUrl ?? data?.backgroundColor
+        case .blurEffect:
+            return self.blurColor(bool: data?.blur)
+        case .titleColor: 
+            return data?.titleColor
+        case .nameColor: 
+            return data?.nameColor
         }
     }
     
     private func blurColor(bool: Bool?) -> String? {
-        return bool ?? false ? "true" : "false"
+        return bool ?? false ? "false" : "true"
     }
 }

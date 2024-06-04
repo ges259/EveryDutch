@@ -199,7 +199,7 @@ extension EditScreenVM {
 extension EditScreenVM {
     // 현재 선택된 셀 타입과 인덱스 패스를 저장하는 메소드
     func saveCurrentIndex(indexPath: IndexPath) {
-        guard let type = self.cellTypes(indexPath: indexPath)?.type else {
+        guard let type = self.getCellTuple(indexPath: indexPath)?.type else {
             // MARK: - Fix
             // 에러 처리
             return
@@ -272,7 +272,7 @@ extension EditScreenVM {
     }
     
     // 특정 인덱스 패스에 해당하는 셀 타입을 반환하는 메소드
-    func cellTypes(indexPath: IndexPath) -> EditCellTypeTuple? {
+    func getCellTuple(indexPath: IndexPath) -> EditCellTypeTuple? {
         return self.cellDataDictionary[indexPath.section]?[indexPath.row]
     }
     
@@ -404,6 +404,10 @@ extension EditScreenVM {
     private func saveImagesAndDecorationData() async throws {
         // 데코 데이터에서 이미지를 추출
         let imageDict = self.decorationData.compactMapValues { $0 as? UIImage }
+        
+        // UIImage가 없다면 return
+        guard !imageDict.isEmpty else { return }
+        
         // 이미지를 업로드 후, url을 가져옴
         let urlDict = try await self.api?.uploadImage(data: imageDict) ?? [:]
         // URL 데이터를 데코 데이터에 병합
@@ -430,6 +434,7 @@ extension EditScreenVM {
         let decoration = try await self.api?.fetchDecoration(dataRequiredWhenInEditMode: self.dataRequiredWhenInEidtMode)
         DispatchQueue.main.async {
             self.setupDataProviders(withData: data, decoration: decoration)
+            // CardImgView와 테이블뷰의 decoration 섹션을 업데이트
             self.decorationDataClosure?(decoration)
         }
     }

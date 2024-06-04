@@ -112,7 +112,7 @@ extension CellSelectionUIStv {
 //        
 //    }
     
-    func isTapped(color: UIColor) {
+    func isTapped(color: UIColor?) {
         self.isTappedView.isHidden = false
         self.isTappedView.backgroundColor = color
     }

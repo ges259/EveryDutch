@@ -87,36 +87,37 @@ extension DecorationAPI {
         IDs: [String],
         completion: @escaping (Result<DataChangeEvent<[String: Decoration?]>, ErrorEnum>) -> Void)
     {
-        let group = DispatchGroup()
-        var results = [String: [String: Any]]()
-        let dictionaryQueue = DispatchQueue(label: "com.yourapp.dictionaryQueue", attributes: .concurrent)
-        var observedError: ErrorEnum?
-
         for id in IDs {
-            group.enter()
             let userPath = CARD_DECORATION_REF.child(id)
             
             userPath.observe(.childChanged) { snapshot in
-                dictionaryQueue.async(flags: .barrier) {
-                    guard let valueData = snapshot.value else {
-                        observedError = .readError
-                        group.leave()
-                        return
-                    }
-                    
-                    let dict = [snapshot.key: valueData]
-                    results[id] = dict
-                    group.leave()
+                guard let valueData = snapshot.value as? [String: Any] else {
+                    completion(.failure(.readError))
+                    return
                 }
+//                let decoration = Decoration(dictionary: valueData)
+                completion(.success(.updated([id: valueData])))
             }
-        }
-        
-        group.notify(queue: .main) {
-            if let error = observedError {
-                completion(.failure(error))
-            } else {
-                completion(.success(.updated(results)))
+            
+            userPath.observe(.childAdded) { snapshot in
+                
+//                dump(snapshot)
+                guard let valueData = snapshot.value as? [String: String] else {
+                    completion(.failure(.noMoreData))
+                    return
+                }
+                let decoration = Decoration(dictionary: valueData)
+                completion(.success(.added([id: decoration])))
+            }
+            
+            userPath.observe(.childRemoved) { snapshot in
+                completion(.success(.removed(id)))
             }
         }
     }
 }
+
+
+/*
+ 
+ */

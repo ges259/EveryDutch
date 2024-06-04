@@ -7,10 +7,10 @@
 
 import UIKit
 
-struct CumulativeAmount {
-    var cumulativeAmount: Int
-    
-    init(amount: Int) {
-        self.cumulativeAmount = amount
-    }
-}
+//struct CumulativeAmount {
+//    var cumulativeAmount: Int
+//    
+//    init(amount: Int) {
+//        self.cumulativeAmount = amount
+//    }
+//}

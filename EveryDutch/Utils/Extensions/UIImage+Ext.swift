@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import SDWebImage
 
 extension UIImage {
     
@@ -187,4 +188,22 @@ internal extension CIImage {
         }
         return nil
     }
+}
+
+
+
+
+extension UIImageView {
+    func setImage(
+        from urlString: String?,
+        placeholder: UIImage? = nil,
+        options: SDWebImageOptions = .highPriority)
+    {
+          guard let urlString = urlString, let url = URL(string: urlString) else {
+              self.image = placeholder
+              return
+          }
+          
+          self.sd_setImage(with: url, placeholderImage: placeholder, options: options, completed: nil)
+      }
 }
