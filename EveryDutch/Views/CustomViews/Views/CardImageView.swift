@@ -71,6 +71,11 @@ final class CardImageView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
+    func prepareForReuseData() {
+        self.backgroundImg.image = nil
+        self.backgroundImg.backgroundColor = .medium_Blue
+    }
 }
 
 

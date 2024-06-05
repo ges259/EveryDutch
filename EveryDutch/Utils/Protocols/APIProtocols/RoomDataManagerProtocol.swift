@@ -33,7 +33,7 @@ protocol RoomDataManagerProtocol {
     func removeRoomsUsersObserver()
     // API
     func loadRoomUsers(completion: @escaping (Result<Void, ErrorEnum>) -> Void)
-    func loadRooms(completion: @escaping Typealias.VoidCompletion)
+    func loadRooms()
     
     
     

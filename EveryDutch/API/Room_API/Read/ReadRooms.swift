@@ -22,79 +22,36 @@ extension RoomsAPI {
         }
         return try await withCheckedThrowingContinuation
         { (continuation: CheckedContinuation<EditProviderModel, Error>) in
-            self.readRoomsData(roomID: roomID) { result in
-                switch result {
-                case .success(let room):
-                    continuation.resume(returning: room)
-                case .failure(let error):
-                    continuation.resume(throwing: error)
-                }
-            }
-        }
-    }
-    private func readRoomsData(
-        roomID: String,
-        completion: @escaping (Result<Rooms, ErrorEnum>) -> Void)
-    {
-        let path = ROOMS_REF.child(roomID)
-        
-        path.observeSingleEvent(of: .value) { snapshot in
-            guard let valueDict = snapshot.value as? [String: Any] else {
-                completion(.failure(.readError))
-                return
-            }
-            // Rooms 객체 생성
-            let room = Rooms(roomID: roomID, dictionary: valueDict)
-            completion(.success(room))
-        }
-    }
-    
-    
-    // MARK: - User_RoomsID 데이터 fetch
-    func readRooms(completion: @escaping (Result<DataChangeEvent<[String: Rooms]>, ErrorEnum>) -> Void) {
-        // 유저ID 가져오기
-        guard let uid = Auth.auth().currentUser?.uid else {
-            // 사용자가 로그인하지 않았을 경우의 에러 처리
-            completion(.failure(.readError))
-            return
-        }
-        
-        
-        var returnRooms = [String: Rooms]()
-        // roomID를 가져오기 위한 path
-        let roomIDPaths = USER_ROOMSID.child(uid)
-        
-        let saveGroup = DispatchGroup()
-        
-        // roomID가져오기
-        roomIDPaths.observeSingleEvent(of: .value) { snapshot in
-            // 존재하는지 확인
-            guard snapshot.exists() else {
-                // 스냅샷에 데이터가 존재하지 않는 경우, 빈 배열 반환
-                completion(.success(.initialLoad([:])))
-                return
-            }
-            guard let value = snapshot.value as? [String: Int] else {
-                completion(.failure(.readError))
-                return
-            }
-            for key in value.keys {
-                saveGroup.enter()
-                self.readRoomsData(roomID: key) { result in
-                    switch result {
-                    case .success(let room):
-                        returnRooms[key] = room
-                    case .failure(_):
-                        break
+            
+            ROOMS_REF
+                .child(roomID)
+                .observeSingleEvent(of: .value) { snapshot in
+                    guard let valueDict = snapshot.value as? [String: Any] else {
+                        continuation.resume(throwing: ErrorEnum.readError)
+                        return
                     }
-                    saveGroup.leave()
+                    // Rooms 객체 생성
+                    let room = Rooms(roomID: roomID, dictionary: valueDict)
+                    continuation.resume(returning: room)
                 }
-            }
-            saveGroup.notify(queue: .main) {
-                completion(.success(.initialLoad(returnRooms)))
-            }
         }
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
 
     
@@ -109,41 +66,9 @@ extension RoomsAPI {
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    // MARK: - Rooms 데이터 옵저버
-    
-    
-    
-    // MARK: - Fix
-    // 업데이트 시 두 번 호출 됨
-    // 개별 사용자의 데이터 변경을 관찰하는 함수
-    func setRoomsObserver(
-        roomIDs: [String],
-        completion: @escaping (Result<DataChangeEvent<[String: Rooms]>, ErrorEnum>) -> Void)
-    {
-        for roomID in roomIDs {
-            let roomPath = ROOMS_REF.child(roomID)
-            roomPath.observe(.childChanged) { snapshot in
-                guard let value = snapshot.value else {
-                    return
-                }
-                
-                let returnDict = [snapshot.key: value]
-                completion(.success(.updated([roomID: returnDict])))
-            }
-        }
-    }
-    
-    // MARK: - Users_RoomsID 옵저버
-    func setUsersRoomsIDObserver(completion: @escaping (Result<DataChangeEvent<[String: Rooms]>, ErrorEnum>) -> Void)
+
+    // MARK: - User_RoomsID 옵저버
+    func setUserRoomsIDObserver(completion: @escaping (Result<DataChangeEvent<[String: Rooms]>, ErrorEnum>) -> Void)
     {
         guard let uid = Auth.auth().currentUser?.uid else {
             // 사용자가 로그인하지 않았을 경우의 에러 처리
@@ -151,24 +76,18 @@ extension RoomsAPI {
             return
         }
         // roomID를 가져오기 위한 path
-        let roomIDPaths = USER_ROOMSID.child(uid)
+        let userRoomsIDPath = USER_ROOMSID.child(uid)
         
-        
-        roomIDPaths.observe(.childAdded) { snapshot in
+        userRoomsIDPath.observe(.childAdded) { snapshot in
+            print("\(#function) ----- 1")
             guard let roomID = snapshot.key as String? else {
                 completion(.failure(.readError))
                 return
             }
-            self.readRoomsData(roomID: roomID) { result in
-                switch result {
-                case .success(let room):
-                    completion(.success(.added([roomID: room])))
-                case .failure(_):
-                    completion(.failure(.readError))
-                }
-            }
+            self.setRoomsObserver(roomID: roomID, completion: completion)
         }
-        roomIDPaths.observe(.childRemoved) { snapshot in
+        
+        userRoomsIDPath.observe(.childRemoved) { snapshot in
             guard let userID = snapshot.key as String? else {
                 completion(.failure(.readError))
                 return
@@ -177,18 +96,30 @@ extension RoomsAPI {
         }
     }
     
- 
-    
-    
-    
-    
-    
-    
-
+    // MARK: - Rooms 옵저법
+    private func setRoomsObserver(
+        roomID: String,
+        completion: @escaping (Result<DataChangeEvent<[String: Rooms]>, ErrorEnum>) -> Void)
+    {
+        print("\(#function) ----- 1")
+        let roomsPath = ROOMS_REF.child(roomID)
+        roomsPath.observe(.childChanged) { snapshot in
+            guard let value = snapshot.value else {
+                print("childChanged ----- Error")
+                return
+            }
+            let returnDict = [snapshot.key: value]
+            completion(.success(.updated([roomID: returnDict])))
+        }
+        roomsPath.observeSingleEvent(of: .value) { snapshot in
+            guard let valueDict = snapshot.value as? [String: Any] else {
+                print("observeSingleEvent ----- Error")
+                completion(.failure(.readError))
+                return
+            }
+            // Rooms 객체 생성
+            let room = Rooms(roomID: roomID, dictionary: valueDict)
+            completion(.success(.initialLoad([roomID: room])))
+        }
+    }
 }
-
-
-// personal_ID
-// user_name
-
-// 이미 존재 -> 카드 숨기지 않고 얼럿창만

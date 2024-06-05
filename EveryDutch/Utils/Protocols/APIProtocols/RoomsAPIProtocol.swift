@@ -13,7 +13,7 @@ protocol RoomsAPIProtocol: EditScreenAPIType {
     var getCurrentUserID: String? { get }
     
     // 개별 사용자의 데이터 변경을 관찰하는 함수
-    func setUsersRoomsIDObserver(completion: @escaping (Result<DataChangeEvent<[String: Rooms]>, ErrorEnum>) -> Void)
+    func setUserRoomsIDObserver(completion: @escaping (Result<DataChangeEvent<[String: Rooms]>, ErrorEnum>) -> Void)
     
     
     
@@ -23,14 +23,8 @@ protocol RoomsAPIProtocol: EditScreenAPIType {
         roomID: String,
         completion: @escaping (Result<DataChangeEvent<[String: User]>, ErrorEnum>) -> Void)
     
-    func readRooms(completion: @escaping (Result<DataChangeEvent<[String: Rooms]>, ErrorEnum>) -> Void)
     
     
-    
-    func readRoomUsers(
-        roomID: String,
-        completion: @escaping (Result<DataChangeEvent<[String: User]>, ErrorEnum>) -> Void)
-
     
     
     func readCumulativeAmount(
@@ -53,7 +47,5 @@ protocol RoomsAPIProtocol: EditScreenAPIType {
     
     
     
-    func setRoomsObserver(
-        roomIDs: [String],
-        completion: @escaping (Result<DataChangeEvent<[String: Rooms]>, ErrorEnum>) -> Void)
+    
 }

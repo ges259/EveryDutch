@@ -17,40 +17,13 @@ extension RoomDataManager {
         // roomID가져오기
         guard let roomID = self.getCurrentRoomsID else { return }
         DispatchQueue.global(qos: .utility).async {
-        // 데이터베이스나 네트워크에서 RoomUser 데이터를 가져오는 로직
-            self.roomsAPI.readRoomUsers(roomID: roomID) { [weak self] result in
-                guard let self = self else { return }
-                switch result {
-                case .success(let users):
-                    print("users 성공")
-                    // [String : RoomUsers] 딕셔너리 저장
-                    self.handleUserEvent(with: users)
-                    self.observeRoomUsers()
-                    completion(.success(()))
-                    break
-                    
-                case .failure(let errorEnum):
-                    DispatchQueue.main.async {
-                        print("users 실패")
-                        completion(.failure(errorEnum))
-                    }
-                    break
-                }
-            }
-        }
-    }
-    
-    // MARK: - 옵저버 설정
-    private func observeRoomUsers() {
-        guard let roomID = self.getCurrentRoomsID else { return }
-        DispatchQueue.global(qos: .utility).async {
             self.roomsAPI.roomUsersObserver(roomID: roomID) { [weak self] result in
                 guard let self = self else { return }
                 switch result {
                 case .success(let users):
                     print("방 옵저버 가져오기 성공")
                     self.handleUserEvent(with: users)
-                    
+                    completion(.success(()))
                     break
                 case .failure(_):
                     DispatchQueue.main.async {
@@ -61,6 +34,7 @@ extension RoomDataManager {
             }
         }
     }
+    
     // MARK: - 업데이트 분기처리
     private func handleUserEvent(with usersEvent: DataChangeEvent<[String: User]>) {
         

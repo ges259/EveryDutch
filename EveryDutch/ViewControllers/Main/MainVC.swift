@@ -258,9 +258,13 @@ extension MainVC {
 // MARK: - viewWillAppear 업데이트
 extension MainVC {
     @objc private func handleRoomDataChanged(notification: Notification) {
-        guard let userInfo = notification.userInfo as? [String: [IndexPath]] else { return }
+        guard let userInfo = notification.userInfo as? [String: [IndexPath]], !userInfo.isEmpty else { return }
+        // userInfo를 viewModel에 전달
         self.viewModel.userDataChanged(userInfo)
-        if self.isViewVisible { self.processPendingUpdates() }
+        // isViewVisible이 true인 경우 processPendingUpdates 호출
+        if self.isViewVisible {
+            self.processPendingUpdates()
+        }
     }
     // 모든 대기 중인 변경 사항을 적용
     private func processPendingUpdates() {
@@ -277,6 +281,7 @@ extension MainVC {
     }
     @MainActor
     private func updateIndexPath(key: String, indexPaths: [IndexPath]) {
+        print(#function)
         switch key {
         case NotificationInfoString.updated.notificationName:
             self.collectionView.reloadItems(at: indexPaths)

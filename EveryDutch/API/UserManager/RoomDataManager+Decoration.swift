@@ -54,7 +54,7 @@ extension RoomDataManager {
             }
         }
         // 노티피케이션 post
-        self.decorationUpdateNotification(addedIndexPaths)
+        self.triggerRoomDataDebouncing(eventType: .updated, indexPaths: addedIndexPaths)
     }
     
     // MARK: - 삭제
@@ -62,14 +62,7 @@ extension RoomDataManager {
         if let indexPath = self.roomIDToIndexPathMap[removed] {
             self.roomsCellViewModels[indexPath.row].removeDecoration()
             // 노티피케이션 post
-            self.decorationUpdateNotification([indexPath])
+            self.triggerRoomDataDebouncing(eventType: .updated, indexPaths: [indexPath])
         }
-    }
-    
-    // MARK: - 노티피케이션
-    private func decorationUpdateNotification(_ indexPath: [IndexPath]) {
-        self.postNotification(name: .roomDataChanged,
-                              eventType: .updated,
-                              indexPath: indexPath)
     }
 }

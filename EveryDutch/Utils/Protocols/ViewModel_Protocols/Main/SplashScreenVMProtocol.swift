@@ -10,5 +10,5 @@ import Foundation
 protocol SplashScreenVMProtocol {    
     func checkLogin()
     var errorClosure: ((ErrorEnum) -> Void)? { get set }
-    var successClosure: (() -> Void)? { get set }
+    
 }

@@ -63,8 +63,6 @@ extension DecorationAPI {
             
             // 전체 데이터를 가져오는 .value 이벤트
             userPath.observe(.value) { snapshot in
-                print("Value changed for ID: \(id)")
-                print("Snapshot: \(snapshot)")
                 
                 if snapshot.exists() {
                     guard let valueData = snapshot.value as? [String: Any] else {
@@ -76,13 +74,12 @@ extension DecorationAPI {
                     completion(.success(.added([id: decoration])))
                 } else {
                     // 스냅샷이 존재하지 않으면 데이터가 삭제된 것으로 간주
-                    completion(.success(.removed(id)))
+//                    completion(.success(.removed(id)))
                 }
             }
             
             // 데이터가 삭제될 때를 감지하는 .childRemoved 이벤트
             userPath.observe(.childRemoved) { snapshot in
-                print("Child removed for ID: \(id)")
                 completion(.success(.removed(id)))
             }
         }

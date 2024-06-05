@@ -8,10 +8,11 @@
 import UIKit
 
 class SplashScreenVC: UIViewController {
-    
-    
+    // MARK: - 프로퍼티
     private var viewModel: SplashScreenVMProtocol
     private let coordinator: AppCoordProtocol
+    
+    
     
     
     
@@ -32,32 +33,36 @@ class SplashScreenVC: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     deinit { print("\(#function)-----\(self)") }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(self.handleRoomDataFetched(notification:)),
+            name: .roomDataChanged,
+            object: nil)
+    }
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        NotificationCenter.default.removeObserver(self)
+    }
 }
 
 
 
 
 
-
-
-
-
-
-// MARK: - 기본 설정
+// MARK: - 화면 설정
 extension SplashScreenVC {
-    /// 화면 설정
+    /// UI 설정
     private func configureUI() {
-//        self.view.backgroundColor = .base_Blue
         self.view.backgroundColor = .red
     }
-    
+
     /// 클로저 설정
     private func configureClosure() {
-        self.viewModel.successClosure = { [weak self] in
-            self?.configureSuccess()
-        }
         self.viewModel.errorClosure = { [weak self] errorType in
-            self?.configureError(with: errorType)
+            guard let self = self else { return }
+            self.configureError(with: errorType)
         }
     }
 }
@@ -66,17 +71,20 @@ extension SplashScreenVC {
 
 
 
-
-
-
-
-
-// MARK: - 클로저 함수
+// MARK: - 화면 이동 함수
 extension SplashScreenVC {
-    /// 성공 시
-    private func configureSuccess() {
+    /// 노티피케이션 함수
+    @objc private func handleRoomDataFetched(notification: Notification) {
+        if let error = notification.userInfo?["error"] as? ErrorEnum {
+            self.configureError(with: error)
+        } else {
+            self.goToMainScreen()
+        }
+    }
+    
+    /// 성공 시, MainVC로 이동
+    private func goToMainScreen() {
         DispatchQueue.main.async {
-            // 메인 화면으로 이동
             self.coordinator.mainScreen()
         }
     }
@@ -86,18 +94,11 @@ extension SplashScreenVC {
     private func configureError(with errorType: ErrorEnum) {
         switch errorType {
         case .NotLoggedIn:
-            // 유저 생성 화면으로 이동
             self.coordinator.selectALoginMethodScreen()
-            break
-            
-            // 로그인 선택 화면으로 이동
         case .NoPersonalID:
             self.coordinator.mainToMakeUser()
-            break
-            
         default:
             self.coordinator.selectALoginMethodScreen()
-            break
         }
     }
 }

@@ -34,6 +34,12 @@ final class RoomDataManager: RoomDataManagerProtocol {
     var roomIDToIndexPathMap = [String: IndexPath]()
     var roomsCellViewModels = [MainCollectionViewCellVMProtocol]()
     
+    /// 디바운스 타이머
+    var changedRoomIndexPaths: [String: [IndexPath]] = [:]
+    var roomDataDebounceWorkItem: DispatchWorkItem?
+    let roomDataQueue = DispatchQueue(label: "room-data-queue", qos: .userInitiated)
+
+    
     
     
     // MARK: - RoomUsrs
@@ -46,6 +52,10 @@ final class RoomDataManager: RoomDataManagerProtocol {
     var userIDToIndexPathMap = [String: IndexPath]()
     var usersCellViewModels = [UsersTableViewCellVMProtocol]()
     
+
+    
+    // 디바운싱 -> 1.5초 후에 실행
+    let debounceInterval: CGFloat = 1
     
     
     // MARK: - MoneyData
@@ -53,7 +63,6 @@ final class RoomDataManager: RoomDataManagerProtocol {
     var changedReceiptIndexPaths = [IndexPath]()
     /// 디바운스 타이머
     var moneyDataDebounceWorkItem: DispatchWorkItem?
-    let debounceInterval: CGFloat = 1.5  // 1.5초 후에 실행
     let moneyDataQueue = DispatchQueue(label: "money-data-queue",
                                        qos: .userInitiated)
 
@@ -103,6 +112,19 @@ final class RoomDataManager: RoomDataManagerProtocol {
             )
         }
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     // MARK: - 초기화
     /// RoomUsers / User에 대한 observer를 삭제하는 메서드
@@ -268,6 +290,7 @@ enum NotificationInfoString {
     case added
     case removed
     case initialLoad
+    case error
     
     var notificationName: String {
         switch self {
@@ -275,6 +298,7 @@ enum NotificationInfoString {
         case .added:        return "added"
         case .removed:      return "removed"
         case .updated:      return "updated"
+        case .error:        return "error"
         }
     }
 }
