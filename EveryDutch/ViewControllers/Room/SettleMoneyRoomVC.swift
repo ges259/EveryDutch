@@ -185,7 +185,7 @@ extension SettleMoneyRoomVC {
             target: self,
             action: #selector(self.scrollVertical))
         self.topView.addGestureRecognizer(topViewPanGesture)
-        // 네비게이션바 - 팬 재스쳐ㄴ
+        // 네비게이션바 - 팬 재스쳐
         let navPanGesture = UIPanGestureRecognizer(
             target: self,
             action: #selector(self.scrollVertical))
@@ -198,11 +198,6 @@ extension SettleMoneyRoomVC {
             self,
             selector: #selector(self.handleDataChanged(notification:)),
             name: .userDataChanged,
-            object: nil)
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(self.handleDataChanged(notification:)),
-            name: .financialDataUpdated,
             object: nil)
         NotificationCenter.default.addObserver(
             self,
@@ -261,8 +256,7 @@ extension SettleMoneyRoomVC {
         let rawValue = notification.name.rawValue
         
         switch rawValue {
-        case Notification.Name.userDataChanged.rawValue,
-            Notification.Name.financialDataUpdated.rawValue:
+        case Notification.Name.userDataChanged.rawValue:
             self.viewModel.userDataChanged(dataInfo)
             
         case Notification.Name.receiptDataChanged.rawValue:
@@ -299,9 +293,14 @@ extension SettleMoneyRoomVC {
         let receiptIndexPaths = self.viewModel.getPendingReceiptIndexPaths()
         // 비어있다면, 아무 행동도 하지 않음
         guard !receiptIndexPaths.isEmpty else { return }
-        // 영수증 테이블뷰 리로드
-        receiptIndexPaths.forEach { (key: String, value: [IndexPath]) in
-            self.reloadReceiptTableView(key: key, indexPaths: value)
+        
+        if receiptIndexPaths.count > 1 {
+            self.receiptTableView.reloadData()
+        } else {
+            // 영수증 테이블뷰 리로드
+            receiptIndexPaths.forEach { (key: String, value: [IndexPath]) in
+                self.reloadReceiptTableView(key: key, indexPaths: value)
+            }
         }
         // 변경 사항 초기화
         self.viewModel.resetPendingReceiptIndexPaths()
@@ -332,13 +331,19 @@ extension SettleMoneyRoomVC {
             self.receiptTableView.deleteRows(at: indexPaths, with: .automatic)
             break
         default:
+            self.receiptTableView.reloadData()
             print("\(self) ----- \(#function) ----- Error")
             break
         }
     }
     
     private var checkReceiptCount: Bool {
-        return self.viewModel.numberOfReceipt != self.receiptTableView.numberOfRows(inSection: 0)
+        if self.viewModel.numberOfReceipt == self.receiptTableView.numberOfRows(inSection: 0)
+        {
+            self.receiptTableView.reloadData()
+            return false
+        }
+        return true
     }
     
     

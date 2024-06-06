@@ -11,6 +11,8 @@ extension RoomDataManager {
     // MARK: - 데이터 가져오기(옵저버)
     func fetchDecoration(roomDict: [String : Rooms],
                          completion: @escaping () -> Void) {
+        
+        self.roomDebouncer.addIndexPathsAndDebounce(eventType: .updated, [])
         let roomIDArray: [String] = Array(roomDict.keys)
         DispatchQueue.global(qos: .utility).async {
             self.roomsAPI.observeDecorations(IDs: roomIDArray) { [weak self] result in
@@ -54,7 +56,7 @@ extension RoomDataManager {
             }
         }
         // 노티피케이션 post
-        self.triggerRoomDataDebouncing(eventType: .updated, indexPaths: addedIndexPaths)
+        self.roomDebouncer.addIndexPathsAndDebounce(eventType: .updated, addedIndexPaths)
     }
     
     // MARK: - 삭제
@@ -62,7 +64,7 @@ extension RoomDataManager {
         if let indexPath = self.roomIDToIndexPathMap[removed] {
             self.roomsCellViewModels[indexPath.row].removeDecoration()
             // 노티피케이션 post
-            self.triggerRoomDataDebouncing(eventType: .updated, indexPaths: [indexPath])
+            self.roomDebouncer.addIndexPathsAndDebounce(eventType: .removed, [indexPath])
         }
     }
 }

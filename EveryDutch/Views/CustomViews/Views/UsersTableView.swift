@@ -211,7 +211,7 @@ extension UsersTableView: UITableViewDataSource {
 // MARK: - 인덱스패스 리로드
 extension UsersTableView {
     func userDataReload(at pendingIndexPaths: [String: [IndexPath]]) {
-        
+//        self.usersTableView.reloadData()
         if pendingIndexPaths.count > 1 {
             self.usersTableView.reloadData()
         } else {
@@ -223,6 +223,7 @@ extension UsersTableView {
     }
     @MainActor
     private func updateIndexPath(key: String, indexPaths: [IndexPath]) {
+        guard self.checkUserCount else { return }
         switch key {
         case NotificationInfoString.updated.notificationName:
             self.usersTableView.reloadRows(at: indexPaths, with: .automatic)
@@ -232,22 +233,26 @@ extension UsersTableView {
             break
         case NotificationInfoString.added.notificationName:
             // 테이블 뷰 업데이트
-            guard self.checkUserCount else { return }
             self.usersTableView.insertRows(at: indexPaths, with: .automatic)
             break
         case NotificationInfoString.removed.notificationName:
             // 테이블 뷰 업데이트
-            guard self.checkUserCount else { return }
             self.usersTableView.deleteRows(at: indexPaths, with: .automatic)
             break
         default:
             print("\(self) ----- \(#function) ----- Error")
+            self.usersTableView.reloadData()
             break
         }
     }
     
     private var checkUserCount: Bool {
-        return self.viewModel.numbersOfUsers != self.usersTableView.numberOfRows(inSection: 0)
+        if self.viewModel.numbersOfUsers == self.usersTableView.numberOfRows(inSection: 0)
+        {
+            self.usersTableView.reloadData()
+            return false
+        }
+        return true
     }
     
     

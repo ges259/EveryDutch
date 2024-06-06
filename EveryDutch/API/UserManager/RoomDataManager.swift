@@ -7,6 +7,136 @@
 
 import UIKit
 
+// 디바운싱 -> 1.5초 후에 실행
+
+enum DebounceType {
+    case userData
+    case roomData
+    case receiptData
+    
+    var queue: DispatchQueue {
+        switch self {
+        case .userData:
+            return DispatchQueue(label: "user-data-queue", qos: .userInitiated)
+        case .roomData:
+            return DispatchQueue(label: "room-data-queue", qos: .userInitiated)
+        case .receiptData:
+            return DispatchQueue(label: "receipt-data-queue", qos: .userInitiated)
+        }
+    }
+    
+    var notificationName: Notification.Name {
+        switch self {
+        case .userData:
+            return .userDataChanged
+        case .roomData:
+            return .roomDataChanged
+        case .receiptData:
+            return .receiptDataChanged
+            
+        }
+    }
+    
+    var interval: CGFloat {
+        switch self {
+        case .userData:
+            return 0.7
+        case .roomData:
+            return 2
+        case .receiptData:
+            return 0.3
+        }
+    }
+}
+
+final class Debouncer {
+    private var workItem: DispatchWorkItem?
+    private let queue: DispatchQueue
+    private var interval: CGFloat
+    private(set) var indexPaths: [String: [IndexPath]] = [:]
+    private let notificationName: Notification.Name
+
+    init(_ type: DebounceType) {
+        self.queue = type.queue
+        self.interval = type.interval
+        self.notificationName = type.notificationName
+    }
+    
+    func addIndexPathsAndDebounce(
+        eventType: NotificationInfoString,
+        _ indexPaths: [IndexPath])
+    {
+        guard !indexPaths.isEmpty else { return }
+        // 기존에 스케줄된 작업이 있다면 취소
+        workItem?.cancel()
+        
+        let notiName = eventType.notificationName
+        
+        if self.indexPaths[notiName] == nil {
+            self.indexPaths[notiName] = []
+        }
+        
+        for indexPath in indexPaths {
+            if let existingIndexPaths = self.indexPaths[notiName],
+               !existingIndexPaths.contains(indexPath) {
+                self.indexPaths[notiName]?.append(indexPath)
+            }
+        }
+        debounce()
+    }
+    
+    private func debounce() {
+        // 새로운 작업 아이템 생성
+        let newWorkItem = DispatchWorkItem { [weak self] in
+            guard let self = self else { return }
+            self.postNotification()
+            
+        }
+        // 작업 아이템을 예약
+        workItem = newWorkItem
+        queue.asyncAfter(
+            deadline: .now() + self.interval,
+            execute: newWorkItem)
+    }
+    
+    private func postNotification() {
+        DispatchQueue.main.async { [weak self] in
+//            guard !self.indexPaths.isEmpty else { return }
+            guard let self = self else { return }
+            print("\(#function) ----- 1")
+            NotificationCenter.default.post(
+                name: self.notificationName,
+                object: nil,
+                userInfo: self.indexPaths
+            )
+            self.indexPaths = [:]
+        }
+    }
+    func reset() {
+        workItem?.cancel()
+        indexPaths = [:]
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 final class RoomDataManager: RoomDataManagerProtocol {
     static let shared: RoomDataManagerProtocol = RoomDataManager(
         roomsAPI: RoomsAPI.shared,
@@ -31,16 +161,10 @@ final class RoomDataManager: RoomDataManagerProtocol {
     // MARK: - Rooms
     // 현재 선택된 Rooms
     private var currentRoom: (roomID: String, room: Rooms)?
-    
-    
     var roomIDToIndexPathMap = [String: IndexPath]()
     var roomsCellViewModels = [MainCollectionViewCellVMProtocol]()
     
-    /// 디바운스 타이머
-    var changedRoomIndexPaths: [String: [IndexPath]] = [:]
-    var roomDataDebounceWorkItem: DispatchWorkItem?
-    let roomDataQueue = DispatchQueue(label: "room-data-queue", qos: .userInitiated)
-
+    
     
     
     
@@ -55,29 +179,6 @@ final class RoomDataManager: RoomDataManagerProtocol {
     var usersCellViewModels = [UsersTableViewCellVMProtocol]()
     
     
-
-    
-    var changedUserIndexPaths = [IndexPath]()
-    var userDataDebounceWorkItem: DispatchWorkItem?
-    let userDataQueue = DispatchQueue(label: "money-data-queue",
-                                       qos: .userInitiated)
-    
-    
-
-    
-    
-    // MARK: - MoneyData
-    // 바뀐 인덱스패스 저장
-    var changedReceiptIndexPaths = [IndexPath]()
-    /// 디바운스 타이머
-    var moneyDataDebounceWorkItem: DispatchWorkItem?
-    let moneyDataQueue = DispatchQueue(label: "money-data-queue",
-                                       qos: .userInitiated)
-    // 디바운싱 -> 1.5초 후에 실행
-    let debounceInterval: CGFloat = 1.5
-    
-
-    
     
     
     
@@ -86,16 +187,40 @@ final class RoomDataManager: RoomDataManagerProtocol {
     var receiptIDToIndexPathMap = [String: IndexPath]()
     /// 영수증 테이블 셀의 뷰모델
     var receiptCellViewModels = [ReceiptTableViewCellVMProtocol]()
-    var hasMoreData: Bool = true
+    
+    
+    
+    
+    
+    // MARK: - 디바운서
+    let userDebouncer = Debouncer(.userData)
+    let roomDebouncer = Debouncer(.roomData)
+    let receiptDebouncer = Debouncer(.receiptData)
 
     
     
     
     
+    
+    
+    // MARK: - 플래그
+    /// [플래그] RoomUsers 데이터 observe를 설정했는지 판단하는 변수
     var roomUsersInitialLoad: Bool = true
+    /// [플래그] Receipt 데이터 observe를 설정했는지 판단하는 변수
     var receiptInitialLoad = true
+    /// [플래그] Receipt 데이터를 추가적으로 가져올 지에 대한 플래그
+    var hasMoreReceiptData: Bool = true
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    // MARK: - 정산방 초기 데이터 로드
     func startLoadRoomData(completion: @escaping (Result<Void, ErrorEnum>) -> Void) {
         // 초기 로드일 때 모든 데이터 초기화
         self.removeRoomsUsersObserver()
@@ -138,7 +263,6 @@ final class RoomDataManager: RoomDataManagerProtocol {
     {
         DispatchQueue.main.async {
             print("\(#function) ----- \(name) ----- \(eventType.notificationName)")
-            dump(indexPath)
             // 비어있다면, 노티피케이션을 post하지 않음
             guard !indexPath.isEmpty else { return }
             
@@ -169,25 +293,26 @@ final class RoomDataManager: RoomDataManagerProtocol {
     func removeRoomsUsersObserver() {
         // 옵저버 삭제
         self.roomsAPI.removeRoomUsersAndUserObserver()
+        // Receipt(영수증) 키 삭제
         self.receiptAPI.resetReceiptLastKey()
         // 정산방에 대한 데이터 삭제
-        self.resetRoomData()
+        self.resetSettleMoneyRoomData()
     }
-    func resetRoomData() {
-        self.usersCellViewModels = []
-        self.userIDToIndexPathMap = [:]
-        self.roomUserDataDict = [:]
+    func resetSettleMoneyRoomData() {
+        // 플래그 데이터 초기화
         self.receiptInitialLoad = true
         self.roomUsersInitialLoad = true
-//        self.userDataDebounceWorkItem = nil
-        self.userDataDebounceWorkItem?.cancel()
-        self.roomDataDebounceWorkItem?.cancel()
+        self.hasMoreReceiptData = true
+        // 디바운싱 초기화
+        self.userDebouncer.reset()
         
-        self.changedReceiptIndexPaths = []
-        self.moneyDataDebounceWorkItem?.cancel()
+        // RoomUsers 데이터 초기화
+        self.roomUserDataDict = [:]
+        self.userIDToIndexPathMap = [:]
+        self.usersCellViewModels = []
+        // Receipt 데이터 초기화
         self.receiptIDToIndexPathMap = [:]
         self.receiptCellViewModels = []
-        self.hasMoreData = true
     }
     
     
@@ -360,5 +485,4 @@ extension Notification.Name {
     static let receiptDataChanged = Notification.Name("receiptDataChanged")
     static let roomDataChanged = Notification.Name("roomDataChanged")
     static let userDataChanged = Notification.Name("userDataChanged")
-    static let financialDataUpdated = Notification.Name("financialDataUpdated")
 }

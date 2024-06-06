@@ -38,7 +38,7 @@ extension RoomDataManager {
     
     /// 데이터를 추가적으로 가져오는 코드
     func loadMoreReceiptData() {
-        guard self.hasMoreData,
+        guard self.hasMoreReceiptData,
               let versionID = self.getCurrentVersion else { return }
         DispatchQueue.global(qos: .utility).async {
             self.receiptAPI.loadMoreReceipts(versionID: versionID) { [weak self] result in
@@ -51,7 +51,7 @@ extension RoomDataManager {
                     DispatchQueue.main.async {
                         switch error {
                         case .noMoreData:
-                            self.hasMoreData = false
+                            self.hasMoreReceiptData = false
                             break
                         default:
                             break
@@ -97,7 +97,8 @@ extension RoomDataManager {
                 updatedIndexPaths.append(indexPath)
             }
         }
-        self.postNotification(name: .receiptDataChanged, eventType: .updated, indexPath: updatedIndexPaths)
+//        self.postNotification(name: .receiptDataChanged, eventType: .updated, indexPath: updatedIndexPaths)
+        self.receiptDebouncer.addIndexPathsAndDebounce(eventType: .updated, updatedIndexPaths)
     }
     
     // MARK: - 초기 설정
@@ -121,10 +122,11 @@ extension RoomDataManager {
         }
         
         print("addedIndexPaths 개수 ----- \(addedIndexPaths.count)")
-        self.postNotification(
-            name: .receiptDataChanged,
-            eventType: .initialLoad,
-            indexPath: addedIndexPaths)
+//        self.postNotification(
+//            name: .receiptDataChanged,
+//            eventType: .initialLoad,
+//            indexPath: addedIndexPaths)
+        self.receiptDebouncer.addIndexPathsAndDebounce(eventType: .initialLoad, addedIndexPaths)
     }
     
     // MARK: - 생성
@@ -155,7 +157,7 @@ extension RoomDataManager {
         self.updateIndexPaths(0)
         
         // 변경 사항을 알리는 알림 전송
-        self.postNotification(name: .receiptDataChanged, eventType: .added, indexPath: addedIndexPaths)
+        self.receiptDebouncer.addIndexPathsAndDebounce(eventType: .added, addedIndexPaths)
     }
 
 
@@ -163,7 +165,7 @@ extension RoomDataManager {
     private func handleAddedMoreReceiptData(_ toAdd: [ReceiptTuple]) {
         print(#function)
         if toAdd.isEmpty {
-            self.hasMoreData = false
+            self.hasMoreReceiptData = false
             return
         }
         // 리턴할 인덱스패스
@@ -202,8 +204,9 @@ extension RoomDataManager {
             // 삭제 후 인덱스 재정렬
             self.updateIndexPaths(indexPath.row)
         }
-        self.postNotification(name: .receiptDataChanged, eventType: .removed, indexPath: removedIndexPaths)
+        self.receiptDebouncer.addIndexPathsAndDebounce(eventType: .removed, removedIndexPaths)
     }
+    
     private func updateIndexPaths(_ index: Int) {
         for i in index..<self.receiptCellViewModels.count {
             // 해당 인덱스의 뷰모델에 있는 receiptID를 가져옴

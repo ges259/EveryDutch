@@ -277,9 +277,15 @@ extension MainVC {
         let indexPaths = self.viewModel.getPendingUpdates()
         // 비어있다면, 아무 행동도 하지 않음
         guard !indexPaths.isEmpty else { return }
-        // 콜레션뷰 리로드
-        indexPaths.forEach { (key: String, value: [IndexPath]) in
-            self.updateIndexPath(key: key, indexPaths: value)
+        
+        
+        if indexPaths.count > 1 {
+            self.collectionView.reloadData()
+        } else {
+            // 콜레션뷰 리로드
+            indexPaths.forEach { (key: String, value: [IndexPath]) in
+                self.updateIndexPath(key: key, indexPaths: value)
+            }
         }
         // 변경 사항 초기화
         self.viewModel.resetPendingUpdates()
@@ -288,6 +294,7 @@ extension MainVC {
     private func updateIndexPath(key: String, indexPaths: [IndexPath]) {
         switch key {
         case NotificationInfoString.updated.notificationName:
+            guard self.checkRoomCount else { return }
             self.collectionView.reloadItems(at: indexPaths)
             break
         case NotificationInfoString.initialLoad.notificationName:
@@ -302,12 +309,18 @@ extension MainVC {
             self.collectionView.deleteItems(at: indexPaths)
             break
         default:
+            self.collectionView.reloadData()
             print("\(self) ----- \(#function) ----- Error")
             break
         }
     }
     private var checkRoomCount: Bool {
-        return self.viewModel.numberOfRooms != self.collectionView.numberOfItems(inSection: 0)
+        if self.viewModel.numberOfRooms == self.collectionView.numberOfItems(inSection: 0)
+        {
+            self.collectionView.reloadData()
+            return false
+        }
+        return true
     }
 }
 

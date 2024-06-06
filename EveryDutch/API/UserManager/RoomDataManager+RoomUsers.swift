@@ -84,9 +84,7 @@ extension RoomDataManager {
                 }
             }
         }
-        self.postNotification(name: .userDataChanged,
-                              eventType: .updated,
-                              indexPath: updatedIndexPaths)
+        self.userDebouncer.addIndexPathsAndDebounce(eventType: .updated, updatedIndexPaths)
     }
     
     // MARK: - 초기 설정
@@ -121,6 +119,8 @@ extension RoomDataManager {
     // MARK: - 생성
     private func handleAddedRoomUsersEvent(_ toAdd: [String: User]) {
         self.roomUserDataDict.merge(toAdd) { _, new in new }
+        var addedIndexPaths = [IndexPath]()
+        
         for (userID, user) in toAdd {
             // 중복 추가 방지
             guard self.userIDToIndexPathMap[userID] == nil else { continue }
@@ -138,10 +138,10 @@ extension RoomDataManager {
             // [userID: User] 딕셔너리 데이터 업데이트
             self.roomUserDataDict[userID] = user
             // 생성할 인덱스패스를 저장
-            self.saveChangedUserIndexPaths(indexPath: indexPath)
+            addedIndexPaths.append(indexPath)
         }
         // 디바운싱 트리거
-        self.triggerUserDataDebouncing()
+        self.userDebouncer.addIndexPathsAndDebounce(eventType: .added, addedIndexPaths)
     }
     
     // MARK: - 삭제
@@ -164,48 +164,6 @@ extension RoomDataManager {
                 self.userIDToIndexPathMap[userID] = newIndexPath
             }
         }
-        self.postNotification(name: .userDataChanged,
-                              eventType: .removed,
-                              indexPath: removedIndexPaths)
+        self.userDebouncer.addIndexPathsAndDebounce(eventType: .removed, removedIndexPaths)
     }
-    
-    /// 인덱스패스 저장
-    private func saveChangedUserIndexPaths(indexPath: IndexPath) {
-        // 인덱스패스가 포함되어있지 않다면
-        if !self.changedUserIndexPaths.contains(indexPath) {
-            // 이덱스패스 저장1
-            self.changedUserIndexPaths.append(indexPath)
-        }
-    }
-    
-    // MARK: - 디바운싱
-    /// 디바운싱 시작
-    private func triggerUserDataDebouncing() {
-        self.userDataDebounceWorkItem?.cancel()  // 기존에 스케줄된 작업이 있다면 취소
-        
-        let workItem = DispatchWorkItem { [weak self] in
-            guard let self = self else { return }
-            // 데이터 업데이트 후 노티피케이션 전송
-            self.postNotification(name: .userDataChanged,
-                                  eventType: .added,
-                                  indexPath: self.changedUserIndexPaths)
-            // 디바운싱 상태 초기화
-            self.resetMoneyDataDebounceState()
-        }
-        
-        self.userDataDebounceWorkItem = workItem
-        self.userDataQueue.asyncAfter(deadline: .now() + self.debounceInterval, execute: workItem)
-    }
-    /// 디바운싱 상태 초기화
-    private func resetMoneyDataDebounceState() {
-        self.changedUserIndexPaths = []
-    }
-    
 }
-
-
-/*
- 
-
- */
-

@@ -12,7 +12,8 @@ extension RoomDataManager {
     func loadFinancialData() {
         guard let versionID = self.getCurrentVersion else { return }
         // 데이터 초기화
-        self.resetMoneyDataDebounceState()
+//        self.userDebouncer.reset()
+        
         // 누적 금액 가져오기
         self.loadCumulativeAmountData(versionID: versionID)
         // 페이백 금액 가져오기
@@ -72,9 +73,10 @@ extension RoomDataManager {
                 continue
             }
             self.usersCellViewModels[indexPath.row].setCumulativeAmount(value)
-            self.saveChangedIndexPaths(indexPath: indexPath)
+//            self.saveChangedIndexPaths(indexPath: indexPath)
+            self.userDebouncer.addIndexPathsAndDebounce(eventType: .updated, [indexPath])
         }
-        self.triggerMoneyDataDebouncing()
+//        self.triggerMoneyDataDebouncing()
     }
     
     /// 페이백 데이터 변경
@@ -87,40 +89,41 @@ extension RoomDataManager {
                 continue
             }
             self.usersCellViewModels[indexPath.row].setPayback(value)
-            self.saveChangedIndexPaths(indexPath: indexPath)
+//            self.saveChangedIndexPaths(indexPath: indexPath)
+            self.userDebouncer.addIndexPathsAndDebounce(eventType: .updated, [indexPath])
         }
-        self.triggerMoneyDataDebouncing()
+//        self.triggerMoneyDataDebouncing()
     }
     
     /// 인덱스패스 저장
-    private func saveChangedIndexPaths(indexPath: IndexPath) {
-        // 인덱스패스가 포함되어있지 않다면
-        if !self.changedReceiptIndexPaths.contains(indexPath) {
-            // 이덱스패스 저장1
-            self.changedReceiptIndexPaths.append(indexPath)
-        }
-    }
-    
-    // MARK: - 디바운싱
-    /// 디바운싱 시작
-    private func triggerMoneyDataDebouncing() {
-        self.moneyDataDebounceWorkItem?.cancel()  // 기존에 스케줄된 작업이 있다면 취소
-        
-        let workItem = DispatchWorkItem { [weak self] in
-            guard let self = self else { return }
-            // 데이터 업데이트 후 노티피케이션 전송
-            self.postNotification(name: .financialDataUpdated,
-                                  eventType: .updated,
-                                  indexPath: self.changedReceiptIndexPaths)
-            // 디바운싱 상태 초기화
-            self.resetMoneyDataDebounceState()
-        }
-        
-        self.moneyDataDebounceWorkItem = workItem
-        self.moneyDataQueue.asyncAfter(deadline: .now() + self.debounceInterval + 1, execute: workItem)
-    }
-    /// 디바운싱 상태 초기화
-    private func resetMoneyDataDebounceState() {
-        self.changedReceiptIndexPaths = []
-    }
+//    private func saveChangedIndexPaths(indexPath: IndexPath) {
+//        // 인덱스패스가 포함되어있지 않다면
+//        if !self.changedMoneyDataIndexPaths.contains(indexPath) {
+//            // 이덱스패스 저장1
+//            self.changedMoneyDataIndexPaths.append(indexPath)
+//        }
+//    }
+//    
+//    // MARK: - 디바운싱
+//    /// 디바운싱 시작
+//    private func triggerMoneyDataDebouncing() {
+//        self.moneyDataDebounceWorkItem?.cancel()  // 기존에 스케줄된 작업이 있다면 취소
+//        
+//        let workItem = DispatchWorkItem { [weak self] in
+//            guard let self = self else { return }
+//            // 데이터 업데이트 후 노티피케이션 전송
+//            self.postNotification(name: .moneyDataChanged,
+//                                  eventType: .updated,
+//                                  indexPath: self.changedMoneyDataIndexPaths)
+//            // 디바운싱 상태 초기화
+//            self.resetMoneyDataDebounceState()
+//        }
+//        
+//        self.moneyDataDebounceWorkItem = workItem
+//        self.moneyDataQueue.asyncAfter(deadline: .now() + debounceInterval + 1, execute: workItem)
+//    }
+//    /// 디바운싱 상태 초기화
+//    private func resetMoneyDataDebounceState() {
+//        self.changedMoneyDataIndexPaths = []
+//    }
 }
