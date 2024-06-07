@@ -49,11 +49,6 @@ extension RoomDataManager {
             print("\(#function) ----- update")
             self.handleUpdatedRoomUsersEvent(toUpdate)
             
-            // 데이터 초기 로드
-        case .initialLoad(let userDict):
-            print("\(#function) ----- init")
-            self.handleInitialLoadRoomUsersEvent(userDict)
-            
         case .added(let toAdd):
             print("\(#function) ----- add")
             self.handleAddedRoomUsersEvent(toAdd)
@@ -61,6 +56,10 @@ extension RoomDataManager {
         case .removed(let userID):
             print("\(#function) ----- remove")
             self.handleRemovedRoomUsersEvent(userID)
+            // 데이터 초기 로드
+        case .initialLoad(_):
+            print("\(#function) ----- init ----- error")
+            break
         }
     }
     
@@ -84,38 +83,8 @@ extension RoomDataManager {
                 }
             }
         }
-        self.userDebouncer.addIndexPathsAndDebounce(eventType: .updated, updatedIndexPaths)
+        self.userDebouncer.triggerDebounceWithIndexPaths(eventType: .updated, updatedIndexPaths)
     }
-    
-    // MARK: - 초기 설정
-    private func handleInitialLoadRoomUsersEvent(_ userDict: [String: User]) {
-//        // 리턴할 인덱스패스
-//        var addedIndexPaths = [IndexPath]()
-//
-//
-//        // [userID: User] 딕셔너리 데이터 저장
-//        self.roomUserDataDict = userDict
-//        
-//        // 모든 데이터 추가
-//        for (index, (userID, user)) in userDict.enumerated() {
-//            // 인덱스 패스 생성
-//            let indexPath = IndexPath(row: index, section: 0)
-//            // 뷰모델 생성
-//            let viewModel = UsersTableViewCellVM(
-//                userID: userID,
-//                roomUsers: user,
-//                customTableEnum: .isSettleMoney)
-//            // 뷰모델 저장
-//            self.usersCellViewModels.append(viewModel)
-//            // 인덱스패스 저장
-//            self.userIDToIndexPathMap[userID] = indexPath
-//            addedIndexPaths.append(indexPath)
-//        }
-//        self.postNotification(name: .userDataChanged,
-//                              eventType: .initialLoad,
-//                              indexPath: addedIndexPaths)
-    }
-    
     // MARK: - 생성
     private func handleAddedRoomUsersEvent(_ toAdd: [String: User]) {
         self.roomUserDataDict.merge(toAdd) { _, new in new }
@@ -141,7 +110,7 @@ extension RoomDataManager {
             addedIndexPaths.append(indexPath)
         }
         // 디바운싱 트리거
-        self.userDebouncer.addIndexPathsAndDebounce(eventType: .added, addedIndexPaths)
+        self.userDebouncer.triggerDebounceWithIndexPaths(eventType: .added, addedIndexPaths)
     }
     
     // MARK: - 삭제
@@ -164,6 +133,6 @@ extension RoomDataManager {
                 self.userIDToIndexPathMap[userID] = newIndexPath
             }
         }
-        self.userDebouncer.addIndexPathsAndDebounce(eventType: .removed, removedIndexPaths)
+        self.userDebouncer.triggerDebounceWithIndexPaths(eventType: .removed, removedIndexPaths)
     }
 }

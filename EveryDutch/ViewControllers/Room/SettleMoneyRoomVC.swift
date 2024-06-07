@@ -309,22 +309,22 @@ extension SettleMoneyRoomVC {
     @MainActor
     private func reloadReceiptTableView(key: String, indexPaths: [IndexPath]) {
         switch key {
-        case NotificationInfoString.updated.notificationName:
+        case DataChangeType.updated.notificationName:
             self.receiptTableView.reloadRows(at: indexPaths, with: .automatic)
             break
-        case NotificationInfoString.initialLoad.notificationName:
+        case DataChangeType.initialLoad.notificationName:
             self.receiptTableView.reloadData()
             self.reloadData {
                 self.scrollToBottom()
             }
             break
-        case NotificationInfoString.added.notificationName:
+        case DataChangeType.added.notificationName:
             guard self.checkReceiptCount else {
                 return
             }
             self.receiptTableView.insertRows(at: indexPaths, with: .automatic)
             break
-        case NotificationInfoString.removed.notificationName:
+        case DataChangeType.removed.notificationName:
             guard self.checkReceiptCount else {
                 return
             }

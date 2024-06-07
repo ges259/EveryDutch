@@ -74,7 +74,7 @@ extension RoomDataManager {
             }
             self.usersCellViewModels[indexPath.row].setCumulativeAmount(value)
 //            self.saveChangedIndexPaths(indexPath: indexPath)
-            self.userDebouncer.addIndexPathsAndDebounce(eventType: .updated, [indexPath])
+            self.userDebouncer.triggerDebounceWithIndexPaths(eventType: .updated, [indexPath])
         }
 //        self.triggerMoneyDataDebouncing()
     }
@@ -90,7 +90,7 @@ extension RoomDataManager {
             }
             self.usersCellViewModels[indexPath.row].setPayback(value)
 //            self.saveChangedIndexPaths(indexPath: indexPath)
-            self.userDebouncer.addIndexPathsAndDebounce(eventType: .updated, [indexPath])
+            self.userDebouncer.triggerDebounceWithIndexPaths(eventType: .updated, [indexPath])
         }
 //        self.triggerMoneyDataDebouncing()
     }

@@ -12,7 +12,7 @@ extension RoomDataManager {
     // MARK: - 데이터 fetch
     func loadRooms() {
         // 만약 User_RoomsID에 데이터가 없더라도 SplashScreenVC에서 MainVC로 넘어가기 위해 일단 디바운싱을 트리거 해놓음
-        self.roomDebouncer.addIndexPathsAndDebounce(eventType: .initialLoad, [])
+        self.roomDebouncer.triggerDebounceWithIndexPaths(eventType: .initialLoad)
         
         // 옵저버 설정
         DispatchQueue.global(qos: .utility).async {
@@ -22,14 +22,10 @@ extension RoomDataManager {
                 case .success(let observeData):
                     print("방ID 옵저버 가져오기 성공")
                     self.handleRoomEvent(observeData)
-                    
                 case .failure(let error):
                     DispatchQueue.main.async {
                         print("방ID 옵저버 가져오기 실패")
-                        NotificationCenter.default.post(
-                            name: .roomDataChanged,
-                            object: nil,
-                            userInfo: ["error": error])
+                        self.roomDebouncer.triggerErrorDebounce(error)
                     }
                 }
             }
@@ -72,7 +68,7 @@ extension RoomDataManager {
             }
         }
         // 노티피케이션 post
-        self.roomDebouncer.addIndexPathsAndDebounce(eventType: .updated, updatedIndexPaths)
+        self.roomDebouncer.triggerDebounceWithIndexPaths(eventType: .updated, updatedIndexPaths)
     }
     
     // MARK: - 초기 설정
@@ -92,12 +88,10 @@ extension RoomDataManager {
             self.roomIDToIndexPathMap[roomID] = indexPath
             addedIndexPaths.append(indexPath)
         }
+        // 노티피케이션 post
+        self.roomDebouncer.triggerDebounceWithIndexPaths(eventType: .initialLoad, addedIndexPaths)
         // 데코 데이터 업데이트
-        self.fetchDecoration(roomDict: roomDict) { [weak self] in
-            guard let self = self else { return }
-            // 노티피케이션 post
-            self.roomDebouncer.addIndexPathsAndDebounce(eventType: .initialLoad, addedIndexPaths)
-        }
+        self.fetchDecoration(roomDict: roomDict)
     }
     
     // MARK: - 생성
@@ -118,12 +112,10 @@ extension RoomDataManager {
             self.roomIDToIndexPathMap[roomID] = indexPath
             addedIndexPaths.append(indexPath)
         }
+        // 노티피케이션 post
+        self.roomDebouncer.triggerDebounceWithIndexPaths(eventType: .added, addedIndexPaths)
         // 데코 데이터 업데이트
-        self.fetchDecoration(roomDict: toAdd) { [weak self] in
-            guard let self = self else { return }
-            // 노티피케이션 post
-            self.roomDebouncer.addIndexPathsAndDebounce(eventType: .added, addedIndexPaths)
-        }
+        self.fetchDecoration(roomDict: toAdd)
     }
     
     // MARK: - 삭제
@@ -148,81 +140,6 @@ extension RoomDataManager {
             }
         }
         // 노티피케이션 post
-        self.roomDebouncer.addIndexPathsAndDebounce(eventType: .removed, removedIndexPaths)
+        self.roomDebouncer.triggerDebounceWithIndexPaths(eventType: .removed, removedIndexPaths)
     }
 }
-
-
-
-
-
-
-
-
-
-
-/*
-// MARK: - Room데이터 디바운싱
-/// 디바운싱 시작
-func triggerRoomDataDebouncing(
-    eventType: NotificationInfoString,
-    indexPaths: [IndexPath],
-    debounceInterval: CGFloat = 1)
-{
-    // 기존에 스케줄된 작업이 있다면 취소
-    self.roomDataDebounceWorkItem?.cancel()
-    
-    // 이벤트 타입에 따라 인덱스 패스를 저장
-    self.addIndexPaths(eventType: eventType, indexPaths: indexPaths)
-    
-    // 새로운 작업 아이템 생성
-    let workItem = DispatchWorkItem { [weak self] in
-        guard let self = self else { return }
-        // 데이터 업데이트 후 노티피케이션 전송
-        self.postRoomDataChangedNotification()
-    }
-    
-    // 작업 아이템을 예약
-    self.roomDataDebounceWorkItem = workItem
-    self.roomDataQueue.asyncAfter(
-        deadline: .now() + debounceInterval,
-        execute: workItem)
-}
-
-/// 인덱스 패스 추가 로직
-private func addIndexPaths(
-    eventType: NotificationInfoString,
-    indexPaths: [IndexPath])
-{
-    let notiName = eventType.notificationName
-    
-    // 이벤트 타입에 따라 인덱스 패스를 저장
-    if self.changedRoomIndexPaths[notiName] == nil {
-        self.changedRoomIndexPaths[notiName] = []
-    }
-    
-    for indexPath in indexPaths {
-        if let existingIndexPaths = self.changedRoomIndexPaths[notiName],
-           !existingIndexPaths.contains(indexPath)
-        {
-            self.changedRoomIndexPaths[notiName]?.append(indexPath)
-        }
-    }
-}
-
-/// 노티피케이션 전송
-private func postRoomDataChangedNotification() {
-    DispatchQueue.main.async { [weak self] in
-        guard let self = self else { return }
-        // 비어있어도 notification 전송 (room데이터가 없을 수도 있기 때문)
-        // 노티피케이션 전송
-        NotificationCenter.default.post(
-            name: .roomDataChanged,
-            object: nil,
-            userInfo: self.changedRoomIndexPaths
-        )
-        // post한 인덱스패스를 초기화 시킴
-        self.changedRoomIndexPaths = [:]
-    }
-}
- */

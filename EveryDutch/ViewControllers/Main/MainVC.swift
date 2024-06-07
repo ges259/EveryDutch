@@ -273,6 +273,7 @@ extension MainVC {
     }
     // 모든 대기 중인 변경 사항을 적용
     private func processPendingUpdates() {
+        print("\(#function) ----- MainVC")
         // 뷰모델에 저장된 인덱스 패스 가져오기
         let indexPaths = self.viewModel.getPendingUpdates()
         // 비어있다면, 아무 행동도 하지 않음
@@ -293,18 +294,18 @@ extension MainVC {
     @MainActor
     private func updateIndexPath(key: String, indexPaths: [IndexPath]) {
         switch key {
-        case NotificationInfoString.updated.notificationName:
+        case DataChangeType.updated.notificationName:
             guard self.checkRoomCount else { return }
             self.collectionView.reloadItems(at: indexPaths)
             break
-        case NotificationInfoString.initialLoad.notificationName:
+        case DataChangeType.initialLoad.notificationName:
             self.collectionView.reloadData()
             break
-        case NotificationInfoString.added.notificationName:
+        case DataChangeType.added.notificationName:
             guard self.checkRoomCount else { return }
             self.collectionView.insertItems(at: indexPaths)
             break
-        case NotificationInfoString.removed.notificationName:
+        case DataChangeType.removed.notificationName:
             guard self.checkRoomCount else { return }
             self.collectionView.deleteItems(at: indexPaths)
             break

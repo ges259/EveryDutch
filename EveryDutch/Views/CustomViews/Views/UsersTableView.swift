@@ -225,17 +225,17 @@ extension UsersTableView {
     private func updateIndexPath(key: String, indexPaths: [IndexPath]) {
         guard self.checkUserCount else { return }
         switch key {
-        case NotificationInfoString.updated.notificationName:
+        case DataChangeType.updated.notificationName:
             self.usersTableView.reloadRows(at: indexPaths, with: .automatic)
             break
-        case NotificationInfoString.initialLoad.notificationName:
+        case DataChangeType.initialLoad.notificationName:
             self.usersTableView.reloadData()
             break
-        case NotificationInfoString.added.notificationName:
+        case DataChangeType.added.notificationName:
             // 테이블 뷰 업데이트
             self.usersTableView.insertRows(at: indexPaths, with: .automatic)
             break
-        case NotificationInfoString.removed.notificationName:
+        case DataChangeType.removed.notificationName:
             // 테이블 뷰 업데이트
             self.usersTableView.deleteRows(at: indexPaths, with: .automatic)
             break
@@ -259,7 +259,7 @@ extension UsersTableView {
     /// 유저의 수가 바뀐다면, 노티피케이션을 post하여 셀의 개수 변경
     private func numberOfUsersChanges(key indexPathKey: String) {
         // 업데이트가 아니라면,
-        guard indexPathKey != NotificationInfoString.updated.notificationName else { return }
+        guard indexPathKey != DataChangeType.updated.notificationName else { return }
         // 높이 업데이트
         self.usersTableView.isScrollEnabled = self.viewModel.tableViewIsScrollEnabled
         // 노티피케이션 전송

@@ -75,11 +75,17 @@ extension SplashScreenVC {
 extension SplashScreenVC {
     /// 노티피케이션 함수
     @objc private func handleRoomDataFetched(notification: Notification) {
-        if let error = notification.userInfo?["error"] as? ErrorEnum {
-            self.configureError(with: error)
-        } else {
-            self.goToMainScreen()
-        }
+        if let errorKey = DataChangeType.error.notificationName as String?,
+            notification.userInfo?.keys.contains(errorKey) == true {
+             if let error = notification.userInfo?[errorKey] as? ErrorEnum {
+                 self.configureError(with: error)
+             } else {
+                 // errorKey는 있지만 실제로 ErrorEnum 타입의 값이 없는 경우에 대한 처리
+                 self.configureError(with: .unknownError)
+             }
+         } else {
+             self.goToMainScreen()
+         }
     }
     
     /// 성공 시, MainVC로 이동

@@ -7,8 +7,6 @@
 
 import UIKit
 
-// 디바운싱 -> 1.5초 후에 실행
-
 enum DebounceType {
     case userData
     case roomData
@@ -42,34 +40,56 @@ enum DebounceType {
         case .userData:
             return 0.7
         case .roomData:
-            return 2
+            return 1
         case .receiptData:
             return 0.3
         }
     }
 }
 
-final class Debouncer {
-    private var workItem: DispatchWorkItem?
-    private let queue: DispatchQueue
-    private var interval: CGFloat
-    private(set) var indexPaths: [String: [IndexPath]] = [:]
-    private let notificationName: Notification.Name
 
+final class Debouncer {
+    // MARK: - 프로퍼티
+    // 기본 프로퍼티
+    private let queue: DispatchQueue
+    private let interval: CGFloat
+    private let notificationName: Notification.Name
+    // 인덱스패스 관련 프로퍼티
+    private var workItem: DispatchWorkItem?
+    private var indexPaths: [String: [IndexPath]] = [:]
+    private var error: ErrorEnum?
+    
+    
+    
+    // MARK: - 라이프사이클
     init(_ type: DebounceType) {
         self.queue = type.queue
         self.interval = type.interval
         self.notificationName = type.notificationName
     }
     
-    func addIndexPathsAndDebounce(
-        eventType: NotificationInfoString,
-        _ indexPaths: [IndexPath])
-    {
-        guard !indexPaths.isEmpty else { return }
-        // 기존에 스케줄된 작업이 있다면 취소
-        workItem?.cancel()
-        
+    
+    
+    // MARK: - 디바운스 설정
+    /// 인덱스패스를 저장 후, 디바운스를 설정하는 메서드
+    func triggerDebounceWithIndexPaths(
+        eventType: DataChangeType, 
+        _ indexPaths: [IndexPath] = []
+    ) {
+        // 디바운스 취소
+        self.cancelScheduledWork()
+        // 인덱스패스 업데이트
+        self.addIndexPaths(eventType: eventType, indexPaths: indexPaths)
+        // 에러 정보 초기화
+        self.error = nil
+        // 디바운스
+        self.debounce()
+    }
+    /// 인덱스패스를 저장하는 메서드
+    private func addIndexPaths(
+        eventType: DataChangeType, 
+        indexPaths: [IndexPath]
+    ) {
         let notiName = eventType.notificationName
         
         if self.indexPaths[notiName] == nil {
@@ -77,44 +97,67 @@ final class Debouncer {
         }
         
         for indexPath in indexPaths {
-            if let existingIndexPaths = self.indexPaths[notiName],
-               !existingIndexPaths.contains(indexPath) {
+            if let existingIndexPaths = self.indexPaths[notiName], !existingIndexPaths.contains(indexPath) {
                 self.indexPaths[notiName]?.append(indexPath)
             }
         }
-        debounce()
     }
-    
+    /// 디바운스를 설정하는 메서드
     private func debounce() {
-        // 새로운 작업 아이템 생성
+        // 일정 시간이 지난 후, 동작할 행동 설정
         let newWorkItem = DispatchWorkItem { [weak self] in
             guard let self = self else { return }
+            print(#function)
             self.postNotification()
-            
         }
-        // 작업 아이템을 예약
-        workItem = newWorkItem
-        queue.asyncAfter(
-            deadline: .now() + self.interval,
-            execute: newWorkItem)
+        // 행동 저장
+        self.workItem = newWorkItem
+        // 디바운스 설정
+        self.queue.asyncAfter(deadline: .now() + self.interval, execute: newWorkItem)
     }
     
+    // MARK: - 에러 디바운스
+    /// 인덱스패스를 삭제후, 디바운스를 통해 에러를 post하도록 설정하는 메서드
+    func triggerErrorDebounce(_ errorType: ErrorEnum) {
+        // 디바운스 취소
+        self.cancelScheduledWork()
+        // 에러 설정
+        self.error = errorType
+        // 업데이트하지 않음
+        self.indexPaths = [:]
+        // 디바운스 설정
+        self.debounce()
+    }
+    
+    // MARK: - 노티피케이션 post
     private func postNotification() {
         DispatchQueue.main.async { [weak self] in
-//            guard !self.indexPaths.isEmpty else { return }
             guard let self = self else { return }
-            print("\(#function) ----- 1")
+            // 노티피케이션 post
             NotificationCenter.default.post(
                 name: self.notificationName,
                 object: nil,
-                userInfo: self.indexPaths
-            )
-            self.indexPaths = [:]
+                userInfo: self.getUserInfoData)
+            // 데이터를 초기화
+            self.reset()
         }
     }
+    
+    private var getUserInfoData: [String: Any] {
+        return self.error != nil
+            ? ["error": self.error ?? .unknownError]
+            : self.indexPaths
+    }
+    
+    // MARK: - 데이터 초기화
+    /// 디바운스 취소, 인덱스패스 및 에러 데이터 초기화
     func reset() {
-        workItem?.cancel()
-        indexPaths = [:]
+        self.cancelScheduledWork()
+        self.indexPaths = [:]
+        self.error = nil
+    }
+    private func cancelScheduledWork() {
+        self.workItem?.cancel()
     }
 }
 
@@ -245,49 +288,6 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    // MARK: - 노티피케이션 Post
-    func postNotification(
-        name: Notification.Name,
-        eventType: NotificationInfoString,
-        indexPath: [IndexPath])
-    {
-        DispatchQueue.main.async {
-            print("\(#function) ----- \(name) ----- \(eventType.notificationName)")
-            // 비어있다면, 노티피케이션을 post하지 않음
-            guard !indexPath.isEmpty else { return }
-            
-            // 노티피케이션 전송
-            NotificationCenter.default.post(
-                name: name,
-                object: nil,
-                userInfo: [eventType.notificationName: indexPath]
-            )
-        }
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     // MARK: - 초기화
     /// RoomUsers / User에 대한 observer를 삭제하는 메서드
     func removeRoomsUsersObserver() {
@@ -305,6 +305,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
         self.hasMoreReceiptData = true
         // 디바운싱 초기화
         self.userDebouncer.reset()
+        self.receiptDebouncer.reset()
         
         // RoomUsers 데이터 초기화
         self.roomUserDataDict = [:]
@@ -461,7 +462,7 @@ enum DataChangeEvent<T> {
     case initialLoad(T)
 }
 
-enum NotificationInfoString {
+enum DataChangeType {
     case updated
     case added
     case removed

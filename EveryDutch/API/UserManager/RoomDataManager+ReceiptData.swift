@@ -98,7 +98,7 @@ extension RoomDataManager {
             }
         }
 //        self.postNotification(name: .receiptDataChanged, eventType: .updated, indexPath: updatedIndexPaths)
-        self.receiptDebouncer.addIndexPathsAndDebounce(eventType: .updated, updatedIndexPaths)
+        self.receiptDebouncer.triggerDebounceWithIndexPaths(eventType: .updated, updatedIndexPaths)
     }
     
     // MARK: - 초기 설정
@@ -126,7 +126,7 @@ extension RoomDataManager {
 //            name: .receiptDataChanged,
 //            eventType: .initialLoad,
 //            indexPath: addedIndexPaths)
-        self.receiptDebouncer.addIndexPathsAndDebounce(eventType: .initialLoad, addedIndexPaths)
+        self.receiptDebouncer.triggerDebounceWithIndexPaths(eventType: .initialLoad, addedIndexPaths)
     }
     
     // MARK: - 생성
@@ -157,7 +157,7 @@ extension RoomDataManager {
         self.updateIndexPaths(0)
         
         // 변경 사항을 알리는 알림 전송
-        self.receiptDebouncer.addIndexPathsAndDebounce(eventType: .added, addedIndexPaths)
+        self.receiptDebouncer.triggerDebounceWithIndexPaths(eventType: .added, addedIndexPaths)
     }
 
 
@@ -186,7 +186,8 @@ extension RoomDataManager {
             self.receiptIDToIndexPathMap[receiptID] = indexPath
             addedIndexPaths.append(indexPath)
         }
-        self.postNotification(name: .receiptDataChanged, eventType: .added, indexPath: addedIndexPaths)
+        // 변경 사항을 알리는 알림 전송
+        self.receiptDebouncer.triggerDebounceWithIndexPaths(eventType: .added, addedIndexPaths)
     }
     
     // MARK: - 삭제
@@ -204,7 +205,7 @@ extension RoomDataManager {
             // 삭제 후 인덱스 재정렬
             self.updateIndexPaths(indexPath.row)
         }
-        self.receiptDebouncer.addIndexPathsAndDebounce(eventType: .removed, removedIndexPaths)
+        self.receiptDebouncer.triggerDebounceWithIndexPaths(eventType: .removed, removedIndexPaths)
     }
     
     private func updateIndexPaths(_ index: Int) {

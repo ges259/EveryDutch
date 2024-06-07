@@ -9,10 +9,8 @@ import Foundation
 
 extension RoomDataManager {
     // MARK: - 데이터 가져오기(옵저버)
-    func fetchDecoration(roomDict: [String : Rooms],
-                         completion: @escaping () -> Void) {
-        
-        self.roomDebouncer.addIndexPathsAndDebounce(eventType: .updated, [])
+    func fetchDecoration(roomDict: [String : Rooms]) {
+        self.roomDebouncer.triggerDebounceWithIndexPaths(eventType: .updated, [])
         let roomIDArray: [String] = Array(roomDict.keys)
         DispatchQueue.global(qos: .utility).async {
             self.roomsAPI.observeDecorations(IDs: roomIDArray) { [weak self] result in
@@ -20,9 +18,6 @@ extension RoomDataManager {
                 switch result {
                 case .success(let event):
                     self.handleDecoEvent(event)
-                    DispatchQueue.main.async {
-                        completion()
-                    }
                 case .failure(let error):
                     print("error ----- \(#function) ----- \(error)")
                 }
@@ -32,6 +27,7 @@ extension RoomDataManager {
     
     // MARK: - 이벤트 처리
     private func handleDecoEvent(_ event: DataChangeEvent<[String: Decoration?]>) {
+        self.roomDebouncer.triggerDebounceWithIndexPaths(eventType: .updated, [])
         switch event {
         case .added(let toAdd):
             print("\(#function) ----- add")
@@ -56,7 +52,7 @@ extension RoomDataManager {
             }
         }
         // 노티피케이션 post
-        self.roomDebouncer.addIndexPathsAndDebounce(eventType: .updated, addedIndexPaths)
+        self.roomDebouncer.triggerDebounceWithIndexPaths(eventType: .updated, addedIndexPaths)
     }
     
     // MARK: - 삭제
@@ -64,7 +60,7 @@ extension RoomDataManager {
         if let indexPath = self.roomIDToIndexPathMap[removed] {
             self.roomsCellViewModels[indexPath.row].removeDecoration()
             // 노티피케이션 post
-            self.roomDebouncer.addIndexPathsAndDebounce(eventType: .removed, [indexPath])
+            self.roomDebouncer.triggerDebounceWithIndexPaths(eventType: .removed, [indexPath])
         }
     }
 }
