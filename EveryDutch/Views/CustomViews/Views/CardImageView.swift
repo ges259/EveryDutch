@@ -14,7 +14,6 @@ final class CardImageView: UIView {
     private var backgroundImg: UIImageView = {
         let img = UIImageView()
         img.backgroundColor = UIColor.medium_Blue
-//        img.contentMode = .scaleAspectFit
         img.contentMode = .scaleAspectFill
         return img
     }()
@@ -185,6 +184,10 @@ extension CardImageView {
     
     /// [데코]
     func setupDecorationData(data decorationData: Decoration?) {
+        
+        self.backgroundImg.image = nil
+        self.backgroundImg.backgroundColor = .medium_Blue
+        
         guard let decorationData = decorationData else { return }
         self.blurView.isHidden = !decorationData.blur
         self.titleLbl.textColor = decorationData.getTitleColor

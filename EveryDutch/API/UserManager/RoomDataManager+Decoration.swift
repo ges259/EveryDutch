@@ -27,7 +27,7 @@ extension RoomDataManager {
     
     // MARK: - 이벤트 처리
     private func handleDecoEvent(_ event: DataChangeEvent<[String: Decoration?]>) {
-        self.roomDebouncer.triggerDebounceWithIndexPaths(eventType: .updated, [])
+        self.roomDebouncer.triggerDebounceWithIndexPaths(eventType: .updated)
         switch event {
         case .added(let toAdd):
             print("\(#function) ----- add")

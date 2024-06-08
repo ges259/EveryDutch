@@ -14,11 +14,13 @@ extension DecorationAPI {
     func uploadImage(data: [String: UIImage]) async throws -> [String: String] {
         var urlDict = [String: String]()
         for (key, image) in data {
-            let uploadURL = try await self.uploadImageAndGetURL(key: key, image: image)
-            urlDict[key] = uploadURL
+            let uniqueKey = UUID().uuidString // 고유 키 생성
+            let uploadURL = try await self.uploadImageAndGetURL(key: uniqueKey, image: image)
+            urlDict[key] = uploadURL // 고유 키와 URL 저장
         }
         return urlDict
     }
+    
     
     private func uploadImageAndGetURL(key: String, image: UIImage) async throws -> String {
         guard let imageData = image.jpegData(compressionQuality: 0.8) else {

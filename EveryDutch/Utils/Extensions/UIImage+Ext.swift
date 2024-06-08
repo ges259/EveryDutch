@@ -193,17 +193,50 @@ internal extension CIImage {
 
 
 
+//extension UIImageView {
+//    func setImage(
+//        from urlString: String?,
+//        placeholder: UIImage? = nil,
+//        options: SDWebImageOptions = .highPriority)
+//    {
+//          guard let urlString = urlString, let url = URL(string: urlString) else {
+//              self.image = placeholder
+//              return
+//          }
+//          print("가져온 url : \(url)")
+//          self.sd_setImage(with: url, placeholderImage: placeholder, options: options, completed: nil)
+//      }
+//}
+
 extension UIImageView {
     func setImage(
         from urlString: String?,
         placeholder: UIImage? = nil,
         options: SDWebImageOptions = .highPriority)
     {
-          guard let urlString = urlString, let url = URL(string: urlString) else {
-              self.image = placeholder
-              return
-          }
-          
-          self.sd_setImage(with: url, placeholderImage: placeholder, options: options, completed: nil)
-      }
+        // URL 문자열이 nil인지 확인
+        guard let urlString = urlString else {
+            print("Error: urlString is nil")
+            self.image = placeholder
+            return
+        }
+        
+        // URL 생성
+        guard let url = URL(string: urlString) else {
+            print("Error: Invalid URL string: \(urlString)")
+            self.image = placeholder
+            return
+        }
+        
+        print("Fetched URL: \(url)")
+        
+        // 이미지 설정
+        self.sd_setImage(with: url, placeholderImage: placeholder, options: options) { (image, error, cacheType, imageUrl) in
+            if let error = error {
+                print("Error setting image: \(error.localizedDescription)")
+            } else {
+                print("Successfully set image from: \(imageUrl?.absoluteString ?? "unknown URL")")
+            }
+        }
+    }
 }

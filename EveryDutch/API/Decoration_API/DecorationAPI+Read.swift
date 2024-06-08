@@ -13,43 +13,28 @@ protocol DecorationAPI {}
 extension DecorationAPI {
     // MARK: - 데코레이션 가져오기
     func fetchDecoration(dataRequiredWhenInEditMode: String?) async throws -> Decoration? {
-        guard let dataRequiredWhenInEidtMode = dataRequiredWhenInEditMode else {
+        guard let decoID = dataRequiredWhenInEditMode else {
             throw ErrorEnum.readError
         }
         
         return try await withCheckedThrowingContinuation
         { (continuation: CheckedContinuation<Decoration?, Error>) in
-            self.fetchDecoration(with: dataRequiredWhenInEidtMode) { result in
-                switch result {
-                case .success(let deco):
-                    continuation.resume(returning: deco)
-                case .failure(_):
-                    continuation.resume(throwing: ErrorEnum.readError)
+            CARD_DECORATION_REF
+                .child(decoID)
+                .observeSingleEvent(of: .value) { snapshot in
+                    guard snapshot.exists() else {
+                        continuation.resume(returning: nil)
+                        return
+                    }
+                    guard let value = snapshot.value as? [String: Any] else {
+                        continuation.resume(throwing: ErrorEnum.readError)
+                        return
+                    }
+                    let decoration = Decoration(dictionary: value)
+                    continuation.resume(returning: decoration)
                 }
-            }
         }
     }
-
-    private func fetchDecoration(
-        with id: String,
-        completion: @escaping (Result<Decoration?, ErrorEnum>) -> Void)
-    {
-        CARD_DECORATION_REF
-            .child(id)
-            .observeSingleEvent(of: .value) { snapshot in
-                guard snapshot.exists() else {
-                    completion(.success(nil))
-                    return
-                }
-                guard let value = snapshot.value as? [String: Any] else {
-                    completion(.failure(.readError))
-                    return
-                }
-                let decoration = Decoration(dictionary: value)
-                completion(.success(decoration))
-            }
-    }
-    
     
     
     
@@ -71,10 +56,13 @@ extension DecorationAPI {
                         return
                     }
                     let decoration = Decoration(dictionary: valueData)
+                    print("\(#function) ----- Success")
+                    dump(decoration)
                     completion(.success(.added([id: decoration])))
                 } else {
-                    // 스냅샷이 존재하지 않으면 데이터가 삭제된 것으로 간주
-//                    completion(.success(.removed(id)))
+                    // 스냅샷이 존재하지 않으면 빈 딕셔너리 리턴
+                    completion(.success(.added([:])))
+                    print("\(#function) ----- Error")
                 }
             }
             
