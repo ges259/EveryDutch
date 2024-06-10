@@ -8,45 +8,24 @@
 import UIKit
 
 struct ReceiptScreenPanUsersCellVM: ReceiptScreenPanUsersCellVMProtocol {
-    
-    var pay: Int
-    var userID: String
-    var done: Bool
-    
-    var userName: String
-    var image: String
+    var user: User?
+    var paymentDetail: PaymentDetail
     
     
-    init(roomUser: User,
-         paymentDetail: PaymentDetail) {
-        self.done = paymentDetail.done
-        self.pay = paymentDetail.pay
-        self.userID = paymentDetail.userID
-        
-        
-        self.userName = roomUser.userName
-        self.image = roomUser.userProfile
-        
-        
-        // MARK: - Fix
-        // 클로저가 굳이 필요할까?
-        self.doneStatusChanged?(self.doneImg)
+    var getUserName: String {
+        return self.user?.userName ?? "???"
+    }
+    var getPay: Int {
+        return self.paymentDetail.pay
+    }
+    var getUserID: String {
+        return self.paymentDetail.userID
     }
     
-    
-    
-
-    
-    var doneImg: UIImage? {
-        return self.done
-        ? .check_Square_Img
-        : .empty_Square_Img
+    mutating func changeDoneValue(_ bool: Bool) {
+        self.paymentDetail.done = bool
     }
-    var profileImg: UIImage? {
-        return self.image == ""
-        ? .person_Fill_Img
-        : .x_Mark_Img
-    }
+    
     
     
     var doneStatusChanged: ((UIImage?) -> Void)?
@@ -54,11 +33,28 @@ struct ReceiptScreenPanUsersCellVM: ReceiptScreenPanUsersCellVMProtocol {
     
     
     
-    
-    
+    init(roomUser: User?,
+         paymentDetail: PaymentDetail) {
+        self.user = roomUser
+        self.paymentDetail = paymentDetail
+        // MARK: - Fix
+        // 클로저가 굳이 필요할까?
+        self.doneStatusChanged?(self.doneImg)
+    }
 
     
     
     
+
     
+    var doneImg: UIImage? {
+        return self.paymentDetail.done
+        ? .check_Square_Img
+        : .empty_Square_Img
+    }
+    var profileImg: UIImage? {
+        return self.user?.userProfile == ""
+        ? .person_Fill_Img
+        : .x_Mark_Img
+    }
 }

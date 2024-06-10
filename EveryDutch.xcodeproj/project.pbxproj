@@ -183,6 +183,7 @@
 		5F9F76632B6C227D00BB6511 /* ProfileCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F9F76622B6C227D00BB6511 /* ProfileCoordinator.swift */; };
 		5FA14C632B5422C000E8F0E7 /* ReadRoomMoneyData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FA14C622B5422C000E8F0E7 /* ReadRoomMoneyData.swift */; };
 		5FA1D0092BAF2E8E00FBA423 /* ProfileType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FA1D0082BAF2E8E00FBA423 /* ProfileType.swift */; };
+		5FAC810F2C16E3FD00AA299D /* UserProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FAC810E2C16E3FD00AA299D /* UserProfileVC.swift */; };
 		5FAC8A952B5860AD003B4A05 /* ReceiptWriteTableDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FAC8A942B5860AD003B4A05 /* ReceiptWriteTableDelegate.swift */; };
 		5FB278612B4716B400491C2B /* CheckReceiptCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FB278602B4716B400491C2B /* CheckReceiptCoordinator.swift */; };
 		5FB4F6F62B432528002F6CF3 /* UsersTableEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FB4F6F52B432528002F6CF3 /* UsersTableEnum.swift */; };
@@ -412,6 +413,7 @@
 		5F9F76622B6C227D00BB6511 /* ProfileCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCoordinator.swift; sourceTree = "<group>"; };
 		5FA14C622B5422C000E8F0E7 /* ReadRoomMoneyData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadRoomMoneyData.swift; sourceTree = "<group>"; };
 		5FA1D0082BAF2E8E00FBA423 /* ProfileType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileType.swift; sourceTree = "<group>"; };
+		5FAC810E2C16E3FD00AA299D /* UserProfileVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileVC.swift; sourceTree = "<group>"; };
 		5FAC8A942B5860AD003B4A05 /* ReceiptWriteTableDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptWriteTableDelegate.swift; sourceTree = "<group>"; };
 		5FB278602B4716B400491C2B /* CheckReceiptCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckReceiptCoordinator.swift; sourceTree = "<group>"; };
 		5FB4F6F52B432528002F6CF3 /* UsersTableEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersTableEnum.swift; sourceTree = "<group>"; };
@@ -621,6 +623,7 @@
 				5F6FDDE32B505DD000F09CCD /* ReceiptScreenPanUsersCellVM.swift */,
 				5F9905042B4ABACC00DB9747 /* UsersTableViewVM.swift */,
 				5F9905062B4ABAD400DB9747 /* UsersTableViewCellVM.swift */,
+				5FAC810E2C16E3FD00AA299D /* UserProfileVC.swift */,
 			);
 			path = Room;
 			sourceTree = "<group>";
@@ -1438,6 +1441,7 @@
 				5F47CD102B3AECB500FCBFA4 /* SettleMoneyRoomCoordinator.swift in Sources */,
 				5FE8A2EB2BDD26490072D3D9 /* CustomPickerDelegate.swift in Sources */,
 				5F0BCE3A2B53144A007A3564 /* ReceiptWriteUsersCellVMProtocol.swift in Sources */,
+				5FAC810F2C16E3FD00AA299D /* UserProfileVC.swift in Sources */,
 				5F9F765D2B6C181000BB6511 /* ShadowType.swift in Sources */,
 				5F8513CC2B4D5F1900A5B22D /* ReadReceipt.swift in Sources */,
 				5FBCD2E62C1432D2005812ED /* DataChangeType.swift in Sources */,

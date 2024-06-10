@@ -8,12 +8,17 @@
 import UIKit
 
 protocol ReceiptScreenPanUsersCellVMProtocol {
-    var pay: Int { get }
+    
+    var getUserName: String { get }
     var profileImg: UIImage? { get }
+    
+    var getPay: Int { get }
+    var getUserID: String { get }
+    
+    
+    mutating func changeDoneValue(_ bool: Bool)
+    
+    
     var doneImg: UIImage? { get }
-    var userName: String { get }
-    var done: Bool { get set }
-    
-    
     var doneStatusChanged: ((UIImage?) -> Void)? { get set }
 }

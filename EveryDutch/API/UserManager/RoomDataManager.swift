@@ -169,9 +169,8 @@ final class RoomDataManager: RoomDataManagerProtocol {
     }
     
     /// userID로 User의 정보를 알기 위해 사용
-    func getIdToRoomUser(usersID: String) -> User {
+    func getIdToRoomUser(usersID: String) -> User? {
         return self.roomUserDataDict[usersID]
-        ?? User(dictionary: [:])
     }
     
     /// 인데스패스 리턴

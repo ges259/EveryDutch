@@ -46,4 +46,10 @@ extension UIViewController {
             self.present(alertController, animated: true)
         }
     }
+    
+    
+    
+    func cardHeight() -> CGFloat {
+        return (self.view.frame.width - 20) * 1.8 / 3
+    }
 }

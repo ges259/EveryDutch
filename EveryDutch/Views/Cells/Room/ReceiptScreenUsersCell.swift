@@ -54,9 +54,9 @@ extension ReceiptScreenUsersCell {
     func configureCell(with viewModel: ReceiptScreenPanUsersCellVMProtocol) {
         self.viewModel = viewModel
         
-        self.tableCellStackView.userNameLbl.text = viewModel.userName
+        self.tableCellStackView.userNameLbl.text = viewModel.getUserName
         self.tableCellStackView.profileImg.image = viewModel.profileImg
-        self.tableCellStackView.priceLbl.text = "\(viewModel.pay)"
+        self.tableCellStackView.priceLbl.text = "\(viewModel.getPay)"
         self.rightBtn.setImage(viewModel.doneImg, for: .normal)
     }
     
@@ -98,6 +98,7 @@ extension ReceiptScreenUsersCell {
     
     // MARK: - 오른쪽 버튼 액션
     @objc private func rightBtnTapped() {
-        self.viewModel?.done.toggle()
+        self.viewModel?.changeDoneValue(true)
     }
 }
+

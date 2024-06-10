@@ -61,7 +61,6 @@ extension DecorationAPI {
                     completion(.success(.added([id: decoration])))
                 } else {
                     // 스냅샷이 존재하지 않으면 빈 딕셔너리 리턴
-                    completion(.success(.added([:])))
                     print("\(#function) ----- Error")
                 }
             }

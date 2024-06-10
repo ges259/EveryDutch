@@ -58,7 +58,7 @@ final class ProfileVC: UIViewController {
     private let coordinator: ProfileCoordProtocol
     
     
-    private lazy var cardHeight = (self.view.frame.width - 20) * 1.8 / 3
+
     
     
     
@@ -129,7 +129,7 @@ extension ProfileVC {
         }
         // 카드 이미지 뷰
         self.cardImgView.snp.makeConstraints { make in
-            make.height.equalTo(self.cardHeight)
+            make.height.equalTo(self.cardHeight())
         }
         // 스택뷰
         self.totalStackView.snp.makeConstraints { make in
