@@ -38,7 +38,7 @@ final class ReceiptWriteUsersCell: UITableViewCell {
     
 
     // MARK: - 프로퍼티
-    var viewModel: ReceiptWriteUsersCellVMProtocol?
+    var viewModel: UsersTableViewCellVMProtocol?
     weak var delegate: ReceiptWriteTableDelegate?
     
     
@@ -82,18 +82,15 @@ final class ReceiptWriteUsersCell: UITableViewCell {
 
 
 // MARK: - 화면 설정
-
 extension ReceiptWriteUsersCell {
-    
-    // MARK: - UI 설정
+    /// UI 설정
     private func configureUI() {
         self.selectionStyle = .none
         self.separatorInset = .zero
         self.backgroundColor = .normal_white
     }
     
-    
-    // MARK: - 오토레이아웃 설정
+    /// 오토레이아웃 설정
     private func configureAutoLayout() {
         self.addSubview(self.tableCellStackView)
         self.contentView.addSubview(self.rightBtn)
@@ -118,7 +115,7 @@ extension ReceiptWriteUsersCell {
         }
     }
     
-    // MARK: - 액션 설정
+    /// 액션 설정
     private func configureAction() {
         self.rightBtn.addTarget(
             self,
@@ -141,10 +138,11 @@ extension ReceiptWriteUsersCell {
     
     
     // MARK: - 셀 설정
-    func configureCell(with viewModel: ReceiptWriteUsersCellVMProtocol?) {
+    func configureCell(with viewModel: UsersTableViewCellVMProtocol?) {
+        // MARK: - Fix
         self.viewModel = viewModel
         
-        self.tableCellStackView.userNameLbl.text = viewModel?.userName
+        self.tableCellStackView.userNameLbl.text = viewModel?.getUserName
         self.tableCellStackView.profileImg.image = viewModel?.profileImg
     }
     
@@ -170,8 +168,11 @@ extension ReceiptWriteUsersCell {
     
     // MARK: - 오른쪽 버튼 액션
     @objc private func rightBtnTapped() {
-        self.delegate?.rightBtnTapped(
-            user: self.viewModel?.roomUserDataDictionary)
+        
+        
+        // MARK: - Fix
+//        self.delegate?.rightBtnTapped(
+//            user: self.viewModel?.roomUserDataDictionary)
     }
     
     // MARK: - 셀 선택 시 가격 텍스트필드 설정

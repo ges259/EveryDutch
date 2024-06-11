@@ -158,10 +158,29 @@ final class RoomDataManager: RoomDataManagerProtocol {
         return self.usersCellViewModels.count
     }
     
-    /// 뷰모델 리턴
-    func getUsersViewModel(index: Int) -> UsersTableViewCellVMProtocol {
+    /// 모든 뷰모델 리턴
+    func getAllOfUsersViewModel(index: Int) -> UsersTableViewCellVMProtocol {
         return self.usersCellViewModels[index]
     }
+    
+    /// userID에 해당하는 뷰모델을 리턴
+    func getOneOfUsersViewModel(userID: String) -> UsersTableViewCellVMProtocol? {
+        // userIDToIndexPathMap에서 userID로 IndexPath를 찾습니다.
+        guard let indexPath = userIDToIndexPathMap[userID] else {
+            return nil  // userID가 존재하지 않을 경우 nil 반환
+        }
+        // IndexPath를 사용하여 usersCellViewModels에서 뷰모델을 찾습니다.
+        let row = indexPath.row
+        guard row < usersCellViewModels.count else {
+            return nil  // IndexPath가 유효하지 않을 경우 nil 반환
+        }
+        return usersCellViewModels[row]
+    }
+    
+    
+    
+    
+    
     
     /// 특정 유저 정보 리턴
     var getRoomUsersDict: RoomUserDataDict {
@@ -172,6 +191,8 @@ final class RoomDataManager: RoomDataManagerProtocol {
     func getIdToRoomUser(usersID: String) -> User? {
         return self.roomUserDataDict[usersID]
     }
+    
+    
     
     /// 인데스패스 리턴
 //    func getUserIndexPath(userID: String) -> IndexPath? {
@@ -220,18 +241,18 @@ final class RoomDataManager: RoomDataManagerProtocol {
         self.startLoadRoomData(completion: completion)
     }
     
-    /// 방의 이름
+    /// 현재 방의 이름
     var getCurrentRoomName: String? {
         let currentRoom = self.currentRoom?.room
         return currentRoom?.roomName
     }
     
-    /// 방 ID 리턴
+    /// 현재 방 ID 리턴
     var getCurrentRoomsID: String? {
         return self.currentRoom?.roomID
     }
 
-    /// 버전 ID 리턴
+    /// 현재 버전 ID 리턴
     var getCurrentVersion: String? {
         return self.currentRoom?.room.versionID
     }

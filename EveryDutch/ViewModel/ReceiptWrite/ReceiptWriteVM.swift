@@ -228,27 +228,21 @@ extension ReceiptWriteVM {
         // userData섹션의 인덱스를 가져옴
         let sectionIndex = self.sectionIndex(receiptWriteEnum: .userData)
         //
-        var usersCellArray: [ReceiptWriteUsersCellVM] = []
+        var usersCellArray: [UsersTableViewCellVMProtocol] = []
         // 추가된 유저 처리
         addedUsers.forEach { (userID, roomUser) in
             if self.selectedUsers[userID] == nil {
-                // 셀의 뷰모델 생성
-                let newCellVM = ReceiptWriteUsersCellVM(userID: userID,
-                                                        roomUsers: roomUser)
+                // 셀의 뷰모델 가져오기
+                let newCellVM = self.roomDataManager.getOneOfUsersViewModel(userID: userID)
+                // 옵셔널 바인딩?
+                guard let newCellVM = newCellVM else { return }
+                // 배열에 추가
                 usersCellArray.append(newCellVM)
                 // 선택되었다고 표시
                 self.selectedUsers[userID] = roomUser
             }
         }
-        // 유저셀 뷰모델 배열이 있다면,
-        if (self.cellDataDictionary[sectionIndex] != nil) {
-            // 배열 합치기
-            self.cellDataDictionary[sectionIndex]?.append(contentsOf: usersCellArray)
-            // 유저셀 뷰모델 배열이 없다면,
-        } else {
-            // 배열 생성
-            self.cellDataDictionary[sectionIndex] = usersCellArray
-        }
+        self.cellDataDictionary[sectionIndex, default: []].append(contentsOf: usersCellArray)
     }
     
     /// [데이터 셀] 생성
@@ -264,10 +258,15 @@ extension ReceiptWriteVM {
     // MARK: - 셀 뷰모델 반환
     private func getCurrentReceiptWriteCellVM<T: ReceiptWriteCellVMProtocol>(
         as type: T.Type,
-        indexPath: IndexPath) -> T?
-    {
-        if let dd = self.cellDataDictionary[indexPath.section]?[indexPath.row] as? T {
-            return dd
+        indexPath: IndexPath) -> T? {
+        guard let sectionArray = self.cellDataDictionary[indexPath.section],
+              indexPath.row < sectionArray.count else {
+    
+            return nil
+        }
+        
+        if let cellVM = sectionArray[indexPath.row] as? T {
+            return cellVM
         }
         return nil
     }
@@ -276,9 +275,9 @@ extension ReceiptWriteVM {
             as: ReceiptWriteDataCellVM.self,
             indexPath: indexPath)
     }
-    func getUserCellViewModel(indexPath: IndexPath) -> ReceiptWriteUsersCellVMProtocol? {
+    func getUserCellViewModel(indexPath: IndexPath) -> UsersTableViewCellVMProtocol? {
         return self.getCurrentReceiptWriteCellVM(
-            as: ReceiptWriteUsersCellVM.self,
+            as: UsersTableViewCellVM.self,
             indexPath: indexPath)
     }
 }
@@ -315,7 +314,7 @@ extension ReceiptWriteVM {
         
         // MARK: - Fix
         // 에러처리 추가
-        guard let usersVM = self.cellDataDictionary[sectionIndex] as? [ReceiptWriteUsersCellVMProtocol]
+        guard let usersVM = self.cellDataDictionary[sectionIndex] as? [UsersTableViewCellVMProtocol]
         else {
             self.errorClosure?(.NoPersonalID)
             return
@@ -344,7 +343,7 @@ extension ReceiptWriteVM {
         // MARK: - Fix
         // 에러처리 추가
         // cellDataDictionary에서 유저셀의 뷰모델이 맞는지 확인
-        guard let usersVM = self.cellDataDictionary[sectionIndex] as? [ReceiptWriteUsersCellVMProtocol]
+        guard let usersVM = self.cellDataDictionary[sectionIndex] as? [UsersTableViewCellVMProtocol]
         else {
             self.errorClosure?(.NoPersonalID)
             return []

@@ -30,7 +30,7 @@ protocol RoomDataManagerProtocol {
     // MARK: - RoomUsers
     var getNumOfRoomUsers: Int { get }
     var getRoomUsersDict: RoomUserDataDict { get }
-    func getUsersViewModel(index: Int) -> UsersTableViewCellVMProtocol
+    func getAllOfUsersViewModel(index: Int) -> UsersTableViewCellVMProtocol
     func getIdToRoomUser(usersID: String) -> User?
     func removeRoomsUsersObserver()
     // API
@@ -46,4 +46,13 @@ protocol RoomDataManagerProtocol {
     func updateReceiptUserName(receipt: Receipt) -> Receipt
     // API
     func loadMoreReceiptData()
+    
+    
+    
+    
+    
+    
+    
+    // MARK: - Fix
+    func getOneOfUsersViewModel(userID: String) -> UsersTableViewCellVMProtocol?
 }

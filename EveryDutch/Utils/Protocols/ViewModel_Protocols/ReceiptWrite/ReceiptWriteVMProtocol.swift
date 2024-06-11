@@ -90,7 +90,7 @@ protocol ReceiptWriteVMProtocol {
     
     // MARK: - 셀 뷰모델 반환
     func getDataCellViewModel(indexPath: IndexPath) -> ReceiptWriteDataCellVMProtocol?
-    func getUserCellViewModel(indexPath: IndexPath) -> ReceiptWriteUsersCellVMProtocol?
+    func getUserCellViewModel(indexPath: IndexPath) -> UsersTableViewCellVMProtocol?
     
     
     

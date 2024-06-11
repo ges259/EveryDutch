@@ -59,7 +59,7 @@ extension UsersTableViewVM {
     
     /// 셀의 뷰모델 반환
     func cellViewModel(at index: Int) -> UsersTableViewCellVMProtocol {
-        return self.roomDataManager.getUsersViewModel(index: index)
+        return self.roomDataManager.getAllOfUsersViewModel(index: index)
     }
     
     /// 테이블뷰 스크롤 여부
