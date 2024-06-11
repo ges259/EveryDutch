@@ -33,6 +33,13 @@ struct UsersTableViewCellVM: UsersTableViewCellVMProtocol {
     
     
     
+    var getRoomUserDataDict: RoomUserDataDict {
+        return [self.userID: self.roomUser]
+    }
+    
+    var getUser: User {
+        return self.roomUser
+    }
     var getUserName: String {
         return self.roomUser.userName
     }
@@ -86,67 +93,14 @@ extension UsersTableViewCellVM {
         }
     }
 }
-    
-    
-
-
-
-// MARK: - 가격 텍스트
-extension UsersTableViewCellVM {
-    /// 가격 레이블 형식 설정
-    /// '10000' -> '10,000원' 으로 바꾸기
-    func configureLblFormat(price: String) -> String? {
-        guard let price = Int(price) else { return "0원" }
-        
-        return price == 0
-        ? "0원"
-        : NumberFormatter.formatString(price: price)
-    }
-    
-    /// 가격이 변하면, 텍스트필드 형식을 유지하며 변환
-    /// '10,000원' -> '15,000원' 으로 바꾸기
-    func configureTfFormat(text: String?) -> String? {
-        return NumberFormatter.formatStringChange(price: text)
-    }
-    
-    /// 가격 텍스트필드 형식 제거
-    /// '10,000원' -> '10000' 으로 바꾸기
-    func removeFormat(text: String?) -> String {
-        let textString = NumberFormatter.removeFormat(price: text) ?? "0"
-        return textString
-    }
-    
-    
-    
-    /// 0원인지 확인하는 메서드
-    func textIsZero(text: String?) -> String? {
-        return text == "0"
-        ? ""
-        : text
-    }
-    
-    /// 가격 텍스트필드의 alpha값을 설정
-    func priceTFAlpha(isSelected: Bool) -> CGFloat {
-        return isSelected
-        ? 1
-        : 0
-    }
-}
-    
-    
-    
-    
-    
-    
-    
 
 // MARK: - 데이터 수정
 extension UsersTableViewCellVM {
-    mutating func updateUserData(_ user: [String: Any]) -> User? {
+    mutating func updateUserData(_ user: [String: Any]) {
         guard !user.isEmpty,
               let key = user.keys.first,
               let value = user.values.first as? String
-        else { return nil }
+        else { return }
         
         switch key {
         case DatabaseConstants.user_name:
@@ -160,7 +114,6 @@ extension UsersTableViewCellVM {
             break
         default: break
         }
-        return self.roomUser
     }
     
     mutating func setCumulativeAmount(_ amount: Int) {

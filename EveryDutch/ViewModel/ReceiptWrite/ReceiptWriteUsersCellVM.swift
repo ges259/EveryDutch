@@ -6,8 +6,6 @@
 //
 
 import UIKit
-
-//struct ReceiptWriteUsersCellVM: ReceiptWriteUsersCellVMProtocol {
 //    var userID: String
 //    var profileImageURL: String
 //    var userName: String

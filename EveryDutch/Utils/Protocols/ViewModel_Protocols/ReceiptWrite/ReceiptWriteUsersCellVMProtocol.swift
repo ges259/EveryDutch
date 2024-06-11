@@ -10,25 +10,8 @@ import UIKit
 
 //protocol ReceiptWriteUsersCellVMProtocol: ReceiptWriteCellVMProtocol {
 //    var userID: String { get }
-//    var profileImageURL: String { get }
-//    var userName: String { get }
-//    var profileImg: UIImage? { get }
+//    var user: User?
+
 //    var roomUserDataDictionary: RoomUserDataDict { get }
-//    
-//    
-//    
-//    func priceTFAlpha(isSelected: Bool) -> CGFloat
-//    
-//    
-//    
-//    
-//    
-//    
-//    
-//    func configureLblFormat(price: String) -> String?
-//    
-//    
-//    func removeFormat(text: String?) -> String
-//    func textIsZero(text: String?) -> String?
-//    func configureTfFormat(text: String?) -> String?
 //}
+

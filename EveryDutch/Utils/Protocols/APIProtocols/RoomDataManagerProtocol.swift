@@ -31,7 +31,7 @@ protocol RoomDataManagerProtocol {
     var getNumOfRoomUsers: Int { get }
     var getRoomUsersDict: RoomUserDataDict { get }
     func getAllOfUsersViewModel(index: Int) -> UsersTableViewCellVMProtocol
-    func getIdToRoomUser(usersID: String) -> User?
+    func getIdToUser(usersID: String) -> User?
     func removeRoomsUsersObserver()
     // API
     func loadRooms()

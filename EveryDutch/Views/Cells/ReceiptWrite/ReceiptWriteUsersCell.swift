@@ -139,7 +139,6 @@ extension ReceiptWriteUsersCell {
     
     // MARK: - 셀 설정
     func configureCell(with viewModel: UsersTableViewCellVMProtocol?) {
-        // MARK: - Fix
         self.viewModel = viewModel
         
         self.tableCellStackView.userNameLbl.text = viewModel?.getUserName
@@ -168,11 +167,8 @@ extension ReceiptWriteUsersCell {
     
     // MARK: - 오른쪽 버튼 액션
     @objc private func rightBtnTapped() {
-        
-        
-        // MARK: - Fix
-//        self.delegate?.rightBtnTapped(
-//            user: self.viewModel?.roomUserDataDictionary)
+        self.delegate?.rightBtnTapped(
+            user: self.viewModel?.getRoomUserDataDict)
     }
     
     // MARK: - 셀 선택 시 가격 텍스트필드 설정

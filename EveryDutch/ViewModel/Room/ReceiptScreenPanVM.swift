@@ -91,7 +91,7 @@ final class ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
                     
         // 셀 만들기
         self.userCellViewModels = paymentDetails.map { detail in
-            let user = self.roomDataManager.getIdToRoomUser(usersID: detail.userID)
+            let user = self.roomDataManager.getIdToUser(usersID: detail.userID)
             
             return ReceiptScreenPanUsersCellVM(
                 roomUser: user,

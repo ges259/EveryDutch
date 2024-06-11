@@ -74,20 +74,14 @@ extension RoomDataManager {
         for (userID, changedData) in toUpdate {
             if let indexPath = self.userIDToIndexPathMap[userID] {
                 // 뷰모델에 바뀐 user데이터 저장
-                let user = self.usersCellViewModels[indexPath.row].updateUserData(changedData)
-                
-                if let user = user {
-                    // [userID: User] 딕셔너리 데이터 업데이트
-                    self.roomUserDataDict[userID] = user
-                    updatedIndexPaths.append(indexPath)
-                }
+                self.usersCellViewModels[indexPath.row].updateUserData(changedData)
+                updatedIndexPaths.append(indexPath)
             }
         }
         self.userDebouncer.triggerDebounceWithIndexPaths(eventType: .updated, updatedIndexPaths)
     }
     // MARK: - 생성
     private func handleAddedRoomUsersEvent(_ toAdd: [String: User]) {
-        self.roomUserDataDict.merge(toAdd) { _, new in new }
         var addedIndexPaths = [IndexPath]()
         
         for (userID, user) in toAdd {
@@ -104,8 +98,6 @@ extension RoomDataManager {
             self.usersCellViewModels.append(viewModel)
             // 인덱스패스 업데이트
             self.userIDToIndexPathMap[userID] = indexPath
-            // [userID: User] 딕셔너리 데이터 업데이트
-            self.roomUserDataDict[userID] = user
             // 생성할 인덱스패스를 저장
             addedIndexPaths.append(indexPath)
         }
@@ -123,8 +115,6 @@ extension RoomDataManager {
             self.usersCellViewModels.remove(at: indexPath.row)
             // 인덱스패스 삭제
             self.userIDToIndexPathMap.removeValue(forKey: userID)
-            // [String: User] 데이터 삭제
-            self.roomUserDataDict.removeValue(forKey: userID)
             removedIndexPaths.append(indexPath)
             // 삭제 후 인덱스 재정렬 (인덱스 매핑 최적화)
             for row in indexPath.row..<self.usersCellViewModels.count {

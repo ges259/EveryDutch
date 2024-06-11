@@ -7,7 +7,7 @@
 
 import UIKit
 
-struct ReceiptScreenPanUsersCellVM: ReceiptScreenPanUsersCellVMProtocol {
+struct ReceiptScreenPanUsersCellVM: ReceiptScreenPanUsersCellVMProtocol, UserPriceDataProtocol {
     var user: User?
     var paymentDetail: PaymentDetail
     

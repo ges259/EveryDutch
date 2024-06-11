@@ -39,10 +39,6 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     
     // MARK: - RoomUsrs
-    /// [userID : User]로 이루어진 딕셔너리
-    /// Receipt관련 화면에서 userID로 User의 데이터 사용
-    /// ReceiptWriteVC에서 유저의 정보 사용
-    var roomUserDataDict = [String : User]()
     // UsersTableViewCell 관련 프로퍼티들
     // [UsersID : IndexPath]
     var userIDToIndexPathMap = [String: IndexPath]()
@@ -135,7 +131,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
         self.receiptDebouncer.reset()
         
         // RoomUsers 데이터 초기화
-        self.roomUserDataDict = [:]
+//        self.roomUserDataDict = [:]
         self.userIDToIndexPathMap = [:]
         self.usersCellViewModels = []
         // Receipt 데이터 초기화
@@ -179,17 +175,15 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     
     
-    
-    
-    
     /// 특정 유저 정보 리턴
     var getRoomUsersDict: RoomUserDataDict {
-        return self.roomUserDataDict
+        return usersCellViewModels.reduce(into: RoomUserDataDict()) { result, viewModel in
+            result[viewModel.userID] = viewModel.getUser
+        }
     }
-    
-    /// userID로 User의 정보를 알기 위해 사용
-    func getIdToRoomUser(usersID: String) -> User? {
-        return self.roomUserDataDict[usersID]
+    func getIdToUser(usersID: String) -> User? {
+        let usersVM = self.getOneOfUsersViewModel(userID: usersID)
+        return usersVM?.getUser
     }
     
     
@@ -292,7 +286,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
     }
     
     func updateReceiptUserName(receipt: Receipt) -> Receipt {
-        let payerUser = self.getIdToRoomUser(usersID: receipt.payer)
+        let payerUser = self.getIdToUser(usersID: receipt.payer)
         var returndReceipt = receipt
             returndReceipt.updatePayerName(with: payerUser)
         return returndReceipt
