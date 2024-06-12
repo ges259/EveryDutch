@@ -17,7 +17,8 @@ extension RoomsAPI {
     // MARK: - Rooms 데이터 fetch
     func fetchData(dataRequiredWhenInEidtMode: String?) async throws -> EditProviderModel
     {
-        guard let roomID = dataRequiredWhenInEidtMode else {
+        
+        guard let roomID = dataRequiredWhenInEidtMode ?? self.getCurrentUserID else {
             throw ErrorEnum.readError
         }
         return try await withCheckedThrowingContinuation
@@ -79,7 +80,6 @@ extension RoomsAPI {
         let userRoomsIDPath = USER_ROOMSID.child(uid)
         
         userRoomsIDPath.observe(.childAdded) { snapshot in
-            print("\(#function) ----- 1")
             guard let roomID = snapshot.key as String? else {
                 completion(.failure(.readError))
                 return
@@ -101,8 +101,8 @@ extension RoomsAPI {
         roomID: String,
         completion: @escaping (Result<DataChangeEvent<[String: Rooms]>, ErrorEnum>) -> Void)
     {
-        print("\(#function) ----- 1")
         let roomsPath = ROOMS_REF.child(roomID)
+        
         roomsPath.observe(.childChanged) { snapshot in
             guard let value = snapshot.value else {
                 print("childChanged ----- Error")

@@ -430,8 +430,10 @@ extension EditScreenVM {
     // MARK: - Fetch
     /// 데이터 가져오기
     private func fetchDatas() async throws {
-        let data = try await self.api?.fetchData(dataRequiredWhenInEidtMode: self.dataRequiredWhenInEidtMode)
-        let decoration = try await self.api?.fetchDecoration(dataRequiredWhenInEditMode: self.dataRequiredWhenInEidtMode)
+        guard let dataID = self.dataRequiredWhenInEidtMode else { return }
+        
+        let data = try await self.api?.fetchData(dataRequiredWhenInEidtMode: dataID)
+        let decoration = try await self.api?.fetchDecoration(dataRequiredWhenInEditMode: dataID)
         DispatchQueue.main.async {
             self.setupDataProviders(withData: data, decoration: decoration)
             // CardImgView와 테이블뷰의 decoration 섹션을 업데이트

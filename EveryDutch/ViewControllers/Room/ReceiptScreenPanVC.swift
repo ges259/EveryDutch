@@ -44,10 +44,6 @@ final class ReceiptScreenPanVC: UIViewController {
         return view
     }()
     
-    // 하단 버튼
-    private lazy var bottomBtn: UIButton = UIButton.btnWithTitle(
-        font: UIFont.boldSystemFont(ofSize: 17),
-        backgroundColor: UIColor.normal_white)
     
     
     
@@ -125,9 +121,6 @@ extension ReceiptScreenPanVC {
         self.usersTableView.snp.makeConstraints { make in
             make.top.leading.equalToSuperview().offset(10)
             make.trailing.bottom.equalToSuperview().offset(-10)
-        }
-        self.bottomBtn.snp.makeConstraints { make in
-            make.height.equalTo(55)
         }
     }
     

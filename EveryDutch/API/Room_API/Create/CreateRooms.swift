@@ -14,12 +14,6 @@ final class RoomsAPI: RoomsAPIProtocol, DecorationAPI {
     
     static let shared: RoomsAPIProtocol = RoomsAPI()
     private init() {}
-    
-    
-    
-    var getCurrentUserID: String? {
-        return Auth.auth().currentUser?.uid
-    }
 }
 
 

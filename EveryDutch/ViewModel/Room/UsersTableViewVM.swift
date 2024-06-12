@@ -35,6 +35,9 @@ class UsersTableViewVM: UsersTableViewVMProtocol {
     private var roomDataManager: RoomDataManagerProtocol
     private var customTableEnum: UsersTableEnum
     
+    // 클로저
+    var userCardDataClosure: ((UserDecoTuple) -> Void)?
+    var errorClosure: ((ErrorEnum) -> Void)?
     
     
     
@@ -45,6 +48,26 @@ class UsersTableViewVM: UsersTableViewVMProtocol {
          _ customTableEnum: UsersTableEnum) {
         self.roomDataManager = roomDataManager
         self.customTableEnum = customTableEnum
+    }
+    
+    func getUserAndDecoration(index: Int) {
+        Task {
+            do {
+                let userTuple = self.roomDataManager.getIndexToUserDataTuple(index: index)
+                let deco = try await self.roomDataManager.fetchDecoration(userID: userTuple.key)
+                
+                
+                DispatchQueue.main.async {
+                    self.userCardDataClosure?((user: userTuple.value, deco: deco))
+                }
+                
+                
+            } catch let error as ErrorEnum {
+                self.errorClosure?(error)
+            } catch {
+                self.errorClosure?(.unknownError)
+            }
+        }
     }
 }
     
@@ -59,7 +82,7 @@ extension UsersTableViewVM {
     
     /// 셀의 뷰모델 반환
     func cellViewModel(at index: Int) -> UsersTableViewCellVMProtocol {
-        return self.roomDataManager.getAllOfUsersViewModel(index: index)
+        return self.roomDataManager.getIndexToUsersVM(index: index)
     }
     
     /// 테이블뷰 스크롤 여부

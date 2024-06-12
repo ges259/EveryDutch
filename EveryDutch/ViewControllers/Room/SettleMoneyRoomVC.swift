@@ -16,7 +16,11 @@ final class SettleMoneyRoomVC: UIViewController {
         color: UIColor.deep_Blue)
     
     // 유저 테이블뷰가 존재하는 커스텀뷰
-    private var topView: SettleMoneyTopView = SettleMoneyTopView()
+    private lazy var topView: SettleMoneyTopView = {
+        let view = SettleMoneyTopView()
+        view.delegate = self
+        return view
+    }()
     
     /// 정산내역 테이블뷰
     private lazy var receiptTableView: CustomTableView = {
@@ -204,11 +208,6 @@ extension SettleMoneyRoomVC {
             selector: #selector(self.handleDataChanged(notification:)),
             name: .receiptDataChanged,
             object: nil)
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(self.numberOfUsersChanges),
-            name: .numberOfUsersChanges,
-            object: nil)
     }
 }
     
@@ -384,14 +383,6 @@ extension SettleMoneyRoomVC {
 
 // MARK: - 탑뷰 크기 조절
 extension SettleMoneyRoomVC {
-    /// 유저의 수가 변경되었을 때, 탑뷰의 높이를 업데이트 하는 메서드
-    /// 노티피케이션을 통해 전달 받음
-    @objc private func numberOfUsersChanges() {
-        // 탑뷰 플래그를 true로 변경
-        self.viewModel.topViewHeightPlag = true
-        // 탑뷰의 높이를 업데이트
-        self.updateTopViewHeight()
-    }
     
     /// 탑뷰를 스크롤 했을 때, 메서드
     @objc private func scrollVertical(sender: UIPanGestureRecognizer) {
@@ -582,5 +573,31 @@ extension SettleMoneyRoomVC {
                 at: .top,
                 animated: true)
         }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+extension SettleMoneyRoomVC: UsersTableViewDelegate {
+    func didSelectUser(tuple: UserDecoTuple) {
+        self.coordinator.userProfileScreen(userDecoTuple: tuple)
+    }
+    
+    /// 유저의 수가 변경되었을 때, 탑뷰의 높이를 업데이트 하는 메서드
+    func didUpdateUserCount() {
+        // 탑뷰 플래그를 true로 변경
+        self.viewModel.topViewHeightPlag = true
+        // 탑뷰의 높이를 업데이트
+        self.updateTopViewHeight()
     }
 }

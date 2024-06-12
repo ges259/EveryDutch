@@ -233,7 +233,7 @@ extension ReceiptWriteVM {
         addedUsers.forEach { (userID, roomUser) in
             if self.selectedUsers[userID] == nil {
                 // 셀의 뷰모델 가져오기
-                let newCellVM = self.roomDataManager.getOneOfUsersViewModel(userID: userID)
+                let newCellVM = self.roomDataManager.getUserIDToUsersVM(userID: userID)
                 // 옵셔널 바인딩?
                 guard let newCellVM = newCellVM else { return }
                 // 배열에 추가

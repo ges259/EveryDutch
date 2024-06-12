@@ -11,4 +11,6 @@ protocol SettleMoneyRoomCoordProtocol: Coordinator {
     func RoomSettingScreen()
     func receiptWriteScreen()
     func ReceiptScreen(receipt: Receipt)
+    
+    func userProfileScreen(userDecoTuple: UserDecoTuple)
 }

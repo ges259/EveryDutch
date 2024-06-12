@@ -623,7 +623,6 @@
 				5F6FDDE32B505DD000F09CCD /* ReceiptScreenPanUsersCellVM.swift */,
 				5F9905042B4ABACC00DB9747 /* UsersTableViewVM.swift */,
 				5F9905062B4ABAD400DB9747 /* UsersTableViewCellVM.swift */,
-				5FAC810E2C16E3FD00AA299D /* UserProfileVC.swift */,
 			);
 			path = Room;
 			sourceTree = "<group>";
@@ -827,6 +826,7 @@
 				5FB4F7052B433DEF002F6CF3 /* SettleMoneyRoomVC.swift */,
 				5F614B3F2B4593AE00EF35CE /* ReceiptScreenPanVC.swift */,
 				5F86F6BE2BF2320000B9768D /* SettleMoneyTopView.swift */,
+				5FAC810E2C16E3FD00AA299D /* UserProfileVC.swift */,
 			);
 			path = Room;
 			sourceTree = "<group>";

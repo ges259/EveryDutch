@@ -155,12 +155,12 @@ final class RoomDataManager: RoomDataManagerProtocol {
     }
     
     /// 모든 뷰모델 리턴
-    func getAllOfUsersViewModel(index: Int) -> UsersTableViewCellVMProtocol {
+    func getIndexToUsersVM(index: Int) -> UsersTableViewCellVMProtocol {
         return self.usersCellViewModels[index]
     }
     
     /// userID에 해당하는 뷰모델을 리턴
-    func getOneOfUsersViewModel(userID: String) -> UsersTableViewCellVMProtocol? {
+    func getUserIDToUsersVM(userID: String) -> UsersTableViewCellVMProtocol? {
         // userIDToIndexPathMap에서 userID로 IndexPath를 찾습니다.
         guard let indexPath = userIDToIndexPathMap[userID] else {
             return nil  // userID가 존재하지 않을 경우 nil 반환
@@ -182,10 +182,16 @@ final class RoomDataManager: RoomDataManagerProtocol {
         }
     }
     func getIdToUser(usersID: String) -> User? {
-        let usersVM = self.getOneOfUsersViewModel(userID: usersID)
+        let usersVM = self.getUserIDToUsersVM(userID: usersID)
         return usersVM?.getUser
     }
     
+    func getIndexToUserDataTuple(index: Int) -> UserDataTuple {
+        let viewModel = self.getIndexToUsersVM(index: index)
+        
+        return (key: viewModel.userID,
+                value: viewModel.getUser)
+    }
     
     
     /// 인데스패스 리턴

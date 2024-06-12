@@ -68,6 +68,22 @@ final class SettleMoneyRoomCoordinator: SettleMoneyRoomCoordProtocol {
         receiptScreenPanCoordinator.start()
     }
     
+    
+    
+    
+    
+    func userProfileScreen(userDecoTuple: UserDecoTuple) {
+        let userProfileCoordinator = UserProfileCoordinator(
+            nav: self.nav,
+            userDecoTuple: userDecoTuple)
+        
+        self.childCoordinators.append(userProfileCoordinator)
+        userProfileCoordinator.parentCoordinator = self
+        userProfileCoordinator.start()
+    }
+    
+    
+    
     func didFinish() {
         self.nav.popViewController(animated: true)
         self.parentCoordinator?.removeChildCoordinator(child: self)

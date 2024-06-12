@@ -62,3 +62,6 @@ typealias ReceiptTuple = (receiptID: String, receipt: Receipt)
 
 
 typealias ReceiptWriteCellTuple = (type: ReceiptWriteCellType?, viewModel: ReceiptWriteCellVMProtocol)
+
+
+typealias UserDecoTuple = (user: User, deco: Decoration?)

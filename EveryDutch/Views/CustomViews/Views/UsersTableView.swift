@@ -8,6 +8,11 @@
 import UIKit
 import SnapKit
 
+protocol UsersTableViewDelegate: AnyObject {
+    func didSelectUser(tuple: UserDecoTuple)
+    func didUpdateUserCount()
+}
+
 final class UsersTableView: UIView {
     // MARK: - 레이아웃
     /// cumulativeAmount 버튼
@@ -50,6 +55,9 @@ final class UsersTableView: UIView {
     // MARK: - 프로퍼티
     private var viewModel: UsersTableViewVMProtocol
     
+    // Delegate 프로퍼티 추가
+    weak var delegate: UsersTableViewDelegate?
+    
     
     
     
@@ -62,6 +70,7 @@ final class UsersTableView: UIView {
         self.configureCornerRadius()
         self.configureAction()
         self.configureAutoLayout()
+        self.configureClosure()
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -111,6 +120,13 @@ extension UsersTableView {
                 self,
                 action: #selector(self.btnTapped),
                 for: .touchUpInside)
+        }
+    }
+    
+    private func configureClosure() {
+        self.viewModel.userCardDataClosure = { [weak self] userTuple in
+            guard let self = self else { return }
+            self.delegate?.didSelectUser(tuple: userTuple)
         }
     }
 }
@@ -169,6 +185,7 @@ extension UsersTableView: UITableViewDelegate {
     func tableView(_ tableView: UITableView,
                    didSelectRowAt indexPath: IndexPath) {
         print(#function)
+        self.viewModel.getUserAndDecoration(index: indexPath.row)
     }
 }
 
@@ -260,12 +277,9 @@ extension UsersTableView {
     private func numberOfUsersChanges(key indexPathKey: String) {
         // 업데이트가 아니라면,
         guard indexPathKey != DataChangeType.updated.notificationName else { return }
-        // 높이 업데이트
+        // 스크롤 가능 여부 업데이트
         self.usersTableView.isScrollEnabled = self.viewModel.tableViewIsScrollEnabled
-        // 노티피케이션 전송
-        NotificationCenter.default.post(
-            name: .numberOfUsersChanges,
-            object: nil,
-            userInfo: nil)
+        // 높이 업데이트를 위한 delgate
+        self.delegate?.didUpdateUserCount()
     }
 }

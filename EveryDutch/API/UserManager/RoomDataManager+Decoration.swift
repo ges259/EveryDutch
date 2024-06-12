@@ -10,8 +10,10 @@ import Foundation
 extension RoomDataManager {
     // MARK: - 데이터 가져오기(옵저버)
     func fetchDecoration(roomDict: [String : Rooms]) {
-        self.roomDebouncer.triggerDebounceWithIndexPaths(eventType: .updated, [])
+        self.roomDebouncer.triggerDebounceWithIndexPaths(eventType: .updated)
+        
         let roomIDArray: [String] = Array(roomDict.keys)
+        
         DispatchQueue.global(qos: .utility).async {
             self.roomsAPI.observeDecorations(IDs: roomIDArray) { [weak self] result in
                 guard let self = self else { return }
@@ -61,6 +63,18 @@ extension RoomDataManager {
             self.roomsCellViewModels[indexPath.row].removeDecoration()
             // 노티피케이션 post
             self.roomDebouncer.triggerDebounceWithIndexPaths(eventType: .removed, [indexPath])
+        }
+    }
+    
+    
+    
+    
+    
+    func fetchDecoration(userID: String) async throws -> Decoration? {
+        do {
+            return try await self.roomsAPI.fetchDecoration(dataRequiredWhenInEditMode: userID)
+        } catch {
+            throw ErrorEnum.readError
         }
     }
 }

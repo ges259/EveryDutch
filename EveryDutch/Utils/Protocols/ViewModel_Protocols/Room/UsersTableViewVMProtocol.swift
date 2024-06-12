@@ -10,6 +10,10 @@ import UIKit
 protocol UsersTableViewVMProtocol {
     
     
+    var userCardDataClosure: (((user: User, deco: Decoration?)) -> Void)? { get set }
+    var errorClosure: ((ErrorEnum) -> Void)? { get set }
+    
+    
     var numbersOfUsers: Int { get }
     
     var isFirstBtnTapped: Bool { get set }
@@ -19,4 +23,8 @@ protocol UsersTableViewVMProtocol {
     
     func cellViewModel(at index: Int) -> UsersTableViewCellVMProtocol
 //    func makeCellVM()
+    
+    
+    
+    func getUserAndDecoration(index: Int)
 }

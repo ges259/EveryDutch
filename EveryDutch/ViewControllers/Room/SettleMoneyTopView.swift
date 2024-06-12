@@ -22,7 +22,11 @@ final class SettleMoneyTopView: UIView {
     
     
     
-    
+    weak var delegate: UsersTableViewDelegate? {
+          didSet {
+              self.usersTableView.delegate = delegate
+          }
+      }
     
     // MARK: - 라이프사이클
     override init(frame: CGRect) {

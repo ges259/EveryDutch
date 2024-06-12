@@ -30,7 +30,7 @@ protocol RoomDataManagerProtocol {
     // MARK: - RoomUsers
     var getNumOfRoomUsers: Int { get }
     var getRoomUsersDict: RoomUserDataDict { get }
-    func getAllOfUsersViewModel(index: Int) -> UsersTableViewCellVMProtocol
+    func getIndexToUsersVM(index: Int) -> UsersTableViewCellVMProtocol
     func getIdToUser(usersID: String) -> User?
     func removeRoomsUsersObserver()
     // API
@@ -53,6 +53,8 @@ protocol RoomDataManagerProtocol {
     
     
     
+    func fetchDecoration(userID: String) async throws -> Decoration? 
+    func getIndexToUserDataTuple(index: Int) -> UserDataTuple 
     // MARK: - Fix
-    func getOneOfUsersViewModel(userID: String) -> UsersTableViewCellVMProtocol?
+    func getUserIDToUsersVM(userID: String) -> UsersTableViewCellVMProtocol?
 }

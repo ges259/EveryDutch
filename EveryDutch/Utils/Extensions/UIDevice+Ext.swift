@@ -39,6 +39,12 @@ extension UIDevice {
     public var bottomBtnHeight: CGFloat {
         return self.isiPhoneSE ? 90 : 115
     }
+    
+    var panModalSafeArea: CGFloat {
+        return self.isiPhoneSE ? 10 : 5
+    }
+    
+    
 //    public var panBottomAnchor: CGFloat {
 //        return self.isiPhoneSE ? -10 : -10
 //    }

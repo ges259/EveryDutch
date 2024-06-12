@@ -39,14 +39,6 @@ final class UserProfileVC: UIViewController {
         spacing: 16,
         alignment: .fill,
         distribution: .equalSpacing)
-    /// 카드 이미지 뷰 및 버튼 스택뷰로 구성된 세로로 된 스택뷰
-    private lazy var totalStackView: UIStackView = UIStackView.configureStv(
-        arrangedSubviews: [self.cardImgView,
-                           self.btnStackView],
-        axis: .vertical,
-        spacing: 12,
-        alignment: .fill,
-        distribution: .fill)
     
     // MARK: - 프로퍼티
     
@@ -63,6 +55,18 @@ final class UserProfileVC: UIViewController {
         self.configureAutoLayout()
         self.configureAction()
     }
+    
+    init(userdecoTuple: UserDecoTuple) {
+        super.init(nibName: nil, bundle: nil)
+        
+        self.cardImgView.setupUserData(data: userdecoTuple.user)
+        self.cardImgView.setupDecorationData(data: userdecoTuple.deco)
+    }
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    
     private func dataChange(data: User) {
         self.cardImgView.setupUserData(data: data)
     }
@@ -86,11 +90,18 @@ extension UserProfileVC {
     
     /// 오토레이아웃 설정
     private func configureAutoLayout() {
-        self.view.addSubview(self.totalStackView)
+        self.view.addSubview(self.cardImgView)
+        self.view.addSubview(self.btnStackView)
+        
         
         // 카드 이미지 뷰
         self.cardImgView.snp.makeConstraints { make in
+            make.top.leading.trailing.equalToSuperview().inset(10)
             make.height.equalTo(self.cardHeight())
+        }
+        self.btnStackView.snp.makeConstraints { make in
+            make.top.equalTo(self.cardImgView.snp.bottom).offset(10)
+            make.leading.trailing.equalTo(self.cardImgView).inset(30)
         }
         // 하단 버튼의 넓이 및 높이 설정
         self.searchBtn.snp.makeConstraints { make in
@@ -108,11 +119,6 @@ extension UserProfileVC {
 
 
 
-// MARK: - 액션 설정
-extension UserProfileVC {
-
-}
-
 // MARK: - 팬모달 설정
 extension UserProfileVC: PanModalPresentable {
     var panScrollable: UIScrollView? {
@@ -121,7 +127,7 @@ extension UserProfileVC: PanModalPresentable {
     /// 최대 사이즈
     var longFormHeight: PanModalHeight {
         self.view.layoutIfNeeded()
-        return .contentHeight(self.cardImgView.frame.height + 10 + 15 + 8)
+        return .contentHeight(self.cardHeight() + 50 + 10 + 10 + UIDevice.current.panModalSafeArea)
     }
     
     /// 화면 밖 - 배경 색
@@ -136,3 +142,55 @@ extension UserProfileVC: PanModalPresentable {
         return 23
     }
 }
+
+
+
+// MARK: - 액션 설정
+extension UserProfileVC {
+
+}
+
+final class UserProfileCoordinator: Coordinator {
+    weak var parentCoordinator: Coordinator?
+    
+    var childCoordinators: [any Coordinator] = [] {
+        didSet {
+            print("**********UserProfileCoordinator**********")
+            dump(childCoordinators)
+            print("********************")
+        }
+    }
+    
+    
+    var nav: UINavigationController
+    var userDecoTuple: UserDecoTuple
+    
+    
+    // 의존성 주입
+    init(nav: UINavigationController,
+         userDecoTuple: UserDecoTuple) {
+        self.nav = nav
+        self.userDecoTuple = userDecoTuple
+    }
+    deinit { print("\(#function)-----\(self)") }
+    
+    
+    func start() {
+        self.userProfileScreen()
+    }
+    
+    private func userProfileScreen() {
+        let userProfileVC = UserProfileVC(userdecoTuple: self.userDecoTuple)
+        
+        self.nav.presentPanModal(userProfileVC)
+        
+        
+        
+    }
+    
+    
+    func didFinish() {
+        self.parentCoordinator?.removeChildCoordinator(child: self)
+    }
+}
+
