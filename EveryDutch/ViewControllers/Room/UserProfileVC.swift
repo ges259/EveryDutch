@@ -21,17 +21,17 @@ final class UserProfileVC: UIViewController {
     }()
     /// 원형 버튼들
     private var searchBtn: UIButton = UIButton.btnWithImg(
-        image: .Exit_Img,
-        imageSize: 11,
+        image: .search_Img,
+        imageSize: 17,
         backgroundColor: UIColor.normal_white,
         title: "검색")
     private var reportBtn: UIButton = UIButton.btnWithImg(
-        image: .Invite_Img,
+        image: .exclamationmark_Img,
         imageSize: 15,
         backgroundColor: UIColor.normal_white,
         title: "신고")
     private lazy var kickBtn: UIButton = UIButton.btnWithImg(
-        image: .gear_Fill_Img,
+        image: .x_Mark_Img,
         imageSize: 15,
         backgroundColor: UIColor.normal_white,
         title: "강퇴")
@@ -91,7 +91,7 @@ extension UserProfileVC {
         [self.searchBtn,
          self.reportBtn,
          self.kickBtn].forEach { btn in
-            btn.setRoundedCorners(.all, withCornerRadius: 50 / 2)
+            btn.setRoundedCorners(.all, withCornerRadius: 60 / 2)
         }
         
         if self.viewModel.isRoomManager {
@@ -115,14 +115,43 @@ extension UserProfileVC {
             make.top.equalTo(self.cardImgView.snp.bottom).offset(10)
             make.leading.trailing.equalTo(self.cardImgView).inset(self.viewModel.btnStvInsets)
         }
-        // 하단 버튼의 넓이 및 높이 설정
-        self.searchBtn.snp.makeConstraints { make in
-            make.size.equalTo(50)
-        }
+        // 하단 버튼의 높이와 너비를 동일하게 설정
+         [self.searchBtn, self.reportBtn, self.kickBtn].forEach { btn in
+             btn.snp.makeConstraints { make in
+                 make.size.equalTo(60)
+             }
+         }
     }
     
     /// 액션 설정
     private func configureAction() {
+        self.searchBtn.addTarget(
+            self, 
+            action: #selector(self.searchBtnTapped),
+            for: .touchUpInside)
+        self.reportBtn.addTarget(
+            self,
+            action: #selector(self.reportBtnTapped),
+            for: .touchUpInside)
+        self.kickBtn.addTarget(
+            self,
+            action: #selector(self.kickBtnTapped),
+            for: .touchUpInside)
+    }
+}
+
+
+
+
+// MARK: - 액션 설정
+extension UserProfileVC {
+    @objc private func searchBtnTapped() {
+        
+    }
+    @objc private func reportBtnTapped() {
+        
+    }
+    @objc private func kickBtnTapped() {
         
     }
 }
@@ -139,7 +168,7 @@ extension UserProfileVC: PanModalPresentable {
     /// 최대 사이즈
     var longFormHeight: PanModalHeight {
         self.view.layoutIfNeeded()
-        return .contentHeight(self.cardHeight() + 50 + 17 + 10 + UIDevice.current.panModalSafeArea)
+        return .contentHeight(self.cardHeight() + 60 + 17 + 10 + UIDevice.current.panModalSafeArea)
     }
     
     /// 화면 밖 - 배경 색
@@ -154,11 +183,3 @@ extension UserProfileVC: PanModalPresentable {
         return 23
     }
 }
-
-
-
-// MARK: - 액션 설정
-extension UserProfileVC {
-
-}
-

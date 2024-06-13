@@ -33,7 +33,8 @@ extension UIImage {
     /// 생상이 있는 설정 이미지
     static let gear_Img: UIImage? = UIImage(systemName: "gearshape")
     /// 채팅방 나가기 이미지
-    static let Exit_Img: UIImage? = UIImage(systemName: "rectangle.portrait.and.arrow.right")
+//    static let Exit_Img: UIImage? = UIImage(systemName: "rectangle.portrait.and.arrow.right")
+    static let Exit_Img: UIImage? = UIImage(systemName: "rectangle.portrait.and.arrow.forward")
     /// 초대하기 이미지
     static let Invite_Img: UIImage? = UIImage(systemName: "person.crop.circle.fill.badge.plus")
     /// 선택 안 된 상태의 사각형
@@ -67,6 +68,14 @@ extension UIImage {
     static let record_Img: UIImage? = UIImage(systemName: "tray.full")
     static let settlement_Img: UIImage? = UIImage(systemName: "doc.text.fill")
     static let x_Mark_Img: UIImage? = UIImage(systemName: "xmark")
+    
+    
+    
+    
+//    static let x_Mark_Circle_Img: UIImage? = UIImage(systemName: "xmark.circle")
+    static let exclamationmark_Img: UIImage? = UIImage(systemName: "exclamationmark")
+    static let search_Img: UIImage? = UIImage(systemName: "magnifyingglass")
+    
 }
 
 

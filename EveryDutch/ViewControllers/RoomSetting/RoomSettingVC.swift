@@ -35,16 +35,17 @@ final class RoomSettingVC: UIViewController {
     // 원형 버튼들
     private var exitBtn: UIButton = UIButton.btnWithImg(
         image: .Exit_Img,
-        imageSize: 11,
+        imageSize: 12,
+        imagePadding: 8,
         backgroundColor: UIColor.normal_white,
         title: "나가기")
     private var inviteBtn: UIButton = UIButton.btnWithImg(
-        image: .Invite_Img,
+        image: .plus_Img,
         imageSize: 15,
         backgroundColor: UIColor.normal_white,
         title: "초대")
     private lazy var roomSettingBtn: UIButton = UIButton.btnWithImg(
-        image: .gear_Fill_Img,
+        image: .gear_Img,
         imageSize: 15,
         backgroundColor: UIColor.normal_white,
         title: "설정")
@@ -99,7 +100,7 @@ extension RoomSettingVC {
         [self.exitBtn,
          self.inviteBtn,
          self.roomSettingBtn].forEach { btn in
-            btn.setRoundedCorners(.all, withCornerRadius: 50 / 2)
+            btn.setRoundedCorners(.all, withCornerRadius: 60 / 2)
         }
         
         self.tabBarView.setRoundedCorners(.top, withCornerRadius: 20)
@@ -135,18 +136,22 @@ extension RoomSettingVC {
         // 하단 버튼 스택뷰를 담는 뷰
         self.tabBarView.snp.makeConstraints { make in
             make.bottom.leading.trailing.equalToSuperview()
-            make.height.equalTo(UIDevice.current.tabBarHeight)
+//            make.height.equalTo(UIDevice.current.tabBarHeight)
         }
         // 하단 버튼 스택뷰
         self.btnStackView.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(40)
             make.trailing.equalToSuperview().offset(-40)
+            make.top.equalToSuperview().offset(10)
             make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom).offset(-5)
         }
         // 하단 버튼의 넓이 및 높이 설정
-        self.exitBtn.snp.makeConstraints { make in
-            make.size.equalTo(50)
+        [self.exitBtn, self.inviteBtn, self.roomSettingBtn].forEach {
+            $0.snp.makeConstraints { make in
+                make.size.equalTo(60)
+            }
         }
+        
     }
     
     /// 액션 설정

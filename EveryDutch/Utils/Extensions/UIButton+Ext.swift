@@ -11,6 +11,7 @@ extension UIButton {
     static func btnWithImg(image: UIImage?,
                            imageSize: CGFloat,
                            tintColor: UIColor = .black,
+                           imagePadding: CGFloat = 6,
                            backgroundColor: UIColor? = UIColor.clear,
                            title: String? = nil)
     -> UIButton {
@@ -25,13 +26,14 @@ extension UIButton {
         if let title = title {
             var titleContainer = AttributeContainer()
             // 폰트
-            titleContainer.font = UIFont.systemFont(ofSize: 10)
+            titleContainer.font = UIFont.boldSystemFont(ofSize: 12)
             // 텍스트
             configuration.attributedTitle = AttributedString(
                 title,
                 attributes: titleContainer)
             // 이미지 - 텍스트 사이 간격
-            configuration.imagePadding = imageSize == 15 ? 4 : 5
+//            configuration.imagePadding = imageSize == 15 ? 6 : 8
+            configuration.imagePadding = imagePadding
             // 이미지가 상단, 텍스트가 하단으로 설정
             configuration.imagePlacement = .top
         }
