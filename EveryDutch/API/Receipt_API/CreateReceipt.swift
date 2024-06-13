@@ -18,13 +18,12 @@ class ReceiptAPI: ReceiptAPIProtocol, CrashlyticsLoggable {
     
     
     func resetReceiptLastKey() {
-        self.lastKey = nil
-        self.lastDate = nil
+        self.roomLastKey = nil
         self.observing = false
     }
-    var lastKey: String?
+    var roomLastKey: String?
+    var userLastKey: String?
     var observing = false
-    var lastDate: Int?
 }
 
 
@@ -77,7 +76,10 @@ extension ReceiptAPI {
             for user in users {
                 group.addTask {
                     let path = USER_RECEIPTS_REF.child(user)
-                    try await self.updateChildValues(path: path, values: [receiptID: true])
+                    try await self.updateChildValues(
+                        path: path,
+                        values: [receiptID: false]
+                    )
                 }
             }
             try await group.waitForAll()
@@ -90,7 +92,9 @@ extension ReceiptAPI {
         moneyDict: [String: Int]) async throws
     {
         let reference = CUMULATIVE_AMOUNT_REF.child(versionID)
-        try await performTransactionUpdate(forRef: reference, withDict: moneyDict)
+        try await self.performTransactionUpdate(
+            forRef: reference,
+            withDict: moneyDict)
     }
     
     // MARK: - 페이백 업데이트
@@ -102,7 +106,9 @@ extension ReceiptAPI {
         var paybackDict = moneyDict
             paybackDict.removeValue(forKey: payerID)
         let reference = PAYBACK_REF.child(versionID).child(payerID)
-        try await performTransactionUpdate(forRef: reference, withDict: paybackDict)
+        try await self.performTransactionUpdate(
+            forRef: reference,
+            withDict: paybackDict)
     }
     
     // MARK: - 트랜잭션 업데이트를 위한 공통 함수
@@ -114,7 +120,9 @@ extension ReceiptAPI {
             for (userID, amount) in moneyDict {
                 group.addTask {
                     let userRef = reference.child(userID)
-                    try await self.updateAmount(forUserRef: userRef, amount: amount)
+                    try await self.updateAmount(
+                        forUserRef: userRef,
+                        amount: amount)
                 }
             }
             try await group.waitForAll()

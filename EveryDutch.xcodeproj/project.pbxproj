@@ -127,7 +127,7 @@
 		5F729BFF2B6D293500F3DDCA /* TableFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F729BFE2B6D293500F3DDCA /* TableFooterView.swift */; };
 		5F729C012B6D42A900F3DDCA /* CardDataCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F729C002B6D42A900F3DDCA /* CardDataCell.swift */; };
 		5F774B4A2C12FE4A003D4D82 /* RoomDataManager+Debouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F774B492C12FE4A003D4D82 /* RoomDataManager+Debouncer.swift */; };
-		5F7762392BF0B29800AEC193 /* RoomDataManager+ReceiptData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7762382BF0B29800AEC193 /* RoomDataManager+ReceiptData.swift */; };
+		5F7762392BF0B29800AEC193 /* RoomDataManager+RoomReceipt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7762382BF0B29800AEC193 /* RoomDataManager+RoomReceipt.swift */; };
 		5F7A49242B97D07C002CB7A8 /* EditScreenAPIType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7A49232B97D07C002CB7A8 /* EditScreenAPIType.swift */; };
 		5F7B9FDA2B6917B1006917E6 /* RoomEditVMProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7B9FD92B6917B1006917E6 /* RoomEditVMProtocol.swift */; };
 		5F7CC32C2B87ACDA00236E84 /* TableHeaderEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F7CC32B2B87ACDA00236E84 /* TableHeaderEnum.swift */; };
@@ -171,6 +171,8 @@
 		5F87DF2C2B3C99A3001D5B80 /* RoomSettingCoordProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F87DF2B2B3C99A3001D5B80 /* RoomSettingCoordProtocol.swift */; };
 		5F8AB54A2BCA65C3006161C2 /* ToolbarStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F8AB5492BCA65C3006161C2 /* ToolbarStackView.swift */; };
 		5F8AB54C2BCA65EA006161C2 /* CustomImageCropView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F8AB54B2BCA65EA006161C2 /* CustomImageCropView.swift */; };
+		5F8B2F782C1ADC680032E605 /* ReadReceipt+OtherUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F8B2F772C1ADC670032E605 /* ReadReceipt+OtherUser.swift */; };
+		5F8B2F7A2C1B09AE0032E605 /* RoomDataManager+SearchReceipt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F8B2F792C1B09AE0032E605 /* RoomDataManager+SearchReceipt.swift */; };
 		5F903E672B3B412A005DE55E /* SettlementTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F903E662B3B412A005DE55E /* SettlementTableViewCell.swift */; };
 		5F9905052B4ABACC00DB9747 /* UsersTableViewVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F9905042B4ABACC00DB9747 /* UsersTableViewVM.swift */; };
 		5F9905072B4ABAD400DB9747 /* UsersTableViewCellVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F9905062B4ABAD400DB9747 /* UsersTableViewCellVM.swift */; };
@@ -362,7 +364,7 @@
 		5F729BFE2B6D293500F3DDCA /* TableFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableFooterView.swift; sourceTree = "<group>"; };
 		5F729C002B6D42A900F3DDCA /* CardDataCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardDataCell.swift; sourceTree = "<group>"; };
 		5F774B492C12FE4A003D4D82 /* RoomDataManager+Debouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RoomDataManager+Debouncer.swift"; sourceTree = "<group>"; };
-		5F7762382BF0B29800AEC193 /* RoomDataManager+ReceiptData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RoomDataManager+ReceiptData.swift"; sourceTree = "<group>"; };
+		5F7762382BF0B29800AEC193 /* RoomDataManager+RoomReceipt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RoomDataManager+RoomReceipt.swift"; sourceTree = "<group>"; };
 		5F7A49232B97D07C002CB7A8 /* EditScreenAPIType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditScreenAPIType.swift; sourceTree = "<group>"; };
 		5F7B9FD92B6917B1006917E6 /* RoomEditVMProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomEditVMProtocol.swift; sourceTree = "<group>"; };
 		5F7CC32B2B87ACDA00236E84 /* TableHeaderEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableHeaderEnum.swift; sourceTree = "<group>"; };
@@ -404,6 +406,8 @@
 		5F87DF2B2B3C99A3001D5B80 /* RoomSettingCoordProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomSettingCoordProtocol.swift; sourceTree = "<group>"; };
 		5F8AB5492BCA65C3006161C2 /* ToolbarStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarStackView.swift; sourceTree = "<group>"; };
 		5F8AB54B2BCA65EA006161C2 /* CustomImageCropView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomImageCropView.swift; sourceTree = "<group>"; };
+		5F8B2F772C1ADC670032E605 /* ReadReceipt+OtherUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ReadReceipt+OtherUser.swift"; sourceTree = "<group>"; };
+		5F8B2F792C1B09AE0032E605 /* RoomDataManager+SearchReceipt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RoomDataManager+SearchReceipt.swift"; sourceTree = "<group>"; };
 		5F903E662B3B412A005DE55E /* SettlementTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettlementTableViewCell.swift; sourceTree = "<group>"; };
 		5F9905042B4ABACC00DB9747 /* UsersTableViewVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersTableViewVM.swift; sourceTree = "<group>"; };
 		5F9905062B4ABAD400DB9747 /* UsersTableViewCellVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersTableViewCellVM.swift; sourceTree = "<group>"; };
@@ -747,7 +751,8 @@
 				5F2D65A42C00E08000FEA788 /* RoomDataManager+Decoration.swift */,
 				5FD5D6122BEF5576008972A0 /* RoomDataManager+RoomUsers.swift */,
 				5FD5D6142BEF5701008972A0 /* RoomDataManager+MoneyData.swift */,
-				5F7762382BF0B29800AEC193 /* RoomDataManager+ReceiptData.swift */,
+				5F7762382BF0B29800AEC193 /* RoomDataManager+RoomReceipt.swift */,
+				5F8B2F792C1B09AE0032E605 /* RoomDataManager+SearchReceipt.swift */,
 			);
 			path = UserManager;
 			sourceTree = "<group>";
@@ -1073,6 +1078,7 @@
 			children = (
 				5F8513D92B4D67EC00A5B22D /* CreateReceipt.swift */,
 				5F8513CB2B4D5F1900A5B22D /* ReadReceipt.swift */,
+				5F8B2F772C1ADC670032E605 /* ReadReceipt+OtherUser.swift */,
 				5F8513DB2B4D67F600A5B22D /* UpdateReceipt.swift */,
 				5F8513E82B4D6EB900A5B22D /* DeleteReceipt.swift */,
 				5F26D8DC2B7F7BE600392470 /* RollbackReceipt.swift */,
@@ -1530,6 +1536,7 @@
 				5F5AFBD42B4941B000BBBB9D /* RoomSettingVM.swift in Sources */,
 				5F0C462B2B910E03009E9920 /* EditScreenType.swift in Sources */,
 				5F903E672B3B412A005DE55E /* SettlementTableViewCell.swift in Sources */,
+				5F8B2F782C1ADC680032E605 /* ReadReceipt+OtherUser.swift in Sources */,
 				5F68487A2B441A7E0015BFCC /* SelectALoginMethodCoordinator.swift in Sources */,
 				5FB703292B7916AF00178590 /* CheckReceiptPanVM.swift in Sources */,
 				5F2AF6012BA74AD2001487EC /* AlertEnum.swift in Sources */,
@@ -1596,7 +1603,7 @@
 				5FB4F70A2B433DEF002F6CF3 /* MainVC.swift in Sources */,
 				5F729BFF2B6D293500F3DDCA /* TableFooterView.swift in Sources */,
 				5FE3DEBA2B39CB7B008D58AE /* UILabel+Ext.swift in Sources */,
-				5F7762392BF0B29800AEC193 /* RoomDataManager+ReceiptData.swift in Sources */,
+				5F7762392BF0B29800AEC193 /* RoomDataManager+RoomReceipt.swift in Sources */,
 				5FA14C632B5422C000E8F0E7 /* ReadRoomMoneyData.swift in Sources */,
 				5F079C182B48182700E42EF6 /* BottomButton.swift in Sources */,
 				5F02B5062B74294800069C2E /* CellSelectionUIStv.swift in Sources */,
@@ -1663,6 +1670,7 @@
 				5F6FDDE22B50568B00F09CCD /* ReceiptScreenUsersCell.swift in Sources */,
 				5F71FEED2BB723BD0005FC7A /* DecorationAPI+Read.swift in Sources */,
 				5FD5D6152BEF5701008972A0 /* RoomDataManager+MoneyData.swift in Sources */,
+				5F8B2F7A2C1B09AE0032E605 /* RoomDataManager+SearchReceipt.swift in Sources */,
 				5F4FA7232B553C00009EE4F4 /* UserAPIProtocol.swift in Sources */,
 				5FE8A2F12BDD271D0072D3D9 /* ChromaControlStylable.swift in Sources */,
 				5F68487C2B441BB70015BFCC /* LoginScreenCoordProtocol.swift in Sources */,

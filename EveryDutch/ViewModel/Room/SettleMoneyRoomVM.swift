@@ -123,7 +123,7 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
     
     // MARK: - API
     func loadMoreReceiptData() {
-        self.roomDataManager.loadMoreReceiptData()
+        self.roomDataManager.loadMoreRoomReceipt()
     }
 }
 

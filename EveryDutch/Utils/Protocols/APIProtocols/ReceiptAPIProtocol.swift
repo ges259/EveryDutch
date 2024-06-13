@@ -25,10 +25,10 @@ protocol ReceiptAPIProtocol {
     
     
     
-    func readReceipts(
+    func readRoomReceipts(
         versionID: String,
         completion: @escaping (Result<DataChangeEvent<[ReceiptTuple]>, ErrorEnum>) -> Void)
-    func loadMoreReceipts(
+    func loadMoreRoomReceipts(
         versionID: String,
         completion: @escaping (Result<[ReceiptTuple], ErrorEnum>) -> Void)
     

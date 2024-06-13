@@ -69,8 +69,9 @@ extension RoomsAPI {
     
 
     // MARK: - User_RoomsID 옵저버
-    func setUserRoomsIDObserver(completion: @escaping (Result<DataChangeEvent<[String: Rooms]>, ErrorEnum>) -> Void)
-    {
+    func setUserRoomsIDObserver(
+        completion: @escaping (Result<DataChangeEvent<[String: Rooms]>, ErrorEnum>) -> Void
+    ) {
         guard let uid = Auth.auth().currentUser?.uid else {
             // 사용자가 로그인하지 않았을 경우의 에러 처리
             completion(.failure(.readError))

@@ -52,9 +52,13 @@ final class RoomDataManager: RoomDataManagerProtocol {
     /// 영수증 배열
     var receiptIDToIndexPathMap = [String: IndexPath]()
     /// 영수증 테이블 셀의 뷰모델
-    var receiptCellViewModels = [ReceiptTableViewCellVMProtocol]()
+    var roomReceiptCellViewModels = [ReceiptTableViewCellVMProtocol]()
     
     
+    var userReceiptIDToIndexPathMap = [String: IndexPath]()
+    var userReceiptCellViewModels = [ReceiptTableViewCellVMProtocol]()
+    
+    var isSearchMode: Bool = false
     
     
     
@@ -99,7 +103,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
             switch result {
             case .success():
                 self.loadFinancialData()
-                self.loadReceipt(completion: completion)
+                self.loadRoomReceipt(completion: completion)
             case .failure(let error):
                 completion(.failure(error))
             }
@@ -136,7 +140,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
         self.usersCellViewModels = []
         // Receipt 데이터 초기화
         self.receiptIDToIndexPathMap = [:]
-        self.receiptCellViewModels = []
+        self.roomReceiptCellViewModels = []
     }
     
     
@@ -275,11 +279,11 @@ final class RoomDataManager: RoomDataManagerProtocol {
     // MARK: - 영수증 정보
     /// 영수증 개수
     var getNumOfReceipts: Int {
-        return self.receiptCellViewModels.count
+        return self.roomReceiptCellViewModels.count
     }
     /// 영수증 셀(ReceiptTableViewCellVMProtocol) 리턴
     func getReceiptViewModel(index: Int) -> ReceiptTableViewCellVMProtocol {
-        var receiptVM = self.receiptCellViewModels[index]
+        var receiptVM = self.roomReceiptCellViewModels[index]
         
         let updatedReceipt = self.updateReceiptUserName(receipt: receiptVM.getReceipt)
         receiptVM.setReceipt(updatedReceipt)
@@ -288,7 +292,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
     }
     /// index를 받아 알맞는 영수증을 리턴
     func getReceipt(at index: Int) -> Receipt {
-        return self.receiptCellViewModels[index].getReceipt
+        return self.roomReceiptCellViewModels[index].getReceipt
     }
     
     func updateReceiptUserName(receipt: Receipt) -> Receipt {

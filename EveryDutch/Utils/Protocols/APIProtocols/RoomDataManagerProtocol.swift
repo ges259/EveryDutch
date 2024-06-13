@@ -45,7 +45,7 @@ protocol RoomDataManagerProtocol {
     func getReceipt(at index: Int) -> Receipt
     func updateReceiptUserName(receipt: Receipt) -> Receipt
     // API
-    func loadMoreReceiptData()
+    func loadMoreRoomReceipt()
     
     
     
