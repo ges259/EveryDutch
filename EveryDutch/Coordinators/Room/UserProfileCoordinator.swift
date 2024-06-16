@@ -42,11 +42,19 @@ final class UserProfileCoordinator: Coordinator {
         let userProfileVC = UserProfileVC(
             viewModel: userProfileVM,
             coordinator: self)
-        self.nav.presentPanModal(userProfileVC)
+//        self.nav.presentPanModal(userProfileVC)
+        userProfileVC.modalPresentationStyle = .overFullScreen
+        self.nav.present(userProfileVC, animated: true)
     }
     
     
     func didFinish() {
+        self.nav.dismiss(animated: true)
         self.parentCoordinator?.removeChildCoordinator(child: self)
     }
 }
+
+/*
+ .contentHeight(self.cardHeight() + self.btnSize + 17 + 10 + UIDevice.current.panModalSafeArea)
+}
+ */

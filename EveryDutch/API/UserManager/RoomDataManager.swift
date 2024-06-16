@@ -316,3 +316,6 @@ final class RoomDataManager: RoomDataManagerProtocol {
         return returndReceipt
     }
 }
+
+// private var receiptTableViewHeightConstraint: NSLayoutConstraint!
+// self.panModalTransition(to: .longForm)

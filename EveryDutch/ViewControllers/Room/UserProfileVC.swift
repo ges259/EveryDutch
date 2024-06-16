@@ -7,7 +7,6 @@
 
 import UIKit
 import SnapKit
-import PanModal
 
 final class UserProfileVC: UIViewController {
     // MARK: - 레이아웃
@@ -19,6 +18,36 @@ final class UserProfileVC: UIViewController {
             view.setupDecorationData(data: userDecoTuple.deco)
         return view
     }()
+    
+    /// 정산내역 테이블뷰
+    private lazy var receiptTableView: CustomTableView = {
+        let view = CustomTableView()
+        view.delegate = self
+        view.dataSource = self
+        view.register(
+            SettlementTableViewCell.self,
+            forCellReuseIdentifier: Identifier.settlementTableViewCell)
+        view.backgroundColor = .clear
+        view.bounces = true
+        view.isHidden = true
+        view.backgroundColor = .red
+        view.transform = CGAffineTransform(rotationAngle: .pi)
+        return view
+    }()
+    
+    private let topView: UIView = UIView.configureView(
+        color: .deep_Blue)
+    
+    private lazy var totalStackView: UIStackView = UIStackView.configureStv(
+        arrangedSubviews: [self.cardImgView,
+                           self.receiptTableView],
+        axis: .vertical,
+        spacing: 10,
+        alignment: .fill,
+        distribution: .fill)
+    
+    
+    
     
     
     private var tabBarView: UIView = UIView.configureView(
@@ -48,38 +77,15 @@ final class UserProfileVC: UIViewController {
         distribution: .equalSpacing)
     
     
-    /// 정산내역 테이블뷰
-    private lazy var receiptTableView: CustomTableView = {
-        let view = CustomTableView()
-        view.delegate = self
-        view.dataSource = self
-        view.register(
-            SettlementTableViewCell.self,
-            forCellReuseIdentifier: Identifier.settlementTableViewCell)
-        view.backgroundColor = .clear
-        view.bounces = true
-        view.isHidden = true
-        view.backgroundColor = .red
-        view.transform = CGAffineTransform(rotationAngle: .pi)
-        return view
-    }()
+
     
     
     
-    private lazy var totalStackView: UIStackView = UIStackView.configureStv(
-        arrangedSubviews: [self.cardImgView,
-                           self.receiptTableView,
-                           self.tabBarView],
-        axis: .vertical,
-        spacing: 10,
-        alignment: .fill,
-        distribution: .fill)
+    
     
     
     
     // MARK: - 프로퍼티
-    
-    
     let viewModel: UserProfileVMProtocol
     let coordinator: UserProfileCoordinator
     private let btnSize: CGFloat = 60
@@ -107,7 +113,12 @@ final class UserProfileVC: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(false)
+        UIView.animate(withDuration: 0.1) {
+            self.view.backgroundColor = UIColor.black.withAlphaComponent(0.4)
+        }
+    }
     private func dataChange(data: User) {
         self.cardImgView.setupUserData(data: data)
     }
@@ -117,53 +128,77 @@ final class UserProfileVC: UIViewController {
 
 
 
+
+
+
+
+
 // MARK: - 화면 설정
 extension UserProfileVC {
     /// UI 설정
     private func configureUI() {
-        self.view.backgroundColor = UIColor.deep_Blue
         
         if self.viewModel.isRoomManager {
             self.btnStackView.addArrangedSubview(self.kickBtn)
         }
-        self.tabBarView.setRoundedCorners(.top, withCornerRadius: 20)
+        self.topView.setRoundedCorners(.top, withCornerRadius: 20)
         self.receiptTableView.setRoundedCorners(.all, withCornerRadius: 12)
     }
     
     /// 오토레이아웃 설정
     private func configureAutoLayout() {
-        self.view.addSubview(self.totalStackView)
+        self.view.addSubview(self.topView)
+        self.topView.addSubview(self.totalStackView)
+        
+        
+        
+        self.view.addSubview(self.tabBarView)
         self.tabBarView.addSubview(self.btnStackView)
         
-        self.totalStackView.snp.makeConstraints { make in
-            make.top.equalToSuperview().inset(17)
-            make.leading.trailing.equalToSuperview().inset(10)
+        
+        self.tabBarView.snp.makeConstraints { make in
+            make.leading.trailing.equalToSuperview()
+            make.bottom.equalToSuperview()
+        }
+        // 버튼 스택뷰
+        self.btnStackView.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(10)
             make.bottom.lessThanOrEqualTo(self.view.safeAreaLayoutGuide.snp.bottom).offset(-UIDevice.current.panModalSafeArea)
+            
+            make.leading.trailing.equalToSuperview().inset(self.viewModel.btnStvInsets)
+        }
+        // 하단 버튼의 높이와 너비를 동일하게 설정
+        [self.searchBtn, self.reportBtn, self.kickBtn].forEach { btn in
+            btn.snp.makeConstraints { make in
+                make.size.equalTo(self.btnSize)
+            }
+        }
+        
+        
+        // 상단 뷰
+        self.topView.snp.makeConstraints { make in
+            make.bottom.equalTo(self.tabBarView.snp.top)
+            make.leading.trailing.equalToSuperview()
+            make.height.greaterThanOrEqualTo(self.cardHeight())
+            // 최소
+            make.height.lessThanOrEqualTo(self.view.frame.height - 150)
+        }
+        
+        self.totalStackView.snp.makeConstraints { make in
+            make.top.equalToSuperview().offset(17)
+            make.bottom.equalToSuperview()
+            make.leading.trailing.equalToSuperview().inset(10)
         }
         // 카드 이미지 뷰
         self.cardImgView.snp.makeConstraints { make in
             make.height.equalTo(self.cardHeight())
         }
-        
-        // 버튼 스택뷰
-        self.btnStackView.snp.makeConstraints { make in
-            make.top.equalToSuperview().offset(5)
-            make.bottom.equalToSuperview()
-            make.leading.trailing.equalToSuperview().inset(self.viewModel.btnStvInsets)
-        }
-        
-        // 하단 버튼의 높이와 너비를 동일하게 설정
-         [self.searchBtn, self.reportBtn, self.kickBtn].forEach { btn in
-             btn.snp.makeConstraints { make in
-                 make.size.equalTo(self.btnSize)
-             }
-         }
     }
     
     /// 액션 설정
     private func configureAction() {
         self.searchBtn.addTarget(
-            self, 
+            self,
             action: #selector(self.searchBtnTapped),
             for: .touchUpInside)
         self.reportBtn.addTarget(
@@ -183,48 +218,15 @@ extension UserProfileVC {
 // MARK: - 액션 설정
 extension UserProfileVC {
     @objc private func searchBtnTapped() {
-        self.receiptTableView.isHidden = false
-        self.panModalTransition(to: .longForm)
+        print(#function)
+        self.receiptTableView.isHidden.toggle()
     }
     @objc private func reportBtnTapped() {
-        
+        self.view.backgroundColor = .clear
+        self.coordinator.didFinish()
     }
     @objc private func kickBtnTapped() {
         
-    }
-}
-
-
-
-
-
-// MARK: - 팬모달 설정
-extension UserProfileVC: PanModalPresentable {
-    var panScrollable: UIScrollView? {
-        return nil
-    }
-    
-    var shortFormHeight: PanModalHeight {
-        return .contentHeight(self.cardHeight() + self.btnSize + 17 + 10 + UIDevice.current.panModalSafeArea)
-    }
-    
-    /// 최대 사이즈
-    var longFormHeight: PanModalHeight {
-        self.view.layoutIfNeeded()
-//        return .contentHeight(self.view.frame.height)
-        return .maxHeightWithTopInset(0)
-    }
-    
-    /// 화면 밖 - 배경 색
-    var panModalBackgroundColor: UIColor {
-        return #colorLiteral(red: 0.3215686275, green: 0.3221649485, blue: 0.3221649485, alpha: 0.64)
-    }
-    /// 상단 인디케이터 없애기
-    var showDragIndicator: Bool {
-        return false
-    }
-    var cornerRadius: CGFloat {
-        return 23
     }
 }
 
