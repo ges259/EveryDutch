@@ -39,6 +39,9 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     
     // MARK: - RoomUsrs
+    var currentUser: (userID: String, 
+                      user: User,
+                      deco: Decoration?)?
     // UsersTableViewCell 관련 프로퍼티들
     // [UsersID : IndexPath]
     var userIDToIndexPathMap = [String: IndexPath]()
@@ -54,8 +57,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
     /// 영수증 테이블 셀의 뷰모델
     var roomReceiptCellViewModels = [ReceiptTableViewCellVMProtocol]()
     
-    
-    var userReceiptIDToIndexPathMap = [String: IndexPath]()
+    /// 유저 검색 시, 유저의 영수증 테이블 셀의 뷰모델
     var userReceiptCellViewModels = [ReceiptTableViewCellVMProtocol]()
     
     private var isSearchMode: Bool = false
@@ -196,6 +198,56 @@ final class RoomDataManager: RoomDataManagerProtocol {
         return (key: viewModel.userID,
                 value: viewModel.getUser)
     }
+    
+    
+    func selectUser(
+        index: Int,
+        completion: @escaping Typealias.VoidCompletion
+    ) {
+        Task {
+            do {
+                let userTuple = self.getIndexToUserDataTuple(index: index)
+                let deco = try await self.fetchDecoration(userID: userTuple.key)
+                
+                // 현재 유저 저장
+                self.currentUser = (userID: userTuple.key,
+                                    user: userTuple.value,
+                                    deco: deco)
+
+                completion(.success(()))
+                
+                
+            } catch let error as ErrorEnum {
+                completion(.failure(error))
+                
+            } catch {
+                completion(.failure(.readError))
+            }
+        }
+    }
+    
+    var getCurrentUserData: UserDecoTuple? {
+        guard let currentUser = currentUser else { return nil }
+        
+        return (user: currentUser.user,
+                deco: currentUser.deco)
+    }
+    
+    var getCurrentUserID: String? {
+        return self.currentUser?.userID
+    }
+    // 검색 버튼을 눌렀을 때
+    func fetchInitialUserReceipt(
+//        completion
+    ) {
+        
+    }
+    
+    func fetchLoadMoreUserReceipt() {
+        
+    }
+    
+    
     
     
     /// 인데스패스 리턴

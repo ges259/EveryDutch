@@ -11,7 +11,7 @@ protocol UserProfileVMProtocol: ReceiptTableViewProtocol {
     var isRoomManager: Bool { get }
     
     var btnStvInsets: CGFloat { get }
-    var getUserDecoTuple: UserDecoTuple { get }
+    var getUserDecoTuple: UserDecoTuple? { get }
     
     
     

@@ -349,8 +349,10 @@ final class UserProfileVC: UIViewController {
     private lazy var cardImgView: CardImageView = {
         let view = CardImageView()
         let userDecoTuple = self.viewModel.getUserDecoTuple
-            view.setupUserData(data: userDecoTuple.user)
-            view.setupDecorationData(data: userDecoTuple.deco)
+        if let tuple = userDecoTuple {
+            view.setupUserData(data: tuple.user)
+            view.setupDecorationData(data: tuple.deco)
+        }
         return view
     }()
     
@@ -582,6 +584,10 @@ extension UserProfileVC {
 // MARK: - 액션 설정
 extension UserProfileVC {
     @objc private func searchBtnTapped() {
+        
+        
+        
+        
         if self.topViewBottonConstraint.layoutConstraints.first?.constant == 0 {
             // 테이블 뷰가 숨겨져 있을 때 보이도록 설정하고 아래서 위로 애니메이션
             self.topViewBottonConstraint.update(offset: self.receiptTableView.frame.height)
@@ -594,9 +600,9 @@ extension UserProfileVC {
             // 테이블 뷰가 보이고 있을 때 위에서 아래로 애니메이션하고 숨김 설정
             self.topViewBottonConstraint.update(offset: 0)
             
-            UIView.animate(withDuration: 0.3, animations: {
+            UIView.animate(withDuration: 0.3) {
                 self.view.layoutIfNeeded()
-            })
+            }
         }
     }
     @objc private func reportBtnTapped() {

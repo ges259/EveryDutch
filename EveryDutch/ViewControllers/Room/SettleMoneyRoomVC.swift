@@ -590,8 +590,8 @@ extension SettleMoneyRoomVC {
 
 // MARK: - 테이블뷰 델리게이트
 extension SettleMoneyRoomVC: UsersTableViewDelegate {
-    func didSelectUser(tuple: UserDecoTuple) {
-        self.coordinator.userProfileScreen(userDecoTuple: tuple)
+    func didSelectUser() {
+        self.coordinator.userProfileScreen()
     }
     
     /// 유저의 수가 변경되었을 때, 탑뷰의 높이를 업데이트 하는 메서드

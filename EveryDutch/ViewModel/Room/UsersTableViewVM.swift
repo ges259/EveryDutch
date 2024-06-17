@@ -36,7 +36,7 @@ class UsersTableViewVM: UsersTableViewVMProtocol {
     private var customTableEnum: UsersTableEnum
     
     // 클로저
-    var userCardDataClosure: ((UserDecoTuple) -> Void)?
+    var userCardDataClosure: (() -> Void)?
     var errorClosure: ((ErrorEnum) -> Void)?
     
     
@@ -50,22 +50,14 @@ class UsersTableViewVM: UsersTableViewVMProtocol {
         self.customTableEnum = customTableEnum
     }
     
-    func getUserAndDecoration(index: Int) {
-        Task {
-            do {
-                let userTuple = self.roomDataManager.getIndexToUserDataTuple(index: index)
-                let deco = try await self.roomDataManager.fetchDecoration(userID: userTuple.key)
-                
-                
-                DispatchQueue.main.async {
-                    self.userCardDataClosure?((user: userTuple.value, deco: deco))
-                }
-                
-                
-            } catch let error as ErrorEnum {
+    func selectUser(index: Int) {
+        self.roomDataManager.selectUser(index: index) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(_):
+                self.userCardDataClosure?()
+            case .failure(let error):
                 self.errorClosure?(error)
-            } catch {
-                self.errorClosure?(.unknownError)
             }
         }
     }

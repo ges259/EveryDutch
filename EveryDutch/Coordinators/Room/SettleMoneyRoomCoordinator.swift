@@ -72,10 +72,8 @@ final class SettleMoneyRoomCoordinator: SettleMoneyRoomCoordProtocol {
     
     
     
-    func userProfileScreen(userDecoTuple: UserDecoTuple) {
-        let userProfileCoordinator = UserProfileCoordinator(
-            nav: self.nav,
-            userDecoTuple: userDecoTuple)
+    func userProfileScreen() {
+        let userProfileCoordinator = UserProfileCoordinator(nav: self.nav)
         
         self.childCoordinators.append(userProfileCoordinator)
         userProfileCoordinator.parentCoordinator = self

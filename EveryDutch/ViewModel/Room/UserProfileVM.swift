@@ -10,19 +10,18 @@ import Foundation
 final class UserProfileVM: UserProfileVMProtocol {
 
     
-    let userDecoTuple: UserDecoTuple
+    let userDecoTuple: UserDecoTuple?
     let roomDataManager: RoomDataManagerProtocol
     
     
     
     // MARK: - 라이프사이클
-    init(roomDataManager: RoomDataManagerProtocol,
-         userDecoTuple: UserDecoTuple)
+    init(roomDataManager: RoomDataManagerProtocol)
     {
         self.roomDataManager = roomDataManager
-        self.userDecoTuple = userDecoTuple
+        self.userDecoTuple = self.roomDataManager.getCurrentUserData
+        
     }
-    
     
     lazy var isRoomManager: Bool = {
         return self.roomDataManager.checkIsRoomManager
@@ -35,18 +34,37 @@ final class UserProfileVM: UserProfileVMProtocol {
         : 80 + 20
     }
     
-    var getUserDecoTuple: UserDecoTuple {
+    var getUserDecoTuple: UserDecoTuple? {
         return self.userDecoTuple
     }
     
+    var fetchSuccessClosure: (([IndexPath]) -> Void)?
+    var errorClosure: ((ErrorEnum) -> Void)?
     
-    
-    
-    
-    
-    func loadMoreUserReceipt() {
-        
+    func fetchInitialUserReceipt() {
+        self.loadUserReceipt(fetchFunction: self.roomDataManager.loadUserReceipt)
     }
+
+    func loadMoreUserReceipt() {
+        self.loadUserReceipt(fetchFunction: self.roomDataManager.loadUserRoomReceipt)
+    }
+    
+    private func loadUserReceipt(
+        fetchFunction: (@escaping Typealias.IndexPathsCompletion) -> Void)
+    {
+        fetchFunction { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let indexPaths):
+                self.fetchSuccessClosure?(indexPaths)
+            case .failure(let error):
+                self.errorClosure?(error)
+            }
+        }
+    }
+    
+    
+    
     
     // MARK: - 영수증 테이블뷰
     /// 영수증 개수

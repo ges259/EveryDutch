@@ -6,19 +6,21 @@
 //
 
 import Foundation
-
 extension RoomDataManager {
+    
     // MARK: - 데이터 fetch
     func loadUserReceipt(
-        userID: String,
-        completion: @escaping Typealias.VoidCompletion
+        completion: @escaping Typealias.IndexPathsCompletion
     ) {
+        // 검색 모드로 변환
         self.updateSearchMode(searchMode: true)
-        // 버전 ID 가져오기
-        guard let versionID = self.getCurrentVersion else {
+        // 버전ID 및 현재 유저ID 가져오기
+        guard let versionID = self.getCurrentVersion,
+              let userID = getCurrentUserID else {
             completion(.failure(.readError))
             return
         }
+        
         DispatchQueue.global(qos: .utility).async {
             self.receiptAPI.loadInitialUserReceipts(
                 userID: userID,
@@ -28,8 +30,8 @@ extension RoomDataManager {
                 switch result {
                 case .success(let initialLoad):
                     print("영수증 가져오기 성공")
-                    self.handleAddedUserReceipt(initialLoad)
-                    
+                    let newIndexPaths = self.handleAddedUserReceipt(initialLoad)
+                    completion(.success(newIndexPaths))
                 case .failure(let error):
                     completion(.failure(error))
                     print("영수증 가져오기 실패")
@@ -37,12 +39,13 @@ extension RoomDataManager {
             }
         }
     }
-    
-    
-    /// 데이터를 추가적으로 가져오는 코드
-    func loadUserRoomReceipt(userID: String) {
-        // 버전 ID 가져오기
-        guard let versionID = self.getCurrentVersion else {
+
+    func loadMoreUserReceipt(
+        completion: @escaping Typealias.IndexPathsCompletion
+    ) {
+        guard let versionID = self.getCurrentVersion,
+              let userID = getCurrentUserID else {
+            completion(.failure(.readError))
             return
         }
         DispatchQueue.global(qos: .utility).async {
@@ -52,39 +55,29 @@ extension RoomDataManager {
             ) { [weak self] result in
                 guard let self = self else { return }
                 switch result {
-                case .success(let initialLoad):
-                    print("영수증 가져오기 성공")
-                    self.handleAddedUserReceipt(initialLoad)
-                    
+                case .success(let moreLoad):
+                    print("영수증 추가 가져오기 성공")
+                    let newIndexPaths = self.handleAddedUserReceipt(moreLoad)
+                    completion(.success(newIndexPaths))
                 case .failure(let error):
-                    print("영수증 가져오기 실패")
+                    completion(.failure(error))
+                    print("영수증 추가 가져오기 실패")
                 }
             }
         }
     }
-    
-    
-    private func handleAddedUserReceipt(_ receiptTuple: [ReceiptTuple]) {
-        if receiptTuple.isEmpty { return }
-        // 리턴할 인덱스패스
-        var addedIndexPaths = [IndexPath]()
+
+    @discardableResult
+    private func handleAddedUserReceipt(_ receiptTuple: [ReceiptTuple]) -> [IndexPath] {
+        var newIndexPaths = [IndexPath]()
         
         for (receiptID, room) in receiptTuple {
-            // 중복 추가 방지
-            guard self.userReceiptIDToIndexPathMap[receiptID] == nil else { continue }
-            // 인덱스패스 생성
             let indexPath = IndexPath(row: self.userReceiptCellViewModels.count, section: 0)
-            
-            // 뷰모델 생성
             let viewModel = ReceiptTableViewCellVM(receiptID: receiptID, receiptData: room)
-            // 뷰모델 저장
             self.userReceiptCellViewModels.append(viewModel)
-            // 인덱스패스 업데이트
-            self.userReceiptIDToIndexPathMap[receiptID] = indexPath
-            addedIndexPaths.append(indexPath)
+            newIndexPaths.append(indexPath)
         }
-        // 변경 사항을 알리는 알림 전송
-        self.receiptDebouncer.triggerDebounceWithIndexPaths(eventType: .added, addedIndexPaths)
         
+        return newIndexPaths
     }
 }

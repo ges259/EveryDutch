@@ -13,5 +13,5 @@ protocol SettleMoneyRoomCoordProtocol: Coordinator {
     func ReceiptScreen(receipt: Receipt)
     
     
-    func userProfileScreen(userDecoTuple: UserDecoTuple)
+    func userProfileScreen()
 }

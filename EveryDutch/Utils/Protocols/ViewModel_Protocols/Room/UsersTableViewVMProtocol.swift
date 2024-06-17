@@ -10,7 +10,7 @@ import UIKit
 protocol UsersTableViewVMProtocol {
     
     
-    var userCardDataClosure: (((user: User, deco: Decoration?)) -> Void)? { get set }
+    var userCardDataClosure: (() -> Void)? { get set }
     var errorClosure: ((ErrorEnum) -> Void)? { get set }
     
     
@@ -26,5 +26,5 @@ protocol UsersTableViewVMProtocol {
     
     
     
-    func getUserAndDecoration(index: Int)
+    func selectUser(index: Int)
 }

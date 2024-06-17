@@ -20,13 +20,10 @@ final class UserProfileCoordinator: Coordinator {
     
     
     var nav: UINavigationController
-    let userDecoTuple: UserDecoTuple
     
     // 의존성 주입
-    init(nav: UINavigationController,
-         userDecoTuple: UserDecoTuple) {
+    init(nav: UINavigationController) {
         self.nav = nav
-        self.userDecoTuple = userDecoTuple
     }
     deinit { print("\(#function)-----\(self)") }
     
@@ -37,8 +34,7 @@ final class UserProfileCoordinator: Coordinator {
     
     private func userProfileScreen() {
         let userProfileVM = UserProfileVM(
-            roomDataManager: RoomDataManager.shared,
-            userDecoTuple: self.userDecoTuple)
+            roomDataManager: RoomDataManager.shared)
         let userProfileVC = UserProfileVC(
             viewModel: userProfileVM,
             coordinator: self)

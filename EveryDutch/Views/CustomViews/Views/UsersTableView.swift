@@ -9,7 +9,7 @@ import UIKit
 import SnapKit
 
 protocol UsersTableViewDelegate: AnyObject {
-    func didSelectUser(tuple: UserDecoTuple)
+    func didSelectUser()
     func didUpdateUserCount()
 }
 
@@ -124,9 +124,9 @@ extension UsersTableView {
     }
     
     private func configureClosure() {
-        self.viewModel.userCardDataClosure = { [weak self] userTuple in
+        self.viewModel.userCardDataClosure = { [weak self] in
             guard let self = self else { return }
-            self.delegate?.didSelectUser(tuple: userTuple)
+            self.delegate?.didSelectUser()
         }
     }
 }
@@ -185,7 +185,7 @@ extension UsersTableView: UITableViewDelegate {
     func tableView(_ tableView: UITableView,
                    didSelectRowAt indexPath: IndexPath) {
         print(#function)
-        self.viewModel.getUserAndDecoration(index: indexPath.row)
+        self.viewModel.selectUser(index: indexPath.row)
     }
 }
 

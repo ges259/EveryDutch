@@ -14,7 +14,7 @@ enum Typealias {
     typealias CreateReceiptCompletion = (Result<String, ErrorEnum>) -> Void
     
     
-    
+    typealias IndexPathsCompletion = (Result<[IndexPath], ErrorEnum>) -> Void
     
     
     

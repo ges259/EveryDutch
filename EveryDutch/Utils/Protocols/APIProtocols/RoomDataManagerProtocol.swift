@@ -55,8 +55,29 @@ protocol RoomDataManagerProtocol {
     
     
     
-    func fetchDecoration(userID: String) async throws -> Decoration? 
-    func getIndexToUserDataTuple(index: Int) -> UserDataTuple 
+//    func fetchDecoration(userID: String) async throws -> Decoration?
+//    func getIndexToUserDataTuple(index: Int) -> UserDataTuple 
     // MARK: - Fix
     func getUserIDToUsersVM(userID: String) -> UsersTableViewCellVMProtocol?
+    
+    
+    
+    
+    
+    
+    func selectUser(
+        index: Int,
+        completion: @escaping Typealias.VoidCompletion
+    )
+    
+    var getCurrentUserData: UserDecoTuple? { get }
+    
+    
+    
+    func loadUserReceipt(
+        completion: @escaping Typealias.IndexPathsCompletion
+    )
+    func loadUserRoomReceipt(
+        completion: @escaping Typealias.IndexPathsCompletion
+    )
 }
