@@ -18,7 +18,7 @@ protocol UserProfileVMProtocol: ReceiptTableViewProtocol {
     func loadUserReceipt() 
     
     
-    
+    var isTableOpen: Bool { get set }
     var fetchSuccessClosure: (([IndexPath]) -> Void)? { get set }
     var errorClosure: ((ErrorEnum) -> Void)? { get set }
 }

@@ -119,7 +119,10 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
         // api호출
 //        self.roomDataManager.startLoadRoomData()
     }
-    deinit { self.roomDataManager.removeRoomsUsersObserver() }
+    deinit {
+        print("\(#function)-----\(self)")
+        self.roomDataManager.removeRoomsUsersObserver()
+    }
     
     // MARK: - API
     func loadMoreReceiptData() {

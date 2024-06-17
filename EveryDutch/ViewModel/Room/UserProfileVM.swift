@@ -17,7 +17,7 @@ final class UserProfileVM: UserProfileVMProtocol {
     var errorClosure: ((ErrorEnum) -> Void)?
     
     
-    
+    var isTableOpen: Bool = false
     
     
     
@@ -25,9 +25,11 @@ final class UserProfileVM: UserProfileVMProtocol {
     init(roomDataManager: RoomDataManagerProtocol)
     {
         self.roomDataManager = roomDataManager
-        
     }
-    deinit { self.roomDataManager.resetUserReceipt() }
+    deinit {
+        print("\(#function) ----- \(self)")
+        self.roomDataManager.resetUserReceipt()
+    }
     var btnStvInsets: CGFloat {
         return self.isRoomManager
         ? 30 + 20
