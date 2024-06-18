@@ -67,7 +67,8 @@ final class UserProfileCoordinator: UserProfileCoordProtocol {
     func didFinish() {
         DispatchQueue.main.async {
             // 현재 표시된 뷰 컨트롤러를 dismiss
-            self.modalNavController?.dismiss(animated: true)
+            self.nav.dismiss(animated: true)
+            self.modalNavController = nil
             self.parentCoordinator?.removeChildCoordinator(child: self)
         }
     }

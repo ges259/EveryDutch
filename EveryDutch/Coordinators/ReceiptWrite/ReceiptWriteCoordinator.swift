@@ -92,12 +92,9 @@ final class ReceiptWriteCoordinator: ReceiptWriteCoordProtocol {
     func didFinish() {
         DispatchQueue.main.async {
             // 현재 표시된 뷰 컨트롤러를 dismiss
-            self.modalNavController?.dismiss(animated: true) {
-                // 필요한 경우 여기에서 추가적인 정리 작업을 수행
-                // 자식 코디네이터를 부모의 배열에서 제거
-                    // 즉, SettlementVC이 RoomSettingCoordinator의 childCoordinators 배열에서 제거
-                self.parentCoordinator?.removeChildCoordinator(child: self)
-            }
+            self.nav.dismiss(animated: true)
+            self.modalNavController = nil
+            self.parentCoordinator?.removeChildCoordinator(child: self)
         }
     }
     
