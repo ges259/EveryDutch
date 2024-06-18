@@ -33,7 +33,6 @@ extension UIButton {
                 title,
                 attributes: titleContainer)
             // 이미지 - 텍스트 사이 간격
-//            configuration.imagePadding = imageSize == 15 ? 6 : 8
             configuration.imagePadding = imagePadding
             // 이미지가 상단, 텍스트가 하단으로 설정
             configuration.imagePlacement = .top
@@ -47,6 +46,25 @@ extension UIButton {
             btn.tintColor = tintColor
             btn.backgroundColor = backgroundColor
         return btn
+    }
+    func imageAndTitleFix(image: UIImage?, title: String, imageSize: CGFloat = 15, imagePadding: CGFloat = 6) {
+        // 기존 configuration을 가져오거나 새로 생성
+        var newConfiguration = self.configuration ?? UIButton.Configuration.plain()
+        
+        // 이미지 설정
+        newConfiguration.image = image
+        newConfiguration.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(pointSize: imageSize)
+        
+        // 타이틀 설정
+        var titleContainer = AttributeContainer()
+        titleContainer.font = UIFont.boldSystemFont(ofSize: 12)
+        newConfiguration.attributedTitle = AttributedString(title, attributes: titleContainer)
+        
+        // 이미지와 텍스트 사이 간격 설정
+        newConfiguration.imagePadding = imagePadding
+        
+        // 업데이트된 configuration을 self에 적용
+        self.configuration = newConfiguration
     }
     
     static func btnWithTitle(title: String = "",

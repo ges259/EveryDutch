@@ -5,7 +5,7 @@
 //  Created by 계은성 on 6/12/24.
 //
 
-import Foundation
+import UIKit
 
 final class UserProfileVM: UserProfileVMProtocol {
 
@@ -15,9 +15,15 @@ final class UserProfileVM: UserProfileVMProtocol {
     
     var fetchSuccessClosure: (([IndexPath]) -> Void)?
     var errorClosure: ((ErrorEnum) -> Void)?
-    
-    
-    var isTableOpen: Bool = false
+    var searchModeClosure: ((UIImage?, String) -> Void)?
+
+    var isTableOpen: Bool = false {
+        didSet {
+            let image = self.isTableOpen ? UIImage(named: "chevronBottom") : UIImage(named: "search_Img")
+            let title = self.isTableOpen ? "취소" : "검색"
+            self.searchModeClosure?(image, title)
+        }
+    }
     
     
     

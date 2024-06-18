@@ -5,7 +5,7 @@
 //  Created by 계은성 on 6/12/24.
 //
 
-import Foundation
+import UIKit
 
 protocol UserProfileVMProtocol: ReceiptTableViewProtocol {
     var isRoomManager: Bool { get }
@@ -21,4 +21,6 @@ protocol UserProfileVMProtocol: ReceiptTableViewProtocol {
     var isTableOpen: Bool { get set }
     var fetchSuccessClosure: (([IndexPath]) -> Void)? { get set }
     var errorClosure: ((ErrorEnum) -> Void)? { get set }
+    
+    var searchModeClosure: ((UIImage?, String) -> Void)?  { get set }
 }

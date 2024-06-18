@@ -60,6 +60,9 @@ extension UIImage {
     static let checkmark_Img: UIImage? = UIImage(systemName: "checkmark")
     static let chevronLeft: UIImage? = UIImage(systemName: "chevron.left")
     static let chevronRight: UIImage? = UIImage(systemName: "chevron.right")
+    static let chevronBottom: UIImage? = UIImage(systemName: "chevron.down")
+    
+    
     static let arrow_down: UIImage? = UIImage(systemName: "arrow.down.circle.fill")
     static let menu_Img: UIImage? = UIImage(systemName: "line.3.horizontal")
     
