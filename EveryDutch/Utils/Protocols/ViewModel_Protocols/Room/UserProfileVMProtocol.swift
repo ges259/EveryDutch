@@ -26,4 +26,6 @@ protocol UserProfileVMProtocol: ReceiptTableViewProtocol {
     
     
     func setHasMoreUserReceiptData(setBoolean: Bool) 
+    
+    var hasNoData: Bool { get set }
 }

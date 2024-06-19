@@ -13,7 +13,10 @@ protocol ReceiptAPIProtocol {
     func createReceipt(versionID: String,
                        dictionary: [String: Any?]) async throws -> String
     
-    func saveReceiptForUsers(receiptID: String, users: [String]) async throws
+    func saveReceiptForUsers(
+        versionID: String,
+        receiptID: String,
+        users: [String]) async throws
     
     // MARK: - 누적 금액 업데이트
     func updateCumulativeMoney(versionID: String, moneyDict: [String: Int]) async throws

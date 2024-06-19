@@ -91,7 +91,6 @@ final class SettleMoneyRoomVC: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         self.isViewVisible = true
-        self.viewModel.searchModeSetFalse()
         self.processPendingUpdates()
     }
     override func viewWillDisappear(_ animated: Bool) {

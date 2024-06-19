@@ -34,9 +34,9 @@ final class NoDataView: UIView {
     
     
     // MARK: - 라이프사이클
-    init(type: NodataViewType) {
+    init(type: NodataViewType, cornerRadius: CGFloat = 0) {
         super.init(frame: .zero)
-        
+        self.setRoundedCorners(.all, withCornerRadius: cornerRadius)
         self.configureUIWithType(type: type)
         self.configureAutoLayout()
     }

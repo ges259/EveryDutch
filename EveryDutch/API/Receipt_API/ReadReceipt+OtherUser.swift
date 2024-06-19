@@ -17,6 +17,7 @@ extension ReceiptAPI {
     ) {
         print(#function)
         let path = USER_RECEIPTS_REF
+            .child(versionID)
             .child(userID)
             .queryLimited(toLast: 6)
         
@@ -37,9 +38,17 @@ extension ReceiptAPI {
             if let lastSnapshot = allObjects.first {
                 self.userLastKey = lastSnapshot.key
             }
-            self.fetchUserReceipts(versionID: versionID,
-                                   receiptIDs: receiptIDs,
-                                   completion: completion)
+            print("___________________________")
+            dump(receiptIDs)
+            print("___________________________")
+            if receiptIDs.isEmpty {
+                print("receiptIDs.isEmpty ----- \(receiptIDs.isEmpty)")
+                completion(.failure(.noInitialData))
+            } else {
+                self.fetchUserReceipts(versionID: versionID,
+                                       receiptIDs: receiptIDs,
+                                       completion: completion)
+            }
         }
     }
     
@@ -83,11 +92,14 @@ extension ReceiptAPI {
                 self.userLastKey = lastSnapshot.key
                 
             }
-            
-            // Fetch receipt details
-            self.fetchUserReceipts(versionID: versionID,
-                                   receiptIDs: receiptIDs,
-                                   completion: completion)
+            if receiptIDs.isEmpty {
+                completion(.failure(.noMoreData))
+            } else {
+                // Fetch receipt details
+                self.fetchUserReceipts(versionID: versionID,
+                                       receiptIDs: receiptIDs,
+                                       completion: completion)
+            }
         }
     }
     

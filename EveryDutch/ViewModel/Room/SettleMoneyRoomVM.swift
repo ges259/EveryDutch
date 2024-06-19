@@ -128,10 +128,6 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
     func loadMoreReceiptData() {
         self.roomDataManager.loadMoreRoomReceipt()
     }
-    
-    func searchModeSetFalse() {
-        self.roomDataManager.updateSearchMode(searchMode: false)
-    }
 }
 
 

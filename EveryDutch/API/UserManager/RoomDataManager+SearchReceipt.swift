@@ -13,8 +13,6 @@ extension RoomDataManager {
     /// 초기 로드 시 검색 모드로 전환하고 영수증을 가져옴
     func fetchUserReceipt(completion: @escaping Typealias.IndexPathsCompletion) {
         print(#function)
-        // 검색 모드로 변환
-        self.updateSearchMode(searchMode: true)
         // 영수증 데이터를 가져옴
         self.fetchReceipts(completion: completion)
     }
@@ -41,7 +39,7 @@ extension RoomDataManager {
             @escaping (Result<[ReceiptTuple], ErrorEnum>) -> Void
         ) -> Void 
         // !self.firstLoadSuccess가 true인지 false인지 판단
-        = !self.userReceiptLoadSuccess
+        = !self.userReceiptInitialLoad
         // !self.firstLoadSuccess의 결과에 따라 fetchFunction에 다른 함수 저장
         ? self.receiptAPI.loadInitialUserReceipts
         : self.receiptAPI.loadMoreUserReceipts
@@ -56,7 +54,7 @@ extension RoomDataManager {
                     print("영수증 가져오기 성공")
                     let newIndexPaths = self.handleAddedUserReceipt(load)
                     // 첫 번째 로드 성공 여부를 true로 설정
-                    self.userReceiptLoadSuccess = true
+                    self.userReceiptInitialLoad = true
                     DispatchQueue.main.async {
                         // 성공한 경우 새로운 인덱스 패스를 반환
                         completion(.success(newIndexPaths))
@@ -93,6 +91,8 @@ extension RoomDataManager {
             // 새로운 인덱스 패스를 배열에 추가
             newIndexPaths.append(indexPath)
         }
+        
+//        if newIndexPaths.isEmpty
         
         // 새로운 인덱스 패스를 반환
         return newIndexPaths

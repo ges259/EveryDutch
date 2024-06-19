@@ -36,11 +36,10 @@ final class FindFriendsVC: UIViewController {
         return view
     }()
     /// NoData뷰
-    private var noDataView: NoDataView = {
-        let view = NoDataView(type: .findFriendsScreen)
-        view.setRoundedCorners(.all, withCornerRadius: 10)
-        return view
-    }()
+    private var noDataView: NoDataView = NoDataView(
+        type: .findFriendsScreen,
+        cornerRadius: 10)
+    
     /// 상단 스택뷰
     private lazy var topStackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.textField,

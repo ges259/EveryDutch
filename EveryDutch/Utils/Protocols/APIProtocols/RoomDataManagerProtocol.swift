@@ -41,7 +41,6 @@ protocol RoomDataManagerProtocol {
     
     // MARK: - Receipt
     
-    func updateSearchMode(searchMode: Bool)
     var getNumOfReceipts: Int { get }
     func getReceiptViewModel(index: Int) -> ReceiptTableViewCellVMProtocol
     func getRoomReceipt(at index: Int) -> Receipt
@@ -76,7 +75,7 @@ protocol RoomDataManagerProtocol {
     
     func fetchUserReceipt(completion: @escaping Typealias.IndexPathsCompletion)
     
-    var getSearchMode: Bool { get }
+    
     
     var getUserReceiptLoadSuccess: Bool { get } 
     

@@ -13,7 +13,7 @@ enum ErrorEnum: Error {
     
     case noMoreData
     case validationError(_ databaseString: [String])
-    
+    case noInitialData
     case writeError
     case readError
     case loginError

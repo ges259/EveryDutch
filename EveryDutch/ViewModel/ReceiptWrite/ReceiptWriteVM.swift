@@ -631,6 +631,7 @@ extension ReceiptWriteVM {
                     dictionary: dict)
                 // User_Receipts에 영수증 ID 저장
                 try await self.receiptAPI.saveReceiptForUsers(
+                    versionID: versionID,
                     receiptID: receiptKey,
                     users: Array(self.usersMoneyDict.keys))
                 // 누적 금액 업데이트

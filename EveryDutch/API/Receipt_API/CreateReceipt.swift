@@ -73,13 +73,16 @@ extension ReceiptAPI {
     
     // MARK: - 유저의 영수증 저장
     func saveReceiptForUsers(
+        versionID: String,
         receiptID: String,
         users: [String]) async throws
     {
         try await withThrowingTaskGroup(of: Void.self) { group in
             for user in users {
                 group.addTask {
-                    let path = USER_RECEIPTS_REF.child(user)
+                    let path = USER_RECEIPTS_REF
+                        .child(versionID)
+                        .child(user)
                     try await self.updateChildValues(
                         path: path,
                         values: [receiptID: false]

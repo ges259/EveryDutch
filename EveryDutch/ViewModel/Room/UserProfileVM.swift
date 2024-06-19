@@ -11,10 +11,17 @@ final class UserProfileVM: UserProfileVMProtocol {
 
     
     private var hasMoreUserReceiptData: Bool = true
-    
     func setHasMoreUserReceiptData(setBoolean: Bool = false) {
         self.hasMoreUserReceiptData = setBoolean
     }
+    
+    
+    var hasNoData: Bool = false
+    
+    
+    
+    
+    
     
     
     let roomDataManager: RoomDataManagerProtocol

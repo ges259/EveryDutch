@@ -13,6 +13,7 @@ enum NodataViewType {
     case ReceiptWriteScreen
     case findFriendsScreen
     case cantFindFriendScreen
+    case userProfileVC
     
     var getImg: UIImage? {
         switch self {
@@ -25,6 +26,8 @@ enum NodataViewType {
         case .findFriendsScreen:
             return UIImage.plus_Circle_Img
         case .cantFindFriendScreen:
+            return UIImage.plus_Circle_Img
+        case .userProfileVC:
             return UIImage.plus_Circle_Img
         }
     }
@@ -41,12 +44,14 @@ enum NodataViewType {
             return "친구의 아이디를 검색해 보세요!"
         case .cantFindFriendScreen:
             return "검색 결과가 없습니다."
+        case .userProfileVC:
+            return "검색 결과가 없습니다."
         }
     }
     
     var getTintColor: UIColor {
         switch self {
-        case .mainScreen, .versionScreen:
+        case .mainScreen, .versionScreen, .userProfileVC:
             return .normal_white
             
         case .ReceiptWriteScreen, .findFriendsScreen, .cantFindFriendScreen:
@@ -56,7 +61,7 @@ enum NodataViewType {
     
     var getBackgroundColor: UIColor {
         switch self {
-        case .mainScreen, .versionScreen:
+        case .mainScreen, .versionScreen, .userProfileVC:
             return .deep_Blue
         
         case .ReceiptWriteScreen, .findFriendsScreen, .cantFindFriendScreen:
@@ -69,7 +74,8 @@ enum NodataViewType {
         case .mainScreen, .versionScreen:
             return true
             
-        case .ReceiptWriteScreen,.findFriendsScreen, .cantFindFriendScreen:
+        case .ReceiptWriteScreen, .findFriendsScreen, .cantFindFriendScreen,
+                .userProfileVC:
             return false
         }
     }

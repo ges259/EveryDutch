@@ -10,7 +10,7 @@ import Foundation
 protocol SettleMoneyRoomProtocol: ReceiptTableViewProtocol {
     
     
-    func searchModeSetFalse()
+    
     
     
     var navTitle: String? { get }

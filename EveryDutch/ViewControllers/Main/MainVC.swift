@@ -34,7 +34,9 @@ final class MainVC: UIViewController {
         backgroundColor: UIColor.deep_Blue,
         cornerRadius: 80)
     
-    private var noDataView: NoDataView = NoDataView(type: .mainScreen)
+    private var noDataView: NoDataView = NoDataView(
+        type: .mainScreen,
+        cornerRadius: 12)
     
     
     // 플로팅 버튼 레이아웃
@@ -83,8 +85,6 @@ final class MainVC: UIViewController {
     
     /// 컬렉션뷰 셀의 넓이
     private lazy var width = self.view.frame.width - 20
-    /// 컬렉션뷰 셀의 높이
-    private lazy var cardHeight = (self.view.frame.width - 20) * 1.8 / 3
     
     /// 플로팅 버튼의 배열
     private lazy var floatingArray: [UIButton] = [self.makeRoomScreenBtn,
@@ -166,7 +166,6 @@ extension MainVC {
         
         // 코너레디어스 설정
 //        self.menuBtn.setRoundedCorners(.all, withCornerRadius: 80 / 2)
-        self.noDataView.setRoundedCorners(.all, withCornerRadius: 12)
     }
     
     /// 오토레이아웃 설정
@@ -199,7 +198,7 @@ extension MainVC {
         // 방이 없을 때 나타나는 뷰
         self.noDataView.snp.makeConstraints { make in
             make.top.leading.trailing.equalTo(self.collectionView)
-            make.height.equalTo(self.cardHeight)
+            make.height.equalTo(self.cardHeight())
         }
         // 플로팅 버튼 스택뷰
         self.floatingStackView.snp.makeConstraints { make in
@@ -454,7 +453,7 @@ extension MainVC: UICollectionViewDelegateFlowLayout {
                         layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: self.width,
-                      height: self.cardHeight)
+                      height: self.cardHeight())
     }
     
     // 아이템 간 상하 간격 설정

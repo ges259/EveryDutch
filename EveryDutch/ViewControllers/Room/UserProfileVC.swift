@@ -42,7 +42,8 @@ final class UserProfileVC: UIViewController {
     
     private lazy var totalStackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.cardImgView,
-                           self.receiptTableView],
+                           self.receiptTableView,
+                           self.noDataView],
         axis: .vertical,
         spacing: 10,
         alignment: .fill,
@@ -78,6 +79,9 @@ final class UserProfileVC: UIViewController {
         alignment: .fill,
         distribution: .equalSpacing)
     
+    private let noDataView: NoDataView = NoDataView(
+        type: .ReceiptWriteScreen,
+        cornerRadius: 12)
     
     
     
@@ -176,6 +180,7 @@ extension UserProfileVC {
         }
         self.totalView.setRoundedCorners(.top, withCornerRadius: 20)
         self.receiptTableView.setRoundedCorners(.all, withCornerRadius: 12)
+        self.totalStackView.setCustomSpacing(0, after: self.receiptTableView)
     }
     
     /// 오토레이아웃 설정
@@ -228,6 +233,10 @@ extension UserProfileVC {
                 make.size.equalTo(self.btnSize)
             }
         }
+        
+        self.noDataView.snp.makeConstraints { make in
+            make.height.equalTo(self.cardHeight())
+        }
     }
     
     /// 액션 설정
@@ -275,7 +284,11 @@ extension UserProfileVC {
                 self.showLoading(false)
                 self.dataChanged()
             }
-            self.receiptTableView.reloadData()
+
+            // indexPaths가 적절한지 확인
+            self.receiptTableView.beginUpdates()
+            self.receiptTableView.insertRows(at: indexPaths, with: .none)
+            self.receiptTableView.endUpdates()
             CATransaction.commit()
         }
 
@@ -286,10 +299,18 @@ extension UserProfileVC {
             
             switch error {
             case .noMoreData:
+                print("noMoreData")
                 self.dataChanged()
                 self.viewModel.setHasMoreUserReceiptData(setBoolean: false)
-                
-            default: break
+            case .noInitialData:
+                print("noInitialData")
+                self.isFirstLoad = false
+                self.viewModel.hasNoData = true
+                self.updateNoDataViewIsHidden(false)
+                break
+            default: 
+                print("default ----- \(error)")
+                break
             }
         }
         
@@ -298,6 +319,8 @@ extension UserProfileVC {
             self.searchBtn.imageAndTitleFix(image: image, title: title)
         }
     }
+    
+
     
     private func dataChanged() {
         if self.isFirstLoad {
@@ -321,14 +344,22 @@ extension UserProfileVC {
     @objc private func searchBtnTapped() {
         print(#function)
         // 눌렸다면,
-        // fireLoadSuccess가 false라면, 데이터 가져오기
+        
         // fireLoadSuccess가 true라면, 테이블만 보이게 하기.
         if self.viewModel.getUserReceiptLoadSuccess {
-            print("true")
+            print("getUserReceiptLoadSuccess ----- true ----- 1")
             self.updateTableViewisHidden(!self.viewModel.isTableOpen)
-            
-        } else {
-            print("false")
+        } 
+        
+        else if self.viewModel.hasNoData {
+            print("hasNoData ----- true ----- 1")
+            // 닫을 때 -> true로 저장되어 있음
+            self.updateNoDataViewIsHidden(self.viewModel.isTableOpen)
+        }
+        
+        // fireLoadSuccess가 false라면, 데이터 가져오기
+        else {
+            print("false ----- loadUserReceipt ----- 1")
             self.viewModel.loadUserReceipt()
         }
     }
@@ -352,7 +383,6 @@ extension UserProfileVC {
 // MARK: - 높이 설정
 extension UserProfileVC {
     /// 탑뷰의 높이를 바꾸는 메서드
-    /// 탑뷰의 높이를 바꾸는 메서드
     private func updateTableViewisHidden(_ isHidden: Bool = false) {
         // 새로운 높이 구하기
         let newHeight: CGFloat = self.totalViewHeight(isHidden: isHidden)
@@ -373,6 +403,17 @@ extension UserProfileVC {
             }
         }
     }
+    private func updateNoDataViewIsHidden(_ isHidden: Bool) {
+        // 현재 상태 저장
+        self.viewModel.isTableOpen = !isHidden
+        // 애니메이션과 함께 UI바꾸기
+        UIView.animate(withDuration: 0.3) {
+            self.noDataView.isHidden = isHidden
+            self.cardImgView.isHidden = !isHidden
+            self.view.layoutIfNeeded()
+        }
+    }
+    
     /// 탑뷰의 높이를 구하는 메서드
     private func totalViewHeight(isHidden: Bool) -> CGFloat {
         let height = isHidden
@@ -551,7 +592,7 @@ extension UserProfileVC: UITableViewDataSource {
 
 
 
-// MARK: - 리프레시 컨트롤
+// MARK: - 스크롤뷰 및 제스쳐
 extension UserProfileVC: UIGestureRecognizerDelegate {
     func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
         let contentOffsetY = scrollView.contentOffset.y
@@ -563,16 +604,6 @@ extension UserProfileVC: UIGestureRecognizerDelegate {
             self.viewModel.loadUserReceipt()
         }
     }
-    
-    @objc private func refreshData() {
-        // API 요청을 시뮬레이션하기 위해 2초 딜레이를 추가합니다.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-            self.showLoading(false)
-            self.receiptTableView.reloadData()
-        }
-        print(#function)
-    }
-    
     /// 메서드를 통해 팬 제스처와 다른 제스처 인식기가 동시에 인식되지 않도록 설정
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
         // totalView를 터치했을 경우 view의 tapGesture가 인식되지 않도록 설정

@@ -61,8 +61,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     /// 유저 검색 시, 유저의 영수증 테이블 셀의 뷰모델
     var userReceiptCellViewModels = [ReceiptTableViewCellVMProtocol]()
-    private var isSearchMode: Bool = false
-    var userReceiptLoadSuccess: Bool = false
+
     
     
     // MARK: - 디바운서
@@ -80,10 +79,11 @@ final class RoomDataManager: RoomDataManagerProtocol {
     /// [플래그] RoomUsers 데이터 observe를 설정했는지 판단하는 변수
     var roomUsersInitialLoad: Bool = true
     /// [플래그] Receipt 데이터 observe를 설정했는지 판단하는 변수
-    var receiptInitialLoad = true
+    var roomReceiptInitialLoad = false
     /// [플래그] Receipt 데이터를 추가적으로 가져올 지에 대한 플래그
     var hasMoreRoomReceiptData: Bool = true
     
+    var userReceiptInitialLoad: Bool = false
     
     
     
@@ -130,7 +130,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
     }
     func resetSettleMoneyRoomData() {
         // 플래그 데이터 초기화
-        self.receiptInitialLoad = true
+        self.roomReceiptInitialLoad = false
         self.roomUsersInitialLoad = true
         self.hasMoreRoomReceiptData = true
         // 디바운싱 초기화
@@ -138,14 +138,18 @@ final class RoomDataManager: RoomDataManagerProtocol {
         self.receiptDebouncer.reset()
         
         // RoomUsers 데이터 초기화
-        //        self.roomUserDataDict = [:]
         self.userIDToIndexPathMap = [:]
         self.usersCellViewModels = []
         // Receipt 데이터 초기화
         self.receiptIDToIndexPathMap = [:]
         self.roomReceiptCellViewModels = []
     }
-    
+    func resetUserReceipt() {
+        print(#function)
+        self.userReceiptInitialLoad = false
+        self.userReceiptCellViewModels = []
+        self.receiptAPI.resetUserReceiptKey()
+    }
     
     
     
@@ -322,14 +326,8 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     
     // MARK: - 영수증 정보
-    func updateSearchMode(searchMode: Bool) {
-        self.isSearchMode = searchMode
-    }
-    var getSearchMode: Bool {
-        return self.isSearchMode
-    }
     var getUserReceiptLoadSuccess: Bool {
-        return self.userReceiptLoadSuccess
+        return self.userReceiptInitialLoad
     }
     
     
@@ -375,17 +373,5 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     func getUserReceipt(at index: Int) -> Receipt {
         return self.userReceiptCellViewModels[index].getReceipt
-    }
-    
-    func resetUserReceipt() {
-        print(#function)
-        self.isSearchMode = false
-        self.userReceiptLoadSuccess = false
-        self.userReceiptCellViewModels = []
-        self.receiptAPI.resetUserReceiptKey()
-    }
-    
+    }   
 }
-
-// private var receiptTableViewHeightConstraint: NSLayoutConstraint!
-// self.panModalTransition(to: .longForm)
