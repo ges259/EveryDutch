@@ -1,4 +1,5 @@
 {
+  "originHash" : "9aebf4b0fcaf15af27ea91174bfc8bb372cf5453178ed4cee811304a06248e17",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -91,6 +92,15 @@
       }
     },
     {
+      "identity" : "jgprogresshud",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/JonasGessner/JGProgressHUD",
+      "state" : {
+        "revision" : "78d7cd35f1d90ff74fd82e486f2cbe4b24be8cf9",
+        "version" : "2.2.0"
+      }
+    },
+    {
       "identity" : "leveldb",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/firebase/leveldb.git",
@@ -154,5 +164,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

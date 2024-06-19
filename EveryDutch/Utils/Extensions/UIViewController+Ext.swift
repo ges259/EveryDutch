@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import JGProgressHUD
 
 extension UIViewController {
     /// 커스텀 얼럿창을 생성하고 표시하는 메서드
@@ -53,3 +54,65 @@ extension UIViewController {
         return (self.view.frame.width - 20) * 1.8 / 3
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+extension UIViewController {
+    // MARK: - 로딩뷰
+    
+    private static var _hud: JGProgressHUD?
+    
+    var hud: JGProgressHUD {
+        if let hud = UIViewController._hud {
+            return hud
+        } else {
+            let hud = JGProgressHUD(style: .dark)
+            hud.interactionType = .blockAllTouches
+            UIViewController._hud = hud
+            return hud
+        }
+    }
+    
+    private func showHUD() {
+        DispatchQueue.main.async {
+            if !self.hud.isVisible {
+                self.hud.show(in: self.view, animated: true)
+                self.view.isUserInteractionEnabled = false
+            }
+        }
+    }
+    
+    private func hideHUD() {
+        DispatchQueue.main.async {
+            if self.hud.isVisible {
+                self.hud.dismiss(animated: true)
+                self.view.isUserInteractionEnabled = true
+            }
+        }
+    }
+    
+    /// 테이블뷰 / 콜렉션뷰의 리로드를 기다리는 동안 -> 화면을 터치 못하도록 설정
+    func showLoading(_ show: Bool) {
+        if show {
+            self.showHUD()
+        } else {
+            self.hideHUD()
+        }
+    }
+}
+
+/// 탭바를 사용할 수 없게 / 있게 만드는 메서드
+//    private func tabBarIsEnabled(_ isEnabled: Bool) {
+//        let tabBarItemsArray = self.tabBarController?.tabBar.items
+//        tabBarItemsArray?.forEach({ item in
+//            item.isEnabled = isEnabled
+//        })
+//    }

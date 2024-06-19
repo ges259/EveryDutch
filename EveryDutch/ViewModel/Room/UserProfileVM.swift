@@ -10,6 +10,12 @@ import UIKit
 final class UserProfileVM: UserProfileVMProtocol {
 
     
+    private var hasMoreUserReceiptData: Bool = true
+    
+    func setHasMoreUserReceiptData(setBoolean: Bool = false) {
+        self.hasMoreUserReceiptData = setBoolean
+    }
+    
     
     let roomDataManager: RoomDataManagerProtocol
     
@@ -68,7 +74,12 @@ final class UserProfileVM: UserProfileVMProtocol {
     
     // MARK: - 영수증 로드
     func loadUserReceipt() {
+        guard self.hasMoreUserReceiptData else {
+            self.errorClosure?(.noMoreData)
+            return
+        }
         print(#function)
+        
         self.roomDataManager.fetchUserReceipt { [weak self] result in
             guard let self = self else { return }
             switch result {
@@ -102,6 +113,6 @@ final class UserProfileVM: UserProfileVMProtocol {
     }
     
     func getReceipt(at index: Int) -> Receipt {
-        return self.roomDataManager.getReceipt(at: index)
+        return self.roomDataManager.getUserReceipt(at: index)
     }
 }

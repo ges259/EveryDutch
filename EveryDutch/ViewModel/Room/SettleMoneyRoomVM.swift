@@ -155,7 +155,7 @@ extension SettleMoneyRoomVM {
     }
     
     func getReceipt(at index: Int) -> Receipt {
-        return self.roomDataManager.getReceipt(at: index)
+        return self.roomDataManager.getRoomReceipt(at: index)
     }
     
     // MARK: - 인덱스패스

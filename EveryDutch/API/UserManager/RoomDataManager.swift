@@ -39,7 +39,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     
     // MARK: - RoomUsrs
-    var currentUser: (userID: String, 
+    var currentUser: (userID: String,
                       user: User,
                       deco: Decoration?)?
     // UsersTableViewCell 관련 프로퍼티들
@@ -57,9 +57,10 @@ final class RoomDataManager: RoomDataManagerProtocol {
     /// 영수증 테이블 셀의 뷰모델
     var roomReceiptCellViewModels = [ReceiptTableViewCellVMProtocol]()
     
+    
+    
     /// 유저 검색 시, 유저의 영수증 테이블 셀의 뷰모델
     var userReceiptCellViewModels = [ReceiptTableViewCellVMProtocol]()
-    
     private var isSearchMode: Bool = false
     var userReceiptLoadSuccess: Bool = false
     
@@ -68,7 +69,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
     let userDebouncer = Debouncer(.userData)
     let roomDebouncer = Debouncer(.roomData)
     let receiptDebouncer = Debouncer(.receiptData)
-
+    
     
     
     
@@ -81,7 +82,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
     /// [플래그] Receipt 데이터 observe를 설정했는지 판단하는 변수
     var receiptInitialLoad = true
     /// [플래그] Receipt 데이터를 추가적으로 가져올 지에 대한 플래그
-    var hasMoreReceiptData: Bool = true
+    var hasMoreRoomReceiptData: Bool = true
     
     
     
@@ -131,13 +132,13 @@ final class RoomDataManager: RoomDataManagerProtocol {
         // 플래그 데이터 초기화
         self.receiptInitialLoad = true
         self.roomUsersInitialLoad = true
-        self.hasMoreReceiptData = true
+        self.hasMoreRoomReceiptData = true
         // 디바운싱 초기화
         self.userDebouncer.reset()
         self.receiptDebouncer.reset()
         
         // RoomUsers 데이터 초기화
-//        self.roomUserDataDict = [:]
+        //        self.roomUserDataDict = [:]
         self.userIDToIndexPathMap = [:]
         self.usersCellViewModels = []
         // Receipt 데이터 초기화
@@ -240,18 +241,18 @@ final class RoomDataManager: RoomDataManagerProtocol {
     }
     
     
-
+    
     
     /// 인데스패스 리턴
-//    func getUserIndexPath(userID: String) -> IndexPath? {
-//        return self.userIDToIndexPathMap[userID]
-//    }
+    //    func getUserIndexPath(userID: String) -> IndexPath? {
+    //        return self.userIDToIndexPathMap[userID]
+    //    }
     
     /// roomUserDataDict의 userID의 배열을 리턴하는 변수
-//    var getRoomUsersKeyArray: [String] {
-//        return Array(self.roomUserDataDict.keys)
-//    }
-
+    //    var getRoomUsersKeyArray: [String] {
+    //        return Array(self.roomUserDataDict.keys)
+    //    }
+    
     
     
     
@@ -299,7 +300,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
     var getCurrentRoomsID: String? {
         return self.currentRoom?.roomID
     }
-
+    
     /// 현재 버전 ID 리턴
     var getCurrentVersion: String? {
         return self.currentRoom?.room.versionID
@@ -308,7 +309,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
     /// 자신이 방장인지를 판단하는 변수
     var checkIsRoomManager: Bool {
         guard let myUid = self.roomsAPI.getCurrentUserID,
-              let roomManager = self.currentRoom?.room.roomManager 
+              let roomManager = self.currentRoom?.room.roomManager
         else {
             return false
         }
@@ -345,14 +346,14 @@ final class RoomDataManager: RoomDataManagerProtocol {
         return receiptVM
     }
     /// index를 받아 알맞는 영수증을 리턴
-    func getReceipt(at index: Int) -> Receipt {
+    func getRoomReceipt(at index: Int) -> Receipt {
         return self.roomReceiptCellViewModels[index].getReceipt
     }
     
     func updateReceiptUserName(receipt: Receipt) -> Receipt {
         let payerUser = self.getIdToUser(usersID: receipt.payer)
         var returndReceipt = receipt
-            returndReceipt.updatePayerName(with: payerUser)
+        returndReceipt.updatePayerName(with: payerUser)
         return returndReceipt
     }
     
@@ -370,12 +371,18 @@ final class RoomDataManager: RoomDataManagerProtocol {
         receiptVM.setReceipt(updatedReceipt)
         
         return receiptVM
-        
     }
+    
+    func getUserReceipt(at index: Int) -> Receipt {
+        return self.userReceiptCellViewModels[index].getReceipt
+    }
+    
     func resetUserReceipt() {
+        print(#function)
         self.isSearchMode = false
         self.userReceiptLoadSuccess = false
         self.userReceiptCellViewModels = []
+        self.receiptAPI.resetUserReceiptKey()
     }
     
 }

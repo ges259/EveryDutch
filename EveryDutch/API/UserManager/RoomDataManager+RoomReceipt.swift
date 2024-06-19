@@ -38,7 +38,7 @@ extension RoomDataManager {
     
     /// 데이터를 추가적으로 가져오는 코드
     func loadMoreRoomReceipt() {
-        guard self.hasMoreReceiptData,
+        guard self.hasMoreRoomReceiptData,
               let versionID = self.getCurrentVersion 
         else { return }
         
@@ -53,7 +53,7 @@ extension RoomDataManager {
                     DispatchQueue.main.async {
                         switch error {
                         case .noMoreData:
-                            self.hasMoreReceiptData = false
+                            self.hasMoreRoomReceiptData = false
                             break
                         default:
                             break
@@ -162,7 +162,7 @@ extension RoomDataManager {
     private func handleAddedMoreReceiptData(_ toAdd: [ReceiptTuple]) {
         print(#function)
         if toAdd.isEmpty {
-            self.hasMoreReceiptData = false
+            self.hasMoreRoomReceiptData = false
             return
         }
         // 리턴할 인덱스패스

@@ -499,13 +499,9 @@ extension SettleMoneyRoomVC: UITableViewDelegate {
                    forRowAt indexPath: IndexPath)
     {
         // 마지막 셀
-        //
         if indexPath.row == self.viewModel.numberOfReceipt - 1 {
-            self.loadMoreData()
+            self.viewModel.loadMoreReceiptData()
         }
-    }
-    private func loadMoreData() {
-        self.viewModel.loadMoreReceiptData()
     }
 }
 

@@ -44,13 +44,13 @@ protocol ReceiptAPIProtocol {
     
     
     
-    
+    func resetUserReceiptKey()
     func loadInitialUserReceipts(
         userID: String,
         versionID: String,
         completion: @escaping (Result<[ReceiptTuple], ErrorEnum>) -> Void
     )
-    func loadMoreReceipts(
+    func loadMoreUserReceipts(
         userID: String,
         versionID: String,
         completion: @escaping (Result<[ReceiptTuple], ErrorEnum>) -> Void

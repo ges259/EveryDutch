@@ -111,7 +111,6 @@ final class UserProfileVC: UIViewController {
     
     
     
-    
     // MARK: - 라이프사이클
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -141,6 +140,20 @@ final class UserProfileVC: UIViewController {
         if self.isInitialLayout {
             self.isInitialLayout = false
             self.layoutUpdate()
+            
+            self.btnStackView.snp.updateConstraints { make in
+                make.bottom.equalTo(-self.view.safeAreaInsets.bottom - UIDevice.current.panModalSafeArea)
+            }
+            
+            // 제약 조건 업데이트
+            self.receiptTableView.snp.updateConstraints { make in
+                make.height.lessThanOrEqualTo(
+                    self.view.frame.height
+                    - self.view.safeAreaInsets.top
+                    - 17 - 10
+                    - self.tabBarView.frame.height
+                )
+            }
         }
     }
 }
@@ -243,21 +256,34 @@ extension UserProfileVC {
             action: #selector(self.scrollVertical))
         self.view.addGestureRecognizer(navPanGesture)
     }
+    /// 클로저를 설정
     private func configureClosure() {
         self.viewModel.fetchSuccessClosure = { [weak self] indexPaths in
             guard let self = self else { return }
             print(#function)
             CATransaction.begin()
             CATransaction.setCompletionBlock {
+                self.showLoading(false)
+//                self.updateTableViewLayout()
                 self.updateTableViewisHidden(true)
             }
-            self.updateTableViewLayout()
             self.receiptTableView.reloadData()
             CATransaction.commit()
         }
         self.viewModel.searchModeClosure = { [weak self] image, title in
             guard let self = self else { return }
             self.searchBtn.imageAndTitleFix(image: image, title: title)
+        }
+        self.viewModel.errorClosure = { [weak self] error in
+            guard let self = self else { return }
+            self.showLoading(false)
+            
+            switch error {
+            case .noMoreData:
+                self.viewModel.setHasMoreUserReceiptData(setBoolean: false)
+                
+            default: break
+            }
         }
     }
 }
@@ -291,7 +317,7 @@ extension UserProfileVC {
         
     }
     @objc private func kickBtnTapped() {
-        self.updateTableViewisHidden(true)
+        
     }
 }
 
@@ -309,9 +335,10 @@ extension UserProfileVC {
     /// 탑뷰의 높이를 바꾸는 메서드
     private func updateTableViewisHidden(_ isHidden: Bool = false) {
         // 새로운 높이 구하기
-        let newHeight: CGFloat = self.topViewHeight(isHidden: isHidden)
+        let newHeight: CGFloat = self.totalViewHeight(isHidden: isHidden)
         // 새로운 높이를 저장
         self.totalViewHeightConstraint.update(offset: newHeight)
+        
         // 현재 상태 저장
         self.viewModel.isTableOpen = isHidden
         // 애니메이션과 함께 UI바꾸기
@@ -321,30 +348,17 @@ extension UserProfileVC {
         }
     }
     /// 탑뷰의 높이를 구하는 메서드
-    private func topViewHeight(isHidden: Bool) -> CGFloat {
+    private func totalViewHeight(isHidden: Bool) -> CGFloat {
         let height = isHidden
         ? self.receiptTableView.frame.height
         : self.cardHeight() + 17
         return self.topViewBaseHeight + height
     }
-    
-    private func updateTableViewLayout() {
-        // 제약 조건 업데이트
-        self.receiptTableView.snp.updateConstraints { make in
-            make.height.lessThanOrEqualTo(self.topViewHeight(isHidden: false))
-        }
-    }
-    
     private func layoutUpdate() {
-        let height = self.topViewHeight(isHidden: false)
+        let height = self.totalViewHeight(isHidden: false)
         
         self.totalViewHeightConstraint.update(offset: height)
         self.view.layoutIfNeeded()
-        
-        
-        self.btnStackView.snp.updateConstraints { make in
-            make.bottom.equalTo(-self.view.safeAreaInsets.bottom - UIDevice.current.panModalSafeArea)
-        }
     }
 }
 
@@ -498,5 +512,42 @@ extension UserProfileVC: UITableViewDataSource {
             cell.backgroundColor = .normal_white
         }
         return cell
+    }
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - 리프레시 컨트롤
+extension UserProfileVC {
+    func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
+        let contentOffsetY = scrollView.contentOffset.y
+        let contentHeight = scrollView.contentSize.height
+        let height = scrollView.frame.size.height
+        
+        if contentOffsetY > contentHeight - height {
+            self.showLoading(true)
+            self.viewModel.loadUserReceipt()
+        }
+    }
+    
+    @objc private func refreshData() {
+        // API 요청을 시뮬레이션하기 위해 2초 딜레이를 추가합니다.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            self.showLoading(false)
+            self.receiptTableView.reloadData()
+        }
+        print(#function)
+    }
+    
+    /// 메서드를 통해 팬 제스처와 다른 제스처 인식기가 동시에 인식되지 않도록 설정
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return false
     }
 }

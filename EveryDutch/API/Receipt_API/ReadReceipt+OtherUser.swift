@@ -34,7 +34,7 @@ extension ReceiptAPI {
             }
             
             // Save the last key for future fetches
-            if let lastSnapshot = allObjects.last {
+            if let lastSnapshot = allObjects.first {
                 self.userLastKey = lastSnapshot.key
             }
             self.fetchUserReceipts(versionID: versionID,
@@ -44,7 +44,7 @@ extension ReceiptAPI {
     }
     
     // MARK: - 추가 데이터 fetch
-    func loadMoreReceipts(
+    func loadMoreUserReceipts(
         userID: String,
         versionID: String,
         completion: @escaping (Result<[ReceiptTuple], ErrorEnum>) -> Void
@@ -81,6 +81,7 @@ extension ReceiptAPI {
             // Save the new last key for future fetches
             if let lastSnapshot = allObjects.first(where: { $0.key != lastKey }) {
                 self.userLastKey = lastSnapshot.key
+                
             }
             
             // Fetch receipt details
@@ -117,9 +118,13 @@ extension ReceiptAPI {
                     group.leave()
                 }
         }
-        
         group.notify(queue: .main) {
-            completion(.success(receiptsTupleArray.reversed()))
+            if receiptsTupleArray.isEmpty {
+                completion(.failure(.noMoreData))
+            } else {
+                completion(.success(receiptsTupleArray.reversed()))
+            }
         }
     }
 }
+

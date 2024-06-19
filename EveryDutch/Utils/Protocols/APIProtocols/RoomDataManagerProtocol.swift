@@ -44,7 +44,7 @@ protocol RoomDataManagerProtocol {
     func updateSearchMode(searchMode: Bool)
     var getNumOfReceipts: Int { get }
     func getReceiptViewModel(index: Int) -> ReceiptTableViewCellVMProtocol
-    func getReceipt(at index: Int) -> Receipt
+    func getRoomReceipt(at index: Int) -> Receipt
     func updateReceiptUserName(receipt: Receipt) -> Receipt
     // API
     func loadMoreRoomReceipt()
@@ -87,4 +87,5 @@ protocol RoomDataManagerProtocol {
     func getUserReceiptViewModel(index: Int) -> ReceiptTableViewCellVMProtocol
     func resetUserReceipt() 
     
+    func getUserReceipt(at index: Int) -> Receipt 
 }

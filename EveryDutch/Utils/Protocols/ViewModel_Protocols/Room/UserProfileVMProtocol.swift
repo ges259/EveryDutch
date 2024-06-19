@@ -23,4 +23,7 @@ protocol UserProfileVMProtocol: ReceiptTableViewProtocol {
     var errorClosure: ((ErrorEnum) -> Void)? { get set }
     
     var searchModeClosure: ((UIImage?, String) -> Void)?  { get set }
+    
+    
+    func setHasMoreUserReceiptData(setBoolean: Bool) 
 }

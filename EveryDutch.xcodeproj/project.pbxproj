@@ -243,6 +243,7 @@
 		5FE8A2EF2BDD27030072D3D9 /* CustomColorPickerDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE8A2EE2BDD27030072D3D9 /* CustomColorPickerDelegate.swift */; };
 		5FE8A2F12BDD271D0072D3D9 /* ChromaControlStylable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE8A2F02BDD271D0072D3D9 /* ChromaControlStylable.swift */; };
 		5FE8A2F42BDD277E0072D3D9 /* ShadowProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FE8A2F32BDD277E0072D3D9 /* ShadowProperties.swift */; };
+		5FFBB1DE2C22BDA400C50693 /* JGProgressHUD in Frameworks */ = {isa = PBXBuildFile; productRef = 5FFBB1DD2C22BDA400C50693 /* JGProgressHUD */; };
 		5FFD44522B6BB8A1009A38DA /* ProfileCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFD44512B6BB8A1009A38DA /* ProfileCell.swift */; };
 		5FFEAE6D2B3F307E00E0B2BB /* ReceiptLblStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFEAE6C2B3F307E00E0B2BB /* ReceiptLblStackView.swift */; };
 		5FFEAE712B3F3AE100E0B2BB /* FindFriendsCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FFEAE702B3F3AE100E0B2BB /* FindFriendsCoordinator.swift */; };
@@ -499,6 +500,7 @@
 				5F7E3A882BC5C1CF00282E19 /* SDWebImageMapKit in Frameworks */,
 				5F294B4C2B4DBA0100396B6E /* FirebaseAnalyticsSwift in Frameworks */,
 				5FE3DECF2B39CCAE008D58AE /* SnapKit in Frameworks */,
+				5FFBB1DE2C22BDA400C50693 /* JGProgressHUD in Frameworks */,
 				5F66F3AA2B41D7FC005F6C52 /* FSCalendar in Frameworks */,
 				5F294B4A2B4DBA0100396B6E /* FirebaseAnalyticsOnDeviceConversion in Frameworks */,
 				5F294B582B4DBA0100396B6E /* FirebaseStorage in Frameworks */,
@@ -1386,6 +1388,7 @@
 				5F294B572B4DBA0100396B6E /* FirebaseStorage */,
 				5F7E3A852BC5C1CF00282E19 /* SDWebImage */,
 				5F7E3A872BC5C1CF00282E19 /* SDWebImageMapKit */,
+				5FFBB1DD2C22BDA400C50693 /* JGProgressHUD */,
 			);
 			productName = EveryDutch;
 			productReference = 5FE3DE8B2B39CA9B008D58AE /* EveryDutch.app */;
@@ -1421,6 +1424,7 @@
 				5F614B332B4590C500EF35CE /* XCRemoteSwiftPackageReference "PanModal" */,
 				5F294B462B4DBA0100396B6E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				5F7E3A842BC5C1CF00282E19 /* XCRemoteSwiftPackageReference "SDWebImage" */,
+				5FFBB1DC2C22BDA400C50693 /* XCRemoteSwiftPackageReference "JGProgressHUD" */,
 			);
 			productRefGroup = 5FE3DE8C2B39CA9B008D58AE /* Products */;
 			projectDirPath = "";
@@ -1934,6 +1938,14 @@
 				minimumVersion = 5.0.0;
 			};
 		};
+		5FFBB1DC2C22BDA400C50693 /* XCRemoteSwiftPackageReference "JGProgressHUD" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/JonasGessner/JGProgressHUD";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.2.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -2006,6 +2018,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 5FE3DECD2B39CCAE008D58AE /* XCRemoteSwiftPackageReference "SnapKit" */;
 			productName = SnapKit;
+		};
+		5FFBB1DD2C22BDA400C50693 /* JGProgressHUD */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5FFBB1DC2C22BDA400C50693 /* XCRemoteSwiftPackageReference "JGProgressHUD" */;
+			productName = JGProgressHUD;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -44,7 +44,7 @@ extension RoomDataManager {
         = !self.userReceiptLoadSuccess
         // !self.firstLoadSuccess의 결과에 따라 fetchFunction에 다른 함수 저장
         ? self.receiptAPI.loadInitialUserReceipts
-        : self.receiptAPI.loadMoreReceipts
+        : self.receiptAPI.loadMoreUserReceipts
         
         // 비동기적으로 영수증 데이터를 가져옴
         DispatchQueue.global(qos: .utility).async {
@@ -57,19 +57,15 @@ extension RoomDataManager {
                     let newIndexPaths = self.handleAddedUserReceipt(load)
                     // 첫 번째 로드 성공 여부를 true로 설정
                     self.userReceiptLoadSuccess = true
-                    print("______________newIndexPaths_______________")
-                    dump(newIndexPaths)
-                    print("__________________________________________")
                     DispatchQueue.main.async {
-                        
                         // 성공한 경우 새로운 인덱스 패스를 반환
                         completion(.success(newIndexPaths))
                     }
                 case .failure(let error):
                     DispatchQueue.main.async {
+                        print("영수증 가져오기 실패")
                         // 영수증 데이터를 가져오지 못한 경우 오류를 반환
                         completion(.failure(error))
-                        print("영수증 가져오기 실패")
                     }
                 }
             }
