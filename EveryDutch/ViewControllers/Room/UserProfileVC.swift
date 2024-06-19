@@ -95,8 +95,7 @@ final class UserProfileVC: UIViewController {
     /// 테이블뷰의 셀의 높이
     private lazy var cellHeight: CGFloat = self.receiptTableView.frame.width / 7 * 2
     
-    
-    
+    private var isFirstLoad: Bool = true
     private var isInitialLayout: Bool = true
     
     private lazy var topViewBaseHeight: CGFloat = {
@@ -246,44 +245,64 @@ extension UserProfileVC {
             action: #selector(self.kickBtnTapped),
             for: .touchUpInside)
         
-        // 탑뷰 - 팬 재스쳐
+        // 탑뷰 - 팬 제스쳐
         let topViewPanGesture = UIPanGestureRecognizer(
             target: self,
             action: #selector(self.scrollVertical))
         self.totalView.addGestureRecognizer(topViewPanGesture)
-        let navPanGesture = UIPanGestureRecognizer(
+        topViewPanGesture.delegate = self
+
+        let viewPanGesture = UIPanGestureRecognizer(
             target: self,
             action: #selector(self.scrollVertical))
-        self.view.addGestureRecognizer(navPanGesture)
+        self.view.addGestureRecognizer(viewPanGesture)
+        viewPanGesture.delegate = self
+        
+        let viewTapGesture = UITapGestureRecognizer(
+            target: self,
+            action: #selector(self.closeView))
+        self.view.addGestureRecognizer(viewTapGesture)
+        viewTapGesture.delegate = self
     }
     /// 클로저를 설정
     private func configureClosure() {
         self.viewModel.fetchSuccessClosure = { [weak self] indexPaths in
+            print("fetchSuccessClosure")
             guard let self = self else { return }
             print(#function)
             CATransaction.begin()
             CATransaction.setCompletionBlock {
                 self.showLoading(false)
-//                self.updateTableViewLayout()
-                self.updateTableViewisHidden(true)
+                self.dataChanged()
             }
             self.receiptTableView.reloadData()
             CATransaction.commit()
         }
-        self.viewModel.searchModeClosure = { [weak self] image, title in
-            guard let self = self else { return }
-            self.searchBtn.imageAndTitleFix(image: image, title: title)
-        }
+
         self.viewModel.errorClosure = { [weak self] error in
+            print("errorClosure")
             guard let self = self else { return }
             self.showLoading(false)
             
             switch error {
             case .noMoreData:
+                self.dataChanged()
                 self.viewModel.setHasMoreUserReceiptData(setBoolean: false)
                 
             default: break
             }
+        }
+        
+        self.viewModel.searchModeClosure = { [weak self] image, title in
+            guard let self = self else { return }
+            self.searchBtn.imageAndTitleFix(image: image, title: title)
+        }
+    }
+    
+    private func dataChanged() {
+        if self.isFirstLoad {
+            self.isFirstLoad = false
+            self.updateTableViewisHidden(true)
         }
     }
 }
@@ -333,18 +352,25 @@ extension UserProfileVC {
 // MARK: - 높이 설정
 extension UserProfileVC {
     /// 탑뷰의 높이를 바꾸는 메서드
+    /// 탑뷰의 높이를 바꾸는 메서드
     private func updateTableViewisHidden(_ isHidden: Bool = false) {
         // 새로운 높이 구하기
         let newHeight: CGFloat = self.totalViewHeight(isHidden: isHidden)
-        // 새로운 높이를 저장
-        self.totalViewHeightConstraint.update(offset: newHeight)
-        
-        // 현재 상태 저장
-        self.viewModel.isTableOpen = isHidden
-        // 애니메이션과 함께 UI바꾸기
-        UIView.animate(withDuration: 0.3) {
-            self.cardImgView.isHidden = isHidden
-            self.view.layoutIfNeeded()
+        let currentHeight: CGFloat = self.totalViewHeightConstraint.layoutConstraints.first?.constant ?? 0
+
+        // 새로운 높이와 현재 높이가 같지 않은 경우에만 업데이트
+        if newHeight != currentHeight {
+            // 새로운 높이를 저장
+            self.totalViewHeightConstraint.update(offset: newHeight)
+            
+            // 현재 상태 저장
+            self.viewModel.isTableOpen = isHidden
+            
+            // 애니메이션과 함께 UI바꾸기
+            UIView.animate(withDuration: 0.3) {
+                self.cardImgView.isHidden = isHidden
+                self.view.layoutIfNeeded()
+            }
         }
     }
     /// 탑뷰의 높이를 구하는 메서드
@@ -433,6 +459,7 @@ extension UserProfileVC {
     
     /// 뷰를 닫는 메서드( +애니메이션)
     @MainActor
+    @objc
     private func closeView() {
         self.totalViewBottomConstraint.update(offset: self.currentTotalViewHeight)
         
@@ -525,7 +552,7 @@ extension UserProfileVC: UITableViewDataSource {
 
 
 // MARK: - 리프레시 컨트롤
-extension UserProfileVC {
+extension UserProfileVC: UIGestureRecognizerDelegate {
     func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
         let contentOffsetY = scrollView.contentOffset.y
         let contentHeight = scrollView.contentSize.height
@@ -547,7 +574,14 @@ extension UserProfileVC {
     }
     
     /// 메서드를 통해 팬 제스처와 다른 제스처 인식기가 동시에 인식되지 않도록 설정
-    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
-        return false
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
+        // totalView를 터치했을 경우 view의 tapGesture가 인식되지 않도록 설정
+        if gestureRecognizer is UITapGestureRecognizer {
+            let location = touch.location(in: self.view)
+            if self.totalView.frame.contains(location) {
+                return false
+            }
+        }
+        return true
     }
 }

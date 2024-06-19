@@ -38,31 +38,31 @@ extension RoomDataManager {
     
     /// 데이터를 추가적으로 가져오는 코드
     func loadMoreRoomReceipt() {
-        guard self.hasMoreRoomReceiptData,
-              let versionID = self.getCurrentVersion 
-        else { return }
-        
-        DispatchQueue.global(qos: .utility).async {
-            self.receiptAPI.loadMoreRoomReceipts(versionID: versionID) { [weak self] result in
-                guard let self = self else { return }
-                switch result {
-                case .success(let loadData):
-                    print("영수증 추가적으로 가져오기 성공")
-                    self.handleAddedMoreReceiptData(loadData)
-                case .failure(let error):
-                    DispatchQueue.main.async {
-                        switch error {
-                        case .noMoreData:
-                            self.hasMoreRoomReceiptData = false
-                            break
-                        default:
-                            break
-                        }
-                        print("영수증 추가적으로 가져오기 실패")
-                    }
-                }
-            }
-        }
+//        guard self.hasMoreRoomReceiptData,
+//              let versionID = self.getCurrentVersion 
+//        else { return }
+//        
+//        DispatchQueue.global(qos: .utility).async {
+//            self.receiptAPI.loadMoreRoomReceipts(versionID: versionID) { [weak self] result in
+//                guard let self = self else { return }
+//                switch result {
+//                case .success(let loadData):
+//                    print("영수증 추가적으로 가져오기 성공")
+//                    self.handleAddedMoreReceiptData(loadData)
+//                case .failure(let error):
+//                    DispatchQueue.main.async {
+//                        switch error {
+//                        case .noMoreData:
+//                            self.hasMoreRoomReceiptData = false
+//                            break
+//                        default:
+//                            break
+//                        }
+//                        print("영수증 추가적으로 가져오기 실패")
+//                    }
+//                }
+//            }
+//        }
     }
     
     // MARK: - 업데이트 분기처리

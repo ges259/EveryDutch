@@ -22,6 +22,11 @@ final class UserProfileVM: UserProfileVMProtocol {
     var fetchSuccessClosure: (([IndexPath]) -> Void)?
     var errorClosure: ((ErrorEnum) -> Void)?
     var searchModeClosure: ((UIImage?, String) -> Void)?
+    
+    
+    
+    
+    
 
     var isTableOpen: Bool = false {
         didSet {

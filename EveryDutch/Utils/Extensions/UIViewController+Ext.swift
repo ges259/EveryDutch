@@ -85,7 +85,7 @@ extension UIViewController {
         DispatchQueue.main.async {
             if !self.hud.isVisible {
                 self.hud.show(in: self.view, animated: true)
-                self.view.isUserInteractionEnabled = false
+//                self.view.isUserInteractionEnabled = false
             }
         }
     }
@@ -94,7 +94,8 @@ extension UIViewController {
         DispatchQueue.main.async {
             if self.hud.isVisible {
                 self.hud.dismiss(animated: true)
-                self.view.isUserInteractionEnabled = true
+//                self.view.isUserInteractionEnabled = true
+                print(#function)
             }
         }
     }
