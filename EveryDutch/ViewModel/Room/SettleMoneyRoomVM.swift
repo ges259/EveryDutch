@@ -143,7 +143,7 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
 extension SettleMoneyRoomVM {
     /// 영수증 개수
     var numberOfReceipt: Int {
-        return self.roomDataManager.getNumOfReceipts
+        return self.roomDataManager.getNumOfRoomReceipts
     }
     /// 영수증 셀의 뷰모델 반환
     func cellViewModel(at index: Int) -> ReceiptTableViewCellVMProtocol {

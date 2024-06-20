@@ -46,6 +46,10 @@ protocol RoomsAPIProtocol: EditScreenAPIType {
     func deleteUser(roomID: String, userID: String?) async throws
     
     
-    
+    func reportUser(
+        roomID: String,
+        userID: String,
+        completion: @escaping (Result<Int, ErrorEnum>) -> Void
+    ) 
     
 }

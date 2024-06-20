@@ -96,16 +96,12 @@ final class UserProfileVC: UIViewController {
     private let coordinator: UserProfileCoordProtocol
     
     
-    
-    
-    private var isFirstLoad: Bool = true
     private var isInitialLayout: Bool = true
     
     private lazy var topViewBaseHeight: CGFloat = {
         return self.view.safeAreaInsets.bottom
-        + self.smallButtonSize() + 10 + UIDevice.current.panModalSafeArea
+        + self.smallButtonSize() + 10 + 10 + UIDevice.current.panModalSafeArea
     }()
-    
     
     private var currentTotalViewHeight: CGFloat {
         return self.totalView.frame.height
@@ -268,18 +264,28 @@ extension UserProfileVC {
     private func configureClosure() {
         self.viewModel.fetchSuccessClosure = { [weak self] indexPaths in
             guard let self = self else { return }
-            self.successClosure(indexPaths)
+            self.receiptSuccessClosure(indexPaths)
         }
-
-        self.viewModel.errorClosure = { [weak self] error in
-            print("errorClosure")
+        
+        self.viewModel.deleteUserSuccessClosure = { [weak self] in
             guard let self = self else { return }
-            self.errorClosure(error)
+            self.closeView()
+        }
+        
+        self.viewModel.reportSuccessClosure = { [weak self] in
+            guard let self = self else { return }
+            self.customAlert(alertEnum: .reportSuccess) { _ in }
         }
         
         self.viewModel.searchModeClosure = { [weak self] image, title in
             guard let self = self else { return }
             self.searchModeSuccess(image: image, title: title)
+        }
+        
+        self.viewModel.errorClosure = { [weak self] error in
+            print("errorClosure")
+            guard let self = self else { return }
+            self.errorClosure(error)
         }
     }
 }
@@ -296,7 +302,7 @@ extension UserProfileVC {
 // MARK: - 클로저 설정
 extension UserProfileVC {
     /// api작업 시, 가져온 데이터 IndexPath배열을 처리하는 메서드
-    private func successClosure(_ indexPaths: [IndexPath]) {
+    private func receiptSuccessClosure(_ indexPaths: [IndexPath]) {
         CATransaction.begin()
         CATransaction.setCompletionBlock {
             self.showLoading(false)
@@ -318,9 +324,9 @@ extension UserProfileVC {
             print("noMoreData")
             self.dataChanged()
             self.viewModel.disableMoreUserReceiptDataLoading()
+            
         case .noInitialData:
             print("noInitialData")
-            self.isFirstLoad = false
             self.viewModel.markNoDataAvailable()
             self.updateNoDataViewIsHidden(false)
             break
@@ -331,8 +337,8 @@ extension UserProfileVC {
     }
     /// (1회 한정) api작업 후, 테이블뷰의 높이를 설정하는 메서드
     private func dataChanged() {
-        if self.isFirstLoad {
-            self.isFirstLoad = false
+        if !self.viewModel.userReceiptInitialLoad {
+            self.viewModel.userReceiptInitialLoadSetTrue()
             self.updateTableViewisHidden(true)
         }
     }
@@ -359,14 +365,15 @@ extension UserProfileVC {
     /// 데이터를 가져온 상태 -> 테이블뷰 오픈 or 닫기
     /// 데이터가 없는 상태 -> NoDataView 오픈 or 닫기
     @objc private func searchBtnTapped() {
-        // fireLoadSuccess가 true라면, 테이블만 보이게 하기.
-        if self.viewModel.getUserReceiptLoadSuccess {
-            self.updateTableViewisHidden(!self.viewModel.isTableOpen)
-        } 
         
         // 데이터가 없는 상태
-        else if self.viewModel.hasNoData {
+        if self.viewModel.hasNoData {
             self.updateNoDataViewIsHidden(self.viewModel.isTableOpen)
+        }
+        
+        // fireLoadSuccess가 true라면, 테이블만 보이게 하기.
+        else if self.viewModel.userReceiptInitialLoad {
+            self.updateTableViewisHidden(!self.viewModel.isTableOpen)
         }
         
         // fireLoadSuccess가 false라면, 데이터 가져오기
@@ -374,11 +381,16 @@ extension UserProfileVC {
             self.viewModel.loadUserReceipt()
         }
     }
+    
+    /// 신고 버튼을 눌렀을 때 호출 되는 메서드
+    /// 신고 횟수를 1회 늘리고, 만약 3회 이상이라면, 강퇴
     @objc private func reportBtnTapped() {
-        
+        self.viewModel.reportUser()
     }
+    
+    /// 해당 유저를 강퇴하는 메서드
     @objc private func kickBtnTapped() {
-        
+        self.viewModel.kickUser()
     }
 }
 

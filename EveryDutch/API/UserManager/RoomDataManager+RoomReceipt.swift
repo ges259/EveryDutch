@@ -35,7 +35,6 @@ extension RoomDataManager {
         }
     }
     
-    
     /// 데이터를 추가적으로 가져오는 코드
     func loadMoreRoomReceipt() {
         guard self.hasMoreRoomReceiptData,

@@ -177,6 +177,7 @@
 		5F9905052B4ABACC00DB9747 /* UsersTableViewVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F9905042B4ABACC00DB9747 /* UsersTableViewVM.swift */; };
 		5F9905072B4ABAD400DB9747 /* UsersTableViewCellVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F9905062B4ABAD400DB9747 /* UsersTableViewCellVM.swift */; };
 		5F9D169D2B5AD4DC00A9477C /* NumberFormatter+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F9D169C2B5AD4DC00A9477C /* NumberFormatter+Ext.swift */; };
+		5F9DEE4A2C24795C001371FD /* ReportUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F9DEE492C24795C001371FD /* ReportUser.swift */; };
 		5F9F76592B6C17C700BB6511 /* ProfileVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F9F76582B6C17C700BB6511 /* ProfileVM.swift */; };
 		5F9F765B2B6C17F200BB6511 /* CornerRoundType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F9F765A2B6C17F200BB6511 /* CornerRoundType.swift */; };
 		5F9F765D2B6C181000BB6511 /* ShadowType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F9F765C2B6C181000BB6511 /* ShadowType.swift */; };
@@ -413,6 +414,7 @@
 		5F9905042B4ABACC00DB9747 /* UsersTableViewVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersTableViewVM.swift; sourceTree = "<group>"; };
 		5F9905062B4ABAD400DB9747 /* UsersTableViewCellVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersTableViewCellVM.swift; sourceTree = "<group>"; };
 		5F9D169C2B5AD4DC00A9477C /* NumberFormatter+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NumberFormatter+Ext.swift"; sourceTree = "<group>"; };
+		5F9DEE492C24795C001371FD /* ReportUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReportUser.swift; sourceTree = "<group>"; };
 		5F9F76582B6C17C700BB6511 /* ProfileVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileVM.swift; sourceTree = "<group>"; };
 		5F9F765A2B6C17F200BB6511 /* CornerRoundType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CornerRoundType.swift; sourceTree = "<group>"; };
 		5F9F765C2B6C181000BB6511 /* ShadowType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShadowType.swift; sourceTree = "<group>"; };
@@ -1125,6 +1127,7 @@
 				5F8513CF2B4D5F9B00A5B22D /* UpdateMoneyData.swift */,
 				5F8513F22B4D794200A5B22D /* UpdateRoomUsers.swift */,
 				5F8513F42B4D7EE200A5B22D /* UpdateRoomsID.swift */,
+				5F9DEE492C24795C001371FD /* ReportUser.swift */,
 			);
 			path = Update;
 			sourceTree = "<group>";
@@ -1558,6 +1561,7 @@
 				5F5AFBD22B4940DA00BBBB9D /* MainCollectionViewCellVMProtocol.swift in Sources */,
 				5F9F76612B6C225700BB6511 /* ProfileCoordProtocol.swift in Sources */,
 				5F8513C42B4D306A00A5B22D /* CumulativeAmount.swift in Sources */,
+				5F9DEE4A2C24795C001371FD /* ReportUser.swift in Sources */,
 				5F6CE3442B7154F30092DA39 /* ReceiptWriteDataCellVM.swift in Sources */,
 				5FE3DE8F2B39CA9B008D58AE /* AppDelegate.swift in Sources */,
 				5F294B452B4DA4E900396B6E /* APIError.swift in Sources */,

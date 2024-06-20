@@ -27,6 +27,8 @@ enum AlertEnum {
     case decorationSetError
     
     
+    case reportSuccess
+    
     case containsWhitespace
     case invalidCharacters
     
@@ -62,6 +64,8 @@ enum AlertEnum {
             return "시간 형식을 선택해주세요"
         case .userAlreadyExists:
             return "이미 방에 존재하는 유저입니다."
+        case .reportSuccess:
+            return "신고에 성공하였습니다."
         case .searchFailed:
             return "searchFailed"
         case .searchIdError:

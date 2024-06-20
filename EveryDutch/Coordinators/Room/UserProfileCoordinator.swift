@@ -40,7 +40,9 @@ final class UserProfileCoordinator: UserProfileCoordProtocol {
     
     private func userProfileScreen() {
         let userProfileVM = UserProfileVM(
-            roomDataManager: RoomDataManager.shared)
+            roomDataManager: RoomDataManager.shared,
+            receiptAPI: ReceiptAPI.shared,
+            roomsAPI: RoomsAPI.shared)
         let userProfileVC = UserProfileVC(
             viewModel: userProfileVM,
             coordinator: self)

@@ -8,6 +8,8 @@
 import UIKit
 
 final class RoomDataManager: RoomDataManagerProtocol {
+
+    
     static let shared: RoomDataManagerProtocol = RoomDataManager(
         roomsAPI: RoomsAPI.shared,
         receiptAPI: ReceiptAPI.shared)
@@ -59,9 +61,6 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     
     
-    /// 유저 검색 시, 유저의 영수증 테이블 셀의 뷰모델
-    var userReceiptCellViewModels = [ReceiptTableViewCellVMProtocol]()
-
     
     
     // MARK: - 디바운서
@@ -82,8 +81,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
     var roomReceiptInitialLoad = false
     /// [플래그] Receipt 데이터를 추가적으로 가져올 지에 대한 플래그
     var hasMoreRoomReceiptData: Bool = true
-    
-    var userReceiptInitialLoad: Bool = false
+
     
     
     
@@ -144,12 +142,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
         self.receiptIDToIndexPathMap = [:]
         self.roomReceiptCellViewModels = []
     }
-    func resetUserReceipt() {
-        print(#function)
-        self.userReceiptInitialLoad = false
-        self.userReceiptCellViewModels = []
-        self.receiptAPI.resetUserReceiptKey()
-    }
+    
     
     
     
@@ -184,19 +177,20 @@ final class RoomDataManager: RoomDataManagerProtocol {
         return usersCellViewModels[row]
     }
     
-    
-    
     /// 특정 유저 정보 리턴
     var getRoomUsersDict: RoomUserDataDict {
         return usersCellViewModels.reduce(into: RoomUserDataDict()) { result, viewModel in
             result[viewModel.userID] = viewModel.getUser
         }
     }
+    /// 유저 ID를 받으면, User를 리턴
     func getIdToUser(usersID: String) -> User? {
         let usersVM = self.getUserIDToUsersVM(userID: usersID)
         return usersVM?.getUser
     }
     
+    /// userTableView에서 유저가 선택이 된다면, IndexPath.row를 파라미터로 받고,
+    /// 해당 유저의 (User, Decoration) 튜플 데이터를 리턴
     func getIndexToUserDataTuple(index: Int) -> UserDataTuple {
         let viewModel = self.getIndexToUsersVM(index: index)
         
@@ -205,6 +199,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
     }
     
     
+    /// userTableView에서 유저가 선택이 된다면, Decoration데이터를 가져옴
     func selectUser(
         index: Int,
         completion: @escaping Typealias.VoidCompletion
@@ -232,14 +227,14 @@ final class RoomDataManager: RoomDataManagerProtocol {
             }
         }
     }
-    
+    /// 현재 선택된 유저의 UserDecoTuple (User , Decoration)
     var getCurrentUserData: UserDecoTuple? {
         guard let currentUser = currentUser else { return nil }
         
         return (user: currentUser.user,
                 deco: currentUser.deco)
     }
-    
+    /// 현재 선택된 유저의 userID
     var getCurrentUserID: String? {
         return self.currentUser?.userID
     }
@@ -326,13 +321,8 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     
     // MARK: - 영수증 정보
-    var getUserReceiptLoadSuccess: Bool {
-        return self.userReceiptInitialLoad
-    }
-    
-    
     /// 영수증 개수
-    var getNumOfReceipts: Int {
+    var getNumOfRoomReceipts: Int {
         return self.roomReceiptCellViewModels.count
     }
     /// 영수증 셀(ReceiptTableViewCellVMProtocol) 리턴
@@ -347,31 +337,11 @@ final class RoomDataManager: RoomDataManagerProtocol {
     func getRoomReceipt(at index: Int) -> Receipt {
         return self.roomReceiptCellViewModels[index].getReceipt
     }
-    
+    /// Receipt에 있는 payment_Detail의 userID를 userName으로 바꿈
     func updateReceiptUserName(receipt: Receipt) -> Receipt {
         let payerUser = self.getIdToUser(usersID: receipt.payer)
         var returndReceipt = receipt
         returndReceipt.updatePayerName(with: payerUser)
         return returndReceipt
     }
-    
-    
-    
-    
-    
-    var getNumOfUserReceipts: Int {
-        return self.userReceiptCellViewModels.count
-    }
-    
-    func getUserReceiptViewModel(index: Int) -> ReceiptTableViewCellVMProtocol {
-        var receiptVM = self.userReceiptCellViewModels[index]
-        let updatedReceipt = self.updateReceiptUserName(receipt: receiptVM.getReceipt)
-        receiptVM.setReceipt(updatedReceipt)
-        
-        return receiptVM
-    }
-    
-    func getUserReceipt(at index: Int) -> Receipt {
-        return self.userReceiptCellViewModels[index].getReceipt
-    }   
 }

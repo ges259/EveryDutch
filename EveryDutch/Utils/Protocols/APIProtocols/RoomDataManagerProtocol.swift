@@ -23,6 +23,7 @@ protocol RoomDataManagerProtocol {
     var getCurrentVersion: String? { get }
     var getCurrentRoomName: String? { get }
     // API
+    func loadRooms()
     
     
     
@@ -33,15 +34,17 @@ protocol RoomDataManagerProtocol {
     func getIndexToUsersVM(index: Int) -> UsersTableViewCellVMProtocol
     func getIdToUser(usersID: String) -> User?
     func removeRoomsUsersObserver()
-    // API
-    func loadRooms()
+    func selectUser(
+        index: Int,
+        completion: @escaping Typealias.VoidCompletion
+    )
     
-    
+    var getCurrentUserData: UserDecoTuple? { get }
+    var getCurrentUserID: String? { get }
     
     
     // MARK: - Receipt
-    
-    var getNumOfReceipts: Int { get }
+    var getNumOfRoomReceipts: Int { get }
     func getReceiptViewModel(index: Int) -> ReceiptTableViewCellVMProtocol
     func getRoomReceipt(at index: Int) -> Receipt
     func updateReceiptUserName(receipt: Receipt) -> Receipt
@@ -61,30 +64,11 @@ protocol RoomDataManagerProtocol {
     
     
     
-    
-    
-    
-    func selectUser(
-        index: Int,
+    func deleteUserFromRoom(
+        isDeletingSelf: Bool,
         completion: @escaping Typealias.VoidCompletion
     )
     
-    var getCurrentUserData: UserDecoTuple? { get }
     
     
-    
-    func fetchUserReceipt(completion: @escaping Typealias.IndexPathsCompletion)
-    
-    
-    
-    var getUserReceiptLoadSuccess: Bool { get } 
-    
-    
-    
-    var getNumOfUserReceipts: Int { get }
-    
-    func getUserReceiptViewModel(index: Int) -> ReceiptTableViewCellVMProtocol
-    func resetUserReceipt() 
-    
-    func getUserReceipt(at index: Int) -> Receipt 
 }

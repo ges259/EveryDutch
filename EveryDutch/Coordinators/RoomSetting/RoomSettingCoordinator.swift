@@ -27,8 +27,7 @@ final class RoomSettingCoordinator: RoomSettingCoordProtocol{
     
     func start() {
         let roomSettingVM = RoomSettingVM(
-            roomDataManager: RoomDataManager.shared, 
-            roomsAPI: RoomsAPI.shared)
+            roomDataManager: RoomDataManager.shared)
         let roomSettingVC = RoomSettingVC(
             viewModel: roomSettingVM,
             coordinator: self)

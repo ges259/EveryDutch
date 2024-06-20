@@ -9,15 +9,12 @@ import Foundation
 
 final class RoomSettingVM: RoomSettingVMProtocol {
     private let roomDataManager: RoomDataManagerProtocol
-    private let roomsAPI: RoomsAPIProtocol
     
     var successLeaveRoom: (() -> Void)?
     var errorClosure: ((ErrorEnum) -> Void)?
     
-    init(roomDataManager: RoomDataManagerProtocol,
-         roomsAPI: RoomsAPIProtocol) {
+    init(roomDataManager: RoomDataManagerProtocol) {
         self.roomDataManager = roomDataManager
-        self.roomsAPI = roomsAPI
     }
     
     
@@ -36,26 +33,10 @@ final class RoomSettingVM: RoomSettingVMProtocol {
     
     
     func leaveRoom() {
-        Task {
-            let result: Result<Void, ErrorEnum>
-            do {
-                guard let roomID = self.roomDataManager.getCurrentRoomsID else {
-                    throw ErrorEnum.unknownError
-                }
-                // 유저 삭제
-                try await self.roomsAPI.deleteUser(roomID: roomID, userID: nil)
-                result = .success(())
-            } catch let error as ErrorEnum {
-                result = .failure(error)
-            } catch {
-                result = .failure(.unknownError)
-            }
-
-            self.handleResult(result)
-        }
-    }
-    private func handleResult(_ result: Result<Void, ErrorEnum>) {
-        DispatchQueue.main.async {
+        self.roomDataManager.deleteUserFromRoom(
+            isDeletingSelf: false
+        ) { [weak self] result in
+            guard let self = self else { return }
             switch result {
             case .success:
                 self.successLeaveRoom?()
