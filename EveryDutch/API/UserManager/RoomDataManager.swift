@@ -8,7 +8,6 @@
 import UIKit
 
 final class RoomDataManager: RoomDataManagerProtocol {
-
     
     static let shared: RoomDataManagerProtocol = RoomDataManager(
         roomsAPI: RoomsAPI.shared,
@@ -315,6 +314,15 @@ final class RoomDataManager: RoomDataManagerProtocol {
         return myUid == roomManager
     }
     
+    var currentUserIsEuqualToMyUid: Bool {
+        guard let currentUserID = self.currentUser?.userID,
+              let uid = self.roomsAPI.getCurrentUserID,
+              currentUserID != uid
+        else {
+            return false
+        }
+        return true
+    }
     
     
     

@@ -13,9 +13,12 @@ import SnapKit
 extension UIView {
     
     // MARK: - 뷰 만들기 +배경 색
-    static func configureView(color: UIColor) -> UIView {
+    static func configureView(
+        color: UIColor
+    ) -> UIView {
         let view = UIView()
             view.backgroundColor = color
+        
         return view
     }
     

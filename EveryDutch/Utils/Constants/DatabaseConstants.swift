@@ -75,4 +75,13 @@ extension DatabaseConstants {
     static let background_Data: String = "background_Data"
     
     static let duplicatePersonalID: String = "duplicatePersonalID"
+    
+    
+    
+    // Report
+    
+    static let reportCount: String = "reportCount"
+    static let reportedBy: String = "reportedBy"
+
+    
 }

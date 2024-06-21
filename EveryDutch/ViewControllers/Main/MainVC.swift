@@ -13,7 +13,7 @@ final class MainVC: UIViewController {
     
     // MARK: - 레이아웃
     /// 콜렉션뷰
-    private var collectionView: UICollectionView = {
+    private lazy var collectionView: UICollectionView = {
         let view = UICollectionView(
             frame: .zero,
             collectionViewLayout: UICollectionViewFlowLayout())
@@ -24,6 +24,9 @@ final class MainVC: UIViewController {
         view.register(
             MainCollectionViewCell.self,
             forCellWithReuseIdentifier: Identifier.mainCollectionViewCell)
+        
+        view.dataSource = self
+        view.delegate = self
         return view
     }()
     /// 플러스 버튼
@@ -161,11 +164,6 @@ extension MainVC {
             // 버튼을 화면 밖으로 위치시키기
             btn.transform = self.viewModel.getBtnTransform
         }
-        self.collectionView.dataSource = self
-        self.collectionView.delegate = self
-        
-        // 코너레디어스 설정
-//        self.menuBtn.setRoundedCorners(.all, withCornerRadius: 80 / 2)
     }
     
     /// 오토레이아웃 설정

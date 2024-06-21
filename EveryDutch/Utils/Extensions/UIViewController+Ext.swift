@@ -67,11 +67,25 @@ extension UIViewController {
     func BigButtonSize() ->  CGFloat {
         return 80
     }
-    func btnStvInsets(isRoomManager: Bool) -> CGFloat {
-        return isRoomManager
-        ? 50 // 30 + 20
-        : 100 // 80 + 20
+    /// 스택뷰 인셋 계산 함수
+    func btnStvInsets(numOfBtn: Int) -> CGFloat {
+        switch numOfBtn {
+        case 0:
+            return 100 // 기본 인셋
+        case 1:
+            return (self.view.frame.width - self.smallButtonSize()) / 2
+        case 2:
+            return 100 // 두 개의 버튼 인셋
+        case 3:
+            return 50
+        default:
+            return 100 // 기본 인셋
+        }
     }
+    
+    
+    
+    
     
     
     func defaultLeadingTrailingInset() -> CGFloat {

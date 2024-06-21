@@ -33,6 +33,10 @@ enum ErrorEnum: Error {
     case roomUsersDeleteError
     case userRoomsIDDeleteError
     
+    // Report
+    case alreadyReported
+    
+    
     
     // UpdateRooms + FindFriendsVC
     // 검색
@@ -86,6 +90,9 @@ enum ErrorEnum: Error {
             
         case .containsWhitespace:
             return .containsWhitespace
+            
+        case .alreadyReported:
+            return .alreadyReported
             // 알 수 없는 에러
         default:
             return .unknownError

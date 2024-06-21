@@ -25,6 +25,7 @@ protocol UserProfileVMProtocol: ReceiptTableViewProtocol {
     var hasNoData: Bool { get }
     
     var isRoomManager: Bool { get }
+    var currentUserIsEuqualToMyUid: Bool { get }
     var getUserDecoTuple: UserDecoTuple? { get }
     
 //    var getUserReceiptLoadSuccess: Bool { get }

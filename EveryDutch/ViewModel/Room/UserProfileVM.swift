@@ -110,6 +110,12 @@ final class UserProfileVM: UserProfileVMProtocol {
     lazy var isRoomManager: Bool = {
         return self.roomDataManager.checkIsRoomManager
     }()
+    
+    /// 현재 사용자가 자기 자신인지 Bool값을 리턴
+    lazy var currentUserIsEuqualToMyUid: Bool = {
+        return self.roomDataManager.currentUserIsEuqualToMyUid
+    }()
+    
     /// 유저의 정보(User, Decoration)를 리턴하는 변수
     var getUserDecoTuple: UserDecoTuple? {
         return self.roomDataManager.getCurrentUserData
@@ -175,7 +181,10 @@ extension UserProfileVM {
             return
         }
         
-        self.roomsAPI.reportUser(roomID: roomID, userID: userID) { [weak self] result in
+        self.roomsAPI.reportUser(
+            roomID: roomID,
+            reportedUserID: userID
+        ) { [weak self] result in
             guard let self = self else { return }
             
             switch result {

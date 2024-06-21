@@ -95,13 +95,6 @@ extension RoomSettingVC {
     /// UI 설정
     private func configureUI() {
         self.view.backgroundColor = UIColor.base_Blue
-//        
-//        [self.exitBtn,
-//         self.inviteBtn,
-//         self.roomSettingBtn].forEach { btn in
-//            btn.setRoundedCorners(.all, withCornerRadius: 60 / 2)
-//        }
-        
         self.tabBarView.setRoundedCorners(.top, withCornerRadius: 20)
         self.tabBarView.addShadow(shadowType: .top)
     }

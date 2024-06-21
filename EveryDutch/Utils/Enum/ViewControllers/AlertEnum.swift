@@ -27,7 +27,7 @@ enum AlertEnum {
     case decorationSetError
     
     
-    case reportSuccess
+
     
     case containsWhitespace
     case invalidCharacters
@@ -42,6 +42,10 @@ enum AlertEnum {
     case exitRoom
     case isNotRoomManager
     
+    // UserProfileVC
+    case reportSuccess
+    case kickUser
+    case alreadyReported
     
     // MARK: - 타이틀
     var title: String {
@@ -66,6 +70,10 @@ enum AlertEnum {
             return "이미 방에 존재하는 유저입니다."
         case .reportSuccess:
             return "신고에 성공하였습니다."
+        case .kickUser:
+            return "정말 강퇴하시겠습니까?"
+        case .alreadyReported:
+            return "이미 신고한 유저입니다."
         case .searchFailed:
             return "searchFailed"
         case .searchIdError:
@@ -128,7 +136,8 @@ enum AlertEnum {
         switch self {
         case .photoAccess, 
                 .backgroundSelect,
-                .exitRoom:
+                .exitRoom,
+                .kickUser:
             return true
             
         default:

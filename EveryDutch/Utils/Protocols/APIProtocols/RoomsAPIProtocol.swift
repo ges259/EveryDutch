@@ -48,8 +48,8 @@ protocol RoomsAPIProtocol: EditScreenAPIType {
     
     func reportUser(
         roomID: String,
-        userID: String,
+        reportedUserID: String,
         completion: @escaping (Result<Int, ErrorEnum>) -> Void
-    ) 
+    )
     
 }

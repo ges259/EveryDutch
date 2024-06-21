@@ -11,7 +11,8 @@ import SnapKit
 final class UserProfileVC: UIViewController {
     // MARK: - 레이아웃
     
-    private let totalView: UIView = UIView.configureView(color: .deep_Blue)
+    private let totalView: UIView = UIView.configureView(
+        color: .deep_Blue)
     private var totalViewHeightConstraint: Constraint!
     private var totalViewBottomConstraint: Constraint!
     
@@ -72,8 +73,7 @@ final class UserProfileVC: UIViewController {
     
     /// 버튼으로 구성된 가로로 된 스택뷰
     private lazy var btnStackView: UIStackView = UIStackView.configureStv(
-        arrangedSubviews: [self.searchBtn,
-                           self.reportBtn],
+        arrangedSubviews: [self.searchBtn],
         axis: .horizontal,
         spacing: 16,
         alignment: .fill,
@@ -155,10 +155,18 @@ final class UserProfileVC: UIViewController {
 extension UserProfileVC {
     /// UI 설정
     private func configureUI() {
-        if self.viewModel.isRoomManager {
-            self.btnStackView.addArrangedSubview(self.kickBtn)
+        // 자기 자신인지 확인
+        if self.viewModel.currentUserIsEuqualToMyUid {
+            // 자기 자신이 아니라면, 신고 버튼 추가
+            self.btnStackView.addArrangedSubview(self.reportBtn)
+            
+            // 방장인지 확인
+            if self.viewModel.isRoomManager {
+                // 방장이라면, 강퇴 버튼 추가
+                self.btnStackView.addArrangedSubview(self.kickBtn)
+            }
         }
-        self.totalView.setRoundedCorners(.top, withCornerRadius: 20)
+        
         self.receiptTableView.setRoundedCorners(.all, withCornerRadius: 12)
         self.totalStackView.setCustomSpacing(0, after: self.receiptTableView)
     }
@@ -213,15 +221,31 @@ extension UserProfileVC {
         self.btnStackView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(10)
             make.bottom.equalToSuperview().offset(-UIDevice.current.panModalSafeArea)
-            make.leading.trailing.equalToSuperview().inset(
-                self.btnStvInsets(isRoomManager: self.viewModel.isRoomManager)
-            )
+            // 버튼 스택뷰의 leading 및 trailing을 설정하는 메서드
+            self.configureBtnStackViewConstraints(make: make)
         }
         // 하단 버튼의 높이와 너비를 동일하게 설정
         [self.searchBtn, self.reportBtn, self.kickBtn].forEach { btn in
             btn.snp.makeConstraints { make in
                 make.size.equalTo(self.smallButtonSize())
             }
+        }
+    }
+    
+    /// 스택뷰의 subViews의 개수에 따라, 버튼 스택뷰의 leading 및 trailing을 설정하는 메서드
+    private func configureBtnStackViewConstraints(
+        make: ConstraintMaker
+    ) {
+        // 버튼의 개수를 뷰모델에서 가져옴
+        let numOfBtn = self.btnStackView.arrangedSubviews.count
+        
+        if numOfBtn == 1 {
+            // 버튼이 하나일 때는 중앙 정렬
+            make.centerX.equalToSuperview()
+        } else {
+            // 버튼이 2개 이상일 때 인셋 적용
+            make.leading.trailing.equalToSuperview().inset(
+                self.btnStvInsets(numOfBtn: numOfBtn))
         }
     }
     
@@ -324,12 +348,18 @@ extension UserProfileVC {
             print("noMoreData")
             self.dataChanged()
             self.viewModel.disableMoreUserReceiptDataLoading()
+            break
             
         case .noInitialData:
             print("noInitialData")
             self.viewModel.markNoDataAvailable()
             self.updateNoDataViewIsHidden(false)
             break
+            
+        case .alreadyReported:
+            self.customAlert(alertEnum: error.alertType) { _ in }
+            break
+            
         default:
             print("default ----- \(error)")
             break
@@ -390,7 +420,10 @@ extension UserProfileVC {
     
     /// 해당 유저를 강퇴하는 메서드
     @objc private func kickBtnTapped() {
-        self.viewModel.kickUser()
+        // 얼럿창 띄우기
+        self.customAlert(alertEnum: .kickUser) { _ in
+            self.viewModel.kickUser()
+        }
     }
 }
 
@@ -446,7 +479,7 @@ extension UserProfileVC {
     }
     
     /// 화면에 처음 들어서면, 레이아웃을 업데이트
-    /// safeAreaInsets(top, bottom) 및 ㅇ
+    /// safeAreaInsets(top, bottom) 으로 인한 업데이트
     private func layoutUpdate() {
         // 버튼 스택뷰 하단
         self.btnStackView.snp.updateConstraints { make in

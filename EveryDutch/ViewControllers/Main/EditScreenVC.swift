@@ -48,8 +48,8 @@ final class EditScreenVC: UIViewController {
         return view
     }()
     /// 하단 버튼
-    private var bottomBtn: BottomButton = BottomButton(
-        title: "완료")
+    private lazy var bottomBtn: BottomButton = BottomButton(
+        title: self.viewModel.getBottomBtnTitle ?? "완료")
     /// 이미지 피커
     private lazy var customImagePicker: CustomImageCropView = {
         let view = CustomImageCropView()
@@ -132,9 +132,6 @@ extension EditScreenVC {
     /// UI 설정
     private func configureUI() {
         self.view.backgroundColor = UIColor.base_Blue
-        
-        // 하단 버튼 설정
-        self.bottomBtn.setTitle(self.viewModel.getBottomBtnTitle, for: .normal)
         // 네비게이션 타이틀 설정
         self.navigationItem.title = self.viewModel.getNavTitle
     }

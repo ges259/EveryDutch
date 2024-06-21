@@ -41,7 +41,7 @@ protocol RoomDataManagerProtocol {
     
     var getCurrentUserData: UserDecoTuple? { get }
     var getCurrentUserID: String? { get }
-    
+    var currentUserIsEuqualToMyUid: Bool { get }
     
     // MARK: - Receipt
     var getNumOfRoomReceipts: Int { get }

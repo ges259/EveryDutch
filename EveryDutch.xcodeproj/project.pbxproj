@@ -172,7 +172,7 @@
 		5F8AB54A2BCA65C3006161C2 /* ToolbarStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F8AB5492BCA65C3006161C2 /* ToolbarStackView.swift */; };
 		5F8AB54C2BCA65EA006161C2 /* CustomImageCropView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F8AB54B2BCA65EA006161C2 /* CustomImageCropView.swift */; };
 		5F8B2F782C1ADC680032E605 /* ReadReceipt+OtherUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F8B2F772C1ADC670032E605 /* ReadReceipt+OtherUser.swift */; };
-		5F8B2F7A2C1B09AE0032E605 /* RoomDataManager+SearchReceipt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F8B2F792C1B09AE0032E605 /* RoomDataManager+SearchReceipt.swift */; };
+		5F8B2F7A2C1B09AE0032E605 /* RoomDataManager+DeleteUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F8B2F792C1B09AE0032E605 /* RoomDataManager+DeleteUser.swift */; };
 		5F903E672B3B412A005DE55E /* SettlementTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F903E662B3B412A005DE55E /* SettlementTableViewCell.swift */; };
 		5F9905052B4ABACC00DB9747 /* UsersTableViewVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F9905042B4ABACC00DB9747 /* UsersTableViewVM.swift */; };
 		5F9905072B4ABAD400DB9747 /* UsersTableViewCellVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F9905062B4ABAD400DB9747 /* UsersTableViewCellVM.swift */; };
@@ -409,7 +409,7 @@
 		5F8AB5492BCA65C3006161C2 /* ToolbarStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarStackView.swift; sourceTree = "<group>"; };
 		5F8AB54B2BCA65EA006161C2 /* CustomImageCropView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomImageCropView.swift; sourceTree = "<group>"; };
 		5F8B2F772C1ADC670032E605 /* ReadReceipt+OtherUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ReadReceipt+OtherUser.swift"; sourceTree = "<group>"; };
-		5F8B2F792C1B09AE0032E605 /* RoomDataManager+SearchReceipt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RoomDataManager+SearchReceipt.swift"; sourceTree = "<group>"; };
+		5F8B2F792C1B09AE0032E605 /* RoomDataManager+DeleteUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RoomDataManager+DeleteUser.swift"; sourceTree = "<group>"; };
 		5F903E662B3B412A005DE55E /* SettlementTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettlementTableViewCell.swift; sourceTree = "<group>"; };
 		5F9905042B4ABACC00DB9747 /* UsersTableViewVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersTableViewVM.swift; sourceTree = "<group>"; };
 		5F9905062B4ABAD400DB9747 /* UsersTableViewCellVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersTableViewCellVM.swift; sourceTree = "<group>"; };
@@ -756,7 +756,7 @@
 				5FD5D6122BEF5576008972A0 /* RoomDataManager+RoomUsers.swift */,
 				5FD5D6142BEF5701008972A0 /* RoomDataManager+MoneyData.swift */,
 				5F7762382BF0B29800AEC193 /* RoomDataManager+RoomReceipt.swift */,
-				5F8B2F792C1B09AE0032E605 /* RoomDataManager+SearchReceipt.swift */,
+				5F8B2F792C1B09AE0032E605 /* RoomDataManager+DeleteUser.swift */,
 			);
 			path = UserManager;
 			sourceTree = "<group>";
@@ -1678,7 +1678,7 @@
 				5F6FDDE22B50568B00F09CCD /* ReceiptScreenUsersCell.swift in Sources */,
 				5F71FEED2BB723BD0005FC7A /* DecorationAPI+Read.swift in Sources */,
 				5FD5D6152BEF5701008972A0 /* RoomDataManager+MoneyData.swift in Sources */,
-				5F8B2F7A2C1B09AE0032E605 /* RoomDataManager+SearchReceipt.swift in Sources */,
+				5F8B2F7A2C1B09AE0032E605 /* RoomDataManager+DeleteUser.swift in Sources */,
 				5F4FA7232B553C00009EE4F4 /* UserAPIProtocol.swift in Sources */,
 				5FE8A2F12BDD271D0072D3D9 /* ChromaControlStylable.swift in Sources */,
 				5F68487C2B441BB70015BFCC /* LoginScreenCoordProtocol.swift in Sources */,
