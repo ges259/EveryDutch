@@ -31,7 +31,7 @@ final class UserProfileVM: UserProfileVMProtocol {
     // MARK: - 클로저
     var fetchSuccessClosure: (([IndexPath]) -> Void)?
     var deleteUserSuccessClosure: (() -> Void)?
-    var reportSuccessClosure: (() -> Void)?
+    var reportSuccessClosure: ((AlertEnum, Int) -> Void)?
     var searchModeClosure: ((UIImage?, String) -> Void)?
     
     var errorClosure: ((ErrorEnum) -> Void)?
@@ -201,11 +201,14 @@ extension UserProfileVM {
     private func handleReportCount(_ reportCount: Int) {
         if reportCount >= 3 {
             // reportCount가 3이상이라면, 유저 강퇴
-            self.deleterUserFromRoom(successClosure: self.reportSuccessClosure)
+            self.deleterUserFromRoom {
+                self.reportSuccessClosure?(AlertEnum.reportAndKickSuccess, reportCount)
+            }
+            
             
         } else {
             // reportCount가 3 미만일 때 수행할 액션 (여기에 추가할 로직이 있다면 작성)
-            self.reportSuccessClosure?()
+            self.reportSuccessClosure?(AlertEnum.reportSuccess, reportCount)
         }
     }
     
@@ -213,7 +216,6 @@ extension UserProfileVM {
     func kickUser() {
         self.deleterUserFromRoom(successClosure: self.deleteUserSuccessClosure)
     }
-    
     
     private func deleterUserFromRoom(
         successClosure: (() -> Void)?

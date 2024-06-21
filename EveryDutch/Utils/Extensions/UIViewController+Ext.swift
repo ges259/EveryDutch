@@ -7,17 +7,19 @@
 
 import UIKit
 import JGProgressHUD
+import SnapKit
 
 extension UIViewController {
     /// 커스텀 얼럿창을 생성하고 표시하는 메서드
     func customAlert(
         alertStyle: UIAlertController.Style = .alert,
         alertEnum: AlertEnum,
+        reportCount: Int? = nil,
         completion: @escaping (Int) -> Void)
     {
         // UIAlertController 인스턴스를 생성
         let alertController = UIAlertController(
-            title: alertEnum.title,
+            title: alertEnum.generateTitle(reportCount: reportCount),
             message: alertEnum.messageText,
             preferredStyle: alertStyle)
         
@@ -29,10 +31,8 @@ extension UIViewController {
                 style: .default) { _ in completion(index) }
             
             actionBtn.setValue(UIColor.black, forKey: "titleTextColor")
-            
             alertController.addAction(actionBtn)
         }
-        
         
         // 취소 버튼 설정
         if alertEnum.cancelBtnIsExist {
@@ -49,6 +49,24 @@ extension UIViewController {
     }
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+
     
     func cardHeight() -> CGFloat {
         return (self.view.frame.width - 20) * 1.8 / 3
@@ -67,17 +85,33 @@ extension UIViewController {
     func BigButtonSize() ->  CGFloat {
         return 80
     }
+    
+    
+    
+    /// 스택뷰의 subViews의 개수에 따라, 버튼 스택뷰의 leading 및 trailing을 설정하는 메서드
+    func configureBtnStackViewConstraints(
+        make: ConstraintMaker,
+        numOfBtn: Int
+    ) {
+        if numOfBtn <= 1 {
+            // 버튼이 하나일 때는 중앙 정렬
+            make.centerX.equalToSuperview()
+        } else {
+            // 버튼이 2개 이상일 때 인셋 적용
+            make.leading.trailing.equalToSuperview().inset(
+                self.btnStvInsets(numOfBtn: numOfBtn))
+        }
+    }
+    
     /// 스택뷰 인셋 계산 함수
-    func btnStvInsets(numOfBtn: Int) -> CGFloat {
+    private func btnStvInsets(numOfBtn: Int) -> CGFloat {
         switch numOfBtn {
-        case 0:
-            return 100 // 기본 인셋
-        case 1:
-            return (self.view.frame.width - self.smallButtonSize()) / 2
         case 2:
             return 100 // 두 개의 버튼 인셋
         case 3:
             return 50
+        case 4:
+            return 40
         default:
             return 100 // 기본 인셋
         }

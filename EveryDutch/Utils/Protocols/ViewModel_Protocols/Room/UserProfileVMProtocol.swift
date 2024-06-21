@@ -11,7 +11,7 @@ protocol UserProfileVMProtocol: ReceiptTableViewProtocol {
     // 클로저
     var fetchSuccessClosure: (([IndexPath]) -> Void)? { get set }
     var deleteUserSuccessClosure: (() -> Void)? { get set }
-    var reportSuccessClosure: (() -> Void)? { get set }
+    var reportSuccessClosure: ((AlertEnum, Int) -> Void)? { get set }
     var searchModeClosure: ((UIImage?, String) -> Void)? { get set }
     var errorClosure: ((ErrorEnum) -> Void)? { get set }
     

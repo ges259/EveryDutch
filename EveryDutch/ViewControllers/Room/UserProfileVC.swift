@@ -166,7 +166,7 @@ extension UserProfileVC {
                 self.btnStackView.addArrangedSubview(self.kickBtn)
             }
         }
-        
+        self.totalView.setRoundedCorners(.top, withCornerRadius: 20)
         self.receiptTableView.setRoundedCorners(.all, withCornerRadius: 12)
         self.totalStackView.setCustomSpacing(0, after: self.receiptTableView)
     }
@@ -222,7 +222,9 @@ extension UserProfileVC {
             make.top.equalToSuperview().offset(10)
             make.bottom.equalToSuperview().offset(-UIDevice.current.panModalSafeArea)
             // 버튼 스택뷰의 leading 및 trailing을 설정하는 메서드
-            self.configureBtnStackViewConstraints(make: make)
+            self.configureBtnStackViewConstraints(
+                make: make,
+                numOfBtn: self.btnStackView.arrangedSubviews.count)
         }
         // 하단 버튼의 높이와 너비를 동일하게 설정
         [self.searchBtn, self.reportBtn, self.kickBtn].forEach { btn in
@@ -232,22 +234,8 @@ extension UserProfileVC {
         }
     }
     
-    /// 스택뷰의 subViews의 개수에 따라, 버튼 스택뷰의 leading 및 trailing을 설정하는 메서드
-    private func configureBtnStackViewConstraints(
-        make: ConstraintMaker
-    ) {
-        // 버튼의 개수를 뷰모델에서 가져옴
-        let numOfBtn = self.btnStackView.arrangedSubviews.count
-        
-        if numOfBtn == 1 {
-            // 버튼이 하나일 때는 중앙 정렬
-            make.centerX.equalToSuperview()
-        } else {
-            // 버튼이 2개 이상일 때 인셋 적용
-            make.leading.trailing.equalToSuperview().inset(
-                self.btnStvInsets(numOfBtn: numOfBtn))
-        }
-    }
+    
+    
     
     /// 액션 설정
     private func configureAction() {
@@ -295,10 +283,12 @@ extension UserProfileVC {
             guard let self = self else { return }
             self.closeView()
         }
-        
-        self.viewModel.reportSuccessClosure = { [weak self] in
+        // choji
+        self.viewModel.reportSuccessClosure = { [weak self] alertType, reportCount in
             guard let self = self else { return }
-            self.customAlert(alertEnum: .reportSuccess) { _ in }
+            self.customAlert(alertEnum: alertType, reportCount: reportCount) { _ in
+                self.closeView()
+            }
         }
         
         self.viewModel.searchModeClosure = { [weak self] image, title in

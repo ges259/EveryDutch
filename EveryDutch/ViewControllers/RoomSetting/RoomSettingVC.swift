@@ -51,8 +51,7 @@ final class RoomSettingVC: UIViewController {
     
     private lazy var btnStackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.exitBtn,
-                           self.inviteBtn,
-                           self.roomSettingBtn],
+                           self.inviteBtn],
         axis: .horizontal,
         spacing: 16,
         alignment: .fill,
@@ -97,6 +96,10 @@ extension RoomSettingVC {
         self.view.backgroundColor = UIColor.base_Blue
         self.tabBarView.setRoundedCorners(.top, withCornerRadius: 20)
         self.tabBarView.addShadow(shadowType: .top)
+        
+        if self.viewModel.checkIsRoomManager {
+            self.btnStackView.addArrangedSubview(self.roomSettingBtn)
+        }
     }
     
     /// 오토레이아웃 설정
@@ -128,12 +131,13 @@ extension RoomSettingVC {
         // 하단 버튼 스택뷰를 담는 뷰
         self.tabBarView.snp.makeConstraints { make in
             make.bottom.leading.trailing.equalToSuperview()
-//            make.height.equalTo(UIDevice.current.tabBarHeight)
         }
         // 하단 버튼 스택뷰
         self.btnStackView.snp.makeConstraints { make in
-            make.leading.equalToSuperview().offset(40)
-            make.trailing.equalToSuperview().offset(-40)
+            self.configureBtnStackViewConstraints(
+                make: make,
+                numOfBtn: self.btnStackView.arrangedSubviews.count)
+            
             make.top.equalToSuperview().offset(10)
             make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom).offset(-5)
         }
@@ -143,7 +147,6 @@ extension RoomSettingVC {
                 make.size.equalTo(self.btnSize)
             }
         }
-        
     }
     
     /// 액션 설정
