@@ -80,13 +80,9 @@ final class EditScreenVC: UIViewController {
     private var viewModel: ProfileEditVMProtocol
     private var coordinator: EditScreenCoordProtocol
     
-    /// 카드 이미지뷰의 높이
-    private lazy var cardHeight: CGFloat = {
-        return (self.view.frame.width - 20) * 1.8 / 3
-    }()
     /// 열린 상태의 이미지 피커의 높이
     private lazy var openImagePickerHeight: CGFloat = {
-        return self.view.frame.height - (self.view.safeAreaInsets.top + self.cardHeight + 14)
+        return self.view.frame.height - (self.view.safeAreaInsets.top + self.cardHeight() + 14)
     }()
     
     
@@ -162,7 +158,7 @@ extension EditScreenVC {
             make.top.equalToSuperview().offset(2)
             make.leading.equalToSuperview().offset(10)
             make.trailing.equalToSuperview().offset(-10)
-            make.height.equalTo(self.cardHeight)
+            make.height.equalTo(self.cardHeight())
         }
         // 테이블뷰
         self.tableView.snp.makeConstraints { make in
@@ -220,7 +216,8 @@ extension EditScreenVC {
     }
     
     /// 왼쪽 상단 뒤로가기 버튼 설정
-    /// isMakeMode가 true이 때만 설정
+    /// isMakeMode가 true이 때만 설정 (새로운 유저가 유저 데이터를 추가하는 상황)
+    /// isMakeMode가 false
     func configureBackBtn(isMakeMode: Bool) {
         if isMakeMode {
             self.navigationItem.hidesBackButton = true

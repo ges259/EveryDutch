@@ -7,52 +7,46 @@
 
 import UIKit
 
-/*
- 해야 할 일
- - 빈칸되면 ChangedData에서 삭제
- */
-
 final class EditScreenVM: ProfileEditVMProtocol {
+    /**
+     제네릭 T의 모든 타입
+     - roomData / userData
+     - cardDecoration
+     */
+    private let allCases: [EditScreenType]
+    /// API 통신을 담당하는 프로토콜 객체
+    private var api: EditScreenAPIType?
     // typealias EditCellTypeTuple = (type: EditCellType, detail: String?)
     private var cellDataDictionary: [Int: [EditCellTypeTuple]] = [:]
-    
-    // API 통신을 담당하는 프로토콜 객체
-    private var api: EditScreenAPIType?
-    
-    
-    // 현재 선택된 셀 타입과 인덱스 패스를 저장하는 튜플
+    /// 현재 선택된 셀 타입과 인덱스 패스를 저장하는 튜플
     private var selectedIndexTuple: (type: EditCellType, indexPath: IndexPath)?
-    
+    /// 생성이 아닌 '수정'인 경우, 이전 화면에서 가져온 데이터
     private var dataRequiredWhenInEidtMode: String?
     
     
     
-    
-    
-    /// 피커 상태
+    // 플래그
+    /// 객체 생성 또는 편집 화면인지 구분하는 플래그
+    private var isMake: Bool = false
+    /// [이미지 / 색상] 피커 상태를 저장하는 플래그
     private var pickerStates: [EditScreenPicker: Bool] = [:]
     
-    // MARK: - 피커 상태 저장
-    func savePickerState(picker: EditScreenPicker, isOpen: Bool) {
-        self.pickerStates[picker] = isOpen
-    }
     
-    
-    // 객체 생성 또는 편집 화면인지 구분하는 플래그
-    private var isMake: Bool = false
     
     // 사용자에 의해 변경된 데이터를 저장하는 딕셔너리, DB에 저장할 예정
+    /// [roomData / userData]의 텍스트 데이터를 저장하는 딕셔너리
     private var textData: [String: Any?] = [:]
+    /// cardDecoration의 다양한 타입의 데이터를 저장하는 딕셔너리
     private var decorationData: [String: Any?] = [:]
     
+    private var originalData: (data: EditProviderModel?, deco: Decoration?)?
     
     
-    
-    // MARK: - 클로저
+    // 클로저
     // 방 데이터와 사용자 데이터를 업데이트할 때 사용할 클로저
+    /// [화면에 처음 들어섰을 때, 테이블뷰의 데이터를 추가]
     var updateDataClosure: (() -> Void)?
     var successDataClosure: (() -> Void)?
-    var makeDataClosure: ((EditProviderModel) -> Void)?
     var decorationDataClosure: ((Decoration?) -> Void)?
     // 에러 발생 시 처리할 클로저
     var errorClosure: ((ErrorEnum) -> Void)?
@@ -62,13 +56,7 @@ final class EditScreenVM: ProfileEditVMProtocol {
     
     
     
-    /*
-     제네릭 T의 모든 타입
-     type
-     - roomData / userData
-     - cardDecoration
-     */
-    private let allCases: [EditScreenType]
+
     
     
     // MARK: - 라이프사이클
@@ -107,7 +95,11 @@ extension EditScreenVM {
             decoration: decoration)
         
         guard let datas = datas else { return }
+        
         self.cellDataDictionary = datas
+        
+        // 오리지널 데이터를 저장
+        self.originalData = (data: data, deco: decoration)
         
         // 테이블뷰 리로드를 통해 [테이블 업데이트]
         self.updateDataClosure?()
@@ -138,34 +130,25 @@ extension EditScreenVM {
 
 
 
-// MARK: - 화면 데이터
+// MARK: - 데이터 반환
 extension EditScreenVM {
+    // 화면 데이터
     /// 하단 버튼 타이틀 - 화면 하단에 표시될 버튼의 제목을 반환하는 변수
     /// T 타입(섹션 타입)의 첫 번째 케이스를 기준으로, isMake 변수의 값(true 또는 false)에 따라 해당하는 제목을 반환 이는 '생성' 또는 '수정' 화면에 따라 다른 텍스트를 표시할 때 사용
     var getBottomBtnTitle: String? {
         return self.allCases.first?.bottomBtnTitle(isMake: self.isMake)
     }
-    
+    // 화면 데이터
     /// 네비게이션 바에 표시될 제목을 반환하는 변수
     /// 이 역시 T 타입의 첫 번째 케이스를 기준으로, isMake 변수에 따라 적절한 제목을 반환
     /// '생성' 또는 '수정' 화면에 맞는 네비게이션 바 제목을 결정하는 데 사용 됨
     var getNavTitle: String? {
         return self.allCases.first?.getNavTitle(isMake: self.isMake)
     }
-}
-
-
-
-
-
-
-
-
-
-
-// MARK: - 튜플 반환
-extension EditScreenVM {
-    // 현재 선택된 셀 타입과 인덱스 패스를 반환하는 제네릭 메소드
+    
+    
+    // (셀 타입, 인덱스패스) 튜플
+    /// 현재 선택된 셀의 셀 타입과 인덱스 패스를 반환하는 제네릭 메소드
     private func getCurrentCellType<F: EditCellType>(
         cellType: F.Type
     ) -> (type: F, indexPath: IndexPath)? {
@@ -175,12 +158,12 @@ extension EditScreenVM {
         return (type, tuple.indexPath)
     }
     
-    // MARK: - 데코 셀
+    /// 데코 셀 타입 및 인덱스패스 반환
     func getDecorationCellTypeTuple() -> (type: DecorationCellType, indexPath: IndexPath)? {
         return self.getCurrentCellType(cellType: DecorationCellType.self)
     }
     
-    // MARK: - 셀 반환
+    /// 현재 선택된 셀의 셀 타입 반환
     func getCurrentType() -> EditCellType? {
         return self.selectedIndexTuple?.type
     }
@@ -190,62 +173,6 @@ extension EditScreenVM {
 
 
 
-    
-    
-    
-    
-
-// MARK: - 바뀐 데이터 저장
-extension EditScreenVM {
-    // 현재 선택된 셀 타입과 인덱스 패스를 저장하는 메소드
-    func saveCurrentIndex(indexPath: IndexPath) {
-        guard let type = self.getCellTuple(indexPath: indexPath)?.type else {
-            // MARK: - Fix
-            // 에러 처리
-            return
-        }
-        self.selectedIndexTuple = (type: type, indexPath: indexPath)
-    }
-    
-    // 변경된 데이터를 저장하는 메소드
-    func saveChangedData(data: Any?) {
-        // type가져오기
-        guard let type = self.selectedIndexTuple?.type else { return }
-        
-        // 각 type에 저장된 데이터베이스 String 가져오기
-        let databaseString = type.databaseString
-        
-        switch type {
-        case is RoomEditCellType, is ProfileEditCellType:
-            self.updateText(databaseString: databaseString, text: data)
-            break
-            
-        case is DecorationCellType:
-            self.decorationData[databaseString] = data
-            break
-            
-        default: 
-            print("Error --- \(self) --- \(#function)")
-            self.errorClosure?(.changeEditDataError)
-            break
-        }
-    }
-    
-    /// 텍스트 저장
-    private func updateText(databaseString: String, text: Any?) {
-        // 옵셔널바인딩 실패, 비어있는 상태라면, 지우기
-        if let text = text as? String, text == "" {
-            self.textData.removeValue(forKey: databaseString)
-        } else {
-            self.textData[databaseString] = text
-        }
-    }
-}
-    
-    
-    
-    
-    
     
     
 
@@ -291,6 +218,66 @@ extension EditScreenVM {
 
     
     
+
+
+// MARK: - 바뀐 데이터 저장
+extension EditScreenVM {
+    // 현재 선택된 셀 타입과 인덱스 패스를 저장하는 메소드
+    func saveCurrentIndex(indexPath: IndexPath) {
+        guard let type = self.getCellTuple(indexPath: indexPath)?.type else {
+            // MARK: - Fix
+            // 에러 처리
+            return
+        }
+        self.selectedIndexTuple = (type: type, indexPath: indexPath)
+    }
+    
+    // 변경된 데이터를 저장하는 메소드
+    func saveChangedData(data: Any?) {
+        // type가져오기
+        guard let type = self.selectedIndexTuple?.type else { return }
+        
+        // 각 type에 저장된 데이터베이스 String 가져오기
+        let databaseString = type.databaseString
+        
+        switch type {
+        case is RoomEditCellType, is ProfileEditCellType:
+            self.updateText(databaseString: databaseString, text: data)
+            break
+            
+        case is DecorationCellType:
+            self.decorationData[databaseString] = data
+            break
+            
+        default:
+            print("Error --- \(self) --- \(#function)")
+            self.errorClosure?(.changeEditDataError)
+            break
+        }
+    }
+    
+    /// 텍스트 저장
+    private func updateText(databaseString: String, text: Any?) {
+        // 옵셔널바인딩 실패, 비어있는 상태라면, 지우기
+        if let text = text as? String, text == "" {
+            self.textData.removeValue(forKey: databaseString)
+        } else {
+            self.textData[databaseString] = text
+        }
+    }
+    
+    /// 피커 상태 저장
+    func savePickerState(picker: EditScreenPicker, isOpen: Bool) {
+        self.pickerStates[picker] = isOpen
+    }
+}
+
+
+
+
+
+
+
 
 
 

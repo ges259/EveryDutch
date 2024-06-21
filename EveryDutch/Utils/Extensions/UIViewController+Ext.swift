@@ -66,6 +66,20 @@ extension UIViewController {
     
     
     
+    func smallButtonSize() -> CGFloat {
+        return 65
+    }
+    func BigButtonSize() ->  CGFloat {
+        return 80
+    }
+    func defaultLeadingTrailingInset() -> CGFloat {
+        return 10
+    }
+    
+    
+    
+    
+    
 
     
     func cardHeight() -> CGFloat {
@@ -79,15 +93,13 @@ extension UIViewController {
         return self.view.safeAreaInsets.bottom
     }
     
-    func smallButtonSize() -> CGFloat {
-        return 65
-    }
-    func BigButtonSize() ->  CGFloat {
-        return 80
-    }
+
     
     
     
+    
+    
+    // MARK: - 스택뷰의 insets
     /// 스택뷰의 subViews의 개수에 따라, 버튼 스택뷰의 leading 및 trailing을 설정하는 메서드
     func configureBtnStackViewConstraints(
         make: ConstraintMaker,
@@ -115,15 +127,6 @@ extension UIViewController {
         default:
             return 100 // 기본 인셋
         }
-    }
-    
-    
-    
-    
-    
-    
-    func defaultLeadingTrailingInset() -> CGFloat {
-        return 10
     }
 }
 

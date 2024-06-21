@@ -40,7 +40,7 @@ extension EditScreenAPIType {
                 // 스냅샷의 첫 번째 자식 노드를 확인
                 if let firstChild = snapshot.children.allObjects.first as? DataSnapshot,
                    let userDict = firstChild.value as? [String: Any],
-                   let id = userDict["personal_ID"] as? String,
+                   let id = userDict[DatabaseConstants.personal_ID] as? String,
                    id == personalID
                 {
                     // 첫 번째 자식 노드가 존재하고, 해당 personal_ID가 요청한 값과 일치하면 true 반환
