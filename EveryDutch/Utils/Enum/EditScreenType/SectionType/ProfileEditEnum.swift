@@ -41,6 +41,25 @@ enum ProfileEditEnum: Int, EditScreenType, CaseIterable {
         // 해당 방식으로 사용
         return profileValidation
     }
+    func validatePersonalID(
+        api: EditScreenAPIType?,
+        textData: [String: Any?]
+    ) async throws {
+        // 개인 ID 중복 확인 로직 구현
+        // textData에서 personal_ID를 가져옴
+        // userID도 가져옴
+        guard let personalID = textData[DatabaseConstants.personal_ID] as? String,
+              let userID = api?.getCurrentUserID
+        else { throw ErrorEnum.readError }
+        // personal_ID가 중복되어있는지 확인
+        let isExists = try await api?.validatePersonalID(
+            userID: userID,
+            personalID: personalID) ?? false
+        // 이미 존재한다면(중복이라면), throw
+        if isExists {
+            throw ErrorEnum.validationError([DatabaseConstants.duplicatePersonalID] )
+        }
+    }
     
     // MARK: - API 타입
     var apiType: EditScreenAPIType {

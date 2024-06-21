@@ -12,6 +12,9 @@ enum RoomEditCellType: Int, EditCellType, CaseIterable {
     case roomName = 0
     case className
 
+    func saveTextData(data: Any?, to textData: inout [String: Any?]) {
+        textData[databaseString] = data
+    }
     
     // MARK: - 유효성 검사
     static func validation(dict: [String: Any?]) -> [String] {

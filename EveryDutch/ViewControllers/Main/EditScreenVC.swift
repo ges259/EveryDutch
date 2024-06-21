@@ -462,11 +462,11 @@ extension EditScreenVC: CardDataCellDelegate,
     func textData(cell: CardDataCell, type: EditCellType, text: String) {
         // 선택된 셀의 IndexPath 저장
         // row가져오기 및 옵셔널 바인딩(존재하는지 확인)
-        guard let row = self.saveTextFieldsIndexPath(cell), 
+        guard let row = self.saveTextFieldsIndexPath(cell),
                 row >= 0
         else { return }
         // 변경된 텍스트 데이터 저장
-        self.viewModel.saveChangedData(data: text)
+        self.viewModel.saveChangedTextData(data: text)
         // 카드 텍스트 변경
         self.cardImgView.updateDataCellText(index: row, text: text)
     }
@@ -512,7 +512,7 @@ extension EditScreenVC {
             return
         }
         // 변경된 데이터 저장
-        self.viewModel.saveChangedData(data: data)
+        self.viewModel.saveChangedDecorationData(data: data)
         // 셀 업데이트
         if let cell = self.tableView.cellForRow(at: changedData.indexPath) as? CardDecorationCell {
             updateAction(cell)

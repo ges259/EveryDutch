@@ -20,4 +20,19 @@ protocol EditCellType {
     
 //    var rawValueIndex: Int { get }
     
+    
+    func saveTextData(data: Any?, to textData: inout [String: Any?])
+    
+    func saveDecorationData(data: Any?, to decorationData: inout [String: Any?]) 
+}
+extension EditCellType {
+    func saveTextData(data: Any?, to textData: inout [String: Any?]) {
+        // 기본 구현 (아무것도 하지 않음)
+        print("\(#function) --- 구현 안 됨")
+    }
+
+    func saveDecorationData(data: Any?, to decorationData: inout [String: Any?]) {
+        // 기본 구현 (아무것도 하지 않음)
+        print("\(#function) --- 구현 안 됨")
+    }
 }

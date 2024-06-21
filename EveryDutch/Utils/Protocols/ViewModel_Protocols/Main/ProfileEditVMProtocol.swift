@@ -29,18 +29,13 @@ protocol ProfileEditVMProtocol {
     func savePickerState(picker: EditScreenPicker, isOpen: Bool)
     
     
-//    func saveChangedData<T: EditCellType>(type: T,
-//                         data: Any?)
-    func saveChangedData(data: Any?)
+//    func saveChangedData(data: Any?)
+    
+    func saveChangedTextData(data: Any?)
+    func saveChangedDecorationData(data: Any?)
     
     
-//    func getCurrentCellType<T: EditCellType>(
-//        cellType: T.Type)
-//    -> (type: T,
-//        indexPath: IndexPath)?
     
-    
-//    func geteImageCellTypeTuple() -> (type: ImageCellType, indexPath: IndexPath)?
     
     func getDecorationCellTypeTuple() -> (type: DecorationCellType, indexPath: IndexPath)?
     

@@ -15,11 +15,6 @@ protocol EditScreenType {
         decoration: Decoration?) -> [Int: [EditCellTypeTuple]]
     func validation(data: [String: Any?]) -> [String]
     
-    
-    
-    
-    
-    
     var apiType: EditScreenAPIType { get }
     
     // MARK: - 헤더 타이틀
@@ -30,7 +25,16 @@ protocol EditScreenType {
     
     // MARK: - 섹션의 인덱스
     var sectionIndex: Int { get }
+}
+
+
+extension EditScreenType {
     
-    // MARK: - 셀 타입 반환
-//    var getAllOfCellType: [EditCellType] { get }
+    func validatePersonalID(
+        api: EditScreenAPIType?,
+        textData: [String: Any?]
+    ) async throws {
+        // 개인 ID 중복 확인 로직 구현
+        print("validatePersonalID called but not implemented.")
+    }
 }

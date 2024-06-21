@@ -22,6 +22,11 @@ enum ProfileEditCellType: Int, EditCellType, CaseIterable {
         }
     }
     
+    func saveTextData(data: Any?, to textData: inout [String: Any?]) {
+        print("\(#function) ----- 1")
+        textData[databaseString] = data
+    }
+    
     // MARK: - 셀 타이틀
     var getCellTitle: String {
         switch self {

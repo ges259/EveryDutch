@@ -18,11 +18,54 @@ protocol EditScreenAPIType: DecorationAPI {
 
 
 extension EditScreenAPIType {
+//    
+//
+//    func validatePersonalID(personalID: String) async throws -> Bool {
+//        // Firebase Database의 참조 생성 및 쿼리 구성
+//        // personal_ID 필드의 값이 personalID와 일치하는 항목을 쿼리
+//        let query = USER_REF
+//            .queryOrdered(byChild: DatabaseConstants.personal_ID)
+//            .queryEqual(toValue: personalID)
+//        
+//        // 비동기 작업
+//        return try await withCheckedThrowingContinuation { continuation in
+//            // 쿼리 결과를 한 번만 관찰하여 데이터 스냅샷을 가져옴
+//            query.observeSingleEvent(of: .value) { snapshot in
+//                // 스냅샷이 존재하지 않는 경우, false 반환
+//                guard snapshot.exists() else {
+//                    continuation.resume(returning: false)
+//                    return
+//                }
+//                
+//                // 스냅샷의 첫 번째 자식 노드를 확인
+//                if let firstChild = snapshot.children.allObjects.first as? DataSnapshot,
+//                   let userDict = firstChild.value as? [String: Any],
+//                   let id = userDict[DatabaseConstants.personal_ID] as? String,
+//                   id == personalID
+//                {
+//                    // 첫 번째 자식 노드가 존재하고, 해당 personal_ID가 요청한 값과 일치하면 true 반환
+//                    continuation.resume(returning: true)
+//                } else {
+//                    // 첫 번째 자식 노드가 존재하지 않거나, personal_ID가 요청한 값과 일치하지 않으면 false 반환
+//                    continuation.resume(returning: false)
+//                }
+//            } withCancel: { error in
+//                // 쿼리가 취소되거나 오류가 발생하면 continuation을 에러와 함께 재개
+//                continuation.resume(throwing: error)
+//            }
+//        }
+//    }
+//    
+//    
     
-
-    func validatePersonalID(personalID: String) async throws -> Bool {
+    func validatePersonalID(
+        userID: String,
+        personalID: String
+    ) async throws -> Bool {
+        
+        
+        
         // Firebase Database의 참조 생성 및 쿼리 구성
-        // personal_ID 필드의 값이 personalID와 일치하는 항목을 쿼리
         let query = USER_REF
             .queryOrdered(byChild: DatabaseConstants.personal_ID)
             .queryEqual(toValue: personalID)
@@ -31,28 +74,44 @@ extension EditScreenAPIType {
         return try await withCheckedThrowingContinuation { continuation in
             // 쿼리 결과를 한 번만 관찰하여 데이터 스냅샷을 가져옴
             query.observeSingleEvent(of: .value) { snapshot in
-                // 스냅샷이 존재하지 않는 경우, false 반환
-                guard snapshot.exists() else {
-                    continuation.resume(returning: false)
-                    return
-                }
-                
-                // 스냅샷의 첫 번째 자식 노드를 확인
-                if let firstChild = snapshot.children.allObjects.first as? DataSnapshot,
-                   let userDict = firstChild.value as? [String: Any],
-                   let id = userDict[DatabaseConstants.personal_ID] as? String,
-                   id == personalID
-                {
-                    // 첫 번째 자식 노드가 존재하고, 해당 personal_ID가 요청한 값과 일치하면 true 반환
-                    continuation.resume(returning: true)
-                } else {
-                    // 첫 번째 자식 노드가 존재하지 않거나, personal_ID가 요청한 값과 일치하지 않으면 false 반환
-                    continuation.resume(returning: false)
+                do {
+                    let isDuplicate = try self.processSnapshot(snapshot: snapshot, userID: userID, personalID: personalID)
+                    continuation.resume(returning: isDuplicate)
+                } catch {
+                    continuation.resume(throwing: error)
                 }
             } withCancel: { error in
                 // 쿼리가 취소되거나 오류가 발생하면 continuation을 에러와 함께 재개
                 continuation.resume(throwing: error)
             }
+        }
+    }
+
+    private func processSnapshot(snapshot: DataSnapshot, userID: String, personalID: String) throws -> Bool {
+        // 스냅샷이 존재하지 않는 경우, true 반환
+        guard snapshot.exists() else {
+            return true
+        }
+        
+        
+        
+        // 스냅샷의 첫 번째 자식 노드를 확인
+        if let firstChild = snapshot.children.allObjects.first as? DataSnapshot,
+           let userDict = firstChild.value as? [String: Any],
+           let id = userDict[DatabaseConstants.personal_ID] as? String,
+           id == personalID {
+            // personal_ID가 요청한 값과 일치하는 경우
+            let fetchedUserID = firstChild.key
+            if fetchedUserID == userID {
+                // personal_ID가 중복이지만 해당 userID와 동일한 경우
+                return true
+            } else {
+                // personal_ID가 중복되고 다른 userID인 경우
+                return false
+            }
+        } else {
+            // 해당하는 노드가 없는 경우
+            return false
         }
     }
 }

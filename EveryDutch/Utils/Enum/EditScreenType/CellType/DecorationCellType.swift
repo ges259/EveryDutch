@@ -14,6 +14,9 @@ enum DecorationCellType: Int, EditCellType, CaseIterable {
     case titleColor
     case nameColor
     
+    func saveDecorationData(data: Any?, to decorationData: inout [String: Any?]) {
+        decorationData[databaseString] = data
+    }
     // 공통으로 제공되는 cardDecorationTitle
     var getCellTitle: String {
         switch self {

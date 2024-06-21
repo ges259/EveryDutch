@@ -124,10 +124,12 @@ extension CardDataCell {
         // 텍스트필드의 detail레이블 설정
         self.detailLbl.text = type.getCellTitle
         
-        
+        print("\(#function) ----- 1")
+        print(data.detail)
         // detatil이 있다면
         if let text = data.detail,
            !text.isEmpty {
+            print("\(#function) ----- 2")
             self.textField.setTFText(data.detail)
             self.textField.seteupNumOfCharLbl()
             self.delegateTextData()
