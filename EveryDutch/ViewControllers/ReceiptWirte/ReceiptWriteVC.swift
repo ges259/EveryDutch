@@ -391,7 +391,7 @@ extension ReceiptWriteVC {
         // 화면 전환
         self.coordinator.peopleSelectionPanScreen(
             users: self.viewModel.selectedUsers,
-            peopleSelectionEnum: .multipleSelection)
+            peopleSelectionEnum: .paymentDetail)
     }
     
     /// 영수증 확인 버튼 액션 (하단 버튼)
@@ -865,7 +865,7 @@ extension ReceiptWriteVC: ReceiptWriteDataCellDelegate {
         // 화면 전환
         self.coordinator.peopleSelectionPanScreen(
             users: self.viewModel.payer,
-            peopleSelectionEnum: .singleSelection)
+            peopleSelectionEnum: .payer)
     }
 }
 

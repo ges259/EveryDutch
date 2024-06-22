@@ -9,7 +9,7 @@ import UIKit
 
 
 protocol PeopleSelectionPanVMProtocol {
-    var peopleSelectionEnum: PeopleSeelctionEnum? { get }
+    var peopleSelectionEnum: PeopleSeelctionEnum { get }
     var selectedUsers: RoomUserDataDict { get }
     var addedUsers: RoomUserDataDict { get }
     var removedSelectedUsers: RoomUserDataDict { get }
@@ -34,7 +34,7 @@ protocol PeopleSelectionPanVMProtocol {
     var bottomBtnClosure: (() -> Void)? { get set }
     
     
-    var isSingleMode: Bool { get }
+    var isSingleSelectionMode: Bool { get }
     var numOfUsers: Int { get }
     
     var topLblText: String { get }
@@ -54,5 +54,5 @@ protocol PeopleSelectionPanVMProtocol {
     
     func singleModeSelectionUser(index: Int)
     
-    func getIdToRoomUser(usersID: String) -> Bool
+    func getIdToRoomUser(userID: String) -> Bool
 }

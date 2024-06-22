@@ -16,11 +16,13 @@ final class PeopleSelectionPanCoordinator: Coordinator {
     // WriteScreen_Coordinator로 전달 됨.
     weak var delegate: PeopleSelectionDelegate?
     var selectedUsers: RoomUserDataDict?
-    var peopleSelectionEnum: PeopleSeelctionEnum?
+    var peopleSelectionEnum: PeopleSeelctionEnum
     
     // 의존성 주입
-    init(nav: UINavigationController) {
+    init(nav: UINavigationController,
+         peopleSelectionEnum: PeopleSeelctionEnum) {
         self.nav = nav
+        self.peopleSelectionEnum = peopleSelectionEnum
     }
     
     

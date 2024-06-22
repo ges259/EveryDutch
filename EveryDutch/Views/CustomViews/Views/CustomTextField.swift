@@ -47,7 +47,7 @@ final class CustomTextField: UIView {
     
     // MARK: - 프로퍼티
     /// 최대 자리 수
-    private var TF_MAX_COUNT: Int = 999
+    private var TF_MAX_COUNT: Int = 12
     /// 델리게이트
     weak var customTextFieldDelegate: CustomTextFieldDelegate?
     /// 현재 텍스트필드의 텍스트를 반환
@@ -59,10 +59,10 @@ final class CustomTextField: UIView {
     
     // MARK: - 라이프사이클
     init(insetX: CGFloat = 16,
-         TF_MAX_COUNT: Int? = nil,
+         TF_MAX_COUNT: Int = 12,
          placeholder: String = "")
     {
-        self.TF_MAX_COUNT = TF_MAX_COUNT ?? 999
+        self.TF_MAX_COUNT = TF_MAX_COUNT
         super.init(frame: .zero)
         
         self.configureAutoLayout()

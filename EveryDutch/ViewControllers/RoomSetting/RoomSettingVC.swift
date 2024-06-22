@@ -23,9 +23,13 @@ final class RoomSettingVC: UIViewController {
     private lazy var contentView: UIView = UIView()
     
     // 탑뷰 내부 레이아웃
-    private var usersTableView: UsersTableView = UsersTableView(
-        viewModel: UsersTableViewVM(
-            roomDataManager: RoomDataManager.shared, .isRoomSetting))
+    private lazy var usersTableView: UsersTableView = {
+        let view = UsersTableView(
+            viewModel: UsersTableViewVM(
+                roomDataManager: RoomDataManager.shared, .isRoomSetting))
+            view.delegate = self
+        return view
+    }()
     
     
     
@@ -214,6 +218,9 @@ extension RoomSettingVC {
     }
     // 나가기 버튼
     @objc private func exitBtnBtnTapped() {
+        
+        
+        
         // 얼럿창 띄우기
         self.customAlert(alertEnum: .exitRoom) { _ in
             // 확인 버튼을 누르면 -> 정산방에서 나가기
@@ -236,5 +243,12 @@ extension RoomSettingVC {
             // 얼럿창
             self.customAlert(alertEnum: .isNotRoomManager) { _ in }
         }
+    }
+}
+
+// MARK: - 테이블뷰 델리게이트
+extension RoomSettingVC: UsersTableViewDelegate {
+    func didSelectUser() {
+        self.coordinator.userProfileScreen()
     }
 }

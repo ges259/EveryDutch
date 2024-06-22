@@ -12,7 +12,6 @@ final class ReceiptWriteDataCellVM: ReceiptWriteDataCellVMProtocol {
     private var receiptEnum: ReceiptCellEnum
     var price: Int? = 0
     
-    let TF_MAX_COUNT: Int = 12
     
     /// 현재 Receipt데이터 리턴
     var getReceiptEnum: ReceiptCellEnum {
@@ -48,22 +47,12 @@ final class ReceiptWriteDataCellVM: ReceiptWriteDataCellVMProtocol {
         ? true
         : false
     }
-    func updateMemoCount(count: Int) -> String {
-        return "\(count) / \(self.TF_MAX_COUNT)"
-    }
     
     var isPriceType: Bool {
         return self.receiptEnum == .price
         ? true
         : false
     }
-    
-    var returnTextFieldMaxCount: Int? {
-        return self.isMemoType
-        ? 12
-        : nil
-    }
-    
     
     
     

@@ -15,7 +15,6 @@ final class FindFriendsVC: UIViewController {
     // MARK: - 레이아웃
     /// 텍스트필드
     private lazy var textField: CustomTextField = CustomTextField(
-        TF_MAX_COUNT: 8,
         placeholder: "친구 개인 ID로 검색")
     /// 검색 버튼
     private var searchBtn: UIButton = {

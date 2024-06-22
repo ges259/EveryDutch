@@ -29,18 +29,10 @@ final class CheckReceiptPanVC: UIViewController {
             forCellReuseIdentifier: Identifier.checkReceiptPanCell)
         return view
     }()
-    
-    /// 하단 버튼
-    private var bottomBtn: UIButton = UIButton.btnWithTitle(
-        title: "확인",
-        font: UIFont.boldSystemFont(ofSize: 16),
-        backgroundColor: UIColor.normal_white)
-    
     /// 토탈 스택뷰
     private lazy var totalStackView: UIStackView = UIStackView.configureStv(
         arrangedSubviews: [self.topLbl,
-                           self.tableView,
-                           self.bottomBtn],
+                           self.tableView],
         axis: .vertical,
         spacing: 4,
         alignment: .fill,
@@ -64,7 +56,6 @@ final class CheckReceiptPanVC: UIViewController {
         
         self.configureUI()
         self.configureAutoLayout()
-        self.configureAction()
     }
     init(viewModel: CheckReceiptPanVMProtocol,
          coordinator: Coordinator) {
@@ -98,8 +89,7 @@ extension CheckReceiptPanVC {
         self.view.backgroundColor = UIColor.deep_Blue
         // 모서리 설정
         [self.topLbl,
-         self.tableView,
-         self.bottomBtn].forEach { view in
+         self.tableView].forEach { view in
             view.setRoundedCorners(.all, withCornerRadius: 10)
         }
     }
@@ -117,29 +107,8 @@ extension CheckReceiptPanVC {
         }
         // 상단 레이블
         self.topLbl.snp.makeConstraints { make in
-            make.height.equalTo(40)
+            make.height.equalTo(45)
         }
-        // 하단 버튼
-        self.bottomBtn.snp.makeConstraints { make in
-            make.height.equalTo(55)
-        }
-    }
-    
-    // 액션 설정
-    private func configureAction() {
-        self.bottomBtn.addTarget(
-            self,
-            action: #selector(self.bottomBtnTapped),
-            for: .touchUpInside)
-    }
-    
-    
-    
-    
-    
-    // MARK: - 액션 설정
-    @objc private func bottomBtnTapped() {
-        self.dismiss(animated: true)
     }
 }
 
@@ -186,7 +155,7 @@ extension CheckReceiptPanVC: UITableViewDelegate {
     func tableView(_ tableView: UITableView,
                    heightForRowAt indexPath: IndexPath)
     -> CGFloat {
-        return 45
+        return 50
     }
 }
 

@@ -25,7 +25,7 @@ final class CardDataCell: UITableViewCell {
         leftInset: 20)
     /// 텍스트 필드
     private lazy var textField: CustomTextField = {
-        let tf = CustomTextField(TF_MAX_COUNT: 12)
+        let tf = CustomTextField()
         tf.backgroundColor = .normal_white
         tf.customTextFieldDelegate = self
         tf.isUserInteractionEnabled = true

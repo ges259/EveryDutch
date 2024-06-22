@@ -54,11 +54,12 @@ final class ReceiptWriteCoordinator: ReceiptWriteCoordProtocol {
     // MARK: - PeopleSelectionPanScreen
     func peopleSelectionPanScreen(
         users: RoomUserDataDict?,
-        peopleSelectionEnum: PeopleSeelctionEnum?)
+        peopleSelectionEnum: PeopleSeelctionEnum)
     {
         // PeopleSelectionPanCoordinator 생성
         let peopleSelectionPanCoord = PeopleSelectionPanCoordinator(
-            nav: self.modalNavController ?? self.nav)
+            nav: self.modalNavController ?? self.nav, 
+            peopleSelectionEnum: peopleSelectionEnum)
         self.childCoordinators.append(peopleSelectionPanCoord)
         // 부모 코디네이터가 자신이라는 것을 명시 (뒤로가기 할 때 필요)
         peopleSelectionPanCoord.parentCoordinator = self

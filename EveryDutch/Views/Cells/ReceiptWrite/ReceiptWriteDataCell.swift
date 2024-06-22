@@ -16,9 +16,7 @@ final class ReceiptWriteDataCell: UITableViewCell {
     
     /// 텍스트필드
     private lazy var textField: CustomTextField = {
-        let maxCount = self.viewModel?.returnTextFieldMaxCount
-        let tf = CustomTextField(insetX: 25,
-                                 TF_MAX_COUNT: maxCount)
+        let tf = CustomTextField(insetX: 25)
         tf.customTextFieldDelegate = self
         return tf
     }()

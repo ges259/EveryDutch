@@ -61,6 +61,13 @@ final class RoomSettingCoordinator: RoomSettingCoordProtocol{
         self.nav.popToRootViewController(animated: true)
         self.parentCoordinator?.removeChildCoordinator(child: self)
     }
+    func userProfileScreen() {
+        let userProfileCoordinator = UserProfileCoordinator(nav: self.nav)
+        
+        self.childCoordinators.append(userProfileCoordinator)
+        userProfileCoordinator.parentCoordinator = self
+        userProfileCoordinator.start()
+    }
     
     // MARK: - 설정
     func roomEditScreen(DataRequiredWhenInEidtMode roomID: String?) {

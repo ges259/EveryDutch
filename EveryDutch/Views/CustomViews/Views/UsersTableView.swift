@@ -12,6 +12,13 @@ protocol UsersTableViewDelegate: AnyObject {
     func didSelectUser()
     func didUpdateUserCount()
 }
+extension UsersTableViewDelegate {
+    func didUpdateUserCount() {
+        print("didUpdateUserCount ---- Error")
+    }
+}
+
+
 
 final class UsersTableView: UIView {
     // MARK: - 레이아웃
@@ -123,6 +130,7 @@ extension UsersTableView {
         }
     }
     
+    /// 클로저 설정
     private func configureClosure() {
         self.viewModel.userCardDataClosure = { [weak self] in
             guard let self = self else { return }

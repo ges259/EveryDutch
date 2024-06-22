@@ -219,11 +219,8 @@ extension ReceiptWriteVM {
 
 
 // MARK: - 셀의 뷰모델
-
 extension ReceiptWriteVM {
-    
-    // MARK: - 셀의 뷰모델 생성
-    /// [유저 셀] 생성
+    /// roomDataManager에서 해당 유저의 뷰모델을 가져와 [유저 셀]의 뷰모델 생성
     func createUsersCellVM(addedUsers: RoomUserDataDict) {
         // userData섹션의 인덱스를 가져옴
         let sectionIndex = self.sectionIndex(receiptWriteEnum: .userData)
@@ -255,7 +252,7 @@ extension ReceiptWriteVM {
         self.saveCalenderDate(date: Date())
     }
     
-    // MARK: - 셀 뷰모델 반환
+    /// 셀 뷰모델 반환
     private func getCurrentReceiptWriteCellVM<T: ReceiptWriteCellVMProtocol>(
         as type: T.Type,
         indexPath: IndexPath) -> T? {
@@ -270,11 +267,13 @@ extension ReceiptWriteVM {
         }
         return nil
     }
+    /// 데이터 셀의 뷰모델 반환
     func getDataCellViewModel(indexPath: IndexPath) -> ReceiptWriteDataCellVMProtocol? {
         return self.getCurrentReceiptWriteCellVM(
             as: ReceiptWriteDataCellVM.self,
             indexPath: indexPath)
     }
+    /// 유저 셀의 뷰모델 반환
     func getUserCellViewModel(indexPath: IndexPath) -> UsersTableViewCellVMProtocol? {
         return self.getCurrentReceiptWriteCellVM(
             as: UsersTableViewCellVM.self,
@@ -293,10 +292,8 @@ extension ReceiptWriteVM {
 
 
 // MARK: - 계산할 사람 선택
-
 extension ReceiptWriteVM {
-    
-    // MARK: - 추가될 셀의 IndexPath
+    /// 추가될 셀의 IndexPath
     func indexPathsForAddedUsers(_ users: RoomUserDataDict) -> [IndexPath]
     {
         // userData섹션의 인덱스를 가져옴
@@ -307,32 +304,38 @@ extension ReceiptWriteVM {
         return (startIndex..<(startIndex + users.count)).map { IndexPath(row: $0, section: 1) }
     }
     
-    // MARK: - 유저 뷰모델 삭제
+    /// 유저 뷰모델 삭제
     func deleteData(removedUsers: RoomUserDataDict) {
         // userData섹션의 인덱스를 가져옴
         let sectionIndex = self.sectionIndex(receiptWriteEnum: .userData)
         
-        // MARK: - Fix
         // 에러처리 추가
-        guard let usersVM = self.cellDataDictionary[sectionIndex] as? [UsersTableViewCellVMProtocol]
-        else {
+        guard var usersVM = self.cellDataDictionary[sectionIndex] as? [UsersTableViewCellVMProtocol] else {
             self.errorClosure?(.NoPersonalID)
             return
         }
         
-        removedUsers.keys.forEach { userID in
+        // 배열을 순회하면서 제거
+        for userID in removedUsers.keys {
             // 가격 없애기
             self.removePrice(userID: userID)
             // 선택된 상태에서 없애기
             self.selectedUsers.removeValue(forKey: userID)
             
             if let index = usersVM.firstIndex(where: { $0.userID == userID }) {
-                self.cellDataDictionary[sectionIndex]?.remove(at: index)
+                // 인덱스가 존재하는지 확인
+                guard index < usersVM.count else {
+                    continue // 인덱스가 유효하지 않으면 다음으로 넘어감
+                }
+                usersVM.remove(at: index)
             }
         }
+        
+        // 업데이트된 배열을 다시 cellDataDictionary에 저장
+        self.cellDataDictionary[sectionIndex] = usersVM
     }
     
-    // MARK: - 삭제 될 셀의 IndexPath
+    /// 삭제 될 셀의 IndexPath
     func indexPathsForRemovedUsers(_ users: RoomUserDataDict) -> [IndexPath] {
         // userData섹션의 인덱스를 가져옴
         let sectionIndex = self.sectionIndex(receiptWriteEnum: .userData)
@@ -370,10 +373,8 @@ extension ReceiptWriteVM {
 
 
 // MARK: - 가격 설정
-
 extension ReceiptWriteVM {
-    
-    // MARK: - 분기 처리
+    /// 분기 처리
     func calculatePrice(userID: String, price: Int?) {
         // [ 제거 ] - 아무것도 적지 않았다면 (nil값)
         if price == nil {
@@ -390,8 +391,8 @@ extension ReceiptWriteVM {
         }
     }
     
-    // MARK: - [제거]
-    // (가격 제거 시) + (테이블에서 유저 삭제 시)
+    /// [제거]
+    /// (가격 제거 시) + (테이블에서 유저 삭제 시)
     private func removePrice(userID: String) {
         // 만약 유저가 돈이 있다면
         // -> 0원으로 만들기
@@ -405,7 +406,7 @@ extension ReceiptWriteVM {
         }
     }
     
-    // MARK: - [수정]
+    /// [수정]
     private func modifyPrice(userID: String, price: Int?) {
         // 원래 돈 및 수정 돈가져오기
         guard let original = self.usersMoneyDict[userID],
@@ -421,7 +422,7 @@ extension ReceiptWriteVM {
         self.cumulativeMoney = (cumulativeMoney - original + new)
     }
     
-    // MARK: - [추가]
+    /// [추가]
     private func createPrice(userID: String, price: Int?) {
         guard let price = price else { return }
         // 딕셔너리에 추가
@@ -430,7 +431,7 @@ extension ReceiptWriteVM {
         self.cumulativeMoney += price
     }
     
-    // MARK: - 가격 재분배 (1/N 버튼)
+    /// 가격 재분배 (1/N 버튼)
     func dutchBtnTapped() {
         // 현재 금액 옵셔널 바인딩,
         // + 현재 금액이 0원이 아니라면
@@ -605,14 +606,10 @@ extension ReceiptWriteVM {
 
 
 
-// MARK: - API
-
+// MARK: - 영수증 생성 (API)
 extension ReceiptWriteVM {
-    
-    // MARK: - 비동기 작업 시작
     // 비동기 작업을 시작하는 함수
     private func startReceiptAPI() {
-        
         // 버전, payerID 가져오기
         guard let versionID = self.roomDataManager.getCurrentVersion,
               let payerID = self.getCurrentPayerID()

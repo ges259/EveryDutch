@@ -8,6 +8,7 @@
 import Foundation
 
 enum PeopleSeelctionEnum {
-    case multipleSelection
-    case singleSelection
+    case paymentDetail
+    case payer
+    case roomManager
 }

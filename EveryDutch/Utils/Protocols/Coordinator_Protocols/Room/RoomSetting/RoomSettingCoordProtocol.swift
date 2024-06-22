@@ -12,4 +12,6 @@ protocol RoomSettingCoordProtocol: Coordinator {
     func FindFriendsScreen()
     func exitSuccess()
     func roomEditScreen(DataRequiredWhenInEidtMode roomID: String?)
+    
+    func userProfileScreen()
 }

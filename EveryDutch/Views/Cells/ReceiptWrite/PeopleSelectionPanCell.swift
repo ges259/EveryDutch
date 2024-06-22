@@ -25,7 +25,7 @@ final class PeopleSelectionPanCell: UITableViewCell {
         }
     }
     
-    private var isSingleMode: Bool?
+    private var isSingleMode: Bool = false
     
     
     
@@ -45,8 +45,7 @@ final class PeopleSelectionPanCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
 
         // 싱글 선택 모드라면.
-        guard let mode = self.isSingleMode,
-              mode == true else { return }
+        guard self.isSingleMode else { return }
         // 셀을 눌렀을 때, 해당 셀만 이미지 표시 (나머지는 이미지 숨기기)
         self.cellStv.isTappedView.isHidden = !selected
     }
@@ -90,9 +89,6 @@ extension PeopleSelectionPanCell {
         // 모드 설정
         self.isSingleMode = isSingleMode
         
-        
-        
-        
         // 프로필 이미지 설정
         self.cellStv.profileImg.image = UIImage.person_Fill_Img
         // 이름 설정
@@ -101,6 +97,7 @@ extension PeopleSelectionPanCell {
         // 셀이 선택되었는지 확인
         DispatchQueue.main.async {
             self.cellIsSelected = isSelected
+//            self.cellStv.isTappedView.isHidden = !isSelected
         }
     }
 }
