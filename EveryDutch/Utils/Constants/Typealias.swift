@@ -52,7 +52,9 @@ typealias floatingType = (show: Bool, alpha: CGFloat)
 
 typealias ReceiptCellTypeTuple = (type: ReceiptCellEnum, detail: String?)
 typealias ReceiptTypeTuple = (type: ReceiptWriteCellVMProtocol, detail: String?)
-typealias ProfileTypeCell = (type: ProfileCellType, detail: String?)
+typealias ProfileTypeCell = (type: ProfileCellType, 
+                             detail: String?,
+                             isText: Bool)
 typealias EditCellTypeTuple = (type: any EditCellType, detail: String?)
 
 

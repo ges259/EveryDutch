@@ -413,7 +413,7 @@ extension EditScreenVC: UITableViewDataSource {
         case .blurEffect:
             // 카드 이미지 뷰 업데이트
             self.blurEffectChanged()
-            self.selectedBlur()
+            self.blurCellSelected()
             break
         case .titleColor, .nameColor:
             self.configureColorPicker(isOpen: true)
@@ -442,8 +442,12 @@ extension EditScreenVC: UITableViewDataSource {
         }
     }
     /// didSelectRowAt - .blurEffect(블러효과) 셀 선택 시, 카드이미지뷰의 효과 바꾸기
-    private func selectedBlur() {
-        self.cardImgView.updateCardView(type: .blurEffect, data: true, onFailure: self.errorType(_:))
+    private func blurCellSelected() {
+        self.cardImgView.updateCardView(
+            type: .blurEffect,
+            data: true,
+            onFailure: self.errorType(_:)
+        )
     }
 }
     
@@ -456,12 +460,9 @@ extension EditScreenVC: UITableViewDataSource {
 
 
 
-// MARK: - 셀 관련 델리게이트
-
-extension EditScreenVC: CardDataCellDelegate,
-                        ImagePickerDelegate {
-    
-    // MARK: - 텍스트 변경
+// MARK: - [데이터] 셀 델리게이트
+extension EditScreenVC: CardDataCellDelegate {
+    /// CardDataCell에서 텍스트 변경 시, 해당 메서드가 호출 됨.
     func textData(cell: CardDataCell, type: EditCellType, text: String) {
         // 선택된 셀의 IndexPath 저장
         // row가져오기 및 옵셔널 바인딩(존재하는지 확인)
@@ -480,13 +481,6 @@ extension EditScreenVC: CardDataCellDelegate,
         }
         return nil
     }
-    
-    
-    // MARK: - 이미지 변경
-    func imageSelect(image: UIImage?) {
-        // 이미지 피커 띄우기
-        self.configureImagePicker(isOpen: true, with: image)
-    }
 }
     
     
@@ -501,7 +495,7 @@ extension EditScreenVC: CardDataCellDelegate,
 // MARK: - [데코] 셀 업데이트
 extension EditScreenVC {
     /// 변경된 데이터 처리 및 셀 업데이트
-    func updatedDecorationCellUI(
+    private func updatedDecorationCellUI(
         data: Any?,
         updateAction: @escaping (CardDecorationCell) -> Void)
     {
@@ -553,14 +547,32 @@ extension EditScreenVC {
 
 
 
-// MARK: - 피커 뷰 open / close
+// MARK: - 이미지 피커 델리게이트
+extension EditScreenVC: ImagePickerDelegate {
+    /// CardDecorationCell에서 .blackground셀 선택 -> 앨범으로 화면이동 -> 이미지 선택 -> 해당 함수 호출 됨
+    func imageSelected(image: UIImage?) {
+        // 이미지 피커 띄우기
+        self.configureImagePicker(isOpen: true, with: image)
+    }
+}
 
+
+
+
+
+
+
+
+
+
+// MARK: - 피커 뷰 open / close
 extension EditScreenVC {
     /// [공통] 메인 설정 함수는 필요에 따라 각 설정 메소드를 호출
     private func setPickerState(type: EditScreenPicker,
                                 isOpen: Bool,
                                 image: UIImage? = nil,
-                                color: UIColor? = nil) {
+                                color: UIColor? = nil
+    ) {
         switch type {
         case .imagePicker:
             self.configureImagePicker(isOpen: isOpen, with: image)
@@ -613,6 +625,7 @@ extension EditScreenVC {
             self.imagePickrHeight.update(offset: height)
             
         case .colorPicker:
+            // 색상 피커의 높이 업데이트
             self.colorPickrHeight.update(offset: height)
         }
         
@@ -630,10 +643,13 @@ extension EditScreenVC {
 
 
 
+
+
 // MARK: - 피커뷰 델리게이트
 extension EditScreenVC: CustomPickerDelegate {
     // [ 공통 ]
     // ----- 취소 버튼 -----
+    /// 이미지 및 색상 피커에서 '취소' 버튼을 눌렀을 때, 카드 이미지 뷰에서 원래 이미지로 되돌림
     func cancel(type: EditScreenPicker) {
         // 카드 이미지뷰 리셋
         guard let currentType = self.viewModel.getDecorationCellTypeTuple() else { return }
@@ -644,6 +660,7 @@ extension EditScreenVC: CustomPickerDelegate {
     }
     
     // ----- 도중 -----
+    /// 이미지 및 색상 피커에서 이미지 및 색상이 변경이 되면, 카드 이미지 뷰를 업데이트
     func changedCropLocation(data: Any) {
         // 현재 타입 가져오기
         guard let currentType = self.viewModel.getDecorationCellTypeTuple() else { return }
@@ -652,6 +669,9 @@ extension EditScreenVC: CustomPickerDelegate {
     }
     
     // ----- 완료 버튼 -----
+    /// 이미지 및 색상 피커에서 '완료' 버튼을 눌렀을 때, 호출되는 메서드
+    /// [카드 이미지 뷰 업데이트]
+    /// [커스텀 피커 내리기]
     func done<T>(with data: T) {
         // 현재 타입 가져오기
         guard let currentType = self.viewModel.getDecorationCellTypeTuple() else { return }
@@ -670,7 +690,7 @@ extension EditScreenVC: CustomPickerDelegate {
             break
         }
     }
-    /// 이미지 저장
+    /// 이미지 저장 및 피커 내리기
     private func processImage(_ image: UIImage) {
         // [셀] - 이미지 바꾸기 및 바뀐 이미지 저장
         self.updateImage(image: image)

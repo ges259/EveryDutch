@@ -103,11 +103,9 @@ extension CardDataCell {
 
 
 
-// MARK: - 함수
-
+// MARK: - 셀 UI 업데이트 메서드
 extension CardDataCell {
-    
-    // MARK: - 셀의 텍스트 설정
+    /// 셀의 텍스트 및 cornerRadius 설정
     func setDetailLbl(cellTuple: EditCellTypeTuple?,
                       isFirst: Bool,
                       isLast: Bool)
@@ -124,24 +122,21 @@ extension CardDataCell {
         // 텍스트필드의 detail레이블 설정
         self.detailLbl.text = type.getCellTitle
         
-        print("\(#function) ----- 1")
-        print(data.detail)
         // detatil이 있다면
         if let text = data.detail,
            !text.isEmpty {
-            print("\(#function) ----- 2")
             self.textField.setTFText(data.detail)
             self.textField.seteupNumOfCharLbl()
             self.delegateTextData()
         }
     }
     
-    // MARK: - 마지막 셀 모서리 설정
+    /// 마지막 셀 모서리 설정
     private func configureLastCell() {
         self.setRoundedCorners(.bottom, withCornerRadius: 12)
     }
     
-    // MARK: - 셀의 모서리 설정
+    /// 셀의 모서리 설정
     private func configureTextFieldCorner() {
         self.textField.setRoundedCorners(.leftTop, withCornerRadius: 12)
     }

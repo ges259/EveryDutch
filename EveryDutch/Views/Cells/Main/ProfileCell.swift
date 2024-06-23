@@ -17,8 +17,20 @@ final class ProfileCell: UITableViewCell {
     var infoLbl: CustomLabel = CustomLabel(
         textAlignment: .right,
         rightInset: 20)
+    /// 오른쪽 이미지
+    private lazy var rightImg: UIImageView = {
+        let img = UIImageView()
+            img.tintColor = .black
+            img.backgroundColor = UIColor.white
+            img.contentMode = .scaleAspectFit
+        img.setRoundedCorners(.all, withCornerRadius: self.imageSize / 2)
+        return img
+    }()
     
     
+    
+    // MARK: - 프로퍼티
+    private var imageSize: CGFloat = 35
     
     
     
@@ -32,6 +44,11 @@ final class ProfileCell: UITableViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        self.infoLbl.text = nil
+        self.rightImg.image = nil
+    }
 }
 
 
@@ -44,10 +61,8 @@ final class ProfileCell: UITableViewCell {
 
 
 // MARK: - 화면 설정
-
 extension ProfileCell {
-    
-    // MARK: - UI 설정
+    /// UI 설정
     private func configureUI() {
         self.selectionStyle = .none
         self.separatorInset = .zero
@@ -55,24 +70,46 @@ extension ProfileCell {
         self.accessoryType = .disclosureIndicator // 오른쪽 화살표 추가
     }
     
-    // MARK: - 오토레이아웃 설정
+    /// 오토레이아웃 설정
     private func configureAutoLayout() {
         self.addSubview(self.detailLbl)
-        self.addSubview(self.infoLbl)
-        
         self.detailLbl.snp.makeConstraints { make in
             make.leading.equalToSuperview()
             make.centerY.equalToSuperview()
         }
-        
+    }
+    
+    
+    /// 이미지 오토레이아웃
+    private func configureLeftImage() {
+        self.addSubview(self.rightImg)
+        self.rightImg.snp.makeConstraints { make in
+            make.trailing.equalToSuperview().offset(-25 - self.imageSize / 2)
+            make.width.height.equalTo(self.imageSize)
+            make.centerY.equalToSuperview()
+        }
+    }
+    
+    private func configureInfoLabel() {
+        self.addSubview(self.infoLbl)
         self.infoLbl.snp.makeConstraints { make in
             make.trailing.equalToSuperview().offset(-25)
             make.centerY.equalToSuperview()
         }
     }
     
+    
+    
     func configureCell(_ cellData: ProfileTypeCell) {
         self.detailLbl.text = cellData.type.cellTitle
-        self.infoLbl.text = cellData.detail
+        let trimmedInput = cellData.detail
+        
+        if cellData.isText {
+            self.configureInfoLabel()
+            self.infoLbl.text = trimmedInput
+        } else {
+            self.configureLeftImage()
+            self.rightImg.setImage(from: trimmedInput)
+        }
     }
 }

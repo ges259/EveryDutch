@@ -276,6 +276,12 @@ extension ProfileVC: UITableViewDelegate {
         case .personalID, .nickName:
             let userID: String = self.viewModel.getUserID
             self.coordinator.editScreen(DataRequiredWhenInEditMode: userID)
+        case .profileImage:
+            // MARK: - Fix
+            print("_________________________")
+            print("didSelectRowAt ----- profileImage")
+            print("_________________________")
+            break
         }
     }
 }

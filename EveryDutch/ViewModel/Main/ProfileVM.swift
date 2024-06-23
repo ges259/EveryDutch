@@ -11,7 +11,13 @@ final class ProfileVM: ProfileVMProtocol {
     
     // typealias ProfileDataCell = (type: ProfileType, detail: String?)
     private var cellTypesDictionary: [Int: [ProfileTypeCell]] = [:]
+    private let userAPI: UserAPIProtocol
     
+    
+    
+    // MARK: - 클로저
+    var userDataClosure: ((User) -> Void)?
+    var errorClosure: ((ErrorEnum) -> Void)?
     
     
     
@@ -22,29 +28,8 @@ final class ProfileVM: ProfileVMProtocol {
             self.userDataClosure?(userData)
         }
     }
-    
     private var uid: String = ""
-    
-    
-    var getUserID: String {
-        return self.uid
-    }
-    
-    // MARK: - 클로저
-    var userDataClosure: ((User) -> Void)?
-    var errorClosure: ((ErrorEnum) -> Void)?
-    
-    
-    
-    // MARK: - API
-    private let userAPI: UserAPIProtocol
-    
-    
-    
-    
-    
-
-    
+    var getUserID: String { return self.uid }
     
     
     
@@ -54,9 +39,16 @@ final class ProfileVM: ProfileVMProtocol {
     }
     deinit { print("\(#function)-----\(self)") }
     
-    // MARK: - User 데이터 가져오기
+    
+    
+    // MARK: - 초기 데이터 설정
     func initializeUserData() {
         Task { await fetchOwnUserData() }
+    }
+    // 사용자 데이터를 기반으로 섹션별 셀 데이터를 생성하는 메서드
+    private func makeCellData(user: User) {
+        guard let datas = ProfileVCEnum.allCases.first?.createProviders(user: user) else { return }
+        self.cellTypesDictionary = datas
     }
 }
 
@@ -98,23 +90,6 @@ extension ProfileVM {
     /// 셀의 데이터 반환
     func getCellData(indexPath: IndexPath) -> ProfileTypeCell? {
         return self.cellTypesDictionary[indexPath.section]?[indexPath.row]
-    }
-}
-
-
-
-
-
-    
-    
-    
-
-// MARK: - 데이터 생성 로직 생성
-extension ProfileVM {
-    // 사용자 데이터를 기반으로 섹션별 셀 데이터를 생성하는 메서드
-    private func makeCellData(user: User) {
-        guard let datas = ProfileVCEnum.allCases.first?.createProviders(user: user) else { return }
-        self.cellTypesDictionary = datas
     }
 }
 

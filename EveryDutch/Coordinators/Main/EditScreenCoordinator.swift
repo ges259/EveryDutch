@@ -8,7 +8,7 @@
 import UIKit
 
 protocol ImagePickerDelegate: AnyObject {
-    func imageSelect(image: UIImage?)
+    func imageSelected(image: UIImage?)
 //    func error()
 }
 
@@ -167,7 +167,7 @@ extension EditScreenCoordinator: UIImagePickerControllerDelegate,
             picker.dismiss(animated: true)
             return
         }
-        self.imageDelegate?.imageSelect(image: image) // 이 부분을 적절히 조정해야 합니다.
+        self.imageDelegate?.imageSelected(image: image)
         picker.dismiss(animated: true)
     }
 

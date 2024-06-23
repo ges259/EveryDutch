@@ -43,10 +43,13 @@ enum ProfileVCEnum: Int, CaseIterable {
 enum UserInfoType: Int, ProfileCellType, CaseIterable {
     case personalID = 0
     case nickName
+    case profileImage
     
     static func getDetails(data: User) -> [ProfileTypeCell] {
         return UserInfoType.allCases.map { cellType -> ProfileTypeCell in
-            return (type: cellType, detail: cellType.detail(from: data))
+            return (type: cellType, 
+                    detail: cellType.detail(from: data),
+                    isText: cellType.isText)
         }
     }
     
@@ -54,6 +57,7 @@ enum UserInfoType: Int, ProfileCellType, CaseIterable {
         switch self {
         case .personalID: return user?.personalID
         case .nickName: return user?.userName
+        case .profileImage: return user?.userProfile
         }
     }
     
@@ -61,9 +65,19 @@ enum UserInfoType: Int, ProfileCellType, CaseIterable {
         switch self {
         case .personalID: return "계정 ID"
         case .nickName: return "닉네임"
+        case .profileImage: return "프로필 사진"
         }
     }
     var headerTitle: String {
         return "회원 정보"
+    }
+    
+    var isText: Bool {
+        switch self {
+        case .personalID, .nickName:
+            return true
+        case .profileImage:
+            return false
+        }
     }
 }
