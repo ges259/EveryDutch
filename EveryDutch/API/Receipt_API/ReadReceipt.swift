@@ -57,11 +57,16 @@ extension ReceiptAPI {
         versionID: String,
         completion: @escaping (Result<[ReceiptTuple], ErrorEnum>) -> Void
     ) {
+        guard let lastKey = self.roomLastKey else {
+            completion(.failure(.noMoreData))
+            return
+        }
+        
         print(#function)
         let path = RECEIPT_REF
             .child(versionID)
             .queryOrderedByKey()
-            .queryEnding(beforeValue: self.roomLastKey)
+            .queryEnding(beforeValue: lastKey)
             .queryLimited(toLast: 7)
         
         

@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol SettleMoneyRoomProtocol: ReceiptTableViewProtocol {
+protocol SettleMoneyRoomProtocol {
     
     
     
@@ -50,10 +50,31 @@ protocol SettleMoneyRoomProtocol: ReceiptTableViewProtocol {
     func receiptDataChanged(_ userInfo: [String: [IndexPath]])
     func getPendingReceiptIndexPaths() -> [String: [IndexPath]]
     func resetPendingReceiptIndexPaths()
+    
+    
+    //    var numberOfReceipt: Int { get }
+        var numOfSection: Int { get }
+        func numberOfReceipt(section: Int) -> Int
+    //    func cellViewModel(at index: Int) -> ReceiptTableViewCellVMProtocol
+    //    func getReceipt(at index: Int) -> Receipt
+        
+        func cellViewModel(at indexPath: IndexPath) -> ReceiptTableViewCellVMProtocol
+        
+        func getReceipt(at indexPath: IndexPath) -> Receipt
+    func getReceiptSectionDate(section: Int) -> String 
 }
 
 protocol ReceiptTableViewProtocol {
-    func cellViewModel(at index: Int) -> ReceiptTableViewCellVMProtocol
+
     var numberOfReceipt: Int { get }
+    
+    func cellViewModel(at index: Int) -> ReceiptTableViewCellVMProtocol
     func getReceipt(at index: Int) -> Receipt
+    
+    
+//    var numOfSection: Int { get }
+//    func numberOfReceipt(section: Int) -> Int
+//    func cellViewModel(at indexPath: IndexPath) -> ReceiptTableViewCellVMProtocol
+//    
+//    func getReceipt(at indexPath: IndexPath) -> Receipt
 }

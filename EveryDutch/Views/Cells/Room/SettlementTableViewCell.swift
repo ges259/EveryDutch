@@ -56,7 +56,7 @@ final class SettlementTableViewCell: UITableViewCell {
                   reuseIdentifier: String?) {
         super.init(style: style, 
                    reuseIdentifier: reuseIdentifier)
-        
+        self.backgroundColor = .clear
         
         self.configureUI()
         self.configureAutoLayout()
@@ -71,6 +71,7 @@ final class SettlementTableViewCell: UITableViewCell {
         self.allPayerLbl.text = ""
         self.priceLbl.text = ""
         self.timeLbl.text = ""
+        
     }
 }
 

@@ -19,6 +19,7 @@ class CustomTableView: UITableView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
     // MARK: - 테이블뷰 크기 설정
     override var contentSize: CGSize {
       didSet { self.invalidateIntrinsicContentSize() }
@@ -36,3 +37,8 @@ class CustomTableView: UITableView {
                       height: self.contentSize.height)
     }
 }
+
+
+
+
+

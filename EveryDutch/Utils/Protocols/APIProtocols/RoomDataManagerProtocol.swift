@@ -44,15 +44,21 @@ protocol RoomDataManagerProtocol {
     var currentUserIsEuqualToMyUid: Bool { get }
     
     // MARK: - Receipt
-    var getNumOfRoomReceipts: Int { get }
-    func getReceiptViewModel(index: Int) -> ReceiptTableViewCellVMProtocol
-    func getRoomReceipt(at index: Int) -> Receipt
+//    var getNumOfRoomReceipts: Int { get }
+    
+    var getNumOfRoomReceiptsSection: Int { get }
+    
+    func getNumOfRoomReceipts(section: Int) -> Int
     func updateReceiptUserName(receipt: Receipt) -> Receipt
     // API
     func loadMoreRoomReceipt()
+    func getReceiptSectionDate(section: Int) -> String
     
     
-    
+//    func getRoomReceipt(at index: Int) -> Receipt
+//    func getReceiptViewModel(index: Int) -> ReceiptTableViewCellVMProtocol
+    func getReceiptViewModel(indexPath: IndexPath) -> ReceiptTableViewCellVMProtocol
+    func getRoomReceipt(at indexPath: IndexPath) -> Receipt
     
     
     

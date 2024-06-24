@@ -24,15 +24,19 @@ final class SettleMoneyRoomVC: UIViewController {
     
     /// 정산내역 테이블뷰
     private lazy var receiptTableView: CustomTableView = {
-        let view = CustomTableView()
+        let view = CustomTableView(frame: .zero, style: .grouped)
         view.delegate = self
         view.dataSource = self
         view.register(
             SettlementTableViewCell.self,
             forCellReuseIdentifier: Identifier.settlementTableViewCell)
+        view.register(
+            ReceiptSectionHeaderView.self,
+            forHeaderFooterViewReuseIdentifier: Identifier.receiptSectionHeaderView)
         view.backgroundColor = .clear
         view.bounces = true
         view.transform = CGAffineTransform(rotationAngle: .pi)
+        view.sectionHeaderTopPadding = 0
         return view
     }()
     /// 탑뷰의 높이 조절할 때 필요한 프로퍼티
@@ -146,7 +150,7 @@ extension SettleMoneyRoomVC {
         
         // 영수증 테이블뷰 (영수증)
         self.receiptTableView.snp.makeConstraints { make in
-            make.top.greaterThanOrEqualTo(self.view.safeAreaLayoutGuide.snp.top).offset(self.viewModel.minHeight + 5)
+            make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(self.viewModel.minHeight + 5)
             make.leading.trailing.equalToSuperview().inset(10)
             make.bottom.equalTo(self.bottomBtn.snp.top).offset(-5)
         }
@@ -302,41 +306,43 @@ extension SettleMoneyRoomVC {
     /// 영수증 테이블뷰 리로드 디테일
     @MainActor
     private func reloadReceiptTableView(key: String, indexPaths: [IndexPath]) {
-        switch key {
-        case DataChangeType.updated.notificationName:
-            self.receiptTableView.reloadRows(at: indexPaths, with: .automatic)
-            break
-        case DataChangeType.initialLoad.notificationName:
-            self.receiptTableView.reloadData()
-            self.reloadData {
-                self.scrollToBottom()
-            }
-            break
-        case DataChangeType.added.notificationName:
-            guard self.checkReceiptCount else {
-                return
-            }
-            self.receiptTableView.insertRows(at: indexPaths, with: .automatic)
-            break
-        case DataChangeType.removed.notificationName:
-            guard self.checkReceiptCount else {
-                return
-            }
-            self.receiptTableView.deleteRows(at: indexPaths, with: .automatic)
-            break
-        default:
-            self.receiptTableView.reloadData()
-            print("\(self) ----- \(#function) ----- Error")
-            break
-        }
+        self.receiptTableView.reloadData()
+        
+//        switch key {
+//        case DataChangeType.updated.notificationName:
+//            self.receiptTableView.reloadRows(at: indexPaths, with: .automatic)
+//            break
+//        case DataChangeType.initialLoad.notificationName:
+//            self.receiptTableView.reloadData()
+//            self.reloadData {
+//                self.scrollToBottom()
+//            }
+//            break
+//        case DataChangeType.added.notificationName:
+//            guard self.checkReceiptCount else {
+//                return
+//            }
+//            self.receiptTableView.insertRows(at: indexPaths, with: .automatic)
+//            break
+//        case DataChangeType.removed.notificationName:
+//            guard self.checkReceiptCount else {
+//                return
+//            }
+//            self.receiptTableView.deleteRows(at: indexPaths, with: .automatic)
+//            break
+//        default:
+//            self.receiptTableView.reloadData()
+//            print("\(self) ----- \(#function) ----- Error")
+//            break
+//        }
     }
     
     private var checkReceiptCount: Bool {
-        if self.viewModel.numberOfReceipt == self.receiptTableView.numberOfRows(inSection: 0)
-        {
-            self.receiptTableView.reloadData()
-            return false
-        }
+//        if self.viewModel.numberOfReceipt == self.receiptTableView.numberOfRows(inSection: 0)
+//        {
+//            self.receiptTableView.reloadData()
+//            return false
+//        }
         return true
     }
     
@@ -484,7 +490,7 @@ extension SettleMoneyRoomVC: UITableViewDelegate {
     func tableView(_ tableView: UITableView,
                    didSelectRowAt indexPath: IndexPath) {
         // 뷰모델에서 셀의 영수증 가져오기
-        let receipt = self.viewModel.getReceipt(at: indexPath.row)
+        let receipt = self.viewModel.getReceipt(at: indexPath)
         // '영수증 화면'으로 화면 이동
         self.coordinator.ReceiptScreen(receipt: receipt)
     }
@@ -493,7 +499,7 @@ extension SettleMoneyRoomVC: UITableViewDelegate {
                    forRowAt indexPath: IndexPath)
     {
         // 마지막 셀
-        if indexPath.row == self.viewModel.numberOfReceipt - 1 {
+        if indexPath.section == self.viewModel.numOfSection - 1 {
             self.viewModel.loadMoreReceiptData()
         }
     }
@@ -503,13 +509,43 @@ extension SettleMoneyRoomVC: UITableViewDelegate {
 extension SettleMoneyRoomVC: UITableViewDataSource {
     /// 섹션의 개수
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        return self.viewModel.numOfSection
     }
     /// 셀의 개수
     func tableView(_ tableView: UITableView,
                    numberOfRowsInSection section: Int) -> Int {
-        return self.viewModel.numberOfReceipt
+        return self.viewModel.numberOfReceipt(section: section)
     }
+    func tableView(_ tableView: UITableView, 
+                   viewForFooterInSection section: Int
+    ) -> UIView? {
+        guard let headerView = tableView.dequeueReusableHeaderFooterView(
+            withIdentifier: Identifier.receiptSectionHeaderView) as? ReceiptSectionHeaderView else {
+            return nil
+        }
+        let sectionInfo = self.viewModel.getReceiptSectionDate(section: section)
+        
+        headerView.configure(with: sectionInfo)
+        
+        return headerView
+    }
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 40 // 최소 높이를 40으로 설정
+    }
+    
+    /// 헤더를 nil로 설정
+    func tableView(_ tableView: UITableView,
+                   viewForHeaderInSection section: Int
+    ) -> UIView? {
+        return nil
+    }
+    /// 헤더의 높이를 0으로 설정
+    func tableView(_ tableView: UITableView,
+                   heightForHeaderInSection section: Int
+    ) -> CGFloat {
+        return 0
+    }
+    
     /// cellForRowAt
     func tableView(_ tableView: UITableView,
                    cellForRowAt indexPath: IndexPath)
@@ -519,16 +555,11 @@ extension SettleMoneyRoomVC: UITableViewDataSource {
             for: indexPath) as! SettlementTableViewCell
         
         // 셀 뷰모델 만들기
-        let cellViewModel = self.viewModel.cellViewModel(at: indexPath.item)
+        let cellViewModel = self.viewModel.cellViewModel(at: indexPath)
         // 셀의 뷰모델을 셀에 넣기
         cell.configureCell(with: cellViewModel)
         cell.transform = CGAffineTransform(rotationAngle: .pi)
-        
-        if indexPath.row == 0{
-            cell.backgroundColor = .red
-        } else {
-            cell.backgroundColor = .normal_white
-        }
+        cell.backgroundColor = .normal_white
         return cell
     }
 }
@@ -590,5 +621,54 @@ extension SettleMoneyRoomVC: UsersTableViewDelegate {
         self.viewModel.topViewHeightPlag = true
         // 탑뷰의 높이를 업데이트
         self.updateTopViewHeight()
+    }
+}
+
+
+
+
+
+
+
+
+
+
+class ReceiptSectionHeaderView: UITableViewHeaderFooterView {
+    private let dateLabel: CustomLabel = {
+        let label = CustomLabel(
+            backgroundColor: .deep_Blue,
+            textAlignment: .center,
+            topBottomInset: 5,
+            leftInset: 12,
+            rightInset: 12
+        )
+        label.font = UIFont.boldSystemFont(ofSize: 13)
+        label.setRoundedCorners(.all, withCornerRadius: 12)
+        return label
+    }()
+    
+    override init(reuseIdentifier: String?) {
+        super.init(reuseIdentifier: reuseIdentifier)
+        
+        // 위 아래로 뒤집기
+        self.transform = CGAffineTransform(rotationAngle: .pi)
+        // 배경 색상
+        self.backgroundColor = .clear
+        
+        // 오토레이아웃 설정
+        self.addSubview(dateLabel)
+        self.dateLabel.snp.makeConstraints { make in
+            make.top.bottom.equalToSuperview().inset(10)
+            make.centerX.equalToSuperview()
+//            make.leading.trailing.equalToSuperview()
+        }
+    }
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    /// 섹션 헤더의 날짜 설정
+    func configure(with date: String) {
+        self.dateLabel.text = date
     }
 }

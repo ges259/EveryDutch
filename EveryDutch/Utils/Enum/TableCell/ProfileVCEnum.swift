@@ -53,7 +53,7 @@ enum UserInfoType: Int, ProfileCellType, CaseIterable {
         }
     }
     
-    func detail(from user: User?) -> String? {
+    private func detail(from user: User?) -> String? {
         switch self {
         case .personalID: return user?.personalID
         case .nickName: return user?.userName
@@ -72,7 +72,7 @@ enum UserInfoType: Int, ProfileCellType, CaseIterable {
         return "회원 정보"
     }
     
-    var isText: Bool {
+    private var isText: Bool {
         switch self {
         case .personalID, .nickName:
             return true

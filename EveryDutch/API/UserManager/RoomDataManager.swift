@@ -56,9 +56,8 @@ final class RoomDataManager: RoomDataManagerProtocol {
     /// 영수증 배열
     var receiptIDToIndexPathMap = [String: IndexPath]()
     /// 영수증 테이블 셀의 뷰모델
-    var roomReceiptCellViewModels = [ReceiptTableViewCellVMProtocol]()
-    
-    
+//    var roomReceiptCellViewModels = [ReceiptTableViewCellVMProtocol]()
+    var receiptSections = [ReceiptSection]()
     
     
     
@@ -139,7 +138,8 @@ final class RoomDataManager: RoomDataManagerProtocol {
         self.usersCellViewModels = []
         // Receipt 데이터 초기화
         self.receiptIDToIndexPathMap = [:]
-        self.roomReceiptCellViewModels = []
+//        self.roomReceiptCellViewModels = []
+        self.receiptSections = []
     }
     
     
@@ -329,21 +329,30 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     
     // MARK: - 영수증 정보
+    /// 섹션의 개수
+    var getNumOfRoomReceiptsSection: Int {
+        return self.receiptSections.count
+    }
     /// 영수증 개수
-    var getNumOfRoomReceipts: Int {
-        return self.roomReceiptCellViewModels.count
+    func getNumOfRoomReceipts(section: Int) -> Int {
+        return self.receiptSections[section].receipts.count
+    }
+    /// 섹션 헤더의 타이틀(날짜)를 리턴
+    func getReceiptSectionDate(section: Int) -> String {
+        self.receiptSections[section].date
     }
     /// 영수증 셀(ReceiptTableViewCellVMProtocol) 리턴
-    func getReceiptViewModel(index: Int) -> ReceiptTableViewCellVMProtocol {
-        var receiptVM = self.roomReceiptCellViewModels[index]
+    func getReceiptViewModel(indexPath: IndexPath) -> ReceiptTableViewCellVMProtocol {
+        var receiptVM = self.receiptSections[indexPath.section].receipts[indexPath.row]
+        
         let updatedReceipt = self.updateReceiptUserName(receipt: receiptVM.getReceipt)
         receiptVM.setReceipt(updatedReceipt)
         
         return receiptVM
     }
     /// index를 받아 알맞는 영수증을 리턴
-    func getRoomReceipt(at index: Int) -> Receipt {
-        return self.roomReceiptCellViewModels[index].getReceipt
+    func getRoomReceipt(at indexPath: IndexPath) -> Receipt {
+        return self.receiptSections[indexPath.section].receipts[indexPath.row].getReceipt
     }
     /// Receipt에 있는 payment_Detail의 userID를 userName으로 바꿈
     func updateReceiptUserName(receipt: Receipt) -> Receipt {
