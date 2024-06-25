@@ -49,6 +49,7 @@ protocol SettleMoneyRoomProtocol {
     // Receipt data handling
     func receiptDataChanged(_ userInfo: [String: [IndexPath]])
     func getPendingReceiptIndexPaths() -> [String: [IndexPath]]
+    func getPendingReceiptSections() -> [String: [Int]]
     func resetPendingReceiptIndexPaths()
     
     

@@ -286,77 +286,141 @@ extension SettleMoneyRoomVC {
         self.viewModel.resetPendingUserDataIndexPaths()
     }
     
+    
+    
+    
+    
+//    
+//    private func updateReceiptsTableView() {
+//        print("---------- \(#function) ----------")
+//        let receiptSections = self.viewModel.getPendingReceiptSections()
+//        let receiptIndexPaths = self.viewModel.getPendingReceiptIndexPaths()
+//        
+//        print("---------- receiptIndexPaths ----------")
+//        dump(receiptIndexPaths)
+//        print("---------- receiptSections ----------")
+//        dump(receiptSections)
+//        print("----------------------------------------")
+//        print(self.viewModel.numOfSection)
+//        print(self.receiptTableView.numberOfSections)
+//        print("----------------------------------------")
+//        
+//        receiptIndexPaths.forEach { (key: String, indexPaths: [IndexPath]) in
+//            switch key {
+//            case DataChangeType.updated.notificationName:
+////                self.updateReceiptTableViewCell(indexPaths)
+//                break
+//            case DataChangeType.added.notificationName:
+//                self.addReceiptTableViewCell(indexPaths)
+//            default:
+//                break
+//            }
+//        }
+//        
+//        self.viewModel.resetPendingReceiptIndexPaths()
+//    }
+//
+//    private func addReceiptTableViewCell(_ indexPaths: [IndexPath]) {
+//        print(#function)
+//        var sectionsToInsert = IndexSet()
+//        
+//        indexPaths.forEach { indexPath in
+//            sectionsToInsert.insert(indexPath.section)
+//        }
+//        
+//        self.receiptTableView.beginUpdates()
+//        if !sectionsToInsert.isEmpty {
+//            print("Sections to insert: \(sectionsToInsert)")
+//            self.receiptTableView.insertSections(sectionsToInsert, with: .none)
+//        }
+//        self.receiptTableView.endUpdates()
+//    }
+//
+//    private func updateReceiptTableViewCell(_ indexPaths: [IndexPath]) {
+//        print(#function)
+//        let sectionsToReload = IndexSet(indexPaths.map { $0.section })
+//        
+//        self.receiptTableView.beginUpdates()
+//        self.receiptTableView.reloadSections(sectionsToReload, with: .automatic)
+//        self.receiptTableView.endUpdates()
+//        
+//        print("Sections to update: \(sectionsToReload)")
+//    }
+//    
+//    
+    
+    
     /// 영수증 테이블뷰 리로드
     private func updateReceiptsTableView() {
+        print("---------- \(#function) ----------")
+        let receiptSections = self.viewModel.getPendingReceiptSections()
         let receiptIndexPaths = self.viewModel.getPendingReceiptIndexPaths()
-        // 비어있다면, 아무 행동도 하지 않음
-        guard !receiptIndexPaths.isEmpty else { return }
         
-        if receiptIndexPaths.count > 1 {
-            self.receiptTableView.reloadData()
-        } else {
-            // 영수증 테이블뷰 리로드
-            receiptIndexPaths.forEach { (key: String, value: [IndexPath]) in
-                self.reloadReceiptTableView(key: key, indexPaths: value)
+        print("---------- receiptIndexPaths ----------")
+        dump(receiptIndexPaths)
+        print("---------- receiptSections ----------")
+        dump(receiptSections)
+        print("----------------------------------------")
+        print(self.viewModel.numOfSection)
+        print(self.receiptTableView.numberOfSections)
+        print("----------------------------------------")
+        
+        if receiptSections.keys.count == 1 {
+            receiptSections.forEach { (key: String, sections: [Int]) in
+                switch key {
+                case DataChangeType.sectionInsert.notificationName:
+                    self.insertTableViewSections(sections)
+                case DataChangeType.sectionReload.notificationName:
+                    self.reloadTableViewSections(sections)
+                    
+                case DataChangeType.updated.notificationName:
+                    self.updateReceiptTableViewCell(sections)
+                default:
+                    break
+                }
             }
+        } else {
+            self.receiptTableView.reloadData()
         }
-        // 변경 사항 초기화
+        
         self.viewModel.resetPendingReceiptIndexPaths()
     }
-    /// 영수증 테이블뷰 리로드 디테일
-    @MainActor
-    private func reloadReceiptTableView(key: String, indexPaths: [IndexPath]) {
-        self.receiptTableView.reloadData()
+
+    private func reloadTableViewSections(_ sections: [Int]) {
+        let sectionsToReload = IndexSet(sections)
+        print(#function)
+        dump(sectionsToReload)
+        self.receiptTableView.beginUpdates()
+        self.receiptTableView.reloadSections(sectionsToReload, with: .none)
+        self.receiptTableView.endUpdates()
         
-//        switch key {
-//        case DataChangeType.updated.notificationName:
-//            self.receiptTableView.reloadRows(at: indexPaths, with: .automatic)
-//            break
-//        case DataChangeType.initialLoad.notificationName:
-//            self.receiptTableView.reloadData()
-//            self.reloadData {
-//                self.scrollToBottom()
-//            }
-//            break
-//        case DataChangeType.added.notificationName:
-//            guard self.checkReceiptCount else {
-//                return
-//            }
-//            self.receiptTableView.insertRows(at: indexPaths, with: .automatic)
-//            break
-//        case DataChangeType.removed.notificationName:
-//            guard self.checkReceiptCount else {
-//                return
-//            }
-//            self.receiptTableView.deleteRows(at: indexPaths, with: .automatic)
-//            break
-//        default:
-//            self.receiptTableView.reloadData()
-//            print("\(self) ----- \(#function) ----- Error")
-//            break
-//        }
+        print("Sections to reload: \(sectionsToReload)")
     }
-    
-    private var checkReceiptCount: Bool {
-//        if self.viewModel.numberOfReceipt == self.receiptTableView.numberOfRows(inSection: 0)
-//        {
-//            self.receiptTableView.reloadData()
-//            return false
-//        }
-        return true
+
+    private func insertTableViewSections(_ sections: [Int]) {
+        let sectionsToInsert = IndexSet(sections)
+        print(#function)
+        dump(sectionsToInsert)
+        self.receiptTableView.beginUpdates()
+        self.receiptTableView.insertSections(sectionsToInsert, with: .none)
+        self.receiptTableView.endUpdates()
+        
+        print("Sections to insert: \(sectionsToInsert)")
     }
     
     
-    
-    
-    
-    
-    private func reloadData(completion: @escaping () -> Void) {
-        CATransaction.begin()
-        CATransaction.setCompletionBlock(completion)
-        self.receiptTableView.reloadData()
-        CATransaction.commit()
+    private func updateReceiptTableViewCell(_ sections: [Int]) {
+        print(#function)
+        let sectionsToReload = IndexSet(sections)
+        
+        self.receiptTableView.beginUpdates()
+        self.receiptTableView.reloadSections(sectionsToReload, with: .automatic)
+        self.receiptTableView.endUpdates()
+        
+        print("Sections to update: \(sectionsToReload)")
     }
+    
+    
     /// 탑뷰의 높이를 업데이트 하기 전, 검사
     private func updateTopViewHeight() {
         // 탑뷰의 업데이트 플레그가 true라면,
@@ -621,54 +685,5 @@ extension SettleMoneyRoomVC: UsersTableViewDelegate {
         self.viewModel.topViewHeightPlag = true
         // 탑뷰의 높이를 업데이트
         self.updateTopViewHeight()
-    }
-}
-
-
-
-
-
-
-
-
-
-
-class ReceiptSectionHeaderView: UITableViewHeaderFooterView {
-    private let dateLabel: CustomLabel = {
-        let label = CustomLabel(
-            backgroundColor: .deep_Blue,
-            textAlignment: .center,
-            topBottomInset: 5,
-            leftInset: 12,
-            rightInset: 12
-        )
-        label.font = UIFont.boldSystemFont(ofSize: 13)
-        label.setRoundedCorners(.all, withCornerRadius: 12)
-        return label
-    }()
-    
-    override init(reuseIdentifier: String?) {
-        super.init(reuseIdentifier: reuseIdentifier)
-        
-        // 위 아래로 뒤집기
-        self.transform = CGAffineTransform(rotationAngle: .pi)
-        // 배경 색상
-        self.backgroundColor = .clear
-        
-        // 오토레이아웃 설정
-        self.addSubview(dateLabel)
-        self.dateLabel.snp.makeConstraints { make in
-            make.top.bottom.equalToSuperview().inset(10)
-            make.centerX.equalToSuperview()
-//            make.leading.trailing.equalToSuperview()
-        }
-    }
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    /// 섹션 헤더의 날짜 설정
-    func configure(with date: String) {
-        self.dateLabel.text = date
     }
 }

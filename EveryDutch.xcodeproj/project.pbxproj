@@ -38,6 +38,7 @@
 		5F1B97572BD5901300BAE2D0 /* ChromaBrightnessSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F1B97562BD5901300BAE2D0 /* ChromaBrightnessSlider.swift */; };
 		5F1B97592BD590B600BAE2D0 /* ChromaColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F1B97582BD590B600BAE2D0 /* ChromaColorPicker.swift */; };
 		5F1B975B2BD590F000BAE2D0 /* ColorWheelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F1B975A2BD590F000BAE2D0 /* ColorWheelView.swift */; };
+		5F1BFF982C2961A000EBED77 /* ReceiptSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F1BFF972C2961A000EBED77 /* ReceiptSectionHeaderView.swift */; };
 		5F2061222BE7359100AB44F2 /* CustomTimePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F2061212BE7359100AB44F2 /* CustomTimePicker.swift */; };
 		5F2061242BE7542F00AB44F2 /* ReceiptWriteTableFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F2061232BE7542F00AB44F2 /* ReceiptWriteTableFooterView.swift */; };
 		5F2159262B7BC6CC0064A998 /* Typealias.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F2159252B7BC6CC0064A998 /* Typealias.swift */; };
@@ -288,6 +289,7 @@
 		5F1B97562BD5901300BAE2D0 /* ChromaBrightnessSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChromaBrightnessSlider.swift; sourceTree = "<group>"; };
 		5F1B97582BD590B600BAE2D0 /* ChromaColorPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChromaColorPicker.swift; sourceTree = "<group>"; };
 		5F1B975A2BD590F000BAE2D0 /* ColorWheelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorWheelView.swift; sourceTree = "<group>"; };
+		5F1BFF972C2961A000EBED77 /* ReceiptSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptSectionHeaderView.swift; sourceTree = "<group>"; };
 		5F2061212BE7359100AB44F2 /* CustomTimePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTimePicker.swift; sourceTree = "<group>"; };
 		5F2061232BE7542F00AB44F2 /* ReceiptWriteTableFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptWriteTableFooterView.swift; sourceTree = "<group>"; };
 		5F2159252B7BC6CC0064A998 /* Typealias.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Typealias.swift; sourceTree = "<group>"; };
@@ -927,6 +929,7 @@
 				5F2061212BE7359100AB44F2 /* CustomTimePicker.swift */,
 				5F2061232BE7542F00AB44F2 /* ReceiptWriteTableFooterView.swift */,
 				5FC08CE02C06B879000DF22E /* CustomTextField.swift */,
+				5F1BFF972C2961A000EBED77 /* ReceiptSectionHeaderView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1624,6 +1627,7 @@
 				5FFEAE6D2B3F307E00E0B2BB /* ReceiptLblStackView.swift in Sources */,
 				5F0BCE362B5313F8007A3564 /* UsersTableViewCellVMProtocol.swift in Sources */,
 				5FDA5D942B615097007D7BAD /* CalendarDelegate.swift in Sources */,
+				5F1BFF982C2961A000EBED77 /* ReceiptSectionHeaderView.swift in Sources */,
 				5F8513FB2B4D7FAD00A5B22D /* DeleteUsers.swift in Sources */,
 				5FC648472B42EB9500C451BF /* ReceiptWriteCoordinator.swift in Sources */,
 				5F294B412B4D98C900396B6E /* Database_REF.swift in Sources */,

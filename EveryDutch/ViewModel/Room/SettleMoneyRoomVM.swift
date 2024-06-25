@@ -17,21 +17,31 @@ final class IndexPathDataManager<T> {
             self.indexPaths[key, default: []] = self.mergeIndexPaths(indexPaths[key] ?? [], newValues)
         }
     }
-
+    
     private func mergeIndexPaths(
-        _ existingValues: [IndexPath], 
-        _ newValues: [IndexPath]) 
+        _ existingValues: [IndexPath],
+        _ newValues: [IndexPath])
     -> [IndexPath] {
         return Array(Set(existingValues + newValues))
     }
-
+    
     func getPendingIndexPaths() -> [String: [IndexPath]] {
         return self.indexPaths
     }
-
+    
     func resetIndexPaths() {
         self.indexPaths.removeAll()
     }
+    
+    func getPendingSections() -> [String: [Int]] {
+        var sections: [String: [Int]] = [:]
+        for (key, indexPaths) in self.indexPaths {
+            let sectionSet = Set(indexPaths.map { $0.section })
+            sections[key] = Array(sectionSet).sorted()
+        }
+        return sections
+    }
+
 }
 
 // HoqSD6z7x0fy1r8AaGG86EgMPRA33
@@ -186,6 +196,9 @@ extension SettleMoneyRoomVM {
 
     func getPendingReceiptIndexPaths() -> [String: [IndexPath]] {
         return self.receiptDataManager.getPendingIndexPaths()
+    }
+    func getPendingReceiptSections() -> [String: [Int]] {
+        return self.receiptDataManager.getPendingSections()
     }
 
     func resetPendingReceiptIndexPaths() {

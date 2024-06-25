@@ -22,13 +22,18 @@ enum DataChangeType {
     case initialLoad
     case error
     
+    case sectionReload
+    case sectionInsert
+    
     var notificationName: String {
         switch self {
-        case .initialLoad:  return "initialLoad"
-        case .added:        return "added"
-        case .removed:      return "removed"
-        case .updated:      return "updated"
-        case .error:        return "error"
+        case .initialLoad:      return "initialLoad"
+        case .added:            return "added"
+        case .removed:          return "removed"
+        case .updated:          return "updated"
+        case .error:            return "error"
+        case .sectionReload:    return "sectionReload"
+        case .sectionInsert:    return "sectionInsert"
         }
     }
 }

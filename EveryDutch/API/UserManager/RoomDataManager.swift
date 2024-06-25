@@ -56,7 +56,6 @@ final class RoomDataManager: RoomDataManagerProtocol {
     /// 영수증 배열
     var receiptIDToIndexPathMap = [String: IndexPath]()
     /// 영수증 테이블 셀의 뷰모델
-//    var roomReceiptCellViewModels = [ReceiptTableViewCellVMProtocol]()
     var receiptSections = [ReceiptSection]()
     
     
@@ -81,7 +80,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
     var hasMoreRoomReceiptData: Bool = true
 
     
-    
+    var isFirst: Bool = true
     
     
     

@@ -10,6 +10,9 @@ import FirebaseDatabaseInternal
 
 // Read
 // Receipt에서 데이터 가져오기 ----- (Receipt)
+
+
+
 extension ReceiptAPI {
     // MARK: - 초기 데이터 fetch
     func readRoomReceipts(
@@ -43,7 +46,7 @@ extension ReceiptAPI {
             if let lastSnapshot = allObjects.first {
                 self.roomLastKey = lastSnapshot.key
             }
-            completion(.success(.initialLoad(receiptsTupleArray)))
+            completion(.success(.added(receiptsTupleArray)))
             
             if !self.observing {
                 self.observeRoomReceipts(versionID: versionID, completion: completion)
