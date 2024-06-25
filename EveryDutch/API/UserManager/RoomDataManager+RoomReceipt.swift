@@ -39,6 +39,8 @@ extension RoomDataManager {
         }
     }
     
+    
+    // MARK: - 데이터 추가적으로 가져오기
     func loadMoreRoomReceipt() {
         guard self.hasMoreRoomReceiptData,
               let versionID = self.getCurrentVersion
@@ -67,6 +69,9 @@ extension RoomDataManager {
         }
     }
     
+    
+    
+    // MARK: - 분기처리
     private func handleReceiptEvent(_ event: DataChangeEvent<[ReceiptTuple]>) {
         switch event {
         case .updated(let toUpdate):
@@ -82,100 +87,41 @@ extension RoomDataManager {
             self.handleRemovedReceiptEvent(roomID)
             
             
-        case .initialLoad(let userDict):
+        case .initialLoad(_):
             print("\(#function) ----- init")
             break
         }
     }
     
+    
+    
+    // MARK: - 업데이트
     private func handleUpdatedReceiptEvent(_ toUpdate: [String: [String: Any]]) {
         if toUpdate.isEmpty { return }
         
         var updatedIndexPaths = [IndexPath]()
         
         for (receiptID, changedData) in toUpdate {
-            if let indexPath = self.receiptIDToIndexPathMap[receiptID] {
-                self.receiptSections[indexPath.section].receipts[indexPath.row].updateReceipt(changedData)
-                updatedIndexPaths.append(indexPath)
+            for sectionIndex in 0..<self.receiptSections.count {
+                if let rowIndex = self.receiptSections[sectionIndex].receipts.firstIndex(where: { $0.getReceiptID == receiptID }) {
+                    self.receiptSections[sectionIndex].receipts[rowIndex].updateReceipt(changedData)
+                    updatedIndexPaths.append(IndexPath(row: rowIndex, section: sectionIndex))
+                    break
+                }
             }
         }
+        
         self.receiptDebouncer.triggerDebounceWithIndexPaths(eventType: .updated, updatedIndexPaths)
     }
     
-
     
     
     
     
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-//    private func handleAddedReceiptEvent(_ toAdd: [ReceiptTuple]) {
-//        print(#function)
-//        var addedIndexPaths = [IndexPath]()
-//        
-//        for (receiptID, receipt) in toAdd {
-//            // 이미 존재하는 영수증은 건너뜀
-//            guard self.receiptIDToIndexPathMap[receiptID] == nil else { continue }
-//            
-//            // 영수증의 날짜를 가져옴
-//            let date = receipt.date
-//            // 현재 섹션들 중에서 해당 날짜(date)를 가진 섹션의 인덱스를 찾음
-//            var sectionIndex = self.receiptSections.firstIndex { $0.date == date }
-//            
-//            // 해당 섹션이 없는 경우
-//            if sectionIndex == nil {
-//                // 섹션이 없는 경우 새 섹션을 추가
-//                let newSection = ReceiptSection(date: date, receipts: [])
-//                // 0번째 섹션에 추가
-//                self.receiptSections.insert(newSection, at: 0)
-//                // 섹션을 0으로 설정
-//                sectionIndex = 0
-//            }
-//            
-//            let indexPath = IndexPath(row: 0, section: sectionIndex!)
-//            // 새 영수증의 ViewModel을 생성하고 섹션에 추가
-//            let viewModel = ReceiptTableViewCellVM(receiptID: receiptID, receiptData: receipt)
-//            self.receiptSections[sectionIndex!].receipts.insert(viewModel, at: 0)
-//            self.receiptIDToIndexPathMap[receiptID] = indexPath
-//            addedIndexPaths.append(indexPath)
-//        }
-//        
-//        self.updateIndexPaths(0)
-//        
-//        if self.isFirst {
-//            self.isFirst = false
-//            self.receiptDebouncer.triggerDebounceWithIndexPaths(eventType: .sectionReload, addedIndexPaths)
-//        } else {
-//            self.receiptDebouncer.triggerDebounceWithIndexPaths(eventType: .sectionInsert, addedIndexPaths)
-//        }
-//        
-//        // 처음에 화면에 들어설 때,
-//            // 이미 section이 있음 -> reload
-//        // 섹션이 없음
-//            // insert
-//        // 섹션이 있음
-//            // reload
-//    }
-    
+    // MARK: - 추가
     private func handleAddedReceiptEvent(_ toAdd: [ReceiptTuple]) {
-        
-        // 업데이트할 섹션의 IndexPath 저장
-        var sectionsToReload = IndexSet()
         // 추가할 섹션의 IndexPath 저장
         var sectionsToInsert = IndexSet()
         // 추가할 행의 IndexPath 저장
@@ -183,7 +129,9 @@ extension RoomDataManager {
         
         for (receiptID, receipt) in toAdd {
             // 이미 존재하는 영수증은 건너뜀
-            guard self.receiptIDToIndexPathMap[receiptID] == nil else { continue }
+            if receiptSections.contains(where: { $0.receipts.contains { $0.getReceiptID == receiptID } }) {
+                continue
+            }
             
             // 영수증의 날짜를 가져옴
             let date = receipt.date
@@ -194,29 +142,31 @@ extension RoomDataManager {
             if sectionIndex == nil {
                 // 섹션이 없는 경우 새 섹션을 추가
                 let newSection = ReceiptSection(date: date, receipts: [])
-                self.receiptSections.insert(newSection, at: 0)
-                sectionIndex = 0
+                
+                // 날짜를 비교하여 적절한 위치에 삽입
+                if let insertIndex = self.receiptSections.firstIndex(where: { $0.date > date }) {
+                    self.receiptSections.insert(newSection, at: insertIndex)
+                    sectionIndex = insertIndex
+                } else {
+                    self.receiptSections.append(newSection)
+                    sectionIndex = self.receiptSections.count - 1
+                }
                 // 새 섹션의 인덱스를 sectionsToInsert에 추가
                 sectionsToInsert.insert(sectionIndex!)
-            } else {
-                // 해당 섹션이 존재하는 경우, 해당 섹션에 새 영수증을 추가할 IndexPath를 rowsToInsert에 추가
-                rowsToInsert.append(IndexPath(row: self.receiptSections[sectionIndex!].receipts.count, section: sectionIndex!))
             }
             
-            // 새 영수증의 ViewModel을 생성하고 섹션에 추가
-            let viewModel = ReceiptTableViewCellVM(
-                receiptID: receiptID,
-                receiptData: receipt)
+            // 해당 섹션이 존재하는 경우, 해당 섹션에 새 영수증을 추가할 IndexPath를 rowsToInsert에 추가
+            rowsToInsert.append(IndexPath(row: 0, section: sectionIndex!))
+            
+            // 새 영수증의 ViewModel을 생성하고 섹션의 앞에 추가
+            let viewModel = ReceiptTableViewCellVM(receiptID: receiptID, receiptData: receipt)
             self.receiptSections[sectionIndex!].receipts.insert(viewModel, at: 0)
-            // 영수증 ID와 IndexPath 매핑
-            self.receiptIDToIndexPathMap[receiptID] = IndexPath(
-                row: self.receiptSections[sectionIndex!].receipts.count - 1,
-                section: sectionIndex!)
         }
-        
 
-        self.updateIndexPaths(0)
+        // 섹션들을 날짜 순서대로 정렬
+        self.receiptSections.sort { $0.date > $1.date }
         
+        // debounce를 사용하여 테이블뷰 업데이트
         if self.isFirst {
             self.isFirst = false
             self.receiptDebouncer.triggerDebounceWithIndexPaths(eventType: .sectionReload, rowsToInsert)
@@ -230,18 +180,11 @@ extension RoomDataManager {
                 self.receiptDebouncer.triggerDebounceWithIndexPaths(eventType: .sectionReload, rowsToInsert)
             }
         }
-        
-        // 처음에 화면에 들어설 때,
-            // 이미 section이 있음 -> reload
-        // 섹션이 없음
-            // insert
-        // 섹션이 있음
-            // reload
     }
+
     
     
-    
-    
+    // MARK: - 추가 (More)
     private func handleAddedMoreReceiptData(_ toAdd: [ReceiptTuple]) {
         print(#function)
         
@@ -250,9 +193,6 @@ extension RoomDataManager {
             self.hasMoreRoomReceiptData = false
             return
         }
-        
-        // 업데이트할 섹션의 IndexPath 저장
-        var sectionsToReload = IndexSet()
         // 추가할 섹션의 IndexPath 저장
         var sectionsToInsert = IndexSet()
         // 추가할 행의 IndexPath 저장
@@ -260,7 +200,9 @@ extension RoomDataManager {
         
         for (receiptID, receipt) in toAdd {
             // 이미 존재하는 영수증은 건너뜀
-            guard self.receiptIDToIndexPathMap[receiptID] == nil else { continue }
+            if receiptSections.contains(where: { $0.receipts.contains { $0.getReceiptID == receiptID } }) {
+                continue
+            }
             
             // 영수증의 날짜를 가져옴
             let date = receipt.date
@@ -280,13 +222,13 @@ extension RoomDataManager {
                 rowsToInsert.append(IndexPath(row: self.receiptSections[sectionIndex!].receipts.count, section: sectionIndex!))
             }
             
-            // 새 영수증의 ViewModel을 생성하고 섹션에 추가
+            // 새 영수증의 ViewModel을 생성하고 섹션의 끝에 추가
             let viewModel = ReceiptTableViewCellVM(receiptID: receiptID, receiptData: receipt)
             self.receiptSections[sectionIndex!].receipts.append(viewModel)
-            // 영수증 ID와 IndexPath 매핑
-            self.receiptIDToIndexPathMap[receiptID] = IndexPath(row: self.receiptSections[sectionIndex!].receipts.count - 1, section: sectionIndex!)
         }
         
+        // 섹션들을 날짜 순서대로 정렬
+        self.receiptSections.sort { $0.date > $1.date }
         // 새 섹션이 추가된 경우, sectionInsert 이벤트 트리거
         if !sectionsToInsert.isEmpty {
             self.receiptDebouncer.triggerDebounceWithIndexPaths(eventType: .sectionInsert, sectionsToInsert.map { IndexPath(row: 0, section: $0) })
@@ -298,134 +240,34 @@ extension RoomDataManager {
     }
     
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+    // MARK: - 삭제
     private func handleRemovedReceiptEvent(_ receiptID: String) {
         var removedIndexPaths = [IndexPath]()
+        var sectionsToRemove = [Int]()
         
-        if let indexPath = self.receiptIDToIndexPathMap[receiptID] {
-            self.receiptSections[indexPath.section].receipts.remove(at: indexPath.row)
-            self.receiptIDToIndexPathMap.removeValue(forKey: receiptID)
-            removedIndexPaths.append(indexPath)
-            self.updateIndexPaths(indexPath.row)
-        }
-        self.receiptDebouncer.triggerDebounceWithIndexPaths(eventType: .removed, removedIndexPaths)
-    }
-    
-    private func updateIndexPaths(_ index: Int) {
         for sectionIndex in 0..<self.receiptSections.count {
-            for rowIndex in 0..<self.receiptSections[sectionIndex].receipts.count {
-                let receiptID = self.receiptSections[sectionIndex].receipts[rowIndex].getReceiptID
-                self.receiptIDToIndexPathMap[receiptID] = IndexPath(row: rowIndex, section: sectionIndex)
+            if let rowIndex = self.receiptSections[sectionIndex].receipts.firstIndex(where: { $0.getReceiptID == receiptID }) {
+                // 영수증을 해당 섹션에서 제거
+                self.receiptSections[sectionIndex].receipts.remove(at: rowIndex)
+                removedIndexPaths.append(IndexPath(row: rowIndex, section: sectionIndex))
+                
+                // 섹션이 비어있다면 섹션 자체를 제거
+                if self.receiptSections[sectionIndex].receipts.isEmpty {
+                    self.receiptSections.remove(at: sectionIndex)
+                    sectionsToRemove.append(sectionIndex)
+                }
+                break
             }
+        }
+        
+        // 섹션들을 날짜 순서대로 정렬
+        self.receiptSections.sort { $0.date > $1.date }
+        
+        // debounce를 사용하여 테이블뷰 업데이트
+        if !sectionsToRemove.isEmpty {
+            self.receiptDebouncer.triggerDebounceWithIndexPaths(eventType: .sectionRemoved, sectionsToRemove.map { IndexPath(row: 0, section: $0) })
+        } else {
+            self.receiptDebouncer.triggerDebounceWithIndexPaths(eventType: .removed, removedIndexPaths)
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//    private func handleInitialLoadReceiptEvent(_ userDict: [ReceiptTuple]) {
-//        if userDict.isEmpty { return }
-//
-//        var addedIndexPaths = [IndexPath]()
-//
-//        let groupedReceipts = Dictionary(grouping: userDict) { (tuple) -> String in
-//            return tuple.1.date
-//        }
-//
-//        var sections = [ReceiptSection]()
-//
-//        for (date, receipts) in groupedReceipts {
-//            var cellViewModels = [ReceiptTableViewCellVMProtocol]()
-//            for (index, (receiptID, receipt)) in receipts.enumerated() {
-//                let viewModel = ReceiptTableViewCellVM(receiptID: receiptID, receiptData: receipt)
-//                cellViewModels.append(viewModel)
-//                let indexPath = IndexPath(row: index, section: sections.count)
-//                self.receiptIDToIndexPathMap[receiptID] = indexPath
-//                addedIndexPaths.append(indexPath)
-//            }
-//            let section = ReceiptSection(date: date, receipts: cellViewModels)
-//            sections.append(section)
-//        }
-//
-//        self.receiptSections = sections
-//        self.receiptDebouncer.triggerDebounceWithIndexPaths(eventType: .initialLoad, addedIndexPaths)
-//    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-//    private func handleAddedMoreReceiptData(_ toAdd: [ReceiptTuple]) {
-//        print(#function)
-//        if toAdd.isEmpty {
-//            self.hasMoreRoomReceiptData = false
-//            return
-//        }
-//
-//        var addedIndexPaths = [IndexPath]()
-//
-//        for (receiptID, receipt) in toAdd {
-//            guard self.receiptIDToIndexPathMap[receiptID] == nil else { continue }
-//
-//            let date = receipt.date
-//            var sectionIndex = self.receiptSections.firstIndex { $0.date == date }
-//
-//            if sectionIndex == nil {
-//                let newSection = ReceiptSection(date: date, receipts: [])
-//                self.receiptSections.append(newSection)
-//                sectionIndex = self.receiptSections.count - 1
-//            }
-//
-//            let indexPath = IndexPath(row: self.receiptSections[sectionIndex!].receipts.count, section: sectionIndex!)
-//            let viewModel = ReceiptTableViewCellVM(receiptID: receiptID, receiptData: receipt)
-//            self.receiptSections[sectionIndex!].receipts.append(viewModel)
-//            self.receiptIDToIndexPathMap[receiptID] = indexPath
-//            addedIndexPaths.append(indexPath)
-//        }
-//
-//        self.receiptDebouncer.triggerDebounceWithIndexPaths(eventType: .added, addedIndexPaths)
-//    }
-    

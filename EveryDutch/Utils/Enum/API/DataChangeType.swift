@@ -22,6 +22,9 @@ enum DataChangeType {
     case initialLoad
     case error
     
+    
+    case sectionRemoved
+    
     case sectionReload
     case sectionInsert
     
@@ -34,6 +37,7 @@ enum DataChangeType {
         case .error:            return "error"
         case .sectionReload:    return "sectionReload"
         case .sectionInsert:    return "sectionInsert"
+        case .sectionRemoved:   return "sectionRemoved"
         }
     }
 }

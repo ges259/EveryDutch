@@ -288,93 +288,28 @@ extension SettleMoneyRoomVC {
     
     
     
-    
-    
-//    
-//    private func updateReceiptsTableView() {
-//        print("---------- \(#function) ----------")
-//        let receiptSections = self.viewModel.getPendingReceiptSections()
-//        let receiptIndexPaths = self.viewModel.getPendingReceiptIndexPaths()
-//        
-//        print("---------- receiptIndexPaths ----------")
-//        dump(receiptIndexPaths)
-//        print("---------- receiptSections ----------")
-//        dump(receiptSections)
-//        print("----------------------------------------")
-//        print(self.viewModel.numOfSection)
-//        print(self.receiptTableView.numberOfSections)
-//        print("----------------------------------------")
-//        
-//        receiptIndexPaths.forEach { (key: String, indexPaths: [IndexPath]) in
-//            switch key {
-//            case DataChangeType.updated.notificationName:
-////                self.updateReceiptTableViewCell(indexPaths)
-//                break
-//            case DataChangeType.added.notificationName:
-//                self.addReceiptTableViewCell(indexPaths)
-//            default:
-//                break
-//            }
-//        }
-//        
-//        self.viewModel.resetPendingReceiptIndexPaths()
-//    }
-//
-//    private func addReceiptTableViewCell(_ indexPaths: [IndexPath]) {
-//        print(#function)
-//        var sectionsToInsert = IndexSet()
-//        
-//        indexPaths.forEach { indexPath in
-//            sectionsToInsert.insert(indexPath.section)
-//        }
-//        
-//        self.receiptTableView.beginUpdates()
-//        if !sectionsToInsert.isEmpty {
-//            print("Sections to insert: \(sectionsToInsert)")
-//            self.receiptTableView.insertSections(sectionsToInsert, with: .none)
-//        }
-//        self.receiptTableView.endUpdates()
-//    }
-//
-//    private func updateReceiptTableViewCell(_ indexPaths: [IndexPath]) {
-//        print(#function)
-//        let sectionsToReload = IndexSet(indexPaths.map { $0.section })
-//        
-//        self.receiptTableView.beginUpdates()
-//        self.receiptTableView.reloadSections(sectionsToReload, with: .automatic)
-//        self.receiptTableView.endUpdates()
-//        
-//        print("Sections to update: \(sectionsToReload)")
-//    }
-//    
-//    
-    
-    
     /// 영수증 테이블뷰 리로드
     private func updateReceiptsTableView() {
-        print("---------- \(#function) ----------")
         let receiptSections = self.viewModel.getPendingReceiptSections()
-        let receiptIndexPaths = self.viewModel.getPendingReceiptIndexPaths()
-        
-        print("---------- receiptIndexPaths ----------")
-        dump(receiptIndexPaths)
-        print("---------- receiptSections ----------")
-        dump(receiptSections)
-        print("----------------------------------------")
-        print(self.viewModel.numOfSection)
-        print(self.receiptTableView.numberOfSections)
-        print("----------------------------------------")
         
         if receiptSections.keys.count == 1 {
             receiptSections.forEach { (key: String, sections: [Int]) in
                 switch key {
                 case DataChangeType.sectionInsert.notificationName:
                     self.insertTableViewSections(sections)
+                    
                 case DataChangeType.sectionReload.notificationName:
                     self.reloadTableViewSections(sections)
                     
                 case DataChangeType.updated.notificationName:
                     self.updateReceiptTableViewCell(sections)
+                    
+                case DataChangeType.removed.notificationName:
+                    self.removeTableViewCells()
+                    
+                case DataChangeType.sectionRemoved.notificationName:
+                    self.removeTableViewSections(sections)
+                    
                 default:
                     break
                 }
@@ -407,18 +342,53 @@ extension SettleMoneyRoomVC {
         
         print("Sections to insert: \(sectionsToInsert)")
     }
-    
-    
+
     private func updateReceiptTableViewCell(_ sections: [Int]) {
         print(#function)
         let sectionsToReload = IndexSet(sections)
         
         self.receiptTableView.beginUpdates()
-        self.receiptTableView.reloadSections(sectionsToReload, with: .automatic)
+        self.receiptTableView.reloadSections(sectionsToReload, with: .none)
         self.receiptTableView.endUpdates()
         
         print("Sections to update: \(sectionsToReload)")
     }
+
+    private func removeTableViewCells() {
+        let indexPathsDict = self.viewModel.getPendingReceiptIndexPaths()
+        
+        // 키가 DataChangeType.removed.notificationName인 인덱스 경로만 필터링
+        if let removedIndexPaths = indexPathsDict[DataChangeType.removed.notificationName], !removedIndexPaths.isEmpty {
+            print(#function)
+            self.receiptTableView.beginUpdates()
+            self.receiptTableView.deleteRows(at: removedIndexPaths, with: .none)
+            self.receiptTableView.endUpdates()
+            
+            print("Cells to remove: \(removedIndexPaths)")
+        }
+    }
+
+
+    private func removeTableViewSections(_ sections: [Int]) {
+        let sectionsToRemove = IndexSet(sections)
+        print(#function)
+        dump(sectionsToRemove)
+        self.receiptTableView.beginUpdates()
+        self.receiptTableView.deleteSections(sectionsToRemove, with: .none)
+        self.receiptTableView.endUpdates()
+        
+        print("Sections to remove: \(sectionsToRemove)")
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     /// 탑뷰의 높이를 업데이트 하기 전, 검사
