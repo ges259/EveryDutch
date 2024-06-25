@@ -25,6 +25,11 @@ struct ReceiptTableViewCellVM: ReceiptTableViewCellVMProtocol {
         return self.receipt
     }
     
+    
+    var receiptDate: String {
+        return self.receipt.date
+    }
+    
     mutating func setReceipt(_ receipt: Receipt) {
         self.receipt = receipt
     }

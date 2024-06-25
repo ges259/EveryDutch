@@ -53,8 +53,6 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     
     // MARK: - Receipt
-    /// 영수증 배열
-//    var receiptIDToIndexPathMap = [String: IndexPath]()
     /// 영수증 테이블 셀의 뷰모델
     var receiptSections = [ReceiptSection]()
     

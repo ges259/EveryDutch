@@ -13,6 +13,9 @@ protocol ReceiptTableViewCellVMProtocol {
     var getReceiptID: String { get }
     
     var getReceipt: Receipt { get }
+    
+    var receiptDate: String { get }
+    
     mutating func setReceipt(_ receipt: Receipt)
     
     mutating func updateReceipt(_ dict: [String: Any])
