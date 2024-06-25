@@ -8,6 +8,8 @@
 import UIKit
 
 final class UserProfileVM: UserProfileVMProtocol {
+ 
+    
     
     // MARK: - 플래그
     /// 데이터가 추가적으로 있는지 확인하는 플래그
@@ -25,11 +27,14 @@ final class UserProfileVM: UserProfileVMProtocol {
     
     
     
+    private var indexPaths: [String: [IndexPath]] = [:]
+    
+
     
     
-    
+    var fetchSuccessClosure: (() -> Void)?
     // MARK: - 클로저
-    var fetchSuccessClosure: (([IndexPath]) -> Void)?
+//    var fetchSuccessClosure: (([IndexPath]) -> Void)?
     var deleteUserSuccessClosure: (() -> Void)?
     var reportSuccessClosure: ((AlertEnum, Int) -> Void)?
     var searchModeClosure: ((UIImage?, String) -> Void)?
@@ -44,8 +49,10 @@ final class UserProfileVM: UserProfileVMProtocol {
     private let roomDataManager: RoomDataManagerProtocol
     
     /// 유저 검색 시, 유저의 영수증 테이블 셀의 뷰모델
-    private var userReceiptCellViewModels = [ReceiptTableViewCellVMProtocol]()
+//    private var userReceiptCellViewModels = [ReceiptTableViewCellVMProtocol]()
     
+    /// 영수증 테이블 셀의 뷰모델
+    var receiptSections = [ReceiptSection]()
     
     
     
@@ -139,24 +146,31 @@ final class UserProfileVM: UserProfileVMProtocol {
 
 // MARK: - 테이블뷰
 extension UserProfileVM {
-    /// 영수증의 개수 == 셀의 개수
-    var numberOfReceipt: Int {
-        return self.userReceiptCellViewModels.count
+    /// 섹션의 개수
+    var numOfSections: Int {
+        return self.receiptSections.count
     }
-    /// cellForRowAt에서 필요한 셀의 뷰모델을 리턴
-    func cellViewModel(at index: Int) -> ReceiptTableViewCellVMProtocol {
-        // 뷰모델 가져오기
-        var receiptVM = self.userReceiptCellViewModels[index]
-        // 영수증 업데이트
+    /// 영수증 개수
+    func numOfReceipts(section: Int) -> Int {
+        return self.receiptSections[section].receipts.count
+    }
+    /// 영수증 셀(ReceiptTableViewCellVMProtocol) 리턴
+    func cellViewModel(at indexPath: IndexPath) -> ReceiptTableViewCellVMProtocol{
+        var receiptVM = self.receiptSections[indexPath.section].receipts[indexPath.row]
+        
         let updatedReceipt = self.roomDataManager.updateReceiptUserName(receipt: receiptVM.getReceipt)
-        // 뷰모델에 있는 Receipt 업데이트
         receiptVM.setReceipt(updatedReceipt)
-        // 뷰모델 리턴
+        
         return receiptVM
     }
-    /// 셀 선택 시, 영수증 정보를 리턴하는 메서드
-    func getReceipt(at index: Int) -> Receipt {
-        return self.userReceiptCellViewModels[index].getReceipt
+    /// index를 받아 알맞는 영수증을 리턴
+    func getReceipt(at indexPath: IndexPath) -> Receipt {
+        return self.receiptSections[indexPath.section].receipts[indexPath.row].getReceipt
+    }
+    
+    /// 섹션 헤더의 타이틀(날짜)를 리턴
+    func getReceiptSectionDate(section: Int) -> String {
+        return self.receiptSections[section].date
     }
 }
 
@@ -258,27 +272,18 @@ extension UserProfileVM {
         
         print(#function)
         // 영수증 데이터를 가져옴
-        self.fetchReceipts { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success(let indexPaths):
-                self.fetchSuccessClosure?(indexPaths)
-                
-            case .failure(let error):
-                self.errorClosure?(error)
-            }
-        }
+        self.fetchReceipts()
     }
     
     /// 영수증 데이터를 가져오는 함수
     /// completion 핸들러를 통해 결과를 반환
-    private func fetchReceipts(completion: @escaping Typealias.IndexPathsCompletion) {
+    private func fetchReceipts() {
         print(#function)
         // 버전ID 및 현재 유저ID 가져오기
         // 만약 버전ID나 유저ID를 가져오지 못하면 읽기 오류를 반환하고 종료
         guard let versionID = self.roomDataManager.getCurrentVersion,
               let userID = self.roomDataManager.getCurrentUserID else {
-            completion(.failure(.readError))
+            self.errorClosure?(.readError)
             return
         }
         
@@ -305,44 +310,99 @@ extension UserProfileVM {
                 case .success(let load):
                     // 영수증 데이터를 성공적으로 가져옴
                     print("영수증 가져오기 성공")
-                    let newIndexPaths = self.handleAddedUserReceipt(load)
-                    DispatchQueue.main.async {
-                        // 성공한 경우 새로운 인덱스 패스를 반환
-                        completion(.success(newIndexPaths))
-                    }
+                    self.handleAddedReceiptEvent(load)
                 case .failure(let error):
                     DispatchQueue.main.async {
                         print("영수증 가져오기 실패")
                         // 영수증 데이터를 가져오지 못한 경우 오류를 반환
-                        completion(.failure(error))
+                        self.errorClosure?(error)
                     }
                 }
             }
         }
     }
     
+    
+    func getPendingSections() -> [String: [Int]] {
+        var sectionDict: [String: [Int]] = [:]
+        for (key, indexPaths) in indexPaths {
+            let sections = Set(indexPaths.map { $0.section }).sorted()
+            sectionDict[key] = sections
+        }
+        return sectionDict
+    }
+
+    func resetIndexPaths() {
+        indexPaths.removeAll()
+    }
+    
+    
+    
+    
+    
     /// 영수증 데이터를 추가하는 함수
     /// 새로운 인덱스 패스를 반환
-    @discardableResult
-    private func handleAddedUserReceipt(_ receiptTuple: [ReceiptTuple]) -> [IndexPath] {
-        var newIndexPaths = [IndexPath]()
-        print(#function)
-        // 영수증 데이터 튜플을 순회하면서 각 영수증 데이터를 처리
-        for (receiptID, room) in receiptTuple {
-            // 새로운 인덱스 패스를 생성
-            let indexPath = IndexPath(
-                row: self.userReceiptCellViewModels.count,
-                section: 0)
-            // 새로운 뷰모델을 생성
-            let viewModel = ReceiptTableViewCellVM(
-                receiptID: receiptID,
-                receiptData: room)
-            // 뷰모델을 배열에 추가
-            self.userReceiptCellViewModels.append(viewModel)
-            // 새로운 인덱스 패스를 배열에 추가
-            newIndexPaths.append(indexPath)
+    func handleAddedReceiptEvent(_ toAdd: [ReceiptTuple]) {
+        // 추가할 섹션의 IndexPath 저장
+        var sectionsToInsert = IndexSet()
+        // 추가할 행의 IndexPath 저장
+        var rowsToInsert = [IndexPath]()
+        
+        for (receiptID, receipt) in toAdd {
+            // 이미 존재하는 영수증은 건너뜀
+            if self.receiptSections.contains(where: { $0.receipts.contains { $0.getReceiptID == receiptID } }) {
+                continue
+            }
+            
+            // 영수증의 날짜를 가져옴
+            let date = receipt.date
+            // 현재 섹션들 중에서 해당 날짜(date)를 가진 섹션의 인덱스를 찾음
+            var sectionIndex = self.receiptSections.firstIndex { $0.date == date }
+            
+            // 해당 섹션이 없는 경우
+            if sectionIndex == nil {
+                // 섹션이 없는 경우 새 섹션을 추가
+                let newSection = ReceiptSection(date: date, receipts: [])
+                self.receiptSections.append(newSection)
+                sectionIndex = self.receiptSections.count - 1
+                // 새 섹션의 인덱스를 sectionsToInsert에 추가
+                sectionsToInsert.insert(sectionIndex!)
+            }
+            
+            // 해당 섹션이 존재하는 경우, 행 추가
+            let rowIndex = self.receiptSections[sectionIndex!].receipts.count
+            rowsToInsert.append(IndexPath(row: rowIndex, section: sectionIndex!))
+            
+            // 새 영수증의 ViewModel을 생성하고 섹션에 추가
+            let viewModel = ReceiptTableViewCellVM(receiptID: receiptID, receiptData: receipt)
+            self.receiptSections[sectionIndex!].receipts.append(viewModel)
         }
-        // 새로운 인덱스 패스를 반환
-        return newIndexPaths
+
+        // 섹션 내 영수증들을 시간 순서대로 정렬
+        for sectionIndex in 0..<self.receiptSections.count {
+            self.receiptSections[sectionIndex].receipts.sort { $0.getReceipt.time > $1.getReceipt.time }
+        }
+
+        // 데이터 변경 이벤트를 저장하는 배열
+        var dataChanges: [String: [IndexPath]] = [:]
+        
+        // 새 섹션이 추가된 경우, sectionInsert 이벤트 추가
+        if !sectionsToInsert.isEmpty {
+            let indexPathsToInsert = sectionsToInsert.map { IndexPath(row: 0, section: $0) }
+            dataChanges[DataChangeType.sectionInsert.notificationName] = indexPathsToInsert
+        }
+        
+        // 행이 추가된 경우, sectionReload 이벤트 추가
+        if !rowsToInsert.isEmpty {
+            dataChanges[DataChangeType.sectionReload.notificationName] = rowsToInsert
+        }
+
+        // 데이터 변경 이벤트를 indexPaths에 저장
+        self.indexPaths.merge(dataChanges) { (_, new) in new }
+
+        // 클로저를 한 번만 호출하여 데이터 변경 이벤트 전달
+        if !dataChanges.isEmpty {
+            self.fetchSuccessClosure?()
+        }
     }
 }

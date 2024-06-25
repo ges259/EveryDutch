@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol SettleMoneyRoomProtocol {
+protocol SettleMoneyRoomProtocol : ReceiptTableViewProtocol{
     
     
     
@@ -53,29 +53,27 @@ protocol SettleMoneyRoomProtocol {
     func resetPendingReceiptIndexPaths()
     
     
-    //    var numberOfReceipt: Int { get }
-        var numOfSection: Int { get }
-        func numberOfReceipt(section: Int) -> Int
-    //    func cellViewModel(at index: Int) -> ReceiptTableViewCellVMProtocol
-    //    func getReceipt(at index: Int) -> Receipt
-        
-        func cellViewModel(at indexPath: IndexPath) -> ReceiptTableViewCellVMProtocol
-        
-        func getReceipt(at indexPath: IndexPath) -> Receipt
-    func getReceiptSectionDate(section: Int) -> String 
+//    //    var numberOfReceipt: Int { get }
+//        var numOfSection: Int { get }
+//        func numberOfReceipt(section: Int) -> Int
+//    //    func cellViewModel(at index: Int) -> ReceiptTableViewCellVMProtocol
+//    //    func getReceipt(at index: Int) -> Receipt
+//        
+//        func cellViewModel(at indexPath: IndexPath) -> ReceiptTableViewCellVMProtocol
+//        
+//        func getReceipt(at indexPath: IndexPath) -> Receipt
+//    func getReceiptSectionDate(section: Int) -> String 
 }
 
 protocol ReceiptTableViewProtocol {
-
-    var numberOfReceipt: Int { get }
     
-    func cellViewModel(at index: Int) -> ReceiptTableViewCellVMProtocol
-    func getReceipt(at index: Int) -> Receipt
+    var numOfSections: Int { get }
+    func numOfReceipts(section: Int) -> Int
     
     
-//    var numOfSection: Int { get }
-//    func numberOfReceipt(section: Int) -> Int
-//    func cellViewModel(at indexPath: IndexPath) -> ReceiptTableViewCellVMProtocol
-//    
-//    func getReceipt(at indexPath: IndexPath) -> Receipt
+    
+    func cellViewModel(at indexPath: IndexPath) -> ReceiptTableViewCellVMProtocol
+    
+    func getReceipt(at indexPath: IndexPath) -> Receipt
+    func getReceiptSectionDate(section: Int) -> String
 }

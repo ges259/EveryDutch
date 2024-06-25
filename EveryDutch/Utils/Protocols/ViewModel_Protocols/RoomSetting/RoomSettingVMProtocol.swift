@@ -10,6 +10,8 @@ import Foundation
 protocol RoomSettingVMProtocol {
 //    var makeCellClosure: (([RoomUsers]) -> Void)? { get set }
     
+    
+    var roomManagerIsKicked: Bool { get }
 //    func getUserData() -> RoomUserDataDict
     var checkIsRoomManager: Bool { get }
     var getCurrentRoomID: String? { get }

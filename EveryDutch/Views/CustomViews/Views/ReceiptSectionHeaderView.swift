@@ -10,14 +10,13 @@ import UIKit
 class ReceiptSectionHeaderView: UITableViewHeaderFooterView {
     private let dateLabel: CustomLabel = {
         let label = CustomLabel(
-            backgroundColor: .deep_Blue,
             textAlignment: .center,
             topBottomInset: 5,
             leftInset: 12,
             rightInset: 12
         )
         label.font = UIFont.boldSystemFont(ofSize: 13)
-        label.setRoundedCorners(.all, withCornerRadius: 12)
+        label.setRoundedCorners(.all, withCornerRadius: 10)
         return label
     }()
     
@@ -42,7 +41,9 @@ class ReceiptSectionHeaderView: UITableViewHeaderFooterView {
     }
     
     /// 섹션 헤더의 날짜 설정
-    func configure(with date: String) {
+    func configure(with date: String,
+                   labelBackgroundColor: UIColor) {
         self.dateLabel.text = date
+        self.dateLabel.backgroundColor = labelBackgroundColor
     }
 }

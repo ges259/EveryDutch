@@ -9,7 +9,14 @@ import UIKit
 
 protocol UserProfileVMProtocol: ReceiptTableViewProtocol {
     // 클로저
-    var fetchSuccessClosure: (([IndexPath]) -> Void)? { get set }
+//    var fetchSuccessClosure: (([IndexPath]) -> Void)? { get set }
+    
+    
+    func getPendingSections() -> [String: [Int]]
+    var fetchSuccessClosure: (() -> Void)? { get set }
+    func resetIndexPaths() 
+    
+    
     var deleteUserSuccessClosure: (() -> Void)? { get set }
     var reportSuccessClosure: ((AlertEnum, Int) -> Void)? { get set }
     var searchModeClosure: ((UIImage?, String) -> Void)? { get set }

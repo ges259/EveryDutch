@@ -42,11 +42,19 @@ enum AlertEnum {
     case exitRoom
     case isNotRoomManager
     
+    
+    
     // UserProfileVC
+    case requestReport
     case reportSuccess
     case reportAndKickSuccess
-    case kickUser
     case alreadyReported
+    
+    case kickUser
+    
+    
+    case kickRoomManager
+    
     
     // MARK: - 타이틀
     func generateTitle(reportCount: Int? = nil) -> String {
@@ -72,7 +80,8 @@ enum AlertEnum {
                 return "이미 방에 존재하는 유저입니다."
                 
                 
-                
+            case .requestReport:
+                return "해당 유저를 신고하시겠습니까?"
             case .kickUser:
                 return "정말 강퇴하시겠습니까?"
             case .alreadyReported:
@@ -109,6 +118,8 @@ enum AlertEnum {
                 return "정산방을 나가시겠습니까?"
             case .isNotRoomManager:
                 return "정산방의 메니저만 수정할 수 있습니다."
+            case .kickRoomManager:
+                return "다른 유저가 존재하는 경우, 정산방의 메니저는 나갈 수 없습니다."
             }
         }
         
@@ -148,7 +159,8 @@ enum AlertEnum {
         case .photoAccess, 
                 .backgroundSelect,
                 .exitRoom,
-                .kickUser:
+                .kickUser,
+                .requestReport:
             return true
             
         default:

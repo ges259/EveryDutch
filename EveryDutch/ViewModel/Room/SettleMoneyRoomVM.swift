@@ -156,11 +156,11 @@ extension SettleMoneyRoomVM {
         return self.roomDataManager.getReceiptSectionDate(section: section)
     }
     /// 섹션의 개수
-    var numOfSection: Int {
+    var numOfSections: Int {
         return self.roomDataManager.getNumOfRoomReceiptsSection
     }
     /// 영수증 개수
-    func numberOfReceipt(section: Int) -> Int {
+    func numOfReceipts(section: Int) -> Int {
         return self.roomDataManager.getNumOfRoomReceipts(section: section)
     }
     /// 영수증 셀의 뷰모델 반환

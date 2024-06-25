@@ -324,7 +324,6 @@ extension SettleMoneyRoomVC {
     private func reloadTableViewSections(_ sections: [Int]) {
         let sectionsToReload = IndexSet(sections)
         print(#function)
-        dump(sectionsToReload)
         self.receiptTableView.beginUpdates()
         self.receiptTableView.reloadSections(sectionsToReload, with: .none)
         self.receiptTableView.endUpdates()
@@ -335,14 +334,13 @@ extension SettleMoneyRoomVC {
     private func insertTableViewSections(_ sections: [Int]) {
         let sectionsToInsert = IndexSet(sections)
         print(#function)
-        dump(sectionsToInsert)
         self.receiptTableView.beginUpdates()
         self.receiptTableView.insertSections(sectionsToInsert, with: .none)
         self.receiptTableView.endUpdates()
         
         print("Sections to insert: \(sectionsToInsert)")
     }
-
+    
     private func updateReceiptTableViewCell(_ sections: [Int]) {
         print(#function)
         let sectionsToReload = IndexSet(sections)
@@ -372,7 +370,6 @@ extension SettleMoneyRoomVC {
     private func removeTableViewSections(_ sections: [Int]) {
         let sectionsToRemove = IndexSet(sections)
         print(#function)
-        dump(sectionsToRemove)
         self.receiptTableView.beginUpdates()
         self.receiptTableView.deleteSections(sectionsToRemove, with: .none)
         self.receiptTableView.endUpdates()
@@ -533,7 +530,7 @@ extension SettleMoneyRoomVC: UITableViewDelegate {
                    forRowAt indexPath: IndexPath)
     {
         // 마지막 셀
-        if indexPath.section == self.viewModel.numOfSection - 1 {
+        if indexPath.section == self.viewModel.numOfSections - 1 {
             self.viewModel.loadMoreReceiptData()
         }
     }
@@ -543,12 +540,12 @@ extension SettleMoneyRoomVC: UITableViewDelegate {
 extension SettleMoneyRoomVC: UITableViewDataSource {
     /// 섹션의 개수
     func numberOfSections(in tableView: UITableView) -> Int {
-        return self.viewModel.numOfSection
+        return self.viewModel.numOfSections
     }
     /// 셀의 개수
     func tableView(_ tableView: UITableView,
                    numberOfRowsInSection section: Int) -> Int {
-        return self.viewModel.numberOfReceipt(section: section)
+        return self.viewModel.numOfReceipts(section: section)
     }
     func tableView(_ tableView: UITableView, 
                    viewForFooterInSection section: Int
@@ -559,7 +556,8 @@ extension SettleMoneyRoomVC: UITableViewDataSource {
         }
         let sectionInfo = self.viewModel.getReceiptSectionDate(section: section)
         
-        headerView.configure(with: sectionInfo)
+        headerView.configure(with: sectionInfo, 
+                             labelBackgroundColor: .deep_Blue)
         
         return headerView
     }

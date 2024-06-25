@@ -18,7 +18,19 @@ final class RoomSettingVM: RoomSettingVMProtocol {
     }
     
     
-    
+    var roomManagerIsKicked: Bool {
+        print(#function)
+        print(self.roomDataManager.getNumOfRoomUsers)
+        print(self.roomDataManager.checkIsRoomManager)
+        print(self.roomDataManager.getNumOfRoomUsers == 1
+              && self.roomDataManager.checkIsRoomManager)
+        
+        if self.roomDataManager.getNumOfRoomUsers == 1
+            && self.roomDataManager.checkIsRoomManager {
+            return true
+        }
+        return false
+    }
     
     /// 사용자가 roomManager인지를 알려주는 변수
     var checkIsRoomManager: Bool {

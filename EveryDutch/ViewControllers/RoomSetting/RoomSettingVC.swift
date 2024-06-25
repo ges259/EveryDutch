@@ -218,13 +218,16 @@ extension RoomSettingVC {
     }
     // 나가기 버튼
     @objc private func exitBtnBtnTapped() {
-        
-        
-        
-        // 얼럿창 띄우기
-        self.customAlert(alertEnum: .exitRoom) { _ in
-            // 확인 버튼을 누르면 -> 정산방에서 나가기
-            self.viewModel.leaveRoom()
+        if self.viewModel.roomManagerIsKicked {
+            print("\(#function) ----- 1")
+            // 얼럿창 띄우기
+            self.customAlert(alertEnum: .exitRoom) { _ in
+                // 확인 버튼을 누르면 -> 정산방에서 나가기
+                self.viewModel.leaveRoom()
+            }
+        } else {
+            print("\(#function) ----- 2")
+            self.customAlert(alertEnum: .kickRoomManager) { _ in }
         }
     }
     // 유저 초대 화면으로 이동
