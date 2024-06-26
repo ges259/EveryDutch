@@ -34,10 +34,13 @@ enum DataChangeType {
         case .added:            return "added"
         case .removed:          return "removed"
         case .updated:          return "updated"
-        case .error:            return "error"
+        
         case .sectionReload:    return "sectionReload"
         case .sectionInsert:    return "sectionInsert"
         case .sectionRemoved:   return "sectionRemoved"
+            
+            
+        case .error:            return "error"
         }
     }
 }

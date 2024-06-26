@@ -10,7 +10,7 @@ import Foundation
 extension Notification.Name {
     static let numberOfUsersChanges = Notification.Name("numberOfUsersChanges")
     static let receiptDataChanged = Notification.Name("receiptDataChanged")
-    static let receiptSearchModeChanged = Notification.Name("receiptSearchModeChanged")
+//    static let receiptSearchModeChanged = Notification.Name("receiptSearchModeChanged")
     static let roomDataChanged = Notification.Name("roomDataChanged")
     static let userDataChanged = Notification.Name("userDataChanged")
 }

@@ -10,31 +10,6 @@ import SnapKit
 
 final class ReceiptTableView: UITableView {
     
-    // MARK: - 레이아웃
-    /// 정산내역 테이블뷰
-    private lazy var receiptTableView: CustomTableView = {
-        let view = CustomTableView(frame: .zero, style: .grouped)
-        view.delegate = self
-        view.dataSource = self
-        view.register(
-            SettlementTableViewCell.self,
-            forCellReuseIdentifier: Identifier.settlementTableViewCell)
-        view.register(
-            ReceiptSectionHeaderView.self,
-            forHeaderFooterViewReuseIdentifier: Identifier.receiptSectionHeaderView)
-        view.backgroundColor = .clear
-        view.bounces = true
-        view.transform = CGAffineTransform(rotationAngle: .pi)
-        view.sectionHeaderTopPadding = 0
-        // 영수증 테이블뷰 모서리 설정
-        view.setRoundedCorners(.all, withCornerRadius: 10)
-        return view
-    }()
-    
-    
-    
-    
-    
     // MARK: - 프로퍼티
     private let viewModel: ReceiptTableViewViewModelProtocol
     weak var receiptDelegate: ReceiptTableViewDelegate?
@@ -50,35 +25,43 @@ final class ReceiptTableView: UITableView {
         super.init(frame: .zero, style: .grouped)
         
         self.configureUI()
-        self.configureAutoLayout()
+        self.configureTableView()
         self.configureNotification()
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    deinit { NotificationCenter.default.removeObserver(self) }
+    
     
     // MARK: - 화면 설정
-    private func configureUI() {
+    private func configureTableView() {
+        self.register(
+            SettlementTableViewCell.self,
+            forCellReuseIdentifier: Identifier.settlementTableViewCell)
+        self.register(
+            ReceiptSectionHeaderView.self,
+            forHeaderFooterViewReuseIdentifier: Identifier.receiptSectionHeaderView)
         
+        self.delegate = self
+        self.dataSource = self
+        
+        self.separatorStyle = .none
+        self.showsVerticalScrollIndicator = false
+        self.bounces = true
+        self.transform = CGAffineTransform(rotationAngle: .pi)
+        self.sectionHeaderTopPadding = 0
     }
     
-    private func configureAutoLayout() {
-        self.addSubview(self.receiptTableView)
-        // 영수증 테이블뷰 (영수증)
-        self.receiptTableView.snp.makeConstraints { make in
-            make.edges.equalToSuperview()
-        }
+    private func configureUI() {
+        self.backgroundColor = .clear
+        self.setRoundedCorners(.all, withCornerRadius: 10)
     }
-    private func configureNotification() {
-        
-        let notificationName = self.viewModel.isSearchMode
-        ? Notification.Name.receiptSearchModeChanged
-        : Notification.Name.receiptDataChanged
-        
+    func configureNotification() {
         NotificationCenter.default.addObserver(
             self,
             selector: #selector(self.handleDataChanged(notification:)),
-            name: notificationName,
+            name: Notification.Name.receiptDataChanged,
             object: nil)
     }
 }
@@ -96,13 +79,11 @@ final class ReceiptTableView: UITableView {
 extension ReceiptTableView {
     /// 노티피케이션을 통해 받은 변경사항을 바로 반영하거나 저장하는 메서드
     @objc private func handleDataChanged(notification: Notification) {
+        print(#function)
         guard let dataInfo = notification.userInfo as? [String: [IndexPath]] else { return }
         let rawValue = notification.name.rawValue
         
         switch rawValue {
-        case Notification.Name.receiptSearchModeChanged.rawValue:
-            self.viewModel.receiptSearchModeDataChanged(dataInfo)
-            
         case Notification.Name.receiptDataChanged.rawValue:
             self.viewModel.receiptDataChanged(dataInfo)
             
@@ -112,7 +93,12 @@ extension ReceiptTableView {
     }
     
     /// 영수증 테이블뷰 리로드
-    private func updateReceiptsTableView() {
+    // MARK: - Fix
+    func updateReceiptsTableView() {
+        if let _ = self.viewModel.isNotificationError {  
+            self.viewModel.hasNoMoreDataSetTrue()
+        }
+        
         let receiptSections = self.viewModel.getPendingReceiptSections()
         
         if receiptSections.keys.count == 1 {
@@ -138,7 +124,7 @@ extension ReceiptTableView {
                 }
             }
         } else {
-            self.receiptTableView.reloadData()
+            self.reloadData()
         }
         
         self.viewModel.resetPendingReceiptIndexPaths()
@@ -147,9 +133,9 @@ extension ReceiptTableView {
     private func reloadTableViewSections(_ sections: [Int]) {
         let sectionsToReload = IndexSet(sections)
         print(#function)
-        self.receiptTableView.beginUpdates()
-        self.receiptTableView.reloadSections(sectionsToReload, with: .none)
-        self.receiptTableView.endUpdates()
+        self.beginUpdates()
+        self.reloadSections(sectionsToReload, with: .none)
+        self.endUpdates()
         
         print("Sections to reload: \(sectionsToReload)")
     }
@@ -157,9 +143,9 @@ extension ReceiptTableView {
     private func insertTableViewSections(_ sections: [Int]) {
         let sectionsToInsert = IndexSet(sections)
         print(#function)
-        self.receiptTableView.beginUpdates()
-        self.receiptTableView.insertSections(sectionsToInsert, with: .none)
-        self.receiptTableView.endUpdates()
+        self.beginUpdates()
+        self.insertSections(sectionsToInsert, with: .none)
+        self.endUpdates()
         
         print("Sections to insert: \(sectionsToInsert)")
     }
@@ -168,9 +154,9 @@ extension ReceiptTableView {
         print(#function)
         let sectionsToReload = IndexSet(sections)
         
-        self.receiptTableView.beginUpdates()
-        self.receiptTableView.reloadSections(sectionsToReload, with: .none)
-        self.receiptTableView.endUpdates()
+        self.beginUpdates()
+        self.reloadSections(sectionsToReload, with: .none)
+        self.endUpdates()
         
         print("Sections to update: \(sectionsToReload)")
     }
@@ -181,9 +167,9 @@ extension ReceiptTableView {
         // 키가 DataChangeType.removed.notificationName인 인덱스 경로만 필터링
         if let removedIndexPaths = indexPathsDict[DataChangeType.removed.notificationName], !removedIndexPaths.isEmpty {
             print(#function)
-            self.receiptTableView.beginUpdates()
-            self.receiptTableView.deleteRows(at: removedIndexPaths, with: .none)
-            self.receiptTableView.endUpdates()
+            self.beginUpdates()
+            self.deleteRows(at: removedIndexPaths, with: .none)
+            self.endUpdates()
             
             print("Cells to remove: \(removedIndexPaths)")
         }
@@ -193,9 +179,9 @@ extension ReceiptTableView {
     private func removeTableViewSections(_ sections: [Int]) {
         let sectionsToRemove = IndexSet(sections)
         print(#function)
-        self.receiptTableView.beginUpdates()
-        self.receiptTableView.deleteSections(sectionsToRemove, with: .none)
-        self.receiptTableView.endUpdates()
+        self.beginUpdates()
+        self.deleteSections(sectionsToRemove, with: .none)
+        self.endUpdates()
         
         print("Sections to remove: \(sectionsToRemove)")
     }
@@ -218,8 +204,8 @@ extension ReceiptTableView: UITableViewDelegate {
         return self.cellHeight
     }
     func tableView(_ tableView: UITableView,
-                   didSelectRowAt indexPath: IndexPath) {
-        
+                   didSelectRowAt indexPath: IndexPath
+    ) {
         // MARK: - Fix
         // 뷰모델에서 셀의 영수증 가져오기
         let receipt = self.viewModel.getReceipt(at: indexPath)
@@ -228,15 +214,14 @@ extension ReceiptTableView: UITableViewDelegate {
     }
     func tableView(_ tableView: UITableView,
                    willDisplay cell: UITableViewCell,
-                   forRowAt indexPath: IndexPath)
-    {
-        // MARK: - Fix
-//        // 마지막 셀
-//        if indexPath.section == self.viewModel.numOfSections - 1 {
-//            self.viewModel.loadMoreReceiptData()
-//        }
-//        self.receiptDelegate?.willDisplayLastCell()
+                   forRowAt indexPath: IndexPath
+    ) {
+        guard !self.viewModel.hasNoMoreData,
+                indexPath.section == self.viewModel.numOfSections - 1 
+        else { return }
         
+        // 마지막 셀
+        self.receiptDelegate?.willDisplayLastCell()
     }
 }
 
@@ -248,7 +233,8 @@ extension ReceiptTableView: UITableViewDataSource {
     }
     /// 셀의 개수
     func tableView(_ tableView: UITableView,
-                   numberOfRowsInSection section: Int) -> Int {
+                   numberOfRowsInSection section: Int
+    ) -> Int {
         return self.viewModel.numOfReceipts(section: section)
     }
     func tableView(_ tableView: UITableView,
@@ -286,7 +272,7 @@ extension ReceiptTableView: UITableViewDataSource {
     func tableView(_ tableView: UITableView,
                    cellForRowAt indexPath: IndexPath)
     -> UITableViewCell {
-        let cell = self.receiptTableView.dequeueReusableCell(
+        let cell = self.dequeueReusableCell(
             withIdentifier: Identifier.settlementTableViewCell,
             for: indexPath) as! SettlementTableViewCell
         
@@ -327,6 +313,8 @@ protocol ReceiptTableViewDelegate: AnyObject {
 protocol ReceiptTableViewViewModelProtocol {
     
     var isSearchMode: Bool { get }
+    func hasNoMoreDataSetTrue()
+    var hasNoMoreData: Bool { get }
     
     // 영수증 테이블뷰 (delgate / dataSource)
     var numOfSections: Int { get }
@@ -337,8 +325,8 @@ protocol ReceiptTableViewViewModelProtocol {
     
     
     // 노티피케이션
+    var isNotificationError: ErrorEnum? { get }
     func receiptDataChanged(_ userInfo: [String: [IndexPath]])
-    func receiptSearchModeDataChanged(_ userInfo: [String: [IndexPath]])
     func getPendingReceiptIndexPaths() -> [String: [IndexPath]]
     func getPendingReceiptSections() -> [String: [Int]]
     func resetPendingReceiptIndexPaths()
@@ -348,6 +336,7 @@ final class ReceiptTableViewViewModel: ReceiptTableViewViewModelProtocol {
     
     private let roomDataManager: RoomDataManagerProtocol
     private let _isSearchMode: Bool
+    private var _hasNoMoreData: Bool = false
     
     init (roomDataManager: RoomDataManagerProtocol,
           isSearchMode: Bool) {
@@ -359,6 +348,12 @@ final class ReceiptTableViewViewModel: ReceiptTableViewViewModelProtocol {
         return self._isSearchMode
     }
     
+    func hasNoMoreDataSetTrue() {
+        self._hasNoMoreData = true
+    }
+    var hasNoMoreData: Bool {
+        return self._hasNoMoreData
+    }
     
     
     
@@ -397,27 +392,33 @@ final class ReceiptTableViewViewModel: ReceiptTableViewViewModelProtocol {
     private var _receiptDataManager: IndexPathDataManager<Receipt> = IndexPathDataManager()
     private var _receiptSearchModeDataManager: IndexPathDataManager<Receipt> = IndexPathDataManager()
     
+    var isNotificationError: ErrorEnum? {
+        return self._receiptDataManager.error
+    }
+    
     
     // 영수증 데이터 인덱스패스
     func receiptDataChanged(_ userInfo: [String: [IndexPath]]) {
-        self._receiptDataManager.dataChanged(userInfo)
+        
+        return self._isSearchMode
+        ? self._receiptSearchModeDataManager.dataChanged(userInfo)
+        : self._receiptDataManager.dataChanged(userInfo)
     }
-    
-    func receiptSearchModeDataChanged(_ userInfo: [String: [IndexPath]]) {
-        self._receiptDataManager.dataChanged(userInfo)
-    }
-    
-    
-    
     
     func getPendingReceiptIndexPaths() -> [String: [IndexPath]] {
-        return self._receiptDataManager.getPendingIndexPaths()
+        return self._isSearchMode
+        ? self._receiptSearchModeDataManager.getPendingIndexPaths()
+        : self._receiptDataManager.getPendingIndexPaths()
     }
     func getPendingReceiptSections() -> [String: [Int]] {
-        return self._receiptDataManager.getPendingSections()
+        return self._isSearchMode
+        ? self._receiptSearchModeDataManager.getPendingSections()
+        : self._receiptDataManager.getPendingSections()
     }
 
     func resetPendingReceiptIndexPaths() {
-        self._receiptDataManager.resetIndexPaths()
+        return self._isSearchMode
+        ? self._receiptSearchModeDataManager.resetIndexPaths()
+        : self._receiptDataManager.resetIndexPaths()
     }
 }

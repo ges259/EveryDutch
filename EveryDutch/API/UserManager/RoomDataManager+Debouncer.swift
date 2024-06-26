@@ -39,6 +39,10 @@ final class Debouncer {
         self.cancelScheduledWork()
         // 인덱스패스 업데이트
         self.addIndexPaths(eventType: eventType, indexPaths: indexPaths)
+        print("_________________________________")
+        print(#function)
+        print(" ----- ----- \(self.error)  ----- ----- ")
+        print("_________________________________")
         // 에러 정보 초기화
         self.error = nil
         // 디바운스

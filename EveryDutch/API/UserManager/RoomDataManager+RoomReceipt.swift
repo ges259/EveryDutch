@@ -42,8 +42,8 @@ extension RoomDataManager {
     
     // MARK: - 데이터 추가적으로 가져오기
     func loadMoreRoomReceipt() {
-        guard self.hasMoreRoomReceiptData,
-              let versionID = self.getCurrentVersion
+        print(#function)
+        guard let versionID = self.getCurrentVersion
         else { return }
         
         DispatchQueue.global(qos: .utility).async {
@@ -57,7 +57,7 @@ extension RoomDataManager {
                     DispatchQueue.main.async {
                         switch error {
                         case .noMoreData:
-                            self.hasMoreRoomReceiptData = false
+                            self.receiptDebouncer.triggerErrorDebounce(.hasNoAPIData)
                             break
                         default:
                             break

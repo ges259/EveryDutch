@@ -23,20 +23,12 @@ final class SettleMoneyRoomVC: UIViewController {
     }()
     
     /// 정산내역 테이블뷰
-    private lazy var receiptTableView: CustomTableView = {
-        let view = CustomTableView(frame: .zero, style: .grouped)
-        view.delegate = self
-        view.dataSource = self
-        view.register(
-            SettlementTableViewCell.self,
-            forCellReuseIdentifier: Identifier.settlementTableViewCell)
-        view.register(
-            ReceiptSectionHeaderView.self,
-            forHeaderFooterViewReuseIdentifier: Identifier.receiptSectionHeaderView)
-        view.backgroundColor = .clear
-        view.bounces = true
-        view.transform = CGAffineTransform(rotationAngle: .pi)
-        view.sectionHeaderTopPadding = 0
+    private lazy var receiptTableView: ReceiptTableView = {
+        let receiptVM = ReceiptTableViewViewModel(
+            roomDataManager: RoomDataManager.shared,
+            isSearchMode: false)
+        let view = ReceiptTableView(viewModel: receiptVM)
+        view.receiptDelegate = self
         return view
     }()
     /// 탑뷰의 높이 조절할 때 필요한 프로퍼티
@@ -121,8 +113,9 @@ extension SettleMoneyRoomVC {
         self.topView.addShadow(shadowType: .bottom)
         // 탑뷰 모서리 설정
         self.topView.setRoundedCorners(.bottom, withCornerRadius: 30)
+        // MARK: - Fix
         // 영수증 테이블뷰 모서리 설정
-        self.receiptTableView.setRoundedCorners(.all, withCornerRadius: 10)
+//        self.receiptTableView.setRoundedCorners(.all, withCornerRadius: 10)
     }
     
     /// 오토레이아웃 설정
@@ -268,10 +261,11 @@ extension SettleMoneyRoomVC {
     
     /// 모든 대기 중인 변경 사항을 적용
     private func processPendingUpdates() {
+        // MARK: - Fix
         // 유저 테이블 업데이트
         self.updateUsersTableView()
         // 영수증 테이블 업데이트
-        self.updateReceiptsTableView()
+        self.receiptTableView.updateReceiptsTableView()
         // 탑뷰의 높이를 업데이트
         self.updateTopViewHeight()
     }
@@ -285,108 +279,6 @@ extension SettleMoneyRoomVC {
         // 변경 사항 초기화
         self.viewModel.resetPendingUserDataIndexPaths()
     }
-    
-    
-    
-    /// 영수증 테이블뷰 리로드
-    private func updateReceiptsTableView() {
-        let receiptSections = self.viewModel.getPendingReceiptSections()
-        
-        if receiptSections.keys.count == 1 {
-            receiptSections.forEach { (key: String, sections: [Int]) in
-                switch key {
-                case DataChangeType.sectionInsert.notificationName:
-                    self.insertTableViewSections(sections)
-                    
-                case DataChangeType.sectionReload.notificationName:
-                    self.reloadTableViewSections(sections)
-                    
-                case DataChangeType.updated.notificationName:
-                    self.updateReceiptTableViewCell(sections)
-                    
-                case DataChangeType.removed.notificationName:
-                    self.removeTableViewCells()
-                    
-                case DataChangeType.sectionRemoved.notificationName:
-                    self.removeTableViewSections(sections)
-                    
-                default:
-                    break
-                }
-            }
-        } else {
-            self.receiptTableView.reloadData()
-        }
-        
-        self.viewModel.resetPendingReceiptIndexPaths()
-    }
-
-    private func reloadTableViewSections(_ sections: [Int]) {
-        let sectionsToReload = IndexSet(sections)
-        print(#function)
-        self.receiptTableView.beginUpdates()
-        self.receiptTableView.reloadSections(sectionsToReload, with: .none)
-        self.receiptTableView.endUpdates()
-        
-        print("Sections to reload: \(sectionsToReload)")
-    }
-
-    private func insertTableViewSections(_ sections: [Int]) {
-        let sectionsToInsert = IndexSet(sections)
-        print(#function)
-        self.receiptTableView.beginUpdates()
-        self.receiptTableView.insertSections(sectionsToInsert, with: .none)
-        self.receiptTableView.endUpdates()
-        
-        print("Sections to insert: \(sectionsToInsert)")
-    }
-    
-    private func updateReceiptTableViewCell(_ sections: [Int]) {
-        print(#function)
-        let sectionsToReload = IndexSet(sections)
-        
-        self.receiptTableView.beginUpdates()
-        self.receiptTableView.reloadSections(sectionsToReload, with: .none)
-        self.receiptTableView.endUpdates()
-        
-        print("Sections to update: \(sectionsToReload)")
-    }
-
-    private func removeTableViewCells() {
-        let indexPathsDict = self.viewModel.getPendingReceiptIndexPaths()
-        
-        // 키가 DataChangeType.removed.notificationName인 인덱스 경로만 필터링
-        if let removedIndexPaths = indexPathsDict[DataChangeType.removed.notificationName], !removedIndexPaths.isEmpty {
-            print(#function)
-            self.receiptTableView.beginUpdates()
-            self.receiptTableView.deleteRows(at: removedIndexPaths, with: .none)
-            self.receiptTableView.endUpdates()
-            
-            print("Cells to remove: \(removedIndexPaths)")
-        }
-    }
-
-
-    private func removeTableViewSections(_ sections: [Int]) {
-        let sectionsToRemove = IndexSet(sections)
-        print(#function)
-        self.receiptTableView.beginUpdates()
-        self.receiptTableView.deleteSections(sectionsToRemove, with: .none)
-        self.receiptTableView.endUpdates()
-        
-        print("Sections to remove: \(sectionsToRemove)")
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     /// 탑뷰의 높이를 업데이트 하기 전, 검사
     private func updateTopViewHeight() {
@@ -511,133 +403,6 @@ extension SettleMoneyRoomVC {
 
 
 
-// MARK: - 테이블뷰 델리게이트
-extension SettleMoneyRoomVC: UITableViewDelegate {
-    func tableView(_ tableView: UITableView,
-                   heightForRowAt indexPath: IndexPath)
-    -> CGFloat {
-        return self.receiptTableCellHeight()
-    }
-    func tableView(_ tableView: UITableView,
-                   didSelectRowAt indexPath: IndexPath) {
-        // 뷰모델에서 셀의 영수증 가져오기
-        let receipt = self.viewModel.getReceipt(at: indexPath)
-        // '영수증 화면'으로 화면 이동
-        self.coordinator.ReceiptScreen(receipt: receipt)
-    }
-    func tableView(_ tableView: UITableView, 
-                   willDisplay cell: UITableViewCell,
-                   forRowAt indexPath: IndexPath)
-    {
-        // 마지막 셀
-        if indexPath.section == self.viewModel.numOfSections - 1 {
-            self.viewModel.loadMoreReceiptData()
-        }
-    }
-}
-
-// MARK: - 테이블뷰 데이터 소스
-extension SettleMoneyRoomVC: UITableViewDataSource {
-    /// 섹션의 개수
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return self.viewModel.numOfSections
-    }
-    /// 셀의 개수
-    func tableView(_ tableView: UITableView,
-                   numberOfRowsInSection section: Int) -> Int {
-        return self.viewModel.numOfReceipts(section: section)
-    }
-    func tableView(_ tableView: UITableView, 
-                   viewForFooterInSection section: Int
-    ) -> UIView? {
-        guard let headerView = tableView.dequeueReusableHeaderFooterView(
-            withIdentifier: Identifier.receiptSectionHeaderView) as? ReceiptSectionHeaderView else {
-            return nil
-        }
-        let sectionInfo = self.viewModel.getReceiptSectionDate(section: section)
-        
-        headerView.configure(with: sectionInfo, 
-                             labelBackgroundColor: .deep_Blue)
-        
-        return headerView
-    }
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return 40 // 최소 높이를 40으로 설정
-    }
-    
-    /// 헤더를 nil로 설정
-    func tableView(_ tableView: UITableView,
-                   viewForHeaderInSection section: Int
-    ) -> UIView? {
-        return nil
-    }
-    /// 헤더의 높이를 0으로 설정
-    func tableView(_ tableView: UITableView,
-                   heightForHeaderInSection section: Int
-    ) -> CGFloat {
-        return 0
-    }
-    
-    /// cellForRowAt
-    func tableView(_ tableView: UITableView,
-                   cellForRowAt indexPath: IndexPath)
-    -> UITableViewCell {
-        let cell = self.receiptTableView.dequeueReusableCell(
-            withIdentifier: Identifier.settlementTableViewCell,
-            for: indexPath) as! SettlementTableViewCell
-        
-        // 셀 뷰모델 만들기
-        let cellViewModel = self.viewModel.cellViewModel(at: indexPath)
-        // 셀의 뷰모델을 셀에 넣기
-        cell.configureCell(with: cellViewModel)
-        cell.transform = CGAffineTransform(rotationAngle: .pi)
-        cell.backgroundColor = .normal_white
-        return cell
-    }
-}
-
-
-
-
-
-
-
-
-
-
-// MARK: - 스크롤뷰 델리게이트
-extension SettleMoneyRoomVC {
-    /// 메인 테이블을 스크롤하면, topView 닫는 코드
-    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
-        // 메인 테이블뷰일 때만,
-        // topView가 열려있다면
-        if scrollView == self.receiptTableView 
-            && self.viewModel.isTopViewOpen {
-            // topView 닫기
-            self.closeTopView()
-        }
-    }
-    /// ReceiptTableView를 제일 아래로 스크롤하는 메서드
-    /// reload가 끝난 후 스크롤 하기 위해 DispatchQueue.main.async 사용
-    ///  테이블뷰와 셀을 뒤집었기 때문에 [위로 스크롤]은 -> [하단으로 스크롤]이 됨
-    private func scrollToBottom() {
-        DispatchQueue.main.async {
-            self.receiptTableView.scrollToRow(
-                at: IndexPath(row: 0, section: 0),
-                at: .top,
-                animated: true)
-        }
-    }
-}
-
-
-
-
-
-
-
-
-
 
 
 
@@ -655,3 +420,64 @@ extension SettleMoneyRoomVC: UsersTableViewDelegate {
         self.updateTopViewHeight()
     }
 }
+
+
+
+
+
+
+
+extension SettleMoneyRoomVC: ReceiptTableViewDelegate {
+    func didSelectRowAt(_ receipt: Receipt) {
+        self.coordinator.ReceiptScreen(receipt: receipt)
+    }
+    
+    func willDisplayLastCell() {
+        self.viewModel.loadMoreReceiptData()
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//// MARK: - 스크롤뷰 델리게이트
+//extension SettleMoneyRoomVC {
+//    /// 메인 테이블을 스크롤하면, topView 닫는 코드
+//    func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+//        // MARK: - Fix
+//        // 메인 테이블뷰일 때만,
+//        // topView가 열려있다면
+//        if scrollView == self.receiptTableView
+//            && self.viewModel.isTopViewOpen {
+//            // topView 닫기
+//            self.closeTopView()
+//        }
+//    }
+//    /// ReceiptTableView를 제일 아래로 스크롤하는 메서드
+//    /// reload가 끝난 후 스크롤 하기 위해 DispatchQueue.main.async 사용
+//    ///  테이블뷰와 셀을 뒤집었기 때문에 [위로 스크롤]은 -> [하단으로 스크롤]이 됨
+//    private func scrollToBottom() {
+//        DispatchQueue.main.async {
+//            self.receiptTableView.scrollToRow(
+//                at: IndexPath(row: 0, section: 0),
+//                at: .top,
+//                animated: true)
+//        }
+//    }
+//}

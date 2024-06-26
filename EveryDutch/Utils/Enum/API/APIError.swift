@@ -62,6 +62,8 @@ enum ErrorEnum: Error {
     case unknownError
     
     
+    case hasNoAPIData
+    
     var alertType: AlertEnum {
         switch self {
             // RoomID 및 RoomUser 저장 실패

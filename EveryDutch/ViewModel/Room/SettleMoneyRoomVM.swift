@@ -10,12 +10,23 @@ import UIKit
 
 final class IndexPathDataManager<T> {
     private var indexPaths: [String: [IndexPath]] = [:]
+    private var _error: ErrorEnum?
     
     // 데이터 저장
-    func dataChanged(_ userInfo: [String: [IndexPath]]) {
-        for (key, newValues) in userInfo {
-            self.indexPaths[key, default: []] = self.mergeIndexPaths(indexPaths[key] ?? [], newValues)
+    func dataChanged(_ userInfo: [String: Any]) {
+        for (key, value) in userInfo {
+            if let error = value as? ErrorEnum {
+                self._error = error
+                // 에러 처리
+                print("Error received: \(error)")
+            } else if let newValues = value as? [IndexPath] {
+                self.indexPaths[key, default: []] = self.mergeIndexPaths(indexPaths[key] ?? [], newValues)
+            }
         }
+    }
+    
+    var error: ErrorEnum? {
+        return self._error
     }
     
     private func mergeIndexPaths(
@@ -30,6 +41,7 @@ final class IndexPathDataManager<T> {
     }
     
     func resetIndexPaths() {
+        self._error = nil
         self.indexPaths.removeAll()
     }
     

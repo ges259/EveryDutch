@@ -75,7 +75,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
     /// [플래그] Receipt 데이터 observe를 설정했는지 판단하는 변수
     var roomReceiptInitialLoad = false
     /// [플래그] Receipt 데이터를 추가적으로 가져올 지에 대한 플래그
-    var hasMoreRoomReceiptData: Bool = true
+//    var hasMoreRoomReceiptData: Bool = true
 
     
     
@@ -125,7 +125,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
         // 플래그 데이터 초기화
         self.roomReceiptInitialLoad = false
         self.roomUsersInitialLoad = true
-        self.hasMoreRoomReceiptData = true
+//        self.hasMoreRoomReceiptData = true
         // 디바운싱 초기화
         self.userDebouncer.reset()
         self.receiptDebouncer.reset()
