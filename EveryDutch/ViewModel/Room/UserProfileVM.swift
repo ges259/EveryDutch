@@ -27,14 +27,12 @@ final class UserProfileVM: UserProfileVMProtocol {
     
     
     
-    private var indexPaths: [String: [IndexPath]] = [:]
-    
-
+    private var _changedIndexPaths: [String: [IndexPath]] = [:]
     
     
-    var fetchSuccessClosure: (() -> Void)?
+    
     // MARK: - 클로저
-//    var fetchSuccessClosure: (([IndexPath]) -> Void)?
+    var fetchSuccessClosure: (() -> Void)?
     var deleteUserSuccessClosure: (() -> Void)?
     var reportSuccessClosure: ((AlertEnum, Int) -> Void)?
     var searchModeClosure: ((UIImage?, String) -> Void)?
@@ -49,9 +47,6 @@ final class UserProfileVM: UserProfileVMProtocol {
     private let roomDataManager: RoomDataManagerProtocol
     
     /// 유저 검색 시, 유저의 영수증 테이블 셀의 뷰모델
-//    private var userReceiptCellViewModels = [ReceiptTableViewCellVMProtocol]()
-    
-    /// 영수증 테이블 셀의 뷰모델
     var receiptSections = [ReceiptSection]()
     
     
@@ -325,7 +320,7 @@ extension UserProfileVM {
     
     func getPendingSections() -> [String: [Int]] {
         var sectionDict: [String: [Int]] = [:]
-        for (key, indexPaths) in indexPaths {
+        for (key, indexPaths) in _changedIndexPaths {
             let sections = Set(indexPaths.map { $0.section }).sorted()
             sectionDict[key] = sections
         }
@@ -333,7 +328,7 @@ extension UserProfileVM {
     }
 
     func resetIndexPaths() {
-        indexPaths.removeAll()
+        _changedIndexPaths.removeAll()
     }
     
     
@@ -398,7 +393,7 @@ extension UserProfileVM {
         }
 
         // 데이터 변경 이벤트를 indexPaths에 저장
-        self.indexPaths.merge(dataChanges) { (_, new) in new }
+        self._changedIndexPaths.merge(dataChanges) { (_, new) in new }
 
         // 클로저를 한 번만 호출하여 데이터 변경 이벤트 전달
         if !dataChanges.isEmpty {

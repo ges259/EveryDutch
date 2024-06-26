@@ -168,19 +168,19 @@ extension RoomDataManager {
             self.receiptSections[sectionIndex].receipts.sort { $0.getReceipt.time > $1.getReceipt.time }
         }
         
+        
+        // 새 섹션이 추가된 경우, sectionInsert 이벤트 트리거
         // debounce를 사용하여 테이블뷰 업데이트
-        if self.isFirst {
-            self.isFirst = false
-            self.receiptDebouncer.triggerDebounceWithIndexPaths(eventType: .sectionReload, rowsToInsert)
-        } else {
-            // 새 섹션이 추가된 경우, sectionInsert 이벤트 트리거
-            if !sectionsToInsert.isEmpty {
-                self.receiptDebouncer.triggerDebounceWithIndexPaths(eventType: .sectionInsert, sectionsToInsert.map { IndexPath(row: 0, section: $0) })
-            }
-            // 행이 추가된 경우, sectionReload 이벤트 트리거
-            if !rowsToInsert.isEmpty {
-                self.receiptDebouncer.triggerDebounceWithIndexPaths(eventType: .sectionReload, rowsToInsert)
-            }
+        if !sectionsToInsert.isEmpty {
+            self.receiptDebouncer.triggerDebounceWithIndexPaths(
+                eventType: .sectionInsert,
+                sectionsToInsert.map { IndexPath(row: 0, section: $0) })
+        }
+        // 행이 추가된 경우, sectionReload 이벤트 트리거
+        if !rowsToInsert.isEmpty {
+            self.receiptDebouncer.triggerDebounceWithIndexPaths(
+                eventType: .
+                sectionReload, rowsToInsert)
         }
     }
     

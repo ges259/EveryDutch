@@ -222,7 +222,7 @@ extension RoomSettingVC {
             print("\(#function) ----- 1")
             // 얼럿창 띄우기
             self.customAlert(alertEnum: .exitRoom) { _ in
-                // 확인 버튼을 누르면 -> 정산방에서 나가기
+                // 확인 버튼을 누르면 -> 정산방에서 나가기2
                 self.viewModel.leaveRoom()
             }
         } else {

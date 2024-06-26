@@ -78,7 +78,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
     var hasMoreRoomReceiptData: Bool = true
 
     
-    var isFirst: Bool = true
+    
     
     
     
