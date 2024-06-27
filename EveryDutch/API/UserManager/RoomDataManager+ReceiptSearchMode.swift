@@ -13,7 +13,7 @@ extension RoomDataManager {
         guard let versionID = self.getCurrentVersion,
               let userID = self.getCurrentUserID 
         else {
-            //            self.errorClosure?(.readError)
+            self.receiptDebouncer.triggerErrorDebounce(.readError)
             return
         }
         
@@ -25,20 +25,22 @@ extension RoomDataManager {
             case .success(let load):
                 // 영수증 데이터를 성공적으로 가져옴
                 print("영수증 가져오기 성공")
-//                self.handleAddedReceiptEvent(
-//                    load,
-//                    sections: &self.receiptSearchModeSections
-//                )
+                self.handleAddedReceiptEvent(
+                    load,
+                    sections: &self.receiptSearchModeSections
+                )
                 
-            case .failure(let error):
-                DispatchQueue.main.async {
-                    print("영수증 가져오기 실패")
-                    // 영수증 데이터를 가져오지 못한 경우 오류를 반환
-                    //                    self.errorClosure?(error)
-                }
+                completion(.success(()))
+                
+                
+            case .failure(_):
+                print("영수증 가져오기 실패")
+                // 영수증 데이터를 가져오지 못한 경우 오류를 반환
+                completion(.failure(.hasNoAPIData))
+                // 여기서는 Error를 debounce를 통해 trigger하지 않음.
+                // 이유는, UserProfileVC에서 NoDataView를 띄울 것이기 때문
             }
         }
-        
     }
     
     
@@ -46,7 +48,7 @@ extension RoomDataManager {
         guard let versionID = self.getCurrentVersion,
               let userID = self.getCurrentUserID 
         else {
-            //            self.errorClosure?(.readError)
+            self.receiptDebouncer.triggerErrorDebounce(.readError)
             return
         }
         self.receiptAPI.loadMoreUserReceipts(userID: userID,
@@ -56,20 +58,16 @@ extension RoomDataManager {
             switch result {
             case .success(let load):
                 // 영수증 데이터를 성공적으로 가져옴
-                print("영수증 가져오기 성공")
-//                self.handleAddedReceiptEvent(
-//                    load,
-//                    sections: &self.receiptSearchModeSections
-//                )
+                print("영수증 추가적으로 가져오기 성공")
+                self.handleAddedReceiptEvent(
+                    load,
+                    sections: &self.receiptSearchModeSections
+                )
                 
-                
-                
-            case .failure(let error):
-                DispatchQueue.main.async {
-                    print("영수증 가져오기 실패")
-                    // 영수증 데이터를 가져오지 못한 경우 오류를 반환
-                    //                    self.errorClosure?(error)
-                }
+            case .failure(_):
+                print("영수증 추가적으로 가져오기 실패")
+                // 영수증 데이터를 가져오지 못한 경우 오류를 반환
+                self.receiptDebouncer.triggerErrorDebounce(.hasNoAPIData)
             }
         }
     }

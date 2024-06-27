@@ -14,11 +14,9 @@ final class ReceiptTableView: UITableView {
     private let viewModel: ReceiptTableViewViewModelProtocol
     weak var receiptDelegate: ReceiptTableViewDelegate?
     private lazy var cellHeight: CGFloat = self.frame.width / 7 * 2
-
+    
     var isViewVisible: Bool = true {
-        didSet {
-            self.updateReceiptsTableView()
-        }
+        didSet { self.updateReceiptsTableView() }
     }
     
     
@@ -38,7 +36,36 @@ final class ReceiptTableView: UITableView {
     deinit { NotificationCenter.default.removeObserver(self) }
     
     
-    // MARK: - 화면 설정
+    
+    // MARK: - 테이블뷰 크기 설정
+    override var contentSize: CGSize {
+        didSet { self.invalidateIntrinsicContentSize() }
+    }
+    /*
+     - intrinsic_Content_Size
+     - 자신의 컨텐츠 사이즈에 따라서 결정되는 뷰 사이즈
+     - ex) 레이블 (width와 height를 설정해주지 않아도 글자의 크기에 맞춰 크기가 결정 됨)
+     - view의 컨텐츠 크기가 바뀌었을 때 instrinsicContentSize 프로퍼티를 통해 size를 갱신하고 그에 맞게 auto_Layout을 업데이트되도록 만들어주는 메서드
+     결론 -> 내부 사이즈가 변할 때마다 intrinsicContentSize 프로퍼티가 호출 됨
+     */
+    override var intrinsicContentSize: CGSize {
+        //        self.layoutIfNeeded()
+        return CGSize(width: UIView.noIntrinsicMetric,
+                      height: self.contentSize.height)
+    }
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - 화면 설정
+extension ReceiptTableView {
     private func configureTableView() {
         self.register(
             SettlementTableViewCell.self,
@@ -52,13 +79,15 @@ final class ReceiptTableView: UITableView {
         
         self.separatorStyle = .none
         self.showsVerticalScrollIndicator = false
-        self.bounces = true
+//        self.bounces = true
+        self.bounces = false
         self.transform = CGAffineTransform(rotationAngle: .pi)
         self.sectionHeaderTopPadding = 0
     }
     
     private func configureUI() {
-        self.backgroundColor = .clear
+//        self.backgroundColor = .clear
+        self.backgroundColor = .red
         self.setRoundedCorners(.all, withCornerRadius: 10)
     }
     func configureNotification() {
@@ -225,7 +254,6 @@ extension ReceiptTableView: UITableViewDelegate {
         guard !self.viewModel.hasNoMoreData,
                 indexPath.section == self.viewModel.numOfSections - 1 
         else { return }
-        
         // 마지막 셀
         self.receiptDelegate?.willDisplayLastCell()
     }
@@ -284,8 +312,15 @@ extension ReceiptTableView: UITableViewDataSource {
         
         // 셀 뷰모델 만들기
         let cellViewModel = self.viewModel.cellViewModel(at: indexPath)
+        let isFistCell = indexPath.row == 0
+        let isLastCell = self.viewModel.isLastCell(indexPath: indexPath)
+        
         // 셀의 뷰모델을 셀에 넣기
-        cell.configureCell(with: cellViewModel)
+        cell.configureCell(
+            with: cellViewModel,
+            isFirst: isFistCell,
+            isLast: isLastCell)
+        
         cell.transform = CGAffineTransform(rotationAngle: .pi)
         cell.backgroundColor = .normal_white
         return cell
@@ -322,6 +357,9 @@ protocol ReceiptTableViewViewModelProtocol {
     func hasNoMoreDataSetTrue()
     var hasNoMoreData: Bool { get }
     
+    
+    
+    
     // 영수증 테이블뷰 (delgate / dataSource)
     var numOfSections: Int { get }
     func numOfReceipts(section: Int) -> Int
@@ -329,6 +367,7 @@ protocol ReceiptTableViewViewModelProtocol {
     func getReceipt(at indexPath: IndexPath) -> Receipt
     func getReceiptSectionDate(section: Int) -> String
     
+    func isLastCell(indexPath: IndexPath) -> Bool
     
     // 노티피케이션
     var isNotificationError: ErrorEnum? { get }
@@ -373,24 +412,40 @@ final class ReceiptTableViewViewModel: ReceiptTableViewViewModelProtocol {
     // MARK: - 테이블뷰
     /// 섹션의 타이틀(날짜)를 반환
     func getReceiptSectionDate(section: Int) -> String {
-        return self.roomDataManager.getReceiptSectionDate(section: section)
+        return self._isSearchMode
+        ? self.roomDataManager.getUserReceiptSectionDate(section: section)
+        : self.roomDataManager.getRoomReceiptSectionDate(section: section)
     }
     /// 섹션의 개수
     var numOfSections: Int {
-        return self.roomDataManager.getNumOfRoomReceiptsSection
+        return self._isSearchMode
+        ? self.roomDataManager.getNumOfUserReceiptsSection
+        : self.roomDataManager.getNumOfRoomReceiptsSection
     }
     /// 영수증 개수
     func numOfReceipts(section: Int) -> Int {
-        return self.roomDataManager.getNumOfRoomReceipts(section: section)
+        return self._isSearchMode
+        ? self.roomDataManager.getNumOfUserReceipts(section: section)
+        : self.roomDataManager.getNumOfRoomReceipts(section: section)
     }
     /// 영수증 셀의 뷰모델 반환
     func cellViewModel(at indexPath: IndexPath) -> ReceiptTableViewCellVMProtocol {
-        return self.roomDataManager.getReceiptViewModel(indexPath: indexPath)
+        return self._isSearchMode
+        ? self.roomDataManager.getUserReceiptViewModel(indexPath: indexPath)
+        : self.roomDataManager.getRoomReceiptViewModel(indexPath: indexPath)
     }
     /// 셀 선택 시, 해당 셀의 영수증 반환
     func getReceipt(at indexPath: IndexPath) -> Receipt {
-        return self.roomDataManager.getRoomReceipt(at: indexPath)
+        return self._isSearchMode
+        ? self.roomDataManager.getUserReceipt(at: indexPath)
+        : self.roomDataManager.getRoomReceipt(at: indexPath)
     }
+    func isLastCell(indexPath: IndexPath) -> Bool {
+        return self._isSearchMode
+        ? indexPath.row == self.roomDataManager.getNumOfUserReceipts(section: indexPath.section) - 1
+        : indexPath.row == self.roomDataManager.getNumOfRoomReceipts(section: indexPath.section) - 1
+    }
+    
     
     
     
@@ -400,7 +455,9 @@ final class ReceiptTableViewViewModel: ReceiptTableViewViewModelProtocol {
     private var _receiptSearchModeDataManager: IndexPathDataManager<Receipt> = IndexPathDataManager()
     
     var isNotificationError: ErrorEnum? {
-        return self._receiptDataManager.error
+        return self._isSearchMode
+        ? self._receiptSearchModeDataManager.error
+        : self._receiptDataManager.error
     }
     
     // 영수증 데이터 인덱스패스

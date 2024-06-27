@@ -170,7 +170,7 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
 extension SettleMoneyRoomVM {
     /// 섹션의 타이틀(날짜)를 반환
     func getReceiptSectionDate(section: Int) -> String {
-        return self.roomDataManager.getReceiptSectionDate(section: section)
+        return self.roomDataManager.getRoomReceiptSectionDate(section: section)
     }
     /// 섹션의 개수
     var numOfSections: Int {
@@ -182,7 +182,7 @@ extension SettleMoneyRoomVM {
     }
     /// 영수증 셀의 뷰모델 반환
     func cellViewModel(at indexPath: IndexPath) -> ReceiptTableViewCellVMProtocol {
-        return self.roomDataManager.getReceiptViewModel(indexPath: indexPath)
+        return self.roomDataManager.getRoomReceiptViewModel(indexPath: indexPath)
     }
     /// 셀 선택 시, 해당 셀의 영수증 반환
     func getReceipt(at indexPath: IndexPath) -> Receipt {

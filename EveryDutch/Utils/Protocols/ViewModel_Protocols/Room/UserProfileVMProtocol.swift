@@ -7,14 +7,14 @@
 
 import UIKit
 
-protocol UserProfileVMProtocol: ReceiptTableViewProtocol {
+protocol UserProfileVMProtocol {
     // 클로저
 //    var fetchSuccessClosure: (([IndexPath]) -> Void)? { get set }
+    var userReceiptInitialLoad: Bool { get }
     
     
-    func getPendingSections() -> [String: [Int]]
     var fetchSuccessClosure: (() -> Void)? { get set }
-    func resetIndexPaths() 
+    
     
     
     var deleteUserSuccessClosure: (() -> Void)? { get set }
@@ -37,8 +37,6 @@ protocol UserProfileVMProtocol: ReceiptTableViewProtocol {
     
 //    var getUserReceiptLoadSuccess: Bool { get }
     
-    // API
-    func loadUserReceipt()
     
     
     /// 특정 유저를 신고하는 메서드
@@ -48,6 +46,9 @@ protocol UserProfileVMProtocol: ReceiptTableViewProtocol {
     func kickUser()
     
     
-    var userReceiptInitialLoad: Bool { get }
-    func userReceiptInitialLoadSetTrue() 
+    
+    
+    // MARK: - 영수증 데이터
+    func loadReceiptData()
+    func loadMoreReceiptData()
 }

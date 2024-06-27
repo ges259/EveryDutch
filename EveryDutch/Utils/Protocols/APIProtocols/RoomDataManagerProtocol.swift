@@ -44,27 +44,37 @@ protocol RoomDataManagerProtocol {
     var currentUserIsEuqualToMyUid: Bool { get }
     
     // MARK: - Receipt
-//    var getNumOfRoomReceipts: Int { get }
-    
     var getNumOfRoomReceiptsSection: Int { get }
-    
     func getNumOfRoomReceipts(section: Int) -> Int
     func updateReceiptUserName(receipt: Receipt) -> Receipt
+    func getRoomReceiptViewModel(indexPath: IndexPath) -> ReceiptTableViewCellVMProtocol
+    func getRoomReceipt(at indexPath: IndexPath) -> Receipt
     // API
     func loadMoreRoomReceipt()
-    func getReceiptSectionDate(section: Int) -> String
+    func getRoomReceiptSectionDate(section: Int) -> String
     
-    
-//    func getRoomReceipt(at index: Int) -> Receipt
-//    func getReceiptViewModel(index: Int) -> ReceiptTableViewCellVMProtocol
-    func getReceiptViewModel(indexPath: IndexPath) -> ReceiptTableViewCellVMProtocol
-    func getRoomReceipt(at indexPath: IndexPath) -> Receipt
+    func loadUserReceipt(completion: @escaping Typealias.VoidCompletion)
+    func loadMoreUserReceipt()
     
     
     
+    /// 섹션의 개수
+    var getNumOfUserReceiptsSection: Int { get }
+    /// 영수증 개수
+    func getNumOfUserReceipts(section: Int) -> Int
+    /// 섹션 헤더의 타이틀(날짜)를 리턴
+    func getUserReceiptSectionDate(section: Int) -> String
+    /// 영수증 셀(ReceiptTableViewCellVMProtocol) 리턴
+    func getUserReceiptViewModel(indexPath: IndexPath) -> ReceiptTableViewCellVMProtocol
+    /// index를 받아 알맞는 영수증을 리턴
+    func getUserReceipt(at indexPath: IndexPath) -> Receipt
     
-//    func fetchDecoration(userID: String) async throws -> Decoration?
-//    func getIndexToUserDataTuple(index: Int) -> UserDataTuple 
+    
+    
+    
+    
+    
+    
     // MARK: - Fix
     func getUserIDToUsersVM(userID: String) -> UsersTableViewCellVMProtocol?
     

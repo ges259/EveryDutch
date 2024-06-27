@@ -128,7 +128,14 @@ final class UserProfileVC: UIViewController {
         super.viewDidAppear(false)
         self.openView()
     }
-    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.receiptTableView.isViewVisible = true
+    }
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.receiptTableView.isViewVisible = false
+    }
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         if self.isInitialLayout {
@@ -164,7 +171,7 @@ extension UserProfileVC {
         }
         self.totalView.setRoundedCorners(.top, withCornerRadius: 20)
         // MARK: - Fix
-//        self.receiptTableView.setRoundedCorners(.all, withCornerRadius: 12)
+        //        self.receiptTableView.setRoundedCorners(.all, withCornerRadius: 12)
         self.totalStackView.setCustomSpacing(0, after: self.receiptTableView)
     }
     
@@ -255,7 +262,7 @@ extension UserProfileVC {
             action: #selector(self.scrollVertical))
         self.totalView.addGestureRecognizer(topViewPanGesture)
         topViewPanGesture.delegate = self
-
+        
         let viewPanGesture = UIPanGestureRecognizer(
             target: self,
             action: #selector(self.scrollVertical))
@@ -273,14 +280,15 @@ extension UserProfileVC {
     private func configureClosure() {
         self.viewModel.fetchSuccessClosure = { [weak self] in
             guard let self = self else { return }
-//            self.receiptSuccessClosure()
+            self.showLoading(false)
+            self.updateTableViewisHidden(true)
         }
         
         self.viewModel.deleteUserSuccessClosure = { [weak self] in
             guard let self = self else { return }
             self.closeView()
         }
-        // choji
+        
         self.viewModel.reportSuccessClosure = { [weak self] alertType, reportCount in
             guard let self = self else { return }
             self.customAlert(alertEnum: alertType, reportCount: reportCount) { _ in
@@ -312,74 +320,6 @@ extension UserProfileVC {
 
 // MARK: - 클로저 설정
 extension UserProfileVC {
-    /// api작업 시, 가져온 데이터 IndexPath배열을 처리하는 메서드
-//    private func receiptSuccessClosure() {
-//        let receiptSections = viewModel.getPendingSections()
-//        
-//        if let (key, sections) = receiptSections.first, receiptSections.count == 1 {
-//            self.handleSingleSectionUpdate(for: key, sections: sections)
-//        } else {
-//            self.receiptTableViewChange {
-//                self.receiptTableView.reloadData()
-//            }
-//        }
-//        
-//        self.viewModel.resetIndexPaths()
-//    }
-//    
-//    private func handleSingleSectionUpdate(for key: String, sections: [Int]) {
-//        self.receiptTableViewChange {
-//            switch key {
-//            case DataChangeType.sectionInsert.notificationName:
-//                self.insertTableViewSections(sections)
-//            case DataChangeType.sectionReload.notificationName:
-//                self.reloadTableViewSections(sections)
-//            default:
-//                break
-//            }
-//        }
-//    }
-//    
-//    private func reloadTableViewSections(_ sections: [Int]) {
-//        let sectionsToReload = IndexSet(sections)
-//        print(#function)
-//        dump(sectionsToReload)
-//        
-//        self.receiptTableView.beginUpdates()
-//        self.receiptTableView.reloadSections(sectionsToReload, with: .none)
-//        self.receiptTableView.endUpdates()
-//        
-//        print("Sections to reload: \(sectionsToReload)")
-//    }
-//    
-//    private func insertTableViewSections(_ sections: [Int]) {
-//        let sectionsToInsert = IndexSet(sections)
-//        print(#function)
-//        dump(sectionsToInsert)
-//        
-//        self.receiptTableView.beginUpdates()
-//        self.receiptTableView.insertSections(sectionsToInsert, with: .none)
-//        self.receiptTableView.endUpdates()
-//        
-//        print("Sections to insert: \(sectionsToInsert)")
-//    }
-//    
-//    private func receiptTableViewChange(action: @escaping () -> Void) {
-//        CATransaction.begin()
-//        CATransaction.setCompletionBlock {
-//            self.showLoading(false)
-//            self.dataChanged()
-//        }
-//        action()
-//        CATransaction.commit()
-//    }
-    
-    
-    
-    
-    
-    
-    
     /// api작업 시, 에러를 처리하는 메서드
     private func errorClosure(_ error: ErrorEnum) {
         self.showLoading(false)
@@ -387,12 +327,15 @@ extension UserProfileVC {
         switch error {
         case .noMoreData:
             print("noMoreData")
-            self.dataChanged()
             self.viewModel.disableMoreUserReceiptDataLoading()
             break
             
-        case .noInitialData:
+        case .noInitialData, .hasNoAPIData:
             print("noInitialData")
+            
+            // MARK: - Fix
+            self.receiptTableView.isHidden = true
+            self.view.layoutIfNeeded()
             self.viewModel.markNoDataAvailable()
             self.updateNoDataViewIsHidden(false)
             break
@@ -404,13 +347,6 @@ extension UserProfileVC {
         default:
             print("default ----- \(error)")
             break
-        }
-    }
-    /// (1회 한정) api작업 후, 테이블뷰의 높이를 설정하는 메서드
-    private func dataChanged() {
-        if !self.viewModel.userReceiptInitialLoad {
-            self.viewModel.userReceiptInitialLoadSetTrue()
-            self.updateTableViewisHidden(true)
         }
     }
     /// '검색' 버튼을 눌렀을 때, 검색 버튼의 이미지와 타이틀을 바꾸는 메서드
@@ -449,7 +385,8 @@ extension UserProfileVC {
         
         // fireLoadSuccess가 false라면, 데이터 가져오기
         else {
-            self.viewModel.loadUserReceipt()
+            self.showLoading(true)
+            self.viewModel.loadReceiptData()
         }
     }
     
@@ -485,8 +422,9 @@ extension UserProfileVC {
     private func updateTableViewisHidden(_ isHidden: Bool = false) {
         // 새로운 높이 구하기
         let newHeight: CGFloat = self.totalViewHeight(isHidden: isHidden)
+        // 현재 높이 구하기
         let currentHeight: CGFloat = self.totalViewHeightConstraint.layoutConstraints.first?.constant ?? 0
-
+        
         // 새로운 높이와 현재 높이가 같지 않은 경우에만 업데이트
         if newHeight != currentHeight {
             // 새로운 높이를 저장
@@ -528,7 +466,7 @@ extension UserProfileVC {
         self.btnStackView.snp.updateConstraints { make in
             make.bottom.equalTo(
                 -self.view.safeAreaInsets.bottom
-                - UIDevice.current.panModalSafeArea
+                 - UIDevice.current.panModalSafeArea
             )
         }
         // 테이블뷰 제약 조건 업데이트
@@ -540,7 +478,7 @@ extension UserProfileVC {
                 - self.tabBarView.frame.height
             )
         }
-            
+        
         self.totalViewHeightConstraint.update(
             offset: self.totalViewHeight(isHidden: false)
         )
@@ -582,7 +520,7 @@ extension UserProfileVC {
     private func handlePanGestureChanged(translation: CGPoint) {
         let currentOffset = self.totalViewBottomConstraint.layoutConstraints.first!.constant
         let newOffset = currentOffset + translation.y
-        let clampedOffset = min(max(newOffset, 0), 
+        let clampedOffset = min(max(newOffset, 0),
                                 self.currentTotalViewHeight)
         
         self.totalViewBottomConstraint.update(offset: clampedOffset)
@@ -649,103 +587,19 @@ extension UserProfileVC {
 
 
 
-//// MARK: - 테이블뷰 델리게이트
-//extension UserProfileVC: UITableViewDelegate {
-//    func tableView(_ tableView: UITableView,
-//                   heightForRowAt indexPath: IndexPath)
-//    -> CGFloat {
-//        return self.receiptTableCellHeight()
-//    }
-//    func tableView(_ tableView: UITableView,
-//                   didSelectRowAt indexPath: IndexPath) {
-//        // 뷰모델에서 셀의 영수증 가져오기
-//        let receipt = self.viewModel.getReceipt(at: indexPath)
-//        // '영수증 화면'으로 화면 이동
-//        self.coordinator.ReceiptScreen(receipt: receipt)
-//    }
-//}
-//
-//// MARK: - 테이블뷰 데이터 소스
-//extension UserProfileVC: UITableViewDataSource {
-//    /// 섹션의 개수
-//    func numberOfSections(in tableView: UITableView) -> Int {
-//        return self.viewModel.numOfSections
-//    }
-//    /// 셀의 개수
-//    func tableView(_ tableView: UITableView,
-//                   numberOfRowsInSection section: Int) -> Int {
-//        return self.viewModel.numOfReceipts(section: section)
-//    }
-//    func tableView(_ tableView: UITableView,
-//                   viewForFooterInSection section: Int
-//    ) -> UIView? {
-//        guard let headerView = tableView.dequeueReusableHeaderFooterView(
-//            withIdentifier: Identifier.receiptSectionHeaderView) as? ReceiptSectionHeaderView else {
-//            return nil
-//        }
-//        let sectionInfo = self.viewModel.getReceiptSectionDate(section: section)
-//        
-//        headerView.configure(with: sectionInfo,
-//                             labelBackgroundColor: .normal_white)
-//        
-//        return headerView
-//    }
-//    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-//        return 40 // 최소 높이를 40으로 설정
-//    }
-//    
-//    /// 헤더를 nil로 설정
-//    func tableView(_ tableView: UITableView,
-//                   viewForHeaderInSection section: Int
-//    ) -> UIView? {
-//        return nil
-//    }
-//    /// 헤더의 높이를 0으로 설정
-//    func tableView(_ tableView: UITableView,
-//                   heightForHeaderInSection section: Int
-//    ) -> CGFloat {
-//        return 0
-//    }
-//    
-//    /// cellForRowAt
-//    func tableView(_ tableView: UITableView,
-//                   cellForRowAt indexPath: IndexPath)
-//    -> UITableViewCell {
-//        let cell = self.receiptTableView.dequeueReusableCell(
-//            withIdentifier: Identifier.settlementTableViewCell,
-//            for: indexPath) as! SettlementTableViewCell
-//        
-//        // 셀 뷰모델 만들기
-//        let cellViewModel = self.viewModel.cellViewModel(at: indexPath)
-//        // 셀의 뷰모델을 셀에 넣기
-//        cell.configureCell(with: cellViewModel)
-//        cell.transform = CGAffineTransform(rotationAngle: .pi)
-//        cell.backgroundColor = .normal_white
-//        return cell
-//    }
-//}
-//
-//
-
-
-
-
-
-
-
 
 // MARK: - 스크롤뷰 및 제스쳐
 extension UserProfileVC: UIGestureRecognizerDelegate {
-//    func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
-//        let contentOffsetY = scrollView.contentOffset.y
-//        let contentHeight = scrollView.contentSize.height
-//        let height = scrollView.frame.size.height
-//        
-//        if contentOffsetY > contentHeight - height {
-//            self.showLoading(true)
-//            self.viewModel.loadUserReceipt()
-//        }
-//    }
+    //    func scrollViewWillBeginDecelerating(_ scrollView: UIScrollView) {
+    //        let contentOffsetY = scrollView.contentOffset.y
+    //        let contentHeight = scrollView.contentSize.height
+    //        let height = scrollView.frame.size.height
+    //
+    //        if contentOffsetY > contentHeight - height {
+    //            self.showLoading(true)
+    //            self.viewModel.loadUserReceipt()
+    //        }
+    //    }
     /// 메서드를 통해 팬 제스처와 다른 제스처 인식기가 동시에 인식되지 않도록 설정
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldReceive touch: UITouch) -> Bool {
         // totalView를 터치했을 경우 view의 tapGesture가 인식되지 않도록 설정
@@ -770,6 +624,6 @@ extension UserProfileVC: ReceiptTableViewDelegate {
     
     func willDisplayLastCell() {
         print(#function)
-        self.viewModel.loadUserReceipt()
+        self.viewModel.loadMoreReceiptData()
     }
 }

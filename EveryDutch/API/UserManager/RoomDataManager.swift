@@ -73,7 +73,9 @@ final class RoomDataManager: RoomDataManagerProtocol {
     /// [플래그] RoomUsers 데이터 observe를 설정했는지 판단하는 변수
     var roomUsersInitialLoad: Bool = true
     /// [플래그] Receipt 데이터 observe를 설정했는지 판단하는 변수
-    var roomReceiptInitialLoad = false
+    var roomReceiptInitialLoad: Bool = false
+//    var roomReceiptSearchModeInitialLoad: Bool = false
+    
     /// [플래그] Receipt 데이터를 추가적으로 가져올 지에 대한 플래그
 //    var hasMoreRoomReceiptData: Bool = true
 
@@ -98,7 +100,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
             }
             switch result {
             case .success():
-                self.loadFinancialData()
+//                self.loadFinancialData()
                 self.loadRoomReceipt(completion: completion)
             case .failure(let error):
                 completion(.failure(error))
@@ -335,11 +337,11 @@ final class RoomDataManager: RoomDataManagerProtocol {
         return self.receiptSections[section].receipts.count
     }
     /// 섹션 헤더의 타이틀(날짜)를 리턴
-    func getReceiptSectionDate(section: Int) -> String {
+    func getRoomReceiptSectionDate(section: Int) -> String {
         self.receiptSections[section].date
     }
     /// 영수증 셀(ReceiptTableViewCellVMProtocol) 리턴
-    func getReceiptViewModel(indexPath: IndexPath) -> ReceiptTableViewCellVMProtocol {
+    func getRoomReceiptViewModel(indexPath: IndexPath) -> ReceiptTableViewCellVMProtocol {
         var receiptVM = self.receiptSections[indexPath.section].receipts[indexPath.row]
         
         let updatedReceipt = self.updateReceiptUserName(receipt: receiptVM.getReceipt)
@@ -358,4 +360,37 @@ final class RoomDataManager: RoomDataManagerProtocol {
         returndReceipt.updatePayerName(with: payerUser)
         return returndReceipt
     }
+    
+    
+    /// 섹션의 개수
+    var getNumOfUserReceiptsSection: Int {
+        return self.receiptSections.count
+    }
+    /// 영수증 개수
+    func getNumOfUserReceipts(section: Int) -> Int {
+        return self.receiptSections[section].receipts.count
+    }
+    /// 섹션 헤더의 타이틀(날짜)를 리턴
+    func getUserReceiptSectionDate(section: Int) -> String {
+        self.receiptSections[section].date
+    }
+    /// 영수증 셀(ReceiptTableViewCellVMProtocol) 리턴
+    func getUserReceiptViewModel(indexPath: IndexPath) -> ReceiptTableViewCellVMProtocol {
+        var receiptVM = self.receiptSections[indexPath.section].receipts[indexPath.row]
+        
+        let updatedReceipt = self.updateReceiptUserName(receipt: receiptVM.getReceipt)
+        receiptVM.setReceipt(updatedReceipt)
+        
+        return receiptVM
+    }
+    /// index를 받아 알맞는 영수증을 리턴
+    func getUserReceipt(at indexPath: IndexPath) -> Receipt {
+        return self.receiptSections[indexPath.section].receipts[indexPath.row].getReceipt
+    }
+    
+    
+    
+    
+    
+    
 }

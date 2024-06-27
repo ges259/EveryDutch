@@ -60,7 +60,6 @@ final class SettlementTableViewCell: UITableViewCell {
         
         self.configureUI()
         self.configureAutoLayout()
-        self.configureAction()
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -71,15 +70,22 @@ final class SettlementTableViewCell: UITableViewCell {
         self.allPayerLbl.text = ""
         self.priceLbl.text = ""
         self.timeLbl.text = ""
-        
+        self.setRoundedCorners(.all, withCornerRadius: 0)
     }
 }
 
-// MARK: - 화면 설정
 
+
+
+
+
+
+
+
+
+// MARK: - 화면 설정
 extension SettlementTableViewCell {
-    
-    // MARK: - UI 설정
+    /// UI 설정
     private func configureUI() {
         self.baseView.layer.cornerRadius = 8
         self.baseView.clipsToBounds = true
@@ -89,9 +95,7 @@ extension SettlementTableViewCell {
         self.separatorInset = .zero
     }
     
-    
-    
-    // MARK: - 오토레이아웃 설정
+    /// 오토레이아웃 설정
     private func configureAutoLayout() {
         self.addSubview(self.baseView)
         self.baseView.addSubview(self.topStackView)
@@ -111,14 +115,6 @@ extension SettlementTableViewCell {
             make.trailing.equalToSuperview().offset(-20)
             make.bottom.equalToSuperview().offset(-24)
         }
-        
-    }
-    
-    
-    
-    // MARK: - 액션 설정
-    private func configureAction() {
-        
     }
 }
 
@@ -127,19 +123,30 @@ extension SettlementTableViewCell {
 // MARK: - 데이터 설정
 extension SettlementTableViewCell {
 
-    func configureCell(with viewModel: ReceiptTableViewCellVMProtocol?) {
+    func configureCell(
+        with viewModel: ReceiptTableViewCellVMProtocol?,
+        isFirst: Bool,
+        isLast: Bool
+    ) {
+        // 모서리 설정
+        var cornerRoundType: CornerRoundType = .all
+        if isFirst && isLast    { cornerRoundType = .all    }
+        else if isFirst         { cornerRoundType = .bottom }
+        else if isLast          { cornerRoundType = .top    }
+        self.setRoundedCorners(cornerRoundType, withCornerRadius: 10)
+        
+        
         // 뷰모델 저장
         self.viewModel = viewModel
         
         // viewModel을 사용하여 셀의 뷰를 업데이트.
         if let viewModel = viewModel {
             let receipt = viewModel.getReceipt
-            
             self.contextLbl.text = receipt.context
-//            self.allPayerLbl.text = receipt.payer
             self.allPayerLbl.text = receipt.payerName
             self.priceLbl.text = "\(receipt.price)"
             self.timeLbl.text = receipt.time
         }
     }
+    
 }
