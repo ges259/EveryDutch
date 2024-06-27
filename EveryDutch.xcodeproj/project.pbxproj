@@ -26,6 +26,7 @@
 		5F0C46312B910EE5009E9920 /* ProfileEditCellType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F0C46302B910EE5009E9920 /* ProfileEditCellType.swift */; };
 		5F0C46332B910EF3009E9920 /* RoomEditCellType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F0C46322B910EF3009E9920 /* RoomEditCellType.swift */; };
 		5F0C46372B910F0A009E9920 /* DecorationCellType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F0C46362B910F0A009E9920 /* DecorationCellType.swift */; };
+		5F0D6E0C2C2CA7560044AFB5 /* RoomDataManager+ReceiptSearchMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F0D6E0B2C2CA7560044AFB5 /* RoomDataManager+ReceiptSearchMode.swift */; };
 		5F17137E2B46A643006B3EBB /* Receipt_Enum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F17137D2B46A643006B3EBB /* Receipt_Enum.swift */; };
 		5F1713822B46D2E4006B3EBB /* ReceiptScreenPanCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F1713812B46D2E4006B3EBB /* ReceiptScreenPanCoordinator.swift */; };
 		5F1AC3092BA0E60600E34CAC /* AuthAPIProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F1AC3082BA0E60600E34CAC /* AuthAPIProtocol.swift */; };
@@ -278,6 +279,7 @@
 		5F0C46302B910EE5009E9920 /* ProfileEditCellType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileEditCellType.swift; sourceTree = "<group>"; };
 		5F0C46322B910EF3009E9920 /* RoomEditCellType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomEditCellType.swift; sourceTree = "<group>"; };
 		5F0C46362B910F0A009E9920 /* DecorationCellType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecorationCellType.swift; sourceTree = "<group>"; };
+		5F0D6E0B2C2CA7560044AFB5 /* RoomDataManager+ReceiptSearchMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RoomDataManager+ReceiptSearchMode.swift"; sourceTree = "<group>"; };
 		5F17137D2B46A643006B3EBB /* Receipt_Enum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Receipt_Enum.swift; sourceTree = "<group>"; };
 		5F1713812B46D2E4006B3EBB /* ReceiptScreenPanCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptScreenPanCoordinator.swift; sourceTree = "<group>"; };
 		5F1AC3082BA0E60600E34CAC /* AuthAPIProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthAPIProtocol.swift; sourceTree = "<group>"; };
@@ -760,6 +762,7 @@
 				5FD5D6122BEF5576008972A0 /* RoomDataManager+RoomUsers.swift */,
 				5FD5D6142BEF5701008972A0 /* RoomDataManager+MoneyData.swift */,
 				5F7762382BF0B29800AEC193 /* RoomDataManager+RoomReceipt.swift */,
+				5F0D6E0B2C2CA7560044AFB5 /* RoomDataManager+ReceiptSearchMode.swift */,
 				5F8B2F792C1B09AE0032E605 /* RoomDataManager+DeleteUser.swift */,
 			);
 			path = UserManager;
@@ -1476,6 +1479,7 @@
 				5F6C434D2B3C5BD000BBC466 /* CustomLabel.swift in Sources */,
 				5FE3DECC2B39CC8D008D58AE /* MainCollectionViewCellVM.swift in Sources */,
 				5F87DF2C2B3C99A3001D5B80 /* RoomSettingCoordProtocol.swift in Sources */,
+				5F0D6E0C2C2CA7560044AFB5 /* RoomDataManager+ReceiptSearchMode.swift in Sources */,
 				5F2061222BE7359100AB44F2 /* CustomTimePicker.swift in Sources */,
 				5F02CAB72B6570E000CD5280 /* UINavigationController+Ext.swift in Sources */,
 				5F8AB54C2BCA65EA006161C2 /* CustomImageCropView.swift in Sources */,

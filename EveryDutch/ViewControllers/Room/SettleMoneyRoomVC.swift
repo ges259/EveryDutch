@@ -80,14 +80,17 @@ final class SettleMoneyRoomVC: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         self.isViewVisible = true
+        self.receiptTableView.isViewVisible = true
         self.processPendingUpdates()
     }
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         self.isViewVisible = false
+        self.receiptTableView.isViewVisible = false
     }
     deinit { NotificationCenter.default.removeObserver(self) }
 }
@@ -195,11 +198,6 @@ extension SettleMoneyRoomVC {
             selector: #selector(self.handleDataChanged(notification:)),
             name: .userDataChanged,
             object: nil)
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(self.handleDataChanged(notification:)),
-            name: .receiptDataChanged,
-            object: nil)
     }
 }
     
@@ -243,15 +241,14 @@ extension SettleMoneyRoomVC {
 extension SettleMoneyRoomVC {
     /// 노티피케이션을 통해 받은 변경사항을 바로 반영하거나 저장하는 메서드
     @objc private func handleDataChanged(notification: Notification) {
+        
+        
         guard let dataInfo = notification.userInfo as? [String: [IndexPath]] else { return }
         let rawValue = notification.name.rawValue
         
         switch rawValue {
         case Notification.Name.userDataChanged.rawValue:
             self.viewModel.userDataChanged(dataInfo)
-            
-        case Notification.Name.receiptDataChanged.rawValue:
-            self.viewModel.receiptDataChanged(dataInfo)
             
         default:
             break
@@ -264,8 +261,6 @@ extension SettleMoneyRoomVC {
         // MARK: - Fix
         // 유저 테이블 업데이트
         self.updateUsersTableView()
-        // 영수증 테이블 업데이트
-        self.receiptTableView.updateReceiptsTableView()
         // 탑뷰의 높이를 업데이트
         self.updateTopViewHeight()
     }

@@ -14,8 +14,13 @@ final class IndexPathDataManager<T> {
     
     // 데이터 저장
     func dataChanged(_ userInfo: [String: Any]) {
+        
+        print("errorData ----- \(#function)")
+        dump(userInfo)
+        
         for (key, value) in userInfo {
             if let error = value as? ErrorEnum {
+                print("errorData ----- \(#function)")
                 self._error = error
                 // 에러 처리
                 print("Error received: \(error)")
@@ -199,21 +204,5 @@ extension SettleMoneyRoomVM {
 
     func resetPendingUserDataIndexPaths() {
         self.userDataManager.resetIndexPaths()
-    }
-
-    // 영수증 데이터 인덱스패스
-    func receiptDataChanged(_ userInfo: [String: [IndexPath]]) {
-        self.receiptDataManager.dataChanged(userInfo)
-    }
-
-    func getPendingReceiptIndexPaths() -> [String: [IndexPath]] {
-        return self.receiptDataManager.getPendingIndexPaths()
-    }
-    func getPendingReceiptSections() -> [String: [Int]] {
-        return self.receiptDataManager.getPendingSections()
-    }
-
-    func resetPendingReceiptIndexPaths() {
-        self.receiptDataManager.resetIndexPaths()
     }
 }

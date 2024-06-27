@@ -15,7 +15,11 @@ final class ReceiptTableView: UITableView {
     weak var receiptDelegate: ReceiptTableViewDelegate?
     private lazy var cellHeight: CGFloat = self.frame.width / 7 * 2
 
-    
+    var isViewVisible: Bool = true {
+        didSet {
+            self.updateReceiptsTableView()
+        }
+    }
     
     
     
@@ -79,23 +83,25 @@ final class ReceiptTableView: UITableView {
 extension ReceiptTableView {
     /// 노티피케이션을 통해 받은 변경사항을 바로 반영하거나 저장하는 메서드
     @objc private func handleDataChanged(notification: Notification) {
-        print(#function)
-        guard let dataInfo = notification.userInfo as? [String: [IndexPath]] else { return }
+        
+        guard let dataInfo = notification.userInfo as? [String: Any] else { return }
+        
         let rawValue = notification.name.rawValue
         
         switch rawValue {
         case Notification.Name.receiptDataChanged.rawValue:
             self.viewModel.receiptDataChanged(dataInfo)
-            
         default:
             break
         }
+        self.updateReceiptsTableView()
     }
     
     /// 영수증 테이블뷰 리로드
-    // MARK: - Fix
     func updateReceiptsTableView() {
-        if let _ = self.viewModel.isNotificationError {  
+        guard self.isViewVisible else { return }
+        
+        if let _ = self.viewModel.isNotificationError {
             self.viewModel.hasNoMoreDataSetTrue()
         }
         
@@ -326,7 +332,7 @@ protocol ReceiptTableViewViewModelProtocol {
     
     // 노티피케이션
     var isNotificationError: ErrorEnum? { get }
-    func receiptDataChanged(_ userInfo: [String: [IndexPath]])
+    func receiptDataChanged(_ userInfo: [String: Any])
     func getPendingReceiptIndexPaths() -> [String: [IndexPath]]
     func getPendingReceiptSections() -> [String: [Int]]
     func resetPendingReceiptIndexPaths()
@@ -335,21 +341,28 @@ protocol ReceiptTableViewViewModelProtocol {
 final class ReceiptTableViewViewModel: ReceiptTableViewViewModelProtocol {
     
     private let roomDataManager: RoomDataManagerProtocol
+    
+    // 플래그
     private let _isSearchMode: Bool
     private var _hasNoMoreData: Bool = false
     
+    
+    // MARK: - 라이프사이클
     init (roomDataManager: RoomDataManagerProtocol,
           isSearchMode: Bool) {
         self.roomDataManager = roomDataManager
         self._isSearchMode = isSearchMode
     }
     
-    var isSearchMode: Bool {
-        return self._isSearchMode
-    }
     
+    // MARK: - 플래그 변경
     func hasNoMoreDataSetTrue() {
         self._hasNoMoreData = true
+    }
+    
+    // MARK: - 데이터 리턴
+    var isSearchMode: Bool {
+        return self._isSearchMode
     }
     var hasNoMoreData: Bool {
         return self._hasNoMoreData
@@ -357,7 +370,7 @@ final class ReceiptTableViewViewModel: ReceiptTableViewViewModelProtocol {
     
     
     
-    
+    // MARK: - 테이블뷰
     /// 섹션의 타이틀(날짜)를 반환
     func getReceiptSectionDate(section: Int) -> String {
         return self.roomDataManager.getReceiptSectionDate(section: section)
@@ -382,13 +395,7 @@ final class ReceiptTableViewViewModel: ReceiptTableViewViewModelProtocol {
     
     
     
-    
-    
-    
-    
-    
-    
-    
+    // MARK: - 인덱스패스
     private var _receiptDataManager: IndexPathDataManager<Receipt> = IndexPathDataManager()
     private var _receiptSearchModeDataManager: IndexPathDataManager<Receipt> = IndexPathDataManager()
     
@@ -396,10 +403,8 @@ final class ReceiptTableViewViewModel: ReceiptTableViewViewModelProtocol {
         return self._receiptDataManager.error
     }
     
-    
     // 영수증 데이터 인덱스패스
-    func receiptDataChanged(_ userInfo: [String: [IndexPath]]) {
-        
+    func receiptDataChanged(_ userInfo: [String: Any]) {
         return self._isSearchMode
         ? self._receiptSearchModeDataManager.dataChanged(userInfo)
         : self._receiptDataManager.dataChanged(userInfo)

@@ -52,16 +52,19 @@ extension RoomDataManager {
                 switch result {
                 case .success(let loadData):
                     print("영수증 추가적으로 가져오기 성공")
-                    self.handleAddedReceiptEvent(loadData)
+                    self.handleAddedReceiptEvent(loadData, sections: &self.receiptSections)
+                    
                 case .failure(let error):
                     DispatchQueue.main.async {
                         switch error {
                         case .noMoreData:
-                            self.receiptDebouncer.triggerErrorDebounce(.hasNoAPIData)
+                            
+                            
                             break
                         default:
                             break
                         }
+                        self.receiptDebouncer.triggerErrorDebounce(.hasNoAPIData)
                         print("영수증 추가적으로 가져오기 실패")
                     }
                 }
@@ -80,7 +83,7 @@ extension RoomDataManager {
             
         case .added(let toAdd):
             print("\(#function) ----- add")
-            self.handleAddedReceiptEvent(toAdd)
+            self.handleAddedReceiptEvent(toAdd, sections: &self.receiptSections)
             
         case .removed(let roomID):
             print("\(#function) ----- remove")
@@ -114,10 +117,8 @@ extension RoomDataManager {
         self.receiptDebouncer.triggerDebounceWithIndexPaths(eventType: .updated, updatedIndexPaths)
     }
     
-    
-    
     // MARK: - 추가
-    private func handleAddedReceiptEvent(_ toAdd: [ReceiptTuple]) {
+    func handleAddedReceiptEvent(_ toAdd: [ReceiptTuple], sections: inout [ReceiptSection]) {
         // 추가할 섹션의 IndexPath 저장
         var sectionsToInsert = IndexSet()
         // 추가할 행의 IndexPath 저장
@@ -125,14 +126,14 @@ extension RoomDataManager {
         
         for (receiptID, receipt) in toAdd {
             // 이미 존재하는 영수증은 건너뜀
-            if receiptSections.contains(where: { $0.receipts.contains { $0.getReceiptID == receiptID } }) {
+            if sections.contains(where: { $0.receipts.contains { $0.getReceiptID == receiptID } }) {
                 continue
             }
             
             // 영수증의 날짜를 가져옴
             let date = receipt.date
             // 현재 섹션들 중에서 해당 날짜(date)를 가진 섹션의 인덱스를 찾음
-            var sectionIndex = self.receiptSections.firstIndex { $0.date == date }
+            var sectionIndex = sections.firstIndex { $0.date == date }
             
             // 해당 섹션이 없는 경우
             if sectionIndex == nil {
@@ -140,34 +141,33 @@ extension RoomDataManager {
                 let newSection = ReceiptSection(date: date, receipts: [])
                 
                 // 날짜를 비교하여 적절한 위치에 삽입
-                if let insertIndex = self.receiptSections.firstIndex(where: { $0.date > date }) {
-                    self.receiptSections.insert(newSection, at: insertIndex)
+                if let insertIndex = sections.firstIndex(where: { $0.date > date }) {
+                    sections.insert(newSection, at: insertIndex)
                     sectionIndex = insertIndex
                 } else {
-                    self.receiptSections.append(newSection)
-                    sectionIndex = self.receiptSections.count - 1
+                    sections.append(newSection)
+                    sectionIndex = sections.count - 1
                 }
                 // 새 섹션의 인덱스를 sectionsToInsert에 추가
                 sectionsToInsert.insert(sectionIndex!)
             }
             
             // 해당 섹션이 존재하는 경우, 행 추가
-            let rowIndex = self.receiptSections[sectionIndex!].receipts.count
+            let rowIndex = sections[sectionIndex!].receipts.count
             rowsToInsert.append(IndexPath(row: rowIndex, section: sectionIndex!))
             
             // 새 영수증의 ViewModel을 생성하고 섹션에 추가
             let viewModel = ReceiptTableViewCellVM(receiptID: receiptID, receiptData: receipt)
-            self.receiptSections[sectionIndex!].receipts.append(viewModel)
+            sections[sectionIndex!].receipts.append(viewModel)
         }
 
         // 섹션들을 날짜 순서대로 정렬
-        self.receiptSections.sort { $0.date > $1.date }
+        sections.sort { $0.date > $1.date }
 
         // 섹션 내 영수증들을 시간 순서대로 정렬
-        for sectionIndex in 0..<self.receiptSections.count {
-            self.receiptSections[sectionIndex].receipts.sort { $0.getReceipt.time > $1.getReceipt.time }
+        for sectionIndex in 0..<sections.count {
+            sections[sectionIndex].receipts.sort { $0.getReceipt.time > $1.getReceipt.time }
         }
-        
         
         // 새 섹션이 추가된 경우, sectionInsert 이벤트 트리거
         // debounce를 사용하여 테이블뷰 업데이트
@@ -179,11 +179,10 @@ extension RoomDataManager {
         // 행이 추가된 경우, sectionReload 이벤트 트리거
         if !rowsToInsert.isEmpty {
             self.receiptDebouncer.triggerDebounceWithIndexPaths(
-                eventType: .
-                sectionReload, rowsToInsert)
+                eventType: .sectionReload,
+                rowsToInsert)
         }
     }
-    
     
     
     

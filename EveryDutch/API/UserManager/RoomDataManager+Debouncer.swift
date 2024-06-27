@@ -39,10 +39,8 @@ final class Debouncer {
         self.cancelScheduledWork()
         // 인덱스패스 업데이트
         self.addIndexPaths(eventType: eventType, indexPaths: indexPaths)
-        print("_________________________________")
-        print(#function)
-        print(" ----- ----- \(self.error)  ----- ----- ")
-        print("_________________________________")
+        // MARK: - Fix
+        // room에러를 수정한 후에 삭제
         // 에러 정보 초기화
         self.error = nil
         // 디바운스
@@ -88,6 +86,7 @@ final class Debouncer {
         self.cancelScheduledWork()
         // 에러 설정
         self.error = errorType
+        
         // 업데이트하지 않음
         self.indexPaths = [:]
         // 디바운스 설정
@@ -112,8 +111,8 @@ final class Debouncer {
     /// 에러가 없다면 [String : [IndexPath]]
     private var getUserInfoData: [String: Any] {
         return self.error != nil
-            ? [DataChangeType.error.notificationName: self.error ?? .unknownError]
-            : self.indexPaths
+        ? [DataChangeType.error.notificationName: self.error ?? .unknownError]
+        : self.indexPaths
     }
     
     // MARK: - 데이터 초기화

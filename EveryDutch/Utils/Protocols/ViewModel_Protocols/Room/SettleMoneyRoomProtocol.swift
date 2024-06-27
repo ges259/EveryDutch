@@ -45,24 +45,6 @@ protocol SettleMoneyRoomProtocol : ReceiptTableViewProtocol{
     func userDataChanged(_ userInfo: [String: [IndexPath]])
     func getPendingUserDataIndexPaths() -> [String: [IndexPath]]
     func resetPendingUserDataIndexPaths()
-    
-    // Receipt data handling
-    func receiptDataChanged(_ userInfo: [String: [IndexPath]])
-    func getPendingReceiptIndexPaths() -> [String: [IndexPath]]
-    func getPendingReceiptSections() -> [String: [Int]]
-    func resetPendingReceiptIndexPaths()
-    
-    
-//    //    var numberOfReceipt: Int { get }
-//        var numOfSection: Int { get }
-//        func numberOfReceipt(section: Int) -> Int
-//    //    func cellViewModel(at index: Int) -> ReceiptTableViewCellVMProtocol
-//    //    func getReceipt(at index: Int) -> Receipt
-//        
-//        func cellViewModel(at indexPath: IndexPath) -> ReceiptTableViewCellVMProtocol
-//        
-//        func getReceipt(at indexPath: IndexPath) -> Receipt
-//    func getReceiptSectionDate(section: Int) -> String 
 }
 
 protocol ReceiptTableViewProtocol {
