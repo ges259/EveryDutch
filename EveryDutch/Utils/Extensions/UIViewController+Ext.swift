@@ -85,10 +85,6 @@ extension UIViewController {
     func cardHeight() -> CGFloat {
         return (self.view.frame.width - 20) * 1.8 / 3
     }
-    /// 테이블뷰의 셀의 높이d
-    func receiptTableCellHeight() -> CGFloat {
-        return (self.view.frame.width - 20) / 7 * 2
-    }
     func getBottomSafeAreaInset() -> CGFloat {
         return self.view.safeAreaInsets.bottom
     }
@@ -184,11 +180,3 @@ extension UIViewController {
         }
     }
 }
-
-/// 탭바를 사용할 수 없게 / 있게 만드는 메서드
-//    private func tabBarIsEnabled(_ isEnabled: Bool) {
-//        let tabBarItemsArray = self.tabBarController?.tabBar.items
-//        tabBarItemsArray?.forEach({ item in
-//            item.isEnabled = isEnabled
-//        })
-//    }

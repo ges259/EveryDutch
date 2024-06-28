@@ -10,7 +10,6 @@ import SnapKit
 
 final class UserProfileVC: UIViewController {
     // MARK: - 레이아웃
-    
     private let totalView: UIView = UIView.configureView(
         color: .deep_Blue)
     private var totalViewHeightConstraint: Constraint!
@@ -45,10 +44,6 @@ final class UserProfileVC: UIViewController {
         spacing: 10,
         alignment: .fill,
         distribution: .fill)
-    
-    
-    
-    
     
     private var tabBarView: UIView = UIView.configureView(
         color: UIColor.deep_Blue)
@@ -87,6 +82,7 @@ final class UserProfileVC: UIViewController {
     
     
     
+    
     // MARK: - 프로퍼티
     private var viewModel: UserProfileVMProtocol
     private let coordinator: UserProfileCoordProtocol
@@ -94,14 +90,21 @@ final class UserProfileVC: UIViewController {
     
     private var isInitialLayout: Bool = true
     
-    private lazy var topViewBaseHeight: CGFloat = {
+    private var topViewBaseHeight: CGFloat {
         return self.view.safeAreaInsets.bottom
         + self.smallButtonSize() + 10 + 10 + UIDevice.current.panModalSafeArea
-    }()
+    }
     
     private var currentTotalViewHeight: CGFloat {
         return self.totalView.frame.height
     }
+    
+    
+    
+    
+    
+    
+    
     
     
     
@@ -238,9 +241,6 @@ extension UserProfileVC {
         }
     }
     
-    
-    
-    
     /// 액션 설정
     private func configureAction() {
         self.searchBtn.addTarget(
@@ -280,6 +280,7 @@ extension UserProfileVC {
     private func configureClosure() {
         self.viewModel.fetchSuccessClosure = { [weak self] in
             guard let self = self else { return }
+            self.noDataView.isHidden = true
             self.showLoading(false)
             self.updateTableViewisHidden(true)
         }
@@ -328,7 +329,6 @@ extension UserProfileVC {
         case .noMoreData:
             print("noMoreData")
             self.viewModel.disableMoreUserReceiptDataLoading()
-            break
             
         case .noInitialData, .hasNoAPIData:
             print("noInitialData")
@@ -338,23 +338,21 @@ extension UserProfileVC {
             self.view.layoutIfNeeded()
             self.viewModel.markNoDataAvailable()
             self.updateNoDataViewIsHidden(false)
-            break
             
         case .alreadyReported:
             self.customAlert(alertEnum: error.alertType) { _ in }
-            break
             
         default:
             print("default ----- \(error)")
             break
         }
     }
+    
     /// '검색' 버튼을 눌렀을 때, 검색 버튼의 이미지와 타이틀을 바꾸는 메서드
     private func searchModeSuccess(image: UIImage?, title: String) {
         self.searchBtn.imageAndTitleFix(image: image, title: title)
     }
 }
-
 
 
 
@@ -439,6 +437,7 @@ extension UserProfileVC {
             }
         }
     }
+    
     /// 영수증 데이터가 없을 때, NoDataView에 맞춰 높이를 변경하는 메서드
     private func updateNoDataViewIsHidden(_ isHidden: Bool) {
         // 현재 상태 저장
@@ -454,7 +453,7 @@ extension UserProfileVC {
     /// 탑뷰의 높이를 구하는 메서드
     private func totalViewHeight(isHidden: Bool) -> CGFloat {
         let height = isHidden
-        ? self.receiptTableView.frame.height
+        ? self.receiptTableView.frame.height + 10
         : self.cardHeight() + 17
         return self.topViewBaseHeight + height
     }
@@ -474,8 +473,7 @@ extension UserProfileVC {
             make.height.lessThanOrEqualTo(
                 self.view.frame.height
                 - self.view.safeAreaInsets.top
-                - 17 - 10
-                - self.tabBarView.frame.height
+                - self.topViewBaseHeight
             )
         }
         
@@ -504,11 +502,11 @@ extension UserProfileVC {
         
         switch sender.state {
         case .began, .changed:
-            handlePanGestureChanged(translation: translation)
+            self.handlePanGestureChanged(translation: translation)
             sender.setTranslation(.zero, in: self.view)
             
         case .ended:
-            handlePanGestureEnded(velocity: velocity)
+            self.handlePanGestureEnded(velocity: velocity)
             
         default:
             break
@@ -612,6 +610,11 @@ extension UserProfileVC: UIGestureRecognizerDelegate {
         return true
     }
 }
+
+
+
+
+
 
 
 

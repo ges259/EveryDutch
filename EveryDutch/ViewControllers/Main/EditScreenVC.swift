@@ -17,6 +17,8 @@ import Photos
  Decoration이 저장이 안 됨
  */
 final class EditScreenVC: UIViewController {
+
+    
     // MARK: - 레이아웃
     /// 스크롤뷰
     private lazy var scrollView: UIScrollView = {
@@ -432,7 +434,7 @@ extension EditScreenVC: UITableViewDataSource {
             guard let self = self else { return }
             switch index {
             case 0: // 이미지
-                self.requestPhotoLibraryAccess()
+                self.coordinator.requestPhotoLibraryAccess(delegate: self)
                 break
             case 1: // 색상
                 self.configureColorPicker(isOpen: true)
@@ -744,63 +746,73 @@ extension EditScreenVC: CustomPickerDelegate {
 
 
 
-
-// MARK: - 이미지 권한 설정
-
-extension EditScreenVC {
-    /// 이미지 권한 확인
-    func requestPhotoLibraryAccess() {
-        // iOS 14 이상에서 사용할 수 있는 authorizationStatus(for:) 메서드 사용
-        let status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
-        switch status {
-            // .authorized == [전체 접근 허용]
-                // 사용자가 앱에 자신의 사진 라이브러리 전체에 대한 접근을 허용한 경우
-            // .limited == [접근 제한]
-                // 사용자가 앱에 사진 라이브러리의 전체 접근을 허용하지 않고,
-                // 대신 특정 사진이나 앨범에 대한 접근만을 허용한 경우
-        case .authorized, .limited:
-            print("Authorized or Limited Access")
-            // 권한이 이미 있음
-            self.coordinator.imagePickerScreen()
-            // .notDetermined == [접근 제한되지 않음]
-                // 사용자가 아직 앱에 대한 사진 라이브러리 접근 권한을 결정하지 않은 상태
-        case .notDetermined:
-            print("notDetermined")
-            self.photoAccess()
-            
-            // .denied == [접근 거부]
-                // 사용자가 앱의 사진 라이브러리 접근을 명시적으로 거부한 경우
-                // 사용자가 권한을 거부함. 설정으로 유도할 수 있음
-            // .restricted == [접근 불가]
-                // 부모의 제어 설정이나 기업 정책 등 외부 요인으로 인해 앱이 사진 라이브러리에 접근할 수 없는 경우
-        case .denied, .restricted:
-            print("denied or restricted")
-            self.showPhotoLibraryAccessDeniedAlert()
-            
-            
-        @unknown default: break
-        }
-    }
-    
-    /// 권한 요청
-    private func photoAccess() {
-        // 권한 요청
-        PHPhotoLibrary.requestAuthorization { newStatus in
-            if newStatus == .authorized {
-                DispatchQueue.main.async {
-                    self.coordinator.imagePickerScreen()
-                }
-            }
-        }
-    }
-    
-    /// 설정으로 이동
-    private func showPhotoLibraryAccessDeniedAlert() {
-        self.customAlert(alertEnum: .photoAccess) { _ in
-            // 사용자를 앱의 설정 화면으로 이동
-            guard let settingsUrl = URL(string: UIApplication.openSettingsURLString), UIApplication.shared.canOpenURL(settingsUrl)
-            else { return }
-            UIApplication.shared.open(settingsUrl, options: [:])
-        }
-    }
-}
+//
+//// MARK: - 이미지 권한 설정
+//extension EditScreenVC {
+//    /// 이미지 권한을 확인하는 메서드
+//    func requestPhotoLibraryAccess() {
+//        let status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
+//        switch status {
+//        case .authorized:
+//            print("Authorized Access")
+//            // 권한이 이미 있음
+//            // .authorized == [전체 접근 허용]
+//            // 사용자가 앱에 자신의 사진 라이브러리 전체에 대한 접근을 허용한 경우
+//            self.coordinator.presentImagePicker()
+//            
+//        case .limited:
+//            print("Limited Access")
+//            // .limited == [접근 제한]
+//            // 사용자가 앱에 사진 라이브러리의 전체 접근을 허용하지 않고,
+//            // 대신 특정 사진이나 앨범에 대한 접근만을 허용한 경우
+//            self.presentLimitedLibraryPicker()
+//            
+//        case .notDetermined:
+//            print("notDetermined")
+//            
+//            // .notDetermined == [접근 제한되지 않음]
+//            // 사용자가 아직 앱에 대한 사진 라이브러리 접근 권한을 결정하지 않은 상태
+//            self.requestPhotoAccess()
+//            
+//        case .denied, .restricted:
+//            print("denied or restricted")
+//            // .denied == [접근 거부]
+//            // 사용자가 앱의 사진 라이브러리 접근을 명시적으로 거부한 경우
+//            // 사용자가 권한을 거부함. 설정으로 유도할 수 있음
+//            // .restricted == [접근 불가]
+//            // 부모의 제어 설정이나 기업 정책 등 외부 요인으로 인해 앱이 사진 라이브러리에 접근할 수 없는 경우
+//            self.showPhotoLibraryAccessDeniedAlert()
+//        @unknown default:
+//            break
+//        }
+//    }
+//    
+//    /// notDetermined(접근 제한 됨) 상태일 때, 권한을 요청하는 메서드
+//    private func requestPhotoAccess() {
+//        PHPhotoLibrary.requestAuthorization(for: .readWrite) { newStatus in
+//            DispatchQueue.main.async {
+//                if newStatus == .authorized || newStatus == .limited {
+//                    self.coordinator.presentImagePicker()
+//                }
+//            }
+//        }
+//    }
+//    
+//    /// denied(접근 거부) 및 restriced(접근 불가) 상태일 때, 설정으로 이동하는 메서드
+//    private func showPhotoLibraryAccessDeniedAlert() {
+//        self.customAlert(alertEnum: .photoAccess) { _ in
+//            // 사용자를 앱의 설정 화면으로 이동
+//            guard let settingsUrl = URL(string: UIApplication.openSettingsURLString), UIApplication.shared.canOpenURL(settingsUrl)
+//            else { return }
+//            UIApplication.shared.open(settingsUrl, options: [:])
+//        }
+//    }
+//    
+//    /// 제한된 접근 권한일 때, 추가 사진 선택을 허용하는 메서드
+//    func presentLimitedLibraryPicker() {
+//        PHPhotoLibrary.shared().presentLimitedLibraryPicker(from: self) {_ in 
+//            // 사용자에게 추가 사진 선택을 요청한 후, 이미지 피커를 열기
+//            self.coordinator.presentImagePicker()
+//        }
+//    }
+//}

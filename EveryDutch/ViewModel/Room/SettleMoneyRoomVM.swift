@@ -166,33 +166,8 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
 
 
 
-// MARK: - 영수증 테이블뷰
+// MARK: - 인덱스패스
 extension SettleMoneyRoomVM {
-    /// 섹션의 타이틀(날짜)를 반환
-    func getReceiptSectionDate(section: Int) -> String {
-        return self.roomDataManager.getRoomReceiptSectionDate(section: section)
-    }
-    /// 섹션의 개수
-    var numOfSections: Int {
-        return self.roomDataManager.getNumOfRoomReceiptsSection
-    }
-    /// 영수증 개수
-    func numOfReceipts(section: Int) -> Int {
-        return self.roomDataManager.getNumOfRoomReceipts(section: section)
-    }
-    /// 영수증 셀의 뷰모델 반환
-    func cellViewModel(at indexPath: IndexPath) -> ReceiptTableViewCellVMProtocol {
-        return self.roomDataManager.getRoomReceiptViewModel(indexPath: indexPath)
-    }
-    /// 셀 선택 시, 해당 셀의 영수증 반환
-    func getReceipt(at indexPath: IndexPath) -> Receipt {
-        return self.roomDataManager.getRoomReceipt(at: indexPath)
-    }
-    
-    
-    
-    
-    // MARK: - 인덱스패스
     // 유저 데이터 인덱스패스
     func userDataChanged(_ userInfo: [String: [IndexPath]]) {
         self.userDataManager.dataChanged(userInfo)

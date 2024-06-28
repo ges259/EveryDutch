@@ -8,6 +8,8 @@
 import UIKit
 
 class CustomTableView: UITableView {
+    lazy var cellHeight: CGFloat = self.frame.width / 7 * 2
+    
     override init(frame: CGRect, style: UITableView.Style) {
         super.init(frame: frame, style: style)
         

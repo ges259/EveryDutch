@@ -8,7 +8,7 @@
 import UIKit
 import SnapKit
 
-final class SettlementTableViewCell: UITableViewCell {
+final class ReceiptTableViewCell: UITableViewCell {
     
     // MARK: - 레이아웃
     private lazy var baseView: UIView = UIView.configureView(
@@ -84,7 +84,7 @@ final class SettlementTableViewCell: UITableViewCell {
 
 
 // MARK: - 화면 설정
-extension SettlementTableViewCell {
+extension ReceiptTableViewCell {
     /// UI 설정
     private func configureUI() {
         self.baseView.layer.cornerRadius = 8
@@ -121,7 +121,7 @@ extension SettlementTableViewCell {
 
 
 // MARK: - 데이터 설정
-extension SettlementTableViewCell {
+extension ReceiptTableViewCell {
 
     func configureCell(
         with viewModel: ReceiptTableViewCellVMProtocol?,
@@ -148,5 +148,4 @@ extension SettlementTableViewCell {
             self.timeLbl.text = receipt.time
         }
     }
-    
 }

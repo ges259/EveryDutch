@@ -7,19 +7,9 @@
 
 import Foundation
 
-protocol SettleMoneyRoomProtocol : ReceiptTableViewProtocol{
-    
-    
-    
-    
+protocol SettleMoneyRoomProtocol {
     
     var navTitle: String? { get }
-    
-    
-    
-    
-    
-    
     
     // MARK: - 탑뷰 크기 조절
     var initialHeight: CGFloat { get set }
@@ -47,15 +37,4 @@ protocol SettleMoneyRoomProtocol : ReceiptTableViewProtocol{
     func resetPendingUserDataIndexPaths()
 }
 
-protocol ReceiptTableViewProtocol {
-    
-    var numOfSections: Int { get }
-    func numOfReceipts(section: Int) -> Int
-    
-    
-    
-    func cellViewModel(at indexPath: IndexPath) -> ReceiptTableViewCellVMProtocol
-    
-    func getReceipt(at indexPath: IndexPath) -> Receipt
-    func getReceiptSectionDate(section: Int) -> String
-}
+

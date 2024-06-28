@@ -398,9 +398,6 @@ extension SettleMoneyRoomVC {
 
 
 
-
-
-
 // MARK: - 테이블뷰 델리게이트
 extension SettleMoneyRoomVC: UsersTableViewDelegate {
     func didSelectUser() {
@@ -415,6 +412,9 @@ extension SettleMoneyRoomVC: UsersTableViewDelegate {
         self.updateTopViewHeight()
     }
 }
+
+
+
 
 
 

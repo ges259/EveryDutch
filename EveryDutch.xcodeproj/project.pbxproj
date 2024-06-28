@@ -27,6 +27,10 @@
 		5F0C46332B910EF3009E9920 /* RoomEditCellType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F0C46322B910EF3009E9920 /* RoomEditCellType.swift */; };
 		5F0C46372B910F0A009E9920 /* DecorationCellType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F0C46362B910F0A009E9920 /* DecorationCellType.swift */; };
 		5F0D6E0C2C2CA7560044AFB5 /* RoomDataManager+ReceiptSearchMode.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F0D6E0B2C2CA7560044AFB5 /* RoomDataManager+ReceiptSearchMode.swift */; };
+		5F15D8FD2C2DE35E0051EBEF /* ReceiptTableViewViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F15D8FC2C2DE35E0051EBEF /* ReceiptTableViewViewModel.swift */; };
+		5F15D8FF2C2DE38F0051EBEF /* ReceiptTableViewViewModelProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F15D8FE2C2DE38F0051EBEF /* ReceiptTableViewViewModelProtocol.swift */; };
+		5F15D9022C2F02790051EBEF /* BSImagePicker in Frameworks */ = {isa = PBXBuildFile; productRef = 5F15D9012C2F02790051EBEF /* BSImagePicker */; };
+		5F15D9042C2F1BC90051EBEF /* UIViewController+ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F15D9032C2F1BC90051EBEF /* UIViewController+ImagePicker.swift */; };
 		5F17137E2B46A643006B3EBB /* Receipt_Enum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F17137D2B46A643006B3EBB /* Receipt_Enum.swift */; };
 		5F1713822B46D2E4006B3EBB /* ReceiptScreenPanCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F1713812B46D2E4006B3EBB /* ReceiptScreenPanCoordinator.swift */; };
 		5F1AC3092BA0E60600E34CAC /* AuthAPIProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F1AC3082BA0E60600E34CAC /* AuthAPIProtocol.swift */; };
@@ -280,6 +284,9 @@
 		5F0C46322B910EF3009E9920 /* RoomEditCellType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoomEditCellType.swift; sourceTree = "<group>"; };
 		5F0C46362B910F0A009E9920 /* DecorationCellType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DecorationCellType.swift; sourceTree = "<group>"; };
 		5F0D6E0B2C2CA7560044AFB5 /* RoomDataManager+ReceiptSearchMode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RoomDataManager+ReceiptSearchMode.swift"; sourceTree = "<group>"; };
+		5F15D8FC2C2DE35E0051EBEF /* ReceiptTableViewViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptTableViewViewModel.swift; sourceTree = "<group>"; };
+		5F15D8FE2C2DE38F0051EBEF /* ReceiptTableViewViewModelProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptTableViewViewModelProtocol.swift; sourceTree = "<group>"; };
+		5F15D9032C2F1BC90051EBEF /* UIViewController+ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+ImagePicker.swift"; sourceTree = "<group>"; };
 		5F17137D2B46A643006B3EBB /* Receipt_Enum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Receipt_Enum.swift; sourceTree = "<group>"; };
 		5F1713812B46D2E4006B3EBB /* ReceiptScreenPanCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptScreenPanCoordinator.swift; sourceTree = "<group>"; };
 		5F1AC3082BA0E60600E34CAC /* AuthAPIProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthAPIProtocol.swift; sourceTree = "<group>"; };
@@ -507,6 +514,7 @@
 				5F294B542B4DBA0100396B6E /* FirebaseDatabase in Frameworks */,
 				5F7E3A882BC5C1CF00282E19 /* SDWebImageMapKit in Frameworks */,
 				5F294B4C2B4DBA0100396B6E /* FirebaseAnalyticsSwift in Frameworks */,
+				5F15D9022C2F02790051EBEF /* BSImagePicker in Frameworks */,
 				5FE3DECF2B39CCAE008D58AE /* SnapKit in Frameworks */,
 				5FFBB1DE2C22BDA400C50693 /* JGProgressHUD in Frameworks */,
 				5F66F3AA2B41D7FC005F6C52 /* FSCalendar in Frameworks */,
@@ -645,6 +653,7 @@
 				5F9905042B4ABACC00DB9747 /* UsersTableViewVM.swift */,
 				5F9905062B4ABAD400DB9747 /* UsersTableViewCellVM.swift */,
 				5FB93B012C19CC3E0036F5DF /* UserProfileVM.swift */,
+				5F15D8FC2C2DE35E0051EBEF /* ReceiptTableViewViewModel.swift */,
 			);
 			path = Room;
 			sourceTree = "<group>";
@@ -830,6 +839,7 @@
 				5F67306C2B52DA7C00A91ED5 /* UsersTableViewVMProtocol.swift */,
 				5F0BCE352B5313F8007A3564 /* UsersTableViewCellVMProtocol.swift */,
 				5FB93AFF2C19CC2B0036F5DF /* UserProfileVMProtocol.swift */,
+				5F15D8FE2C2DE38F0051EBEF /* ReceiptTableViewViewModelProtocol.swift */,
 			);
 			path = Room;
 			sourceTree = "<group>";
@@ -1311,6 +1321,7 @@
 				5F02CAB62B6570E000CD5280 /* UINavigationController+Ext.swift */,
 				5F80EA8E2B67BDED00BD8D0C /* UIViewController+Ext.swift */,
 				5FBCD2E92C14331E005812ED /* Notification+Ext.swift */,
+				5F15D9032C2F1BC90051EBEF /* UIViewController+ImagePicker.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1401,6 +1412,7 @@
 				5F7E3A852BC5C1CF00282E19 /* SDWebImage */,
 				5F7E3A872BC5C1CF00282E19 /* SDWebImageMapKit */,
 				5FFBB1DD2C22BDA400C50693 /* JGProgressHUD */,
+				5F15D9012C2F02790051EBEF /* BSImagePicker */,
 			);
 			productName = EveryDutch;
 			productReference = 5FE3DE8B2B39CA9B008D58AE /* EveryDutch.app */;
@@ -1437,6 +1449,7 @@
 				5F294B462B4DBA0100396B6E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				5F7E3A842BC5C1CF00282E19 /* XCRemoteSwiftPackageReference "SDWebImage" */,
 				5FFBB1DC2C22BDA400C50693 /* XCRemoteSwiftPackageReference "JGProgressHUD" */,
+				5F15D9002C2F02790051EBEF /* XCRemoteSwiftPackageReference "BSImagePicker" */,
 			);
 			productRefGroup = 5FE3DE8C2B39CA9B008D58AE /* Products */;
 			projectDirPath = "";
@@ -1480,6 +1493,7 @@
 				5FE3DECC2B39CC8D008D58AE /* MainCollectionViewCellVM.swift in Sources */,
 				5F87DF2C2B3C99A3001D5B80 /* RoomSettingCoordProtocol.swift in Sources */,
 				5F0D6E0C2C2CA7560044AFB5 /* RoomDataManager+ReceiptSearchMode.swift in Sources */,
+				5F15D9042C2F1BC90051EBEF /* UIViewController+ImagePicker.swift in Sources */,
 				5F2061222BE7359100AB44F2 /* CustomTimePicker.swift in Sources */,
 				5F02CAB72B6570E000CD5280 /* UINavigationController+Ext.swift in Sources */,
 				5F8AB54C2BCA65EA006161C2 /* CustomImageCropView.swift in Sources */,
@@ -1640,6 +1654,7 @@
 				5FC648472B42EB9500C451BF /* ReceiptWriteCoordinator.swift in Sources */,
 				5F294B412B4D98C900396B6E /* Database_REF.swift in Sources */,
 				5F5FC6122B6A7EBD00693E6F /* ProfileVC.swift in Sources */,
+				5F15D8FF2C2DE38F0051EBEF /* ReceiptTableViewViewModelProtocol.swift in Sources */,
 				5F17137E2B46A643006B3EBB /* Receipt_Enum.swift in Sources */,
 				5FE3DEC42B39CBA4008D58AE /* MainCollectionViewCell.swift in Sources */,
 				5F67FE992C0C668E00018E65 /* DecorationAPI+Update.swift in Sources */,
@@ -1647,6 +1662,7 @@
 				5FE3DEC22B39CB9B008D58AE /* MainVM.swift in Sources */,
 				5F614B402B4593AE00EF35CE /* ReceiptScreenPanVC.swift in Sources */,
 				5FBCD2E82C1432F3005812ED /* DebounceType.swift in Sources */,
+				5F15D8FD2C2DE35E0051EBEF /* ReceiptTableViewViewModel.swift in Sources */,
 				5F8513CE2B4D5F3D00A5B22D /* ReadRooms.swift in Sources */,
 				5FE3DE912B39CA9B008D58AE /* SceneDelegate.swift in Sources */,
 				5F8513E02B4D686600A5B22D /* UpdateRooms.swift in Sources */,
@@ -1914,6 +1930,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		5F15D9002C2F02790051EBEF /* XCRemoteSwiftPackageReference "BSImagePicker" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mikaoj/BSImagePicker";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.3.3;
+			};
+		};
 		5F294B462B4DBA0100396B6E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
@@ -1965,6 +1989,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		5F15D9012C2F02790051EBEF /* BSImagePicker */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5F15D9002C2F02790051EBEF /* XCRemoteSwiftPackageReference "BSImagePicker" */;
+			productName = BSImagePicker;
+		};
 		5F294B472B4DBA0100396B6E /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 5F294B462B4DBA0100396B6E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;

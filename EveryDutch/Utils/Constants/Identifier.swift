@@ -10,7 +10,7 @@ import UIKit
 enum Identifier {
     
     static let mainCollectionViewCell: String = "MainCollectionViewCell"
-    static let settlementTableViewCell: String = "SettlementTableViewCell"
+    static let receiptTableViewCell: String = "receiptTableViewCell"
     
     static let topViewTableViewCell: String = "TopViewTableViewCell"
     

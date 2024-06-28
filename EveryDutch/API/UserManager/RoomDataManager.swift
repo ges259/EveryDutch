@@ -100,7 +100,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
             }
             switch result {
             case .success():
-//                self.loadFinancialData()
+                self.loadFinancialData()
                 self.loadRoomReceipt(completion: completion)
             case .failure(let error):
                 completion(.failure(error))
