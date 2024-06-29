@@ -54,7 +54,7 @@ final class EditScreenVC: UIViewController {
         title: self.viewModel.getBottomBtnTitle ?? "완료")
     /// 이미지 피커
     private lazy var customImagePicker: CustomImageCropView = {
-        let view = CustomImageCropView()
+        let view = CustomImageCropView(imageCropType: .cardImage)
         view.delegate = self
         return view
     }()
@@ -414,7 +414,6 @@ extension EditScreenVC: UITableViewDataSource {
         switch type {
         case .blurEffect:
             // 카드 이미지 뷰 업데이트
-            self.blurEffectChanged()
             self.blurCellSelected()
             break
         case .titleColor, .nameColor:
@@ -450,6 +449,7 @@ extension EditScreenVC: UITableViewDataSource {
             data: true,
             onFailure: self.errorType(_:)
         )
+        self.blurEffectChanged()
     }
 }
     
@@ -520,7 +520,7 @@ extension EditScreenVC {
     /// 블러 효과 변경
     private func blurEffectChanged() {
         // 추후 변경 예정
-        let booleanData: Bool = false
+        let booleanData: Bool = self.cardImgView.blurViewIsHidden
         
         self.updatedDecorationCellUI(data: booleanData) { cell in
             cell.blurEffectIsHidden(booleanData)
@@ -607,7 +607,7 @@ extension EditScreenVC {
         // 피커의 높이 재설정
         self.adjustPickerHeight(for: picker, isOpen: isOpen)
     }
-    /// [공통] 화면 상단 고정
+    /// [공통] 스크롤뷰를 화면 상단에 고정하는 메서드
     private func disableScrollAndMoveToTop(isOpen: Bool) {
         if isOpen {
             // 스크롤뷰의 contentOffset을 (0,0)으로 설정하여 맨 위로 이동
@@ -616,7 +616,7 @@ extension EditScreenVC {
         // 스크롤 기능을 비활성화
         self.scrollView.isScrollEnabled = !isOpen
     }
-    /// [공통] 이미지 피커 높이 재설정
+    /// [공통] 피커의 높이를 재설정하는 메서드
     private func adjustPickerHeight(for picker: EditScreenPicker, isOpen: Bool) {
         // 높이 설정
         let height = isOpen ? self.openImagePickerHeight : 0
@@ -707,112 +707,3 @@ extension EditScreenVC: CustomPickerDelegate {
         self.configureColorPicker(isOpen: false)
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//
-//// MARK: - 이미지 권한 설정
-//extension EditScreenVC {
-//    /// 이미지 권한을 확인하는 메서드
-//    func requestPhotoLibraryAccess() {
-//        let status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
-//        switch status {
-//        case .authorized:
-//            print("Authorized Access")
-//            // 권한이 이미 있음
-//            // .authorized == [전체 접근 허용]
-//            // 사용자가 앱에 자신의 사진 라이브러리 전체에 대한 접근을 허용한 경우
-//            self.coordinator.presentImagePicker()
-//            
-//        case .limited:
-//            print("Limited Access")
-//            // .limited == [접근 제한]
-//            // 사용자가 앱에 사진 라이브러리의 전체 접근을 허용하지 않고,
-//            // 대신 특정 사진이나 앨범에 대한 접근만을 허용한 경우
-//            self.presentLimitedLibraryPicker()
-//            
-//        case .notDetermined:
-//            print("notDetermined")
-//            
-//            // .notDetermined == [접근 제한되지 않음]
-//            // 사용자가 아직 앱에 대한 사진 라이브러리 접근 권한을 결정하지 않은 상태
-//            self.requestPhotoAccess()
-//            
-//        case .denied, .restricted:
-//            print("denied or restricted")
-//            // .denied == [접근 거부]
-//            // 사용자가 앱의 사진 라이브러리 접근을 명시적으로 거부한 경우
-//            // 사용자가 권한을 거부함. 설정으로 유도할 수 있음
-//            // .restricted == [접근 불가]
-//            // 부모의 제어 설정이나 기업 정책 등 외부 요인으로 인해 앱이 사진 라이브러리에 접근할 수 없는 경우
-//            self.showPhotoLibraryAccessDeniedAlert()
-//        @unknown default:
-//            break
-//        }
-//    }
-//    
-//    /// notDetermined(접근 제한 됨) 상태일 때, 권한을 요청하는 메서드
-//    private func requestPhotoAccess() {
-//        PHPhotoLibrary.requestAuthorization(for: .readWrite) { newStatus in
-//            DispatchQueue.main.async {
-//                if newStatus == .authorized || newStatus == .limited {
-//                    self.coordinator.presentImagePicker()
-//                }
-//            }
-//        }
-//    }
-//    
-//    /// denied(접근 거부) 및 restriced(접근 불가) 상태일 때, 설정으로 이동하는 메서드
-//    private func showPhotoLibraryAccessDeniedAlert() {
-//        self.customAlert(alertEnum: .photoAccess) { _ in
-//            // 사용자를 앱의 설정 화면으로 이동
-//            guard let settingsUrl = URL(string: UIApplication.openSettingsURLString), UIApplication.shared.canOpenURL(settingsUrl)
-//            else { return }
-//            UIApplication.shared.open(settingsUrl, options: [:])
-//        }
-//    }
-//    
-//    /// 제한된 접근 권한일 때, 추가 사진 선택을 허용하는 메서드
-//    func presentLimitedLibraryPicker() {
-//        PHPhotoLibrary.shared().presentLimitedLibraryPicker(from: self) {_ in 
-//            // 사용자에게 추가 사진 선택을 요청한 후, 이미지 피커를 열기
-//            self.coordinator.presentImagePicker()
-//        }
-//    }
-//}

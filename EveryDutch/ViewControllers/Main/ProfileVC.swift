@@ -54,8 +54,14 @@ final class ProfileVC: UIViewController {
         font: UIFont.boldSystemFont(ofSize: 13),
         backgroundColor: .medium_Blue)
     
-    
-    
+    /// 이미지 피커
+    private lazy var customImagePicker: CustomImageCropView = {
+        let view = CustomImageCropView(imageCropType: .profileImage)
+        view.delegate = self
+        return view
+    }()
+    /// 이미지 피커의 높이를  조절
+    private var imagePickrHeight: Constraint!
     
     
     // MARK: - 프로퍼티
@@ -63,6 +69,12 @@ final class ProfileVC: UIViewController {
     private let coordinator: ProfileCoordProtocol
     
     
+    /// 열린 상태의 이미지 피커의 높이
+    private lazy var openImagePickerHeight: CGFloat = {
+        return self.view.frame.height - (self.view.safeAreaInsets.top + self.cardHeight() + 14)
+    }()
+    
+    private var isImagePickerOpen: Bool = false
     
     
     
@@ -114,6 +126,7 @@ extension ProfileVC {
         self.view.addSubview(self.scrollView)
         self.scrollView.addSubview(self.contentView)
         self.contentView.addSubview(self.totalStackView)
+        self.view.addSubview(self.customImagePicker)
         
         // 스크롤뷰
         self.scrollView.snp.makeConstraints { make in
@@ -140,6 +153,13 @@ extension ProfileVC {
         
         self.logoutBtn.snp.makeConstraints { make in
             make.height.equalTo(55)
+        }
+        
+        
+        // 이미지 피커 뷰
+        self.customImagePicker.snp.makeConstraints { make in
+            make.leading.trailing.bottom.equalToSuperview()
+            self.imagePickrHeight = make.height.equalTo(0).constraint
         }
     }
     
@@ -276,11 +296,9 @@ extension ProfileVC: UITableViewDelegate {
         case .personalID, .nickName:
             let userID: String = self.viewModel.getUserID
             self.coordinator.editScreen(DataRequiredWhenInEditMode: userID)
+            
         case .profileImage:
-            // MARK: - Fix
-            print("_________________________")
-            print("didSelectRowAt ----- profileImage")
-            print("_________________________")
+            self.coordinator.requestPhotoLibraryAccess(delegate: self)
             break
         }
     }
@@ -320,5 +338,90 @@ extension ProfileVC: UITableViewDataSource {
             cell.configureCell(type)
         }
         return cell
+    }
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - 셀 업데이트
+/// 프로필 사진 셀 선택 후, 이미지 피커에서 이미지 선택하면 해당 함수가 호출 됨.
+/// 셀의 이미지를 바꿈
+extension ProfileVC: ImagePickerDelegate {
+    private func updateProfileCell(
+        withIndexPath indexPath: IndexPath,
+        withUpdateAction action: ((ProfileCell) -> Void)
+    ) {
+        // 나중에 리팩토링
+        if let cell = self.tableView.cellForRow(at: indexPath) as? ProfileCell {
+            // 셀의 레이블에 새로운 텍스트를 설정합니다.
+            action(cell)
+        }
+    }
+    func imageSelected(image: UIImage?) {
+        let isOpen = !self.isImagePickerOpen
+        
+        // 피커를 여는 상황이라면,
+        if isOpen {
+            // 이미지 변경
+            self.customImagePicker.setupImage(image: image)
+        }
+        self.adjustPickerHeight(isOpen: isOpen)
+    }
+
+}
+
+
+
+extension ProfileVC: CustomPickerDelegate {
+    func cancel(type: EditScreenPicker) {
+        
+        self.adjustPickerHeight(isOpen: false)
+    }
+    
+    func changedCropLocation(data: Any) {
+        print(#function)
+    }
+    
+    func done<T>(with data: T) {
+        // 피커뷰 내리기
+        self.adjustPickerHeight(isOpen: false)
+        
+        switch data {
+        case let image as UIImage:
+            // 이미지 저장
+            self.saveImageData(image: image)
+        default:
+            break
+        }
+    }
+    
+    private func saveImageData(image: UIImage?) {
+        // MARK: - Fix
+        // 이제 이미지를 저장하는 api를 만들면 되겠다.
+        guard let indexPath = self.viewModel.profileImageCellIndexPath else { return }
+        self.updateProfileCell(withIndexPath: indexPath) { cell in
+            cell.configureRightImage(with: image)
+        }
+    }
+    
+    /// [공통] 피커의 높이를 재설정하는 메서드
+    private func adjustPickerHeight(isOpen: Bool) {
+        self.isImagePickerOpen = isOpen
+        // 높이 설정
+        let height = isOpen ? self.openImagePickerHeight : 0
+        // 이미지 피커의 높이 업데이트
+        self.imagePickrHeight.update(offset: height)
+        
+        // 애니메이션을 통한 화면 바꾸기
+        UIView.animate(withDuration: 0.5) {
+            self.view.layoutIfNeeded()
+        }
     }
 }

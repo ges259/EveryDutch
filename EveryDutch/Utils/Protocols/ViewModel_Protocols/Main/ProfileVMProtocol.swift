@@ -15,6 +15,7 @@ protocol ProfileVMProtocol {
     var errorClosure: ((ErrorEnum) -> Void)? { get set }
     func initializeUserData() 
     
+    var profileImageCellIndexPath: IndexPath? { get }
     
     
     var getNumOfSection: Int { get }

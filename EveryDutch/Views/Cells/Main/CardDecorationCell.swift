@@ -95,6 +95,9 @@ extension CardDecorationCell {
             self.colorIsChanged(color: color)
             break
         case .blurEffect:
+            let boolean = "true" == detailString
+
+            self.blurEffectIsHidden(boolean)
             break
         }
     }
@@ -113,7 +116,8 @@ extension CardDecorationCell {
     
     /// 색상 넣기
     func blurEffectIsHidden(_ isHidden: Bool) {
-        self.cellStv.isTappedView.isHidden.toggle()
+        // cardImgView의 blurView와 같음
+        self.cellStv.isTappedView.isHidden = isHidden
     }
 }
 

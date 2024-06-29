@@ -143,9 +143,7 @@ extension EditScreenVM {
     
     // (셀 타입, 인덱스패스) 튜플
     /// 현재 선택된 셀의 셀 타입과 인덱스 패스를 반환하는 제네릭 메소드
-    private func getCurrentCellType<F: EditCellType>(
-        cellType: F.Type
-    ) -> (type: F, indexPath: IndexPath)? {
+    private func getCurrentCellType<F: EditCellType>() -> (type: F, indexPath: IndexPath)? {
         guard let tuple = self._selectedIndexTuple, 
                 let type = tuple.type as? F
         else {
@@ -156,7 +154,7 @@ extension EditScreenVM {
     
     /// 데코 셀 타입 및 인덱스패스 반환
     func getDecorationCellTypeTuple() -> (type: DecorationCellType, indexPath: IndexPath)? {
-        return self.getCurrentCellType(cellType: DecorationCellType.self)
+        return self.getCurrentCellType()
     }
     
     /// 현재 선택된 셀의 셀 타입 반환

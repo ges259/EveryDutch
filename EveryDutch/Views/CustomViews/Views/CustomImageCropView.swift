@@ -7,6 +7,34 @@
 
 import UIKit
 import SnapKit
+enum ImageCropType {
+    case profileImage
+    case cardImage
+    
+    var multipliedBy: CGFloat {
+        switch self {
+        case .profileImage: return 1
+        case .cardImage: return 1.8 / 3
+        }
+    }
+    func createCropPath(for cropFrame: CGRect) -> UIBezierPath {
+         switch self {
+         case .profileImage:
+             return UIBezierPath(ovalIn: cropFrame)
+         case .cardImage:
+             return UIBezierPath(rect: cropFrame)
+         }
+     }
+     
+     func setupCropArea(_ cropArea: UIView, cropFrame: CGRect) {
+         switch self {
+         case .profileImage:
+             cropArea.layer.cornerRadius = cropFrame.width / 2
+         case .cardImage:
+             cropArea.layer.cornerRadius = 0
+         }
+     }
+}
 
 class CustomImageCropView: UIView, UIGestureRecognizerDelegate {
     
@@ -26,33 +54,30 @@ class CustomImageCropView: UIView, UIGestureRecognizerDelegate {
     
     private let cropArea: UIView = {
         let view = UIView()
-            view.layer.borderColor = UIColor.white.cgColor
-            view.backgroundColor = .clear
-            view.layer.borderWidth = 2.5
+        view.layer.borderColor = UIColor.white.cgColor
+        view.backgroundColor = .clear
+        view.layer.borderWidth = 2.5
         return view
     }()
     
-    private let overlayViewTop: UIView = UIView()
-    private let overlayViewBottom: UIView = UIView()
+    private let overlayView: UIView = UIView()
     
     private let pinchGR: UIPinchGestureRecognizer = UIPinchGestureRecognizer()
     private let panGR: UIPanGestureRecognizer = UIPanGestureRecognizer()
-    
-    
-    
-    
     
     // MARK: - 프로퍼티
     weak var delegate: CustomPickerDelegate?
     
     private var currentImage: UIImage?
+    var imageCropType: ImageCropType = .profileImage
     
     
     
     // MARK: - 라이프사이클
-    override init(frame: CGRect) {
+    init(imageCropType: ImageCropType) {
         super.init(frame: .zero)
         
+        self.imageCropType = imageCropType
         self.setupView()
         self.setupLayout()
         self.setupGestureRecognizers()
@@ -67,20 +92,17 @@ extension CustomImageCropView {
     /// 화면 설정
     private func setupView() {
         self.backgroundColor = UIColor.deep_Blue
-        self.clipsToBounds = true
+//        self.clipsToBounds = true
         self.setRoundedCorners(.top, withCornerRadius: 12)
         
-        [self.overlayViewTop, self.overlayViewBottom].forEach {
-            $0.backgroundColor = .black.withAlphaComponent(0.5)
-        }
+//        self.overlayView.backgroundColor = .clear
     }
     
     /// 오토레이아웃 설정
     private func setupLayout() {
         self.addSubview(self.imageView)
         self.addSubview(self.cropArea)
-        self.addSubview(self.overlayViewTop)
-        self.addSubview(self.overlayViewBottom)
+        self.addSubview(self.overlayView)
         self.addSubview(self.toolbar)
         
         self.toolbar.snp.makeConstraints { make in
@@ -95,7 +117,7 @@ extension CustomImageCropView {
         self.cropArea.snp.makeConstraints { make in
             make.center.equalToSuperview()
             make.width.equalToSuperview()
-            make.height.equalTo(self.cropArea.snp.width).multipliedBy(1.8 / 3)
+            make.height.equalTo(self.cropArea.snp.width).multipliedBy(self.imageCropType.multipliedBy)
         }
     }
     
@@ -108,21 +130,11 @@ extension CustomImageCropView {
         self.imageView.isUserInteractionEnabled = true
         
         [self.cropArea,
-         self.overlayViewTop,
-         self.overlayViewBottom].forEach {
+         self.overlayView].forEach {
             $0.isUserInteractionEnabled = false
         }
     }
 }
-
-
-
-
-
-
-
-
-
 
 // MARK: - 화면에 들어설 때 설정
 extension CustomImageCropView {
@@ -138,43 +150,80 @@ extension CustomImageCropView {
         // 만약 사용하지 않는다면, 정상적으로 작동하지 않음
         DispatchQueue.main.async {
             self.setupOverlayViews()
+            self.setupCropArea()
         }
     }
     
     /// 이미지의 높이를 설정
     private func updateImageViewHeight(aspectRatio: CGFloat) {
+        // 기존에 설정된 높이 제약을 비활성화
         self.imagePickrHeight.deactivate()
-        self.imageView.snp.makeConstraints { make in
-            self.imagePickrHeight = make.height.equalTo(self.imageView.snp.width).multipliedBy(aspectRatio).constraint
+
+        // cropArea의 가로 세로 비율을 계산
+        let cropAreaAspectRatio = self.cropArea.frame.height / self.cropArea.frame.width
+
+        // 이미지의 세로 비율이 cropArea의 세로 비율보다 작을 경우
+        if aspectRatio < cropAreaAspectRatio {
+            // 이미지가 cropArea보다 세로가 짧은 경우
+            self.imageView.snp.remakeConstraints { make in
+                make.center.equalToSuperview()
+                make.width.equalTo(self.cropArea.snp.height).dividedBy(aspectRatio)
+                make.height.equalTo(self.cropArea.snp.height)
+            }
+        } else {
+            // 이미지의 세로 비율이 cropArea의 세로 비율보다 큰 경우
+            self.imageView.snp.remakeConstraints { make in
+                make.center.equalToSuperview()
+                make.width.equalTo(self.cropArea.snp.width)
+                make.height.equalTo(self.cropArea.snp.width).multipliedBy(aspectRatio)
+            }
         }
+
+        // 레이아웃 업데이트를 강제하여 변경 사항을 적용
         self.layoutIfNeeded()
-        self.changeCardImageView()
     }
     
     /// overlayViews 설정
     private func setupOverlayViews() {
+        // cropArea의 프레임을 가져옴
         let cropFrame = self.cropArea.frame
-        self.overlayViewTop.frame = CGRect(
-            x: 0,
-            y: 0,
-            width: self.bounds.width,
-            height: cropFrame.minY)
-        self.overlayViewBottom.frame = CGRect(
-            x: 0,
-            y: cropFrame.maxY,
-            width: self.bounds.width,
-            height: self.bounds.height - cropFrame.maxY)
+
+        // 오버레이 뷰의 프레임을 현재 뷰의 크기로 설정
+        self.overlayView.frame = self.bounds
+
+        // 오버레이 뷰에 기존에 추가된 서브레이어들을 제거
+        self.overlayView.layer.sublayers?.forEach { $0.removeFromSuperlayer() }
+
+        // 전체 화면을 덮는 경로를 만듦
+        let overlayPath = UIBezierPath(rect: self.bounds)
+        // cropArea의 모양에 맞는 경로를 만듦
+        let cropPath = self.imageCropType.createCropPath(for: cropFrame)
+
+        // 오버레이 경로에 cropArea 경로를 추가
+        overlayPath.append(cropPath)
+        // 교차하는 부분을 제외하고 그리도록 설정
+        overlayPath.usesEvenOddFillRule = true
+
+        // 오버레이 색상을 설정하는 레이어를 만듦
+        let fillLayer = CAShapeLayer()
+        // fillLayer가 그릴 경로를 설정
+        fillLayer.path = overlayPath.cgPath
+        // 경로가 겹치는 부분의 채우기 규칙을 설정
+        fillLayer.fillRule = .evenOdd
+        // 오버레이 뷰의 색상을 설ㄹ정
+        fillLayer.fillColor = UIColor.black.withAlphaComponent(0.5).cgColor
+
+        // 오버레이 뷰에 레이어를 추가하여 어두운 오버레이를 설정
+        self.overlayView.layer.addSublayer(fillLayer)
+    }
+
+    
+    /// 크롭 영역 설정
+    private func setupCropArea() {
+        let cropFrame = self.cropArea.frame
+        self.imageCropType.setupCropArea(self.cropArea, cropFrame: cropFrame)
     }
 }
-
-
-
-
-
-
-
-
-
 
 // MARK: - 핀치 액션
 extension CustomImageCropView {
@@ -234,10 +283,6 @@ extension CustomImageCropView {
     }
 }
 
-
-
-
-
 // MARK: - 위치 조정 액션 이후 메서드
 extension CustomImageCropView {
     /// pinch 및 pan액선 후 위치 재조정
@@ -294,21 +339,11 @@ extension CustomImageCropView {
         return croppedImage.fixedOrientation()
     }
     
-    
     // 제스쳐 관련 설정
     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
     }
 }
-
-
-
-
-
-
-
-
-
 
 // MARK: - 툴바 델리게이트
 extension CustomImageCropView: ToolbarDelegate {

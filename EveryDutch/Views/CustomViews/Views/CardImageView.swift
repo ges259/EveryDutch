@@ -189,7 +189,7 @@ extension CardImageView {
         self.backgroundImg.backgroundColor = .medium_Blue
         
         guard let decorationData = decorationData else { return }
-        self.blurView.isHidden = !decorationData.blur
+        self.blurView.isHidden = decorationData.blur
         self.titleLbl.textColor = decorationData.getTitleColor
         self.nameLbl.textColor = decorationData.getNameColor
         self.backgroundImg.backgroundColor = decorationData.getBackgroundColor
@@ -342,13 +342,13 @@ extension CardImageView {
     func updateCardView(
         type: DecorationCellType,
         data: Any,
-        onFailure: (ErrorEnum) -> Void)
-    {
+        onFailure: (ErrorEnum) -> Void
+    ) {
         // data 타입에 따른 분기 처리
         switch data {
         case let boolData as Bool:
             // Bool 타입 데이터 처리
-            self.blurViewIsHidden(!boolData)
+            self.blurViewIsHidden(boolData)
             
         case let colorData as UIColor:
             self.changeCardData(type: type, color: colorData)
@@ -365,6 +365,10 @@ extension CardImageView {
     private func blurViewIsHidden(_ isHidden: Bool) {
         self.blurView.isHidden.toggle()
     }
+    var blurViewIsHidden: Bool {
+        return self.blurView.isHidden
+    }
+    
     
     /// 이미지 및 색상 변경
     private func changeCardData(type: DecorationCellType,

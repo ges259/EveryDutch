@@ -11,7 +11,6 @@ import BSImagePicker
 
 protocol ImagePickerDelegate: AnyObject {
     func imageSelected(image: UIImage?)
-//    func error()
 }
 
 final class EditScreenCoordinator: NSObject, EditScreenCoordProtocol {
@@ -98,7 +97,7 @@ final class EditScreenCoordinator: NSObject, EditScreenCoordProtocol {
     private func moveToEditScreen(with viewModelCreation: () -> EditScreenVC) {
         let screenVC = viewModelCreation()
         screenVC.configureBackBtn(isMakeMode: self.isMakeUserMode)
-        self.imageDelegate = screenVC as any ImagePickerDelegate
+        self.imageDelegate = screenVC
         self.nav.pushViewController(screenVC, animated: true)
     }
     

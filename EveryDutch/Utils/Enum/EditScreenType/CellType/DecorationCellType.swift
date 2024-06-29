@@ -69,7 +69,7 @@ enum DecorationCellType: Int, EditCellType, CaseIterable {
         case .background: 
             return data?.backgroundImageUrl ?? data?.backgroundColor
         case .blurEffect:
-            return self.blurColor(bool: data?.blur)
+            return self.blurIsHidden(data?.blur)
         case .titleColor: 
             return data?.titleColor
         case .nameColor: 
@@ -77,8 +77,8 @@ enum DecorationCellType: Int, EditCellType, CaseIterable {
         }
     }
     
-    private func blurColor(bool: Bool?) -> String? {
-        return bool ?? false ? "false" : "true"
+    private func blurIsHidden(_ bool: Bool?) -> String? {
+        return bool ?? false ? "true" : "false"
     }
     
     

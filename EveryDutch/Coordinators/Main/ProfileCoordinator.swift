@@ -14,7 +14,7 @@ final class ProfileCoordinator: ProfileCoordProtocol {
     
     var nav: UINavigationController
     
-    
+    weak var imageDelegate: ImagePickerDelegate?
     
     
     // MARK: - 라이프사이클
@@ -36,6 +36,7 @@ final class ProfileCoordinator: ProfileCoordProtocol {
         let profileVM = ProfileVM(userAPI: UserAPI.shared)
         let profileVC = ProfileVC(viewModel: profileVM,
                                   coordinator: self)
+        self.imageDelegate = profileVC
         self.nav.pushViewController(profileVC, animated: true)
     }
     

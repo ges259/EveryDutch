@@ -10,7 +10,7 @@ import UIKit
 final class ProfileVM: ProfileVMProtocol {
     
     // typealias ProfileDataCell = (type: ProfileType, detail: String?)
-    private var cellTypesDictionary: [Int: [ProfileTypeCell]] = [:]
+    private var _cellTypesDictionary: [Int: [ProfileTypeCell]] = [:]
     private let userAPI: UserAPIProtocol
     
     
@@ -48,7 +48,7 @@ final class ProfileVM: ProfileVMProtocol {
     // 사용자 데이터를 기반으로 섹션별 셀 데이터를 생성하는 메서드
     private func makeCellData(user: User) {
         guard let datas = ProfileVCEnum.allCases.first?.createProviders(user: user) else { return }
-        self.cellTypesDictionary = datas
+        self._cellTypesDictionary = datas
     }
 }
 
@@ -65,17 +65,17 @@ final class ProfileVM: ProfileVMProtocol {
 extension ProfileVM {
     /// 섹션의 개수
     var getNumOfSection: Int {
-        return self.cellTypesDictionary.count
+        return self._cellTypesDictionary.count
     }
     
     /// 셀의 개수
     func getNumOfCell(section: Int) -> Int {
-        return self.cellTypesDictionary[section]?.count ?? 0
+        return self._cellTypesDictionary[section]?.count ?? 0
     }
     
     /// 푸터뷰 높이
     func getFooterViewHeight(section: Int) -> CGFloat {
-        guard let count = self.cellTypesDictionary[section]?.count else { return 3}
+        guard let count = self._cellTypesDictionary[section]?.count else { return 3}
         // 셀의 개수에 따른 높이
         return count < 3
         ? 50 // 3개 미만이면 == 50
@@ -84,12 +84,63 @@ extension ProfileVM {
     
     /// 헤더뷰의 타이틀
     func getHeaderTitle(section: Int) -> String? {
-        return self.cellTypesDictionary[section]?.first?.type.headerTitle
+        return self._cellTypesDictionary[section]?.first?.type.headerTitle
     }
     
     /// 셀의 데이터 반환
     func getCellData(indexPath: IndexPath) -> ProfileTypeCell? {
-        return self.cellTypesDictionary[indexPath.section]?[indexPath.row]
+        return self._cellTypesDictionary[indexPath.section]?[indexPath.row]
+    }
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - 인덱스패스 리턴
+extension ProfileVM {
+    /// 특정 타입의 셀 IndexPath 반환
+    /// 이 함수는 제네릭 타입 T를 사용하여, 주어진 타입의 셀의 IndexPath를 찾아 반환해준다.
+    /// - Parameters:
+    ///   - cellType: 찾고자 하는 셀의 타입 (T)
+    ///   - section: 섹션을 나타내는 ProfileVCEnum
+    /// - Returns: 주어진 타입의 셀 IndexPath를 반환, 없으면 nil
+    private func getCellIndexPath<T: ProfileCellType & RawRepresentable>(
+        for cellType: T,
+        in section: ProfileVCEnum
+    ) -> IndexPath? where T.RawValue == Int {
+        // 섹션 인덱스에 해당하는 셀이 존재하는지 확인
+        guard let cells = _cellTypesDictionary[section.sectionIndex] else { return nil }
+        // 셀들을 순회하면서 주어진 타입의 셀을 찾음
+        for (index, cell) in cells.enumerated() {
+            // 셀 타입을 T로 캐스팅하고, 주어진 타입과 일치하는지 확인
+            if let specificType = cell.type as? T, specificType == cellType {
+                // 일치하면 해당 셀의 IndexPath 반환
+                return IndexPath(row: index, section: section.sectionIndex)
+            }
+        }
+        // 찾지 못하면 nil 반환
+        return nil
+    }
+    
+    // UserInfoType.profileImage에 해당하는 셀의 IndexPath를 반환
+    var profileImageCellIndexPath: IndexPath? {
+        return self.getCellIndexPath(for: UserInfoType.profileImage, in: .userInfo)
+    }
+
+    // UserInfoType.personalID에 해당하는 셀의 IndexPath를 반환
+    var personalIDCellIndexPath: IndexPath? {
+        return self.getCellIndexPath(for: UserInfoType.personalID, in: .userInfo)
+    }
+
+    // UserInfoType.nickName에 해당하는 셀의 IndexPath를 반환
+    var nickNameCellIndexPath: IndexPath? {
+        return self.getCellIndexPath(for: UserInfoType.nickName, in: .userInfo)
     }
 }
 
@@ -103,10 +154,8 @@ extension ProfileVM {
 
 
 // MARK: - API
-
 extension ProfileVM {
-    
-    // MARK: - 유저 데이터 가져오기
+    /// 유저 데이터 가져오기
     @MainActor
     private func fetchOwnUserData() async {
         do {

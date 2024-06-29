@@ -7,6 +7,6 @@
 
 import Foundation
 
-protocol ProfileCoordProtocol: Coordinator {
+protocol ProfileCoordProtocol: ImagePickerCoordinator {
     func editScreen(DataRequiredWhenInEditMode: String?) 
 }

@@ -112,4 +112,12 @@ extension ProfileCell {
             self.rightImg.setImage(from: trimmedInput)
         }
     }
+    
+    
+    
+    
+    func configureRightImage(with image: UIImage?) {
+        print("\(#function) ----- 1")
+        self.rightImg.image = image
+    }
 }
