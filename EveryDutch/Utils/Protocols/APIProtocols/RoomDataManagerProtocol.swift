@@ -87,4 +87,7 @@ protocol RoomDataManagerProtocol {
     
     
     
+    
+    var myUserID: String? { get }
+    
 }

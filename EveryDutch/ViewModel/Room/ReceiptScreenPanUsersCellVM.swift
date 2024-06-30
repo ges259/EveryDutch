@@ -26,26 +26,27 @@ struct ReceiptScreenPanUsersCellVM: ReceiptScreenPanUsersCellVMProtocol, UserPri
         self.paymentDetail.done = bool
     }
     
-    
-    
-    var doneStatusChanged: ((UIImage?) -> Void)?
-    
-    
-    
+    var getPaymentDetail: PaymentDetail {
+        return self.paymentDetail
+    }
+
     
     init(roomUser: User?,
          paymentDetail: PaymentDetail) {
         self.user = roomUser
         self.paymentDetail = paymentDetail
-        // MARK: - Fix
-        // 클로저가 굳이 필요할까?
-        self.doneStatusChanged?(self.doneImg)
     }
 
     
     
     
 
+    mutating func toggleDone() {
+        print("\(#function) ----- 1")
+        self.paymentDetail.done.toggle()
+    }
+    
+    
     
     var doneImg: UIImage? {
         return self.paymentDetail.done

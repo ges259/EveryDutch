@@ -15,10 +15,11 @@ protocol ReceiptScreenPanUsersCellVMProtocol {
     var getPay: Int { get }
     var getUserID: String { get }
     
+    var getPaymentDetail: PaymentDetail { get }
+    mutating func toggleDone() 
     
     mutating func changeDoneValue(_ bool: Bool)
     
     
     var doneImg: UIImage? { get }
-    var doneStatusChanged: ((UIImage?) -> Void)? { get set }
 }

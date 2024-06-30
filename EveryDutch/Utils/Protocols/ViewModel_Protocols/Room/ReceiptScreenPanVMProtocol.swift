@@ -9,9 +9,10 @@ import UIKit
 
 protocol ReceiptScreenPanVMProtocol {
     
-    
+    var isMyReceipt: Bool { get }
     func cellViewModel(at index: Int) -> ReceiptScreenPanUsersCellVMProtocol
-    
+    var paymentDetailCountChanged: ((Bool) -> Void)? { get set }
+    func changedUserPayback(at index: Int) 
     
     
     // MARK: - 섹션의 개수

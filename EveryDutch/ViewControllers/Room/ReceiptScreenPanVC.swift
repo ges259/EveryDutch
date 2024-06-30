@@ -44,7 +44,18 @@ final class ReceiptScreenPanVC: UIViewController {
         return view
     }()
     
+    private var bottomSaveButton: UIButton = UIButton.btnWithTitle(
+        title: "저장",
+        font: UIFont.boldSystemFont(ofSize: 14),
+        backgroundColor: .normal_white)
     
+    private lazy var totalStackView: UIStackView = UIStackView.configureStv(
+        arrangedSubviews: [self.usersTableView,
+                           self.bottomSaveButton],
+        axis: .vertical,
+        spacing: 4,
+        alignment: .fill,
+        distribution: .fill)
     
     
     
@@ -74,7 +85,6 @@ final class ReceiptScreenPanVC: UIViewController {
         self.coordinator = coordinator
         self.viewModel = viewModel
         super.init(nibName: nil, bundle: nil)
-
     }
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
@@ -99,13 +109,15 @@ extension ReceiptScreenPanVC {
     /// UI 설정
     private func configureUI() {
         self.view.backgroundColor = UIColor.deep_Blue
+        self.bottomSaveButton.setRoundedCorners(.all, withCornerRadius: 10)
+        self.bottomSaveButton.isHidden = true
     }
     
     /// 오토레이아웃 설정
     private func configureAutoLayout() {
         self.view.addSubview(self.scrollView)
         self.scrollView.addSubview(self.contentView)
-        self.contentView.addSubview(self.usersTableView)
+        self.contentView.addSubview(self.totalStackView)
         
         // 스크롤뷰
         self.scrollView.snp.makeConstraints { make in
@@ -118,20 +130,50 @@ extension ReceiptScreenPanVC {
             make.edges.equalTo(self.scrollView.contentLayoutGuide)
             make.width.equalTo(self.scrollView.frameLayoutGuide)
         }
-        self.usersTableView.snp.makeConstraints { make in
+        self.totalStackView.snp.makeConstraints { make in
             make.top.leading.equalToSuperview().offset(10)
             make.trailing.bottom.equalToSuperview().offset(-10)
+        }
+        self.bottomSaveButton.snp.makeConstraints { make in
+            make.height.equalTo(50)
         }
     }
     
     /// 액션 설정
     private func configureAction() {
-        
+        self.bottomSaveButton.addTarget(
+            self,
+            action: #selector(self.bottomSaveButtonTapped),
+            for: .touchUpInside)
     }
     
     /// 클로저 설정
     private func configureClosure() {
-        
+        self.viewModel.paymentDetailCountChanged = { [weak self] isHidden in
+            guard let self = self else { return }
+            self.bottomSaveButton.isHidden = isHidden
+            // PanModal의 높이를 바꿈
+            self.panModalAnimate {
+                self.panModalSetNeedsLayoutUpdate()
+                self.panModalTransition(to: .longForm)
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+// MARK: - 버튼 액션
+extension ReceiptScreenPanVC {
+    @objc private func bottomSaveButtonTapped() {
+        print(#function)
     }
 }
 
@@ -219,13 +261,23 @@ extension ReceiptScreenPanVC: UITableViewDelegate {
                    didSelectRowAt indexPath: IndexPath
     ) {
         // '유저 셀'인지 확인
-        if indexPath.section == 1 {
+        guard indexPath.section == 1 else { return }
+        
+        // 자신의 영수증인지 판단
+        if self.viewModel.isMyReceipt {
             print("\(#function) ----- 1")
-            // 자신의 영수증인지 판단
-            
             // 자신의 영수증인 경우
+            // 바뀐 데이터 저장
+            self.viewModel.changedUserPayback(at: indexPath.row)
+            // 셀의 UI를 변경
+            self.usersTableView.reloadRows(
+                at: [IndexPath(row: indexPath.row, section: 1)],
+                with: .automatic
+            )
             
+        } else {
             // 자신의 영수증이 아닌 경우
+            print("\(#function) ----- 2")
         }
     }
 }
@@ -303,7 +355,10 @@ extension ReceiptScreenPanVC: PanModalPresentable {
     /// 최대 사이즈
     var longFormHeight: PanModalHeight {
         self.view.layoutIfNeeded()
-        return .contentHeight(self.usersTableView.frame.height + 10 + 15 + 8)
+        return .contentHeight(
+            self.totalStackView.frame.height
+            + 35
+        )
     }
     
     /// 화면 밖 - 배경 색

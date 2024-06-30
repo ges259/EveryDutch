@@ -13,9 +13,7 @@ final class ReceiptScreenUsersCell: UITableViewCell {
     // MARK: - 레이아웃
     private var tableCellStackView: TableCellStackView = TableCellStackView()
     
-    private lazy var rightBtn: UIButton = UIButton.btnWithImg(
-        image: .check_Square_Img,
-        imageSize: 13)
+    private var rightImageView: UIImageView = UIImageView()
     
     
     
@@ -31,8 +29,6 @@ final class ReceiptScreenUsersCell: UITableViewCell {
         
         self.configureUI()
         self.configureAutoLayout()
-        self.configureAction()
-        self.configureClosure()
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -40,15 +36,14 @@ final class ReceiptScreenUsersCell: UITableViewCell {
 }
 
 // MARK: - 화면 설정
-
 extension ReceiptScreenUsersCell {
-    
-    // MARK: - UI 설정
+    /// UI 설정
     private func configureUI() {
-        self.backgroundColor = .clear
         self.selectionStyle = .none
         self.separatorInset = .zero
         self.backgroundColor = .normal_white
+        
+        self.rightImageView.tintColor = .black
     }
     
     func configureCell(with viewModel: ReceiptScreenPanUsersCellVMProtocol) {
@@ -57,48 +52,24 @@ extension ReceiptScreenUsersCell {
         self.tableCellStackView.userNameLbl.text = viewModel.getUserName
         self.tableCellStackView.profileImg.image = viewModel.profileImg
         self.tableCellStackView.priceLbl.text = "\(viewModel.getPay)"
-        self.rightBtn.setImage(viewModel.doneImg, for: .normal)
+        self.rightImageView.image = viewModel.doneImg
     }
     
-    // MARK: - 오토레이아웃 설정
+    /// 오토레이아웃 설정
     private func configureAutoLayout() {
         self.addSubview(self.tableCellStackView)
-        self.contentView.addSubview(self.rightBtn)
+        self.contentView.addSubview(self.rightImageView)
         
-        self.rightBtn.snp.makeConstraints { make in
+        self.rightImageView.snp.makeConstraints { make in
             make.trailing.equalToSuperview().offset(-20)
             make.centerY.equalToSuperview()
             make.width.height.equalTo(21)
         }
         self.tableCellStackView.snp.makeConstraints { make in
             make.leading.equalToSuperview().offset(20)
-            make.trailing.equalTo(self.rightBtn.snp.leading).offset(-10)
+            make.trailing.equalTo(self.rightImageView.snp.leading).offset(-10)
             make.centerY.equalToSuperview()
         }
-    }
-    
-    // MARK: - 액션 설정
-    private func configureAction() {
-        self.rightBtn.addTarget(
-            self, 
-            action: #selector(self.rightBtnTapped),
-            for: .touchUpInside)
-    }
-    
-    // MARK: - 클로저 설정
-    private func configureClosure() {
-        self.viewModel?.doneStatusChanged = { [weak self] img in
-            self?.rightBtn.setImage(img, for: .normal)
-        }
-    }
-    
-    
-    
-    
-    
-    // MARK: - 오른쪽 버튼 액션
-    @objc private func rightBtnTapped() {
-        self.viewModel?.changeDoneValue(true)
     }
 }
 

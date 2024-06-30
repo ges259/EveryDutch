@@ -313,9 +313,13 @@ final class RoomDataManager: RoomDataManagerProtocol {
         return myUid == roomManager
     }
     
+    var myUserID: String? {
+        return self.roomsAPI.getCurrentUserID
+    }
+    
     var currentUserIsEuqualToMyUid: Bool {
         guard let currentUserID = self.currentUser?.userID,
-              let uid = self.roomsAPI.getCurrentUserID,
+              let uid = self.myUserID,
               currentUserID != uid
         else {
             return false

@@ -9,8 +9,6 @@ import UIKit
 
 final class ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
     
-    /// 유저 셀의 뷰모델
-    private var userCellViewModels: [ReceiptScreenPanUsersCellVMProtocol] = []
     /// 데이터 셀의 튜플 - (type: ReceiptCellEnum, detail: String?)
     private var dataCellTuple: [ReceiptCellTypeTuple] = []
     
@@ -19,11 +17,46 @@ final class ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
     
     
     
+    var paymentDetailCountChanged: ((Bool) -> Void)?
     
-    private var paybackDataChagned: (
-        done: Bool,
-        paymentDetail: PaymentDetail
-    )?
+    /// 유저 셀의 뷰모델
+    private var userCellViewModels: [ReceiptScreenPanUsersCellVMProtocol] = []
+    private var paymentDetailChanged: [PaymentDetail] = [] {
+        didSet {
+            dump(self.paymentDetailChanged)
+            self.paymentDetailCountChanged?(self.paymentDetailChanged.count == 0)
+        }
+    }
+    
+    
+    
+    
+    
+    func changedUserPayback(at index: Int) {
+        // 뷰모델의 done 값을 토글
+        self.userCellViewModels[index].toggleDone()
+        
+        // 변경된 paymentDetail 가져오기
+        let updatedPaymentDetail = self.userCellViewModels[index].getPaymentDetail
+        
+        // 변경된 paymentDetail이 이미 목록에 있는지 확인
+        if let existingIndex = self.paymentDetailChanged.firstIndex(where: { $0.userID == updatedPaymentDetail.userID }) {
+            // 이미 존재하면 목록에서 제거
+            self.paymentDetailChanged.remove(at: existingIndex)
+        } else {
+            // 존재하지 않으면 목록에 추가
+            self.paymentDetailChanged.append(updatedPaymentDetail)
+        }
+    }
+    
+    
+    
+    
+    
+    
+    lazy var isMyReceipt: Bool = {
+        return self.roomDataManager.myUserID == self.receipt.payer
+    }()
     
     
     
