@@ -61,7 +61,6 @@ final class IndexPathDataManager<T> {
 
 }
 
-// HoqSD6z7x0fy1r8AaGG86EgMPRA33
 final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
     
     // MARK: - 인덱스패스 프로퍼티

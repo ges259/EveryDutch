@@ -10,12 +10,23 @@ import UIKit
 final class ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
     
     /// 유저 셀의 뷰모델
-    private var userCellViewModels: [ReceiptScreenPanUsersCellVM] = []
+    private var userCellViewModels: [ReceiptScreenPanUsersCellVMProtocol] = []
     /// 데이터 셀의 튜플 - (type: ReceiptCellEnum, detail: String?)
     private var dataCellTuple: [ReceiptCellTypeTuple] = []
     
     private var roomDataManager: RoomDataManagerProtocol
     private var receipt: Receipt
+    
+    
+    
+    
+    private var paybackDataChagned: (
+        done: Bool,
+        paymentDetail: PaymentDetail
+    )?
+    
+    
+    
     
     
     
@@ -68,7 +79,7 @@ final class ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
     }
     
     /// 셀의 뷰모델 반환
-    func cellViewModel(at index: Int) -> ReceiptScreenPanUsersCellVM {
+    func cellViewModel(at index: Int) -> ReceiptScreenPanUsersCellVMProtocol {
         return self.userCellViewModels[index]
     }
     

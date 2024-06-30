@@ -148,22 +148,22 @@ extension ReceiptScreenPanVC {
 extension ReceiptScreenPanVC: UITableViewDelegate {
     /// 셀의 높이
     func tableView(_ tableView: UITableView,
-                   heightForRowAt indexPath: IndexPath)
-    -> CGFloat {
+                   heightForRowAt indexPath: IndexPath
+    ) -> CGFloat {
         return self.viewModel.getCellHeight(section: indexPath.section)
     }
     
     /// 헤더의 높이를 설정
     func tableView(_ tableView: UITableView,
-                   heightForHeaderInSection section: Int)
-    -> CGFloat {
+                   heightForHeaderInSection section: Int
+    ) -> CGFloat {
         return 40
     }
     
     /// 헤더 뷰를 구성
     func tableView(_ tableView: UITableView,
-                   viewForHeaderInSection section: Int)
-    -> UIView? {
+                   viewForHeaderInSection section: Int
+    ) -> UIView? {
         return self.createHeaderView(for: section)
     }
     
@@ -193,7 +193,8 @@ extension ReceiptScreenPanVC: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, 
                    willDisplay cell: UITableViewCell,
-                   forRowAt indexPath: IndexPath) {
+                   forRowAt indexPath: IndexPath
+    ) {
         // 코너 둥글기 적용
         let isFirstIndex = indexPath.row == 0
         
@@ -212,6 +213,19 @@ extension ReceiptScreenPanVC: UITableViewDelegate {
         } else if isLastIndex {
             // 섹션의 마지막 셀인 경우
             cell.setRoundedCorners(.bottom, withCornerRadius: 10)
+        }
+    }
+    func tableView(_ tableView: UITableView, 
+                   didSelectRowAt indexPath: IndexPath
+    ) {
+        // '유저 셀'인지 확인
+        if indexPath.section == 1 {
+            print("\(#function) ----- 1")
+            // 자신의 영수증인지 판단
+            
+            // 자신의 영수증인 경우
+            
+            // 자신의 영수증이 아닌 경우
         }
     }
 }
@@ -233,14 +247,14 @@ extension ReceiptScreenPanVC: UITableViewDataSource {
     
     
     func tableView(_ tableView: UITableView,
-                   numberOfRowsInSection section: Int) 
-    -> Int {
+                   numberOfRowsInSection section: Int
+    ) -> Int {
         return self.viewModel.getNumOfCell(section: section)
     }
     
     func tableView(_ tableView: UITableView, 
-                   cellForRowAt indexPath: IndexPath)
-    -> UITableViewCell {
+                   cellForRowAt indexPath: IndexPath
+    ) -> UITableViewCell {
         return indexPath.section == 0
         ? self.makeDataCell(indexPath: indexPath)
         : self.makeUsersCell(indexPath: indexPath)

@@ -10,7 +10,7 @@ import UIKit
 protocol ReceiptScreenPanVMProtocol {
     
     
-    func cellViewModel(at index: Int) -> ReceiptScreenPanUsersCellVM
+    func cellViewModel(at index: Int) -> ReceiptScreenPanUsersCellVMProtocol
     
     
     
