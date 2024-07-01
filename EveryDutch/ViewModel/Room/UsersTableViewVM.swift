@@ -73,7 +73,7 @@ extension UsersTableViewVM {
     }
     
     /// 셀의 뷰모델 반환
-    func cellViewModel(at index: Int) -> UsersTableViewCellVMProtocol {
+    func cellViewModel(at index: Int) -> UsersTableViewCellVMProtocol? {
         return self.roomDataManager.getIndexToUsersVM(index: index)
     }
     

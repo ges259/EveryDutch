@@ -43,8 +43,8 @@ extension ReceiptAPI {
     // MARK: - 영수증 만들기
     func createReceipt(
         versionID: String,
-        dictionary: [String: Any?]) async throws -> String
-    {
+        dictionary: [String: Any?]
+    ) async throws -> String {
         let path = RECEIPT_REF
             .child(versionID)
             .childByAutoId()
@@ -75,30 +75,30 @@ extension ReceiptAPI {
     func saveReceiptForUsers(
         versionID: String,
         receiptID: String,
-        users: [String]) async throws
-    {
+        dict: [String: Bool]
+    ) async throws {
         try await withThrowingTaskGroup(of: Void.self) { group in
-            for user in users {
+            dict.forEach { userID, value in
                 group.addTask {
                     let path = USER_RECEIPTS_REF
                         .child(versionID)
-                        .child(user)
+                        .child(userID)
+                    
                     try await self.updateChildValues(
                         path: path,
-                        values: [receiptID: false]
+                        values: [receiptID: value]
                     )
                 }
             }
+            
             try await group.waitForAll()
         }
     }
     
-
-    
     private func updateChildValues(
         path: DatabaseReference,
-        values: [String: Any]) async throws
-    {
+        values: [String: Any]
+    ) async throws {
         try await withCheckedThrowingContinuation
         { (continuation: CheckedContinuation<Void, Error>) in
             path.updateChildValues(values) { error, _ in
@@ -110,113 +110,4 @@ extension ReceiptAPI {
             }
         }
     }
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-extension ReceiptAPI {
-    
-    // MARK: - 누적 금액 업데이트
-    func updateCumulativeMoney(
-        versionID: String,
-        moneyDict: [String: Int]) async throws
-    {
-        let reference = CUMULATIVE_AMOUNT_REF.child(versionID)
-        try await self.performTransactionUpdate(
-            forRef: reference,
-            withDict: moneyDict)
-    }
-    
-    // MARK: - 페이백 업데이트
-    func updatePayback(
-        versionID: String,
-        payerID: String,
-        moneyDict: [String: Int]) async throws
-    {
-        var paybackDict = moneyDict
-            paybackDict.removeValue(forKey: payerID)
-        let reference = PAYBACK_REF.child(versionID).child(payerID)
-        try await self.performTransactionUpdate(
-            forRef: reference,
-            withDict: paybackDict)
-    }
-    
-    // MARK: - 트랜잭션 업데이트를 위한 공통 함수
-    private func performTransactionUpdate(
-        forRef reference: DatabaseReference,
-        withDict moneyDict: [String: Int]) async throws
-    {
-        try await withThrowingTaskGroup(of: Void.self) { group in
-            for (userID, amount) in moneyDict {
-                group.addTask {
-                    let userRef = reference.child(userID)
-                    try await self.updateAmount(
-                        forUserRef: userRef,
-                        amount: amount)
-                }
-            }
-            try await group.waitForAll()
-        }
-    }
-    
-    private func updateAmount(
-        forUserRef userRef: DatabaseReference,
-        amount: Int) async throws
-    {
-        try await withCheckedThrowingContinuation
-        { (continuation: CheckedContinuation<Void, Error>) in
-            userRef.runTransactionBlock { currentData in
-                let currentValue = (currentData.value as? Double) ?? 0
-                currentData.value = currentValue + Double(amount)
-                return TransactionResult.success(withValue: currentData)
-            } andCompletionBlock: { error, committed, _ in
-                if let error = error {
-                    continuation.resume(throwing: error)
-                } else if committed {
-                    continuation.resume()
-                } else {
-                    continuation.resume(throwing: ErrorEnum.readError)
-                }
-            }
-        }
-    }
-    
-    
-    
-    
-    // 새로운 함수: 영수증 타입 업데이트
-      func updateReceiptType(
-          versionID: String,
-          receiptID: String,
-          newType: Int
-      ) async throws {
-          let path = RECEIPT_REF
-              .child(versionID)
-              .child(receiptID)
-              .child(DatabaseConstants.type)
-          
-          try await withCheckedThrowingContinuation 
-          { (continuation: CheckedContinuation<Void, Error>) in
-              path.setValue(newType) { error, _ in
-                  if let error = error {
-                      continuation.resume(throwing: error)
-                  } else {
-                      continuation.resume(returning: ())
-                  }
-              }
-          }
-      }
 }

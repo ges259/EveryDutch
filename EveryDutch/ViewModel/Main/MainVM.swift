@@ -50,7 +50,7 @@ extension MainVM {
         return self.roomDataManager.getNumOfRooms
     }
     /// 셀의 뷰모델 반환
-    func cellViewModel(at index: Int) -> MainCollectionViewCellVMProtocol {
+    func cellViewModel(at index: Int) -> MainCollectionViewCellVMProtocol? {
         return self.roomDataManager.getRoomsViewModel(index: index)
     }
     /// 아이템이 눌렸을 때, roomDataManager에 선택된(현재) 방 저장

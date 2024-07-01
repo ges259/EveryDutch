@@ -45,7 +45,8 @@ final class ReceiptScreenPanVM: ReceiptScreenPanVMProtocol {
     // MARK: - 라이프사이클
     init(receipt: Receipt,
          receiptAPI: ReceiptAPIProtocol,
-         roomDataManager: RoomDataManagerProtocol) {
+         roomDataManager: RoomDataManagerProtocol
+    ) {
         self.receipt = receipt
         self.receiptAPI = receiptAPI
         self.roomDataManager = roomDataManager
@@ -161,7 +162,7 @@ extension ReceiptScreenPanVM {
     private func makeUserCells() {
         // Receipt에서 PaymentDetails 가져오기
         let paymentDetails = self.receipt.paymentDetails
-                    
+        
         // 셀 만들기
         self.userCellViewModels = paymentDetails.map { detail in
             let user = self.roomDataManager.getIdToUser(usersID: detail.userID)
@@ -194,29 +195,37 @@ extension ReceiptScreenPanVM {
                 
                 // 결제 세부 데이터 업데이트
                 try await self.updatePaymentDetail(versionID: versionID)
-                
                 // 결제 환급 데이터 업데이트
                 try await self.updatePayback(versionID: versionID)
-                
-                
                 // 모든 사용자의 결제 완료 상태를 확인하여, 모두 true일 경우 영수증 타입을 업데이트
-                try await self.updateReceiptTypeIfNeeded(
-                    versionID: versionID)
-                
+                try await self.updateReceiptTypeIfNeeded(versionID: versionID)
+                // 유저의 usersReceipts 
+                try await self.updateUserReceipts(versionID: versionID)
                 
                 DispatchQueue.main.async {
+                    print("\(#function) ----- Success")
                     // 성공했다면,paymentDetailChanged를 초기화
                     self.paymentDetailChanged = []
                 }
-                print("\(#function) ----- Success")
             } catch {
                 print("\(#function) ----- Fail")
             }
         }
     }
     
-    private func updateUserReceipts(versionID: String) {
+    
+    
+    // MARK: - UsersReceipts 업데이트
+    private func updateUserReceipts(versionID: String) async throws {
+        let dict = self.paymentDetailChanged.reduce(into: [String: Bool]()) { result, detail in
+            return result[detail.userID] = detail.done
+        }
         
+        try await self.receiptAPI.saveReceiptForUsers(
+            versionID: versionID,
+            receiptID: self.receipt.receiptID,
+            dict: dict
+        )
     }
     
     
@@ -231,15 +240,16 @@ extension ReceiptScreenPanVM {
             versionID: versionID,
             receiptID: self.receipt.receiptID,
             paymentDetailsDict: paymentDetailsDict)
-        
     }
     /// paymentDetailChanged 배열에서 사용자별 결제 세부 데이터를 줄이는 메서드
     /// 각 사용자의 userID를 키로 하고, 결제 금액(pay)과 완료 여부(done)를 값으로 하는 딕셔너리를 생성
     private func reducePaymentDetailsDict() -> [String : [String: Any]] {
         return self.paymentDetailChanged.reduce(into: [String: [String: Any]]()) { result, detail in
             
-            result[detail.userID] = [DatabaseConstants.pay  : detail.pay,
-                                     DatabaseConstants.done : detail.done]
+            return result[detail.userID] = [
+                DatabaseConstants.pay  : detail.pay,
+                DatabaseConstants.done : detail.done
+            ]
         }
     }
     
@@ -251,7 +261,7 @@ extension ReceiptScreenPanVM {
     private func updatePayback(versionID: String) async throws {
         let paybackDict = self.createPaybackDict()
         
-        try await receiptAPI.updatePayback(
+        try await self.receiptAPI.updatePayback(
             versionID: versionID,
             payerID: self.receipt.payer,
             moneyDict: paybackDict
@@ -281,7 +291,7 @@ extension ReceiptScreenPanVM {
         let allDone = self.userCellViewModels.allSatisfy { $0.getDone }
         let newType = allDone ? 1 : 0
         
-        try await receiptAPI.updateReceiptType(
+        try await self.receiptAPI.updateReceiptType(
             versionID: versionID,
             receiptID: self.receipt.receiptID,
             newType: newType

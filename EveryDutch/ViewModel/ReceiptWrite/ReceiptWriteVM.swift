@@ -626,11 +626,13 @@ extension ReceiptWriteVM {
                 let receiptKey = try await self.receiptAPI.createReceipt(
                     versionID: versionID,
                     dictionary: dict)
+                
+                let usersReceiptsDict = self.createUsersReceiptsDict()
                 // User_Receipts에 영수증 ID 저장
                 try await self.receiptAPI.saveReceiptForUsers(
                     versionID: versionID,
                     receiptID: receiptKey,
-                    users: Array(self.usersMoneyDict.keys))
+                    dict: usersReceiptsDict)
                 // 누적 금액 업데이트
                 try await self.receiptAPI.updateCumulativeMoney(
                     versionID: versionID,
@@ -640,13 +642,19 @@ extension ReceiptWriteVM {
                     versionID: versionID,
                     payerID: payerID,
                     moneyDict: self.usersMoneyDict)
-                // API 작업 성공, 성공 결과를 completion으로 전달ㄹ
+                // API 작업 성공, 성공 결과를 completion으로 전달
                 self.successMakeReceiptClosure?()
+                
             } catch {
                 // API 작업 실패, 실패 결과를 클로저를 통해 전달
                 print("API 작업 실패: \(error)")
                 self.errorClosure?(.readError)
             }
         }
+    }
+    
+    private func createUsersReceiptsDict() -> [String: Bool] {
+        let receiptsDict = usersMoneyDict.mapValues { _ in false }
+        return receiptsDict
     }
 }

@@ -74,11 +74,11 @@ final class RoomDataManager: RoomDataManagerProtocol {
     var roomUsersInitialLoad: Bool = true
     /// [플래그] Receipt 데이터 observe를 설정했는지 판단하는 변수
     var roomReceiptInitialLoad: Bool = false
-//    var roomReceiptSearchModeInitialLoad: Bool = false
+    //    var roomReceiptSearchModeInitialLoad: Bool = false
     
     /// [플래그] Receipt 데이터를 추가적으로 가져올 지에 대한 플래그
-//    var hasMoreRoomReceiptData: Bool = true
-
+    //    var hasMoreRoomReceiptData: Bool = true
+    
     
     
     
@@ -127,7 +127,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
         // 플래그 데이터 초기화
         self.roomReceiptInitialLoad = false
         self.roomUsersInitialLoad = true
-//        self.hasMoreRoomReceiptData = true
+        //        self.hasMoreRoomReceiptData = true
         // 디바운싱 초기화
         self.userDebouncer.reset()
         self.receiptDebouncer.reset()
@@ -136,11 +136,10 @@ final class RoomDataManager: RoomDataManagerProtocol {
         self.userIDToIndexPathMap = [:]
         self.usersCellViewModels = []
         // Receipt 데이터 초기화
-//        self.receiptIDToIndexPathMap = [:]
-//        self.roomReceiptCellViewModels = []
+        //        self.receiptIDToIndexPathMap = [:]
+        //        self.roomReceiptCellViewModels = []
         self.receiptSections = []
     }
-    
     
     
     
@@ -157,7 +156,11 @@ final class RoomDataManager: RoomDataManagerProtocol {
     }
     
     /// 모든 뷰모델 리턴
-    func getIndexToUsersVM(index: Int) -> UsersTableViewCellVMProtocol {
+    func getIndexToUsersVM(index: Int) -> UsersTableViewCellVMProtocol? {
+        guard index < self.usersCellViewModels.count else {
+            print("Index out of range: \(index)")
+            return nil
+        }
         return self.usersCellViewModels[index]
     }
     
@@ -181,6 +184,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
             result[viewModel.userID] = viewModel.getUser
         }
     }
+    
     /// 유저 ID를 받으면, User를 리턴
     func getIdToUser(usersID: String) -> User? {
         let usersVM = self.getUserIDToUsersVM(userID: usersID)
@@ -189,13 +193,12 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     /// userTableView에서 유저가 선택이 된다면, IndexPath.row를 파라미터로 받고,
     /// 해당 유저의 (User, Decoration) 튜플 데이터를 리턴
-    func getIndexToUserDataTuple(index: Int) -> UserDataTuple {
-        let viewModel = self.getIndexToUsersVM(index: index)
-        
-        return (key: viewModel.userID,
-                value: viewModel.getUser)
+    func getIndexToUserDataTuple(index: Int) -> UserDataTuple? {
+        guard let viewModel = self.getIndexToUsersVM(index: index) else {
+            return nil
+        }
+        return (key: viewModel.userID, value: viewModel.getUser)
     }
-    
     
     /// userTableView에서 유저가 선택이 된다면, Decoration데이터를 가져옴
     func selectUser(
@@ -204,13 +207,16 @@ final class RoomDataManager: RoomDataManagerProtocol {
     ) {
         Task {
             do {
-                let userTuple = self.getIndexToUserDataTuple(index: index)
+                guard let userTuple = self.getIndexToUserDataTuple(index: index) else {
+                    DispatchQueue.main.async {
+                        completion(.failure(.readError))
+                    }
+                    return
+                }
                 let deco = try await self.fetchDecoration(userID: userTuple.key)
                 
                 // 현재 유저 저장
-                self.currentUser = (userID: userTuple.key,
-                                    user: userTuple.value,
-                                    deco: deco)
+                self.currentUser = (userID: userTuple.key, user: userTuple.value, deco: deco)
                 DispatchQueue.main.async {
                     completion(.success(()))
                 }
@@ -225,30 +231,18 @@ final class RoomDataManager: RoomDataManagerProtocol {
             }
         }
     }
+    
     /// 현재 선택된 유저의 UserDecoTuple (User , Decoration)
     var getCurrentUserData: UserDecoTuple? {
         guard let currentUser = currentUser else { return nil }
         
-        return (user: currentUser.user,
-                deco: currentUser.deco)
+        return (user: currentUser.user, deco: currentUser.deco)
     }
+    
     /// 현재 선택된 유저의 userID
     var getCurrentUserID: String? {
         return self.currentUser?.userID
     }
-    
-    
-    
-    
-    /// 인데스패스 리턴
-    //    func getUserIndexPath(userID: String) -> IndexPath? {
-    //        return self.userIDToIndexPathMap[userID]
-    //    }
-    
-    /// roomUserDataDict의 userID의 배열을 리턴하는 변수
-    //    var getRoomUsersKeyArray: [String] {
-    //        return Array(self.roomUserDataDict.keys)
-    //    }
     
     
     
@@ -264,26 +258,30 @@ final class RoomDataManager: RoomDataManagerProtocol {
     var getNumOfRooms: Int {
         return self.roomsCellViewModels.count
     }
+    
     /// MainCollectionViewCellVMProtocol 리턴
-    func getRoomsViewModel(index: Int) -> MainCollectionViewCellVMProtocol {
+    func getRoomsViewModel(index: Int) -> MainCollectionViewCellVMProtocol? {
+        guard index < self.roomsCellViewModels.count else {
+            print("Index out of range: \(index)")
+            return nil
+        }
         return self.roomsCellViewModels[index]
     }
     
     /// 현재 방 저장
     func saveCurrentRooms(
         index: Int,
-        completion: @escaping (Result<Void, ErrorEnum>) -> ())
-    {
+        completion: @escaping (Result<Void, ErrorEnum>) -> ()
+    ) {
         // 배열 범위 검사
-        guard index >= 0, index < self.roomsCellViewModels.count else {
+        guard index < self.roomsCellViewModels.count else {
             completion(.failure(.readError))
             return
         }
         // 인덱스로부터 뷰모델 가져오기
         let viewModel = self.roomsCellViewModels[index]
         // currentRoom 설정
-        self.currentRoom = (roomID: viewModel.getRoomID,
-                            room: viewModel.getRoom)
+        self.currentRoom = (roomID: viewModel.getRoomID, room: viewModel.getRoom)
         self.startLoadRoomData(completion: completion)
     }
     
@@ -331,21 +329,43 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     
     
+    
+    
+    
+    
+    
     // MARK: - 영수증 정보
     /// 섹션의 개수
     var getNumOfRoomReceiptsSection: Int {
         return self.receiptSections.count
     }
+    
     /// 영수증 개수
-    func getNumOfRoomReceipts(section: Int) -> Int {
+    func getNumOfRoomReceipts(section: Int) -> Int? {
+        guard section < self.receiptSections.count else {
+            print("Section out of range: \(section)")
+            return nil
+        }
         return self.receiptSections[section].receipts.count
     }
+    
     /// 섹션 헤더의 타이틀(날짜)를 리턴
-    func getRoomReceiptSectionDate(section: Int) -> String {
-        self.receiptSections[section].date
+    func getRoomReceiptSectionDate(section: Int) -> String? {
+        guard section < self.receiptSections.count else {
+            print("Section out of range: \(section)")
+            return nil
+        }
+        return self.receiptSections[section].date
     }
+    
     /// 영수증 셀(ReceiptTableViewCellVMProtocol) 리턴
-    func getRoomReceiptViewModel(indexPath: IndexPath) -> ReceiptTableViewCellVMProtocol {
+    func getRoomReceiptViewModel(indexPath: IndexPath) -> ReceiptTableViewCellVMProtocol? {
+        guard indexPath.section < self.receiptSections.count,
+              indexPath.row < self.receiptSections[indexPath.section].receipts.count else {
+            print("Index out of range: section \(indexPath.section), row \(indexPath.row)")
+            return nil
+        }
+        
         var receiptVM = self.receiptSections[indexPath.section].receipts[indexPath.row]
         
         let updatedReceipt = self.updateReceiptUserName(receipt: receiptVM.getReceipt)
@@ -353,10 +373,17 @@ final class RoomDataManager: RoomDataManagerProtocol {
         
         return receiptVM
     }
+    
     /// index를 받아 알맞는 영수증을 리턴
-    func getRoomReceipt(at indexPath: IndexPath) -> Receipt {
+    func getRoomReceipt(at indexPath: IndexPath) -> Receipt? {
+        guard indexPath.section < self.receiptSections.count,
+              indexPath.row < self.receiptSections[indexPath.section].receipts.count else {
+            print("Index out of range: section \(indexPath.section), row \(indexPath.row)")
+            return nil
+        }
         return self.receiptSections[indexPath.section].receipts[indexPath.row].getReceipt
     }
+    
     /// Receipt에 있는 payment_Detail의 userID를 userName으로 바꿈
     func updateReceiptUserName(receipt: Receipt) -> Receipt {
         let payerUser = self.getIdToUser(usersID: receipt.payer)
@@ -365,21 +392,37 @@ final class RoomDataManager: RoomDataManagerProtocol {
         return returndReceipt
     }
     
-    
     /// 섹션의 개수
     var getNumOfUserReceiptsSection: Int {
         return self.receiptSections.count
     }
+    
     /// 영수증 개수
-    func getNumOfUserReceipts(section: Int) -> Int {
+    func getNumOfUserReceipts(section: Int) -> Int? {
+        guard section < self.receiptSections.count else {
+            print("Section out of range: \(section)")
+            return nil
+        }
         return self.receiptSections[section].receipts.count
     }
+    
     /// 섹션 헤더의 타이틀(날짜)를 리턴
-    func getUserReceiptSectionDate(section: Int) -> String {
-        self.receiptSections[section].date
+    func getUserReceiptSectionDate(section: Int) -> String? {
+        guard section < self.receiptSections.count else {
+            print("Section out of range: \(section)")
+            return nil
+        }
+        return self.receiptSections[section].date
     }
+    
     /// 영수증 셀(ReceiptTableViewCellVMProtocol) 리턴
-    func getUserReceiptViewModel(indexPath: IndexPath) -> ReceiptTableViewCellVMProtocol {
+    func getUserReceiptViewModel(indexPath: IndexPath) -> ReceiptTableViewCellVMProtocol? {
+        guard indexPath.section < self.receiptSections.count,
+              indexPath.row < self.receiptSections[indexPath.section].receipts.count else {
+            print("Index out of range: section \(indexPath.section), row \(indexPath.row)")
+            return nil
+        }
+        
         var receiptVM = self.receiptSections[indexPath.section].receipts[indexPath.row]
         
         let updatedReceipt = self.updateReceiptUserName(receipt: receiptVM.getReceipt)
@@ -387,14 +430,14 @@ final class RoomDataManager: RoomDataManagerProtocol {
         
         return receiptVM
     }
+    
     /// index를 받아 알맞는 영수증을 리턴
-    func getUserReceipt(at indexPath: IndexPath) -> Receipt {
+    func getUserReceipt(at indexPath: IndexPath) -> Receipt? {
+        guard indexPath.section < self.receiptSections.count,
+              indexPath.row < self.receiptSections[indexPath.section].receipts.count else {
+            print("Index out of range: section \(indexPath.section), row \(indexPath.row)")
+            return nil
+        }
         return self.receiptSections[indexPath.section].receipts[indexPath.row].getReceipt
     }
-    
-    
-    
-    
-    
-    
 }

@@ -62,7 +62,7 @@ extension ReceiptTableViewViewModel {
 // MARK: - 테이블뷰
 extension ReceiptTableViewViewModel {
     /// 섹션의 타이틀(날짜)를 반환
-    func getReceiptSectionDate(section: Int) -> String {
+    func getReceiptSectionDate(section: Int) -> String? {
         return self._isSearchMode
         ? self.roomDataManager.getUserReceiptSectionDate(section: section)
         : self.roomDataManager.getRoomReceiptSectionDate(section: section)
@@ -74,27 +74,34 @@ extension ReceiptTableViewViewModel {
         : self.roomDataManager.getNumOfRoomReceiptsSection
     }
     /// 영수증 개수
-    func numOfReceipts(section: Int) -> Int {
+    func numOfReceipts(section: Int) -> Int? {
         return self._isSearchMode
         ? self.roomDataManager.getNumOfUserReceipts(section: section)
         : self.roomDataManager.getNumOfRoomReceipts(section: section)
     }
     /// 영수증 셀의 뷰모델 반환
-    func cellViewModel(at indexPath: IndexPath) -> ReceiptTableViewCellVMProtocol {
+    func cellViewModel(at indexPath: IndexPath) -> ReceiptTableViewCellVMProtocol? {
         return self._isSearchMode
         ? self.roomDataManager.getUserReceiptViewModel(indexPath: indexPath)
         : self.roomDataManager.getRoomReceiptViewModel(indexPath: indexPath)
     }
     /// 셀 선택 시, 해당 셀의 영수증 반환
-    func getReceipt(at indexPath: IndexPath) -> Receipt {
+    func getReceipt(at indexPath: IndexPath) -> Receipt? {
         return self._isSearchMode
         ? self.roomDataManager.getUserReceipt(at: indexPath)
         : self.roomDataManager.getRoomReceipt(at: indexPath)
     }
-    func isLastCell(indexPath: IndexPath) -> Bool {
-        return self._isSearchMode
-        ? indexPath.row == self.roomDataManager.getNumOfUserReceipts(section: indexPath.section) - 1
-        : indexPath.row == self.roomDataManager.getNumOfRoomReceipts(section: indexPath.section) - 1
+    func isLastCell(indexPath: IndexPath) -> Bool? {
+        if self._isSearchMode {
+            if let numOfReceipts = self.roomDataManager.getNumOfUserReceipts(section: indexPath.section) {
+                return indexPath.row == numOfReceipts - 1
+            }
+        } else {
+            if let numOfReceipts = self.roomDataManager.getNumOfRoomReceipts(section: indexPath.section) {
+                return indexPath.row == numOfReceipts - 1
+            }
+        }
+        return nil
     }
 }
 

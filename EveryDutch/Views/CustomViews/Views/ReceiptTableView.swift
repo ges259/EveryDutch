@@ -224,7 +224,7 @@ extension ReceiptTableView: UITableViewDelegate {
                    didSelectRowAt indexPath: IndexPath
     ) {
         // 뷰모델에서 셀의 영수증 가져오기
-        let receipt = self.viewModel.getReceipt(at: indexPath)
+        guard let receipt = self.viewModel.getReceipt(at: indexPath) else { return }
         // '영수증 화면'으로 화면 이동
         self.receiptDelegate?.didSelectRowAt(receipt)
     }
@@ -250,7 +250,13 @@ extension ReceiptTableView: UITableViewDataSource {
     func tableView(_ tableView: UITableView,
                    numberOfRowsInSection section: Int
     ) -> Int {
-        return self.viewModel.numOfReceipts(section: section)
+        if let numOfReceipts = self.viewModel.numOfReceipts(section: section) {
+            return numOfReceipts
+        } else {
+            // numOfReceipts가 nil인 경우
+            DispatchQueue.main.async { tableView.reloadData() }
+            return 0
+        }
     }
     func tableView(_ tableView: UITableView,
                    viewForFooterInSection section: Int
@@ -267,7 +273,9 @@ extension ReceiptTableView: UITableViewDataSource {
         )
         return headerView
     }
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+    func tableView(_ tableView: UITableView, 
+                   heightForFooterInSection section: Int
+    ) -> CGFloat {
         return 40 // 최소 높이를 40으로 설정
     }
     
@@ -301,7 +309,7 @@ extension ReceiptTableView: UITableViewDataSource {
         cell.configureCell(
             with: cellViewModel,
             isFirst: isFistCell,
-            isLast: isLastCell)
+            isLast: isLastCell ?? false)
         
         cell.transform = CGAffineTransform(rotationAngle: .pi)
         return cell

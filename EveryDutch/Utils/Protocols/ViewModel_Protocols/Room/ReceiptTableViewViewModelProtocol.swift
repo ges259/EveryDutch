@@ -17,12 +17,12 @@ protocol ReceiptTableViewViewModelProtocol: NotificationUpdateProtocol {
     
     // 영수증 테이블뷰 (delgate / dataSource)
     var numOfSections: Int { get }
-    func numOfReceipts(section: Int) -> Int
-    func cellViewModel(at indexPath: IndexPath) -> ReceiptTableViewCellVMProtocol
-    func getReceipt(at indexPath: IndexPath) -> Receipt
-    func getReceiptSectionDate(section: Int) -> String
+    func numOfReceipts(section: Int) -> Int?
+    func cellViewModel(at indexPath: IndexPath) -> ReceiptTableViewCellVMProtocol?
+    func getReceipt(at indexPath: IndexPath) -> Receipt?
+    func getReceiptSectionDate(section: Int) -> String?
     
-    func isLastCell(indexPath: IndexPath) -> Bool
+    func isLastCell(indexPath: IndexPath) -> Bool?
 }
 
 

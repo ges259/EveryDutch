@@ -41,7 +41,7 @@ class ReceiptSectionHeaderView: UITableViewHeaderFooterView {
     }
     
     /// 섹션 헤더의 날짜 설정
-    func configure(with date: String,
+    func configure(with date: String?,
                    labelBackgroundColor: UIColor) {
         self.dateLabel.text = date
         self.dateLabel.backgroundColor = labelBackgroundColor

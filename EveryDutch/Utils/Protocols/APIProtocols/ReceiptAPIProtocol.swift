@@ -16,7 +16,8 @@ protocol ReceiptAPIProtocol {
     func saveReceiptForUsers(
         versionID: String,
         receiptID: String,
-        users: [String]) async throws
+        dict: [String: Bool]
+    ) async throws
     
     // MARK: - 누적 금액 업데이트
     func updateCumulativeMoney(versionID: String, moneyDict: [String: Int]) async throws

@@ -30,7 +30,7 @@ protocol MainVMProtocol {
     
     var numberOfRooms: Int { get }
     
-    func cellViewModel(at index: Int) -> MainCollectionViewCellVMProtocol
+    func cellViewModel(at index: Int) -> MainCollectionViewCellVMProtocol?
     
     var moveToSettleMoneyRoomClosure: (() -> Void)? { get set }
     

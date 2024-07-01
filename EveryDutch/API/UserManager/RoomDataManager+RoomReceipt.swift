@@ -177,13 +177,15 @@ extension RoomDataManager {
         if !sectionsToInsert.isEmpty {
             self.receiptDebouncer.triggerDebounceWithIndexPaths(
                 eventType: .sectionInsert,
-                sectionsToInsert.map { IndexPath(row: 0, section: $0) })
+                sectionsToInsert.map { IndexPath(row: 0, section: $0) }
+            )
         }
         // 행이 추가된 경우, sectionReload 이벤트 트리거
         if !rowsToInsert.isEmpty {
             self.receiptDebouncer.triggerDebounceWithIndexPaths(
                 eventType: .sectionReload,
-                rowsToInsert)
+                rowsToInsert
+            )
         }
     }
     
