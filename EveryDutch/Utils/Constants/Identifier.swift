@@ -35,6 +35,7 @@ enum Identifier {
     static let checkReceiptPanCell: String = "CheckReceiptPanCell"
     
     static let receiptSectionHeaderView: String = "ReceiptSectionHeaderView"
+    static let usersTableHeaderView: String = "UsersTableHeaderView"
 }
 
 

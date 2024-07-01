@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ReceiptSectionHeaderView: UITableViewHeaderFooterView {
+final class ReceiptSectionHeaderView: UITableViewHeaderFooterView {
     private let dateLabel: CustomLabel = {
         let label = CustomLabel(
             textAlignment: .center,
@@ -29,7 +29,7 @@ class ReceiptSectionHeaderView: UITableViewHeaderFooterView {
         self.backgroundColor = .clear
         
         // 오토레이아웃 설정
-        self.addSubview(dateLabel)
+        self.addSubview(self.dateLabel)
         self.dateLabel.snp.makeConstraints { make in
             make.top.bottom.equalToSuperview().inset(10)
             make.centerX.equalToSuperview()

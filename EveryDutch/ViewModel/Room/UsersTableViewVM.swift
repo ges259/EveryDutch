@@ -11,6 +11,7 @@ class UsersTableViewVM: UsersTableViewVMProtocol {
     // MARK: - 프로퍼티
     
     
+    private var userDataManager: IndexPathDataManager<User> = IndexPathDataManager()
     
 
     
@@ -87,5 +88,21 @@ extension UsersTableViewVM {
         case .isSettle:
             return true
         }
+    }
+}
+
+// MARK: - 인덱스패스
+extension UsersTableViewVM {
+    // 유저 데이터 인덱스패스
+    func userDataChanged(_ userInfo: [String: Any]) {
+        self.userDataManager.dataChanged(userInfo)
+    }
+
+    func getPendingUserDataIndexPaths() -> [String: [IndexPath]] {
+        return self.userDataManager.getPendingIndexPaths()
+    }
+
+    func resetPendingUserDataIndexPaths() {
+        self.userDataManager.resetIndexPaths()
     }
 }

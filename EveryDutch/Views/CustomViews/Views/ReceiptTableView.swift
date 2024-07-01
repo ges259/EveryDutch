@@ -119,7 +119,9 @@ extension ReceiptTableView {
         
         let receiptSections = self.viewModel.getPendingReceiptSections()
         
-        if receiptSections.keys.count == 1 {
+        guard receiptSections.count != 0 else { return }
+        
+        if receiptSections.count == 1 {
             receiptSections.forEach { (key: String, sections: [Int]) in
                 switch key {
                 case DataChangeType.sectionInsert.notificationName:
@@ -233,7 +235,7 @@ extension ReceiptTableView: UITableViewDelegate {
                    forRowAt indexPath: IndexPath
     ) {
         guard !self.viewModel.hasNoMoreData,
-                indexPath.section == self.viewModel.numOfSections - 1 
+              indexPath.section == self.viewModel.numOfSections - 1
         else { return }
         // 마지막 셀
         self.receiptDelegate?.willDisplayLastCell()
@@ -273,7 +275,7 @@ extension ReceiptTableView: UITableViewDataSource {
         )
         return headerView
     }
-    func tableView(_ tableView: UITableView, 
+    func tableView(_ tableView: UITableView,
                    heightForFooterInSection section: Int
     ) -> CGFloat {
         return 40 // 최소 높이를 40으로 설정

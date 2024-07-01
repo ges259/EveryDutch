@@ -27,7 +27,7 @@ final class RoomSettingVC: UIViewController {
         let view = UsersTableView(
             viewModel: UsersTableViewVM(
                 roomDataManager: RoomDataManager.shared, .isRoomSetting))
-            view.delegate = self
+        view.usersTableViewDelegate = self
         return view
     }()
     
@@ -90,6 +90,14 @@ final class RoomSettingVC: UIViewController {
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        self.usersTableView.isViewVisible = true
+    }
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        self.usersTableView.isViewVisible = false
     }
 }
 

@@ -65,7 +65,6 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
     
     // MARK: - 인덱스패스 프로퍼티
     private var userDataManager: IndexPathDataManager<User> = IndexPathDataManager()
-    private var receiptDataManager: IndexPathDataManager<Receipt> = IndexPathDataManager()
     
     
     
@@ -163,20 +162,20 @@ final class SettleMoneyRoomVM: SettleMoneyRoomProtocol {
 
 
 
-
-
-// MARK: - 인덱스패스
-extension SettleMoneyRoomVM {
-    // 유저 데이터 인덱스패스
-    func userDataChanged(_ userInfo: [String: [IndexPath]]) {
-        self.userDataManager.dataChanged(userInfo)
-    }
-
-    func getPendingUserDataIndexPaths() -> [String: [IndexPath]] {
-        return self.userDataManager.getPendingIndexPaths()
-    }
-
-    func resetPendingUserDataIndexPaths() {
-        self.userDataManager.resetIndexPaths()
-    }
-}
+//
+//
+//// MARK: - 인덱스패스
+//extension SettleMoneyRoomVM {
+//    // 유저 데이터 인덱스패스
+//    func userDataChanged(_ userInfo: [String: [IndexPath]]) {
+//        self.userDataManager.dataChanged(userInfo)
+//    }
+//
+//    func getPendingUserDataIndexPaths() -> [String: [IndexPath]] {
+//        return self.userDataManager.getPendingIndexPaths()
+//    }
+//
+//    func resetPendingUserDataIndexPaths() {
+//        self.userDataManager.resetIndexPaths()
+//    }
+//}

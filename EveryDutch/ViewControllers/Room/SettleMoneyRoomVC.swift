@@ -41,32 +41,20 @@ final class SettleMoneyRoomVC: UIViewController {
     
     
     
-    
-    
-    
-    
-    
     // MARK: - 프로퍼티
     /// SettleMoneyRoomCoordProtocol
     private var coordinator: SettleMoneyRoomCoordProtocol
     /// SettleMoneyRoomProtocol
     private var viewModel: SettleMoneyRoomProtocol
     
-
     
     
     
-    
-
-    /// 현재 화면이 Visible인지를 판단하는 변수
-    /// viewWillAppear와 viewWillDisappear에서 적용
-    private var isViewVisible = false
     
     // MARK: - 라이프사이클
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.configureNotification()
         self.configureUI()
         self.configureAutoLayout()
         self.configureAction()
@@ -80,17 +68,15 @@ final class SettleMoneyRoomVC: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        self.isViewVisible = true
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         self.receiptTableView.isViewVisible = true
-        self.processPendingUpdates()
+        self.topView.setupIsViewVisible(true)
     }
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        self.isViewVisible = false
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
         self.receiptTableView.isViewVisible = false
+        self.topView.setupIsViewVisible(false)
     }
     deinit { NotificationCenter.default.removeObserver(self) }
 }
@@ -190,15 +176,6 @@ extension SettleMoneyRoomVC {
             action: #selector(self.scrollVertical))
         self.navigationController?.navigationBar.addGestureRecognizer(navPanGesture)
     }
-    
-    /// 노티피케이션 설정
-    private func configureNotification() {
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(self.handleDataChanged(notification:)),
-            name: .userDataChanged,
-            object: nil)
-    }
 }
     
     
@@ -237,72 +214,8 @@ extension SettleMoneyRoomVC {
 
 
 
-// MARK: - viewWillAppear 업데이트
-extension SettleMoneyRoomVC {
-    /// 노티피케이션을 통해 받은 변경사항을 바로 반영하거나 저장하는 메서드
-    @objc private func handleDataChanged(notification: Notification) {
-        
-        
-        guard let dataInfo = notification.userInfo as? [String: [IndexPath]] else { return }
-        let rawValue = notification.name.rawValue
-        
-        switch rawValue {
-        case Notification.Name.userDataChanged.rawValue:
-            self.viewModel.userDataChanged(dataInfo)
-            
-        default:
-            break
-        }
-        if self.isViewVisible { self.processPendingUpdates() }
-    }
-    
-    /// 모든 대기 중인 변경 사항을 적용
-    private func processPendingUpdates() {
-        // MARK: - Fix
-        // 유저 테이블 업데이트
-        self.updateUsersTableView()
-        // 탑뷰의 높이를 업데이트
-        self.updateTopViewHeight()
-    }
-    
-    /// 유저 테이블뷰 리로드
-    private func updateUsersTableView() {
-        let userIndexPaths = self.viewModel.getPendingUserDataIndexPaths()
-        guard !userIndexPaths.isEmpty else { return }
-        // 유저 테이블뷰 리로드
-        self.topView.userDataReload(at: userIndexPaths)
-        // 변경 사항 초기화
-        self.viewModel.resetPendingUserDataIndexPaths()
-    }
-    
-    /// 탑뷰의 높이를 업데이트 하기 전, 검사
-    private func updateTopViewHeight() {
-        // 탑뷰의 업데이트 플레그가 true라면,
-        // 현재 화면이 보인다면,
-        // 탑뷰가 열려있다면,
-        if self.viewModel.topViewHeightPlag,
-           self.isViewVisible,
-            self.viewModel.isTopViewOpen
-        {
-            // 탑뷰의 높이 업데이트
-            self.openTopView()
-            self.viewModel.topViewHeightPlag = false
-        }
-    }
-}
-    
-    
-
-    
-    
-
-    
-    
-
-
 // MARK: - 탑뷰 크기 조절
 extension SettleMoneyRoomVC {
-    
     /// 탑뷰를 스크롤 했을 때, 메서드
     @objc private func scrollVertical(sender: UIPanGestureRecognizer) {
         let translation = sender.translation(in: view)
@@ -387,6 +300,21 @@ extension SettleMoneyRoomVC {
             self.view.layoutIfNeeded()
         }
     }
+    
+    
+    /// 탑뷰의 높이를 업데이트 하기 전, 검사
+    private func updateTopViewHeight() {
+        // 탑뷰의 업데이트 플레그가 true라면,
+        // 현재 화면이 보인다면,
+        // 탑뷰가 열려있다면,
+        if self.viewModel.topViewHeightPlag,
+            self.viewModel.isTopViewOpen
+        {
+            // 탑뷰의 높이 업데이트
+            self.openTopView()
+            self.viewModel.topViewHeightPlag = false
+        }
+    }
 }
 
 
@@ -398,7 +326,7 @@ extension SettleMoneyRoomVC {
 
 
 
-// MARK: - 테이블뷰 델리게이트
+// MARK: - 유저 테이블뷰 델리게이트
 extension SettleMoneyRoomVC: UsersTableViewDelegate {
     func didSelectUser() {
         self.coordinator.userProfileScreen()
@@ -422,6 +350,7 @@ extension SettleMoneyRoomVC: UsersTableViewDelegate {
 
 
 
+// MARK: - 영수증 테이블뷰 델리게이트
 extension SettleMoneyRoomVC: ReceiptTableViewDelegate {
     func didSelectRowAt(_ receipt: Receipt) {
         self.coordinator.ReceiptScreen(receipt: receipt)

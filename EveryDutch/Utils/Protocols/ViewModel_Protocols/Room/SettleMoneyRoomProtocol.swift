@@ -31,10 +31,10 @@ protocol SettleMoneyRoomProtocol {
     func loadMoreReceiptData()
     
     
-    // User data handling
-    func userDataChanged(_ userInfo: [String: [IndexPath]])
-    func getPendingUserDataIndexPaths() -> [String: [IndexPath]]
-    func resetPendingUserDataIndexPaths()
+//    // User data handling
+//    func userDataChanged(_ userInfo: [String: [IndexPath]])
+//    func getPendingUserDataIndexPaths() -> [String: [IndexPath]]
+//    func resetPendingUserDataIndexPaths()
 }
 
 

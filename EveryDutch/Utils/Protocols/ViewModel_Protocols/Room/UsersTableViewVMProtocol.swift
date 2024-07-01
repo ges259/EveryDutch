@@ -27,4 +27,12 @@ protocol UsersTableViewVMProtocol {
     
     
     func selectUser(index: Int)
+    
+    
+    
+    
+    // User data handling
+    func userDataChanged(_ userInfo: [String: Any])
+    func getPendingUserDataIndexPaths() -> [String: [IndexPath]]
+    func resetPendingUserDataIndexPaths()
 }

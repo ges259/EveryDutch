@@ -23,10 +23,10 @@ final class SettleMoneyTopView: UIView {
     
     
     weak var delegate: UsersTableViewDelegate? {
-          didSet {
-              self.usersTableView.delegate = delegate
-          }
-      }
+        didSet {
+            self.usersTableView.usersTableViewDelegate = delegate
+        }
+    }
     
     // MARK: - 라이프사이클
     override init(frame: CGRect) {
@@ -39,6 +39,9 @@ final class SettleMoneyTopView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func setupIsViewVisible(_ boolean: Bool) {
+        self.usersTableView.isViewVisible = boolean
+    }
     
     
     
@@ -67,15 +70,5 @@ final class SettleMoneyTopView: UIView {
             make.height.equalTo(4.5)
             make.centerX.equalToSuperview()
         }
-    }
-    
-    
-    
-    
-    
-    // MARK: - 액션
-    /// 유저 테이블의 리로드
-    func userDataReload(at indexpaths: [String : [IndexPath]]) {
-        self.usersTableView.userDataReload(at: indexpaths)
     }
 }
