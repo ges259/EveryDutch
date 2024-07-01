@@ -22,9 +22,10 @@ struct ReceiptScreenPanUsersCellVM: ReceiptScreenPanUsersCellVMProtocol, UserPri
         return self.paymentDetail.userID
     }
     
-    mutating func changeDoneValue(_ bool: Bool) {
-        self.paymentDetail.done = bool
+    var getDone: Bool {
+        return self.paymentDetail.done
     }
+    
     
     var getPaymentDetail: PaymentDetail {
         return self.paymentDetail

@@ -5,10 +5,11 @@
 //  Created by 계은성 on 2024/01/06.
 //
 
-import Foundation
+import UIKit
 
 protocol ReceiptTableViewCellVMProtocol {
     
+    var getBackgroundColor: UIColor { get }
     
     var getReceiptID: String { get }
     
@@ -18,5 +19,5 @@ protocol ReceiptTableViewCellVMProtocol {
     
     mutating func setReceipt(_ receipt: Receipt)
     
-    mutating func updateReceipt(_ dict: [String: Any])
+    mutating func updateReceipt(receiptID: String, _ dict: [String: Any]) 
 }

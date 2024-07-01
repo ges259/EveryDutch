@@ -46,7 +46,7 @@ final class ReceiptScreenPanVC: UIViewController {
     
     private var bottomSaveButton: UIButton = UIButton.btnWithTitle(
         title: "저장",
-        font: UIFont.boldSystemFont(ofSize: 14),
+        font: UIFont.boldSystemFont(ofSize: 16),
         backgroundColor: .normal_white)
     
     private lazy var totalStackView: UIStackView = UIStackView.configureStv(
@@ -173,7 +173,7 @@ extension ReceiptScreenPanVC {
 // MARK: - 버튼 액션
 extension ReceiptScreenPanVC {
     @objc private func bottomSaveButtonTapped() {
-        print(#function)
+        self.viewModel.updatePaymentDetailData()
     }
 }
 
@@ -274,6 +274,8 @@ extension ReceiptScreenPanVC: UITableViewDelegate {
                 at: [IndexPath(row: indexPath.row, section: 1)],
                 with: .automatic
             )
+            
+            
             
         } else {
             // 자신의 영수증이 아닌 경우

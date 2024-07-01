@@ -304,7 +304,6 @@ extension ReceiptTableView: UITableViewDataSource {
             isLast: isLastCell)
         
         cell.transform = CGAffineTransform(rotationAngle: .pi)
-        cell.backgroundColor = .normal_white
         return cell
     }
 }

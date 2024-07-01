@@ -8,6 +8,8 @@
 import UIKit
 
 struct Receipt {
+    var receiptID: String
+    
     var type: Int
     var context: String
     var date: String
@@ -21,7 +23,11 @@ struct Receipt {
     var payerName: String = "???"
 
     // MARK: - init
-    init(dictionary: [String: Any]) {
+    init(receiptID: String,
+         dictionary: [String: Any]
+    ) {
+        self.receiptID = receiptID
+        
         self.type = dictionary[DatabaseConstants.type] as? Int ?? 0
         self.context = dictionary[DatabaseConstants.context] as? String ?? ""
         self.price = dictionary[DatabaseConstants.price] as? Int ?? 0

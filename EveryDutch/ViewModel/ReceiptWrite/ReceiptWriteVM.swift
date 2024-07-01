@@ -640,7 +640,7 @@ extension ReceiptWriteVM {
                     versionID: versionID,
                     payerID: payerID,
                     moneyDict: self.usersMoneyDict)
-                // API 작업 성공, 성공 결과를 completion으로 전달
+                // API 작업 성공, 성공 결과를 completion으로 전달ㄹ
                 self.successMakeReceiptClosure?()
             } catch {
                 // API 작업 실패, 실패 결과를 클로저를 통해 전달

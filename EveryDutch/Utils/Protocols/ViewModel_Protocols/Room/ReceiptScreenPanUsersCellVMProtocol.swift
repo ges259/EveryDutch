@@ -18,8 +18,8 @@ protocol ReceiptScreenPanUsersCellVMProtocol {
     var getPaymentDetail: PaymentDetail { get }
     mutating func toggleDone() 
     
-    mutating func changeDoneValue(_ bool: Bool)
     
+    var getDone: Bool { get }
     
     var doneImg: UIImage? { get }
 }

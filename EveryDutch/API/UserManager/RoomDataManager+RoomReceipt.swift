@@ -107,7 +107,10 @@ extension RoomDataManager {
         for (receiptID, changedData) in toUpdate {
             for sectionIndex in 0..<self.receiptSections.count {
                 if let rowIndex = self.receiptSections[sectionIndex].receipts.firstIndex(where: { $0.getReceiptID == receiptID }) {
-                    self.receiptSections[sectionIndex].receipts[rowIndex].updateReceipt(changedData)
+                    self.receiptSections[sectionIndex]
+                        .receipts[rowIndex]
+                        .updateReceipt(receiptID: receiptID, changedData)
+                    
                     updatedIndexPaths.append(IndexPath(row: rowIndex, section: sectionIndex))
                     break
                 }

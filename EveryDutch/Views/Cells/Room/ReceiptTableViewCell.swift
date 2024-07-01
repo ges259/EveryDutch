@@ -11,9 +11,6 @@ import SnapKit
 final class ReceiptTableViewCell: UITableViewCell {
     
     // MARK: - 레이아웃
-    private lazy var baseView: UIView = UIView.configureView(
-        color: UIColor.normal_white)
-    
     private var contextLbl: CustomLabel = CustomLabel(
         font: UIFont.systemFont(ofSize: 15))
     private var priceLbl: CustomLabel = CustomLabel(
@@ -47,7 +44,6 @@ final class ReceiptTableViewCell: UITableViewCell {
     
     
     // MARK: - 프로퍼티
-    
     var viewModel: ReceiptTableViewCellVMProtocol?
     
     
@@ -56,7 +52,6 @@ final class ReceiptTableViewCell: UITableViewCell {
                   reuseIdentifier: String?) {
         super.init(style: style, 
                    reuseIdentifier: reuseIdentifier)
-        self.backgroundColor = .clear
         
         self.configureUI()
         self.configureAutoLayout()
@@ -70,7 +65,7 @@ final class ReceiptTableViewCell: UITableViewCell {
         self.allPayerLbl.text = ""
         self.priceLbl.text = ""
         self.timeLbl.text = ""
-        self.setRoundedCorners(.all, withCornerRadius: 0)
+        self.backgroundColor = .clear
     }
 }
 
@@ -87,9 +82,6 @@ final class ReceiptTableViewCell: UITableViewCell {
 extension ReceiptTableViewCell {
     /// UI 설정
     private func configureUI() {
-        self.baseView.layer.cornerRadius = 8
-        self.baseView.clipsToBounds = true
-        
         self.backgroundColor = .clear
         self.selectionStyle = .none
         self.separatorInset = .zero
@@ -97,14 +89,9 @@ extension ReceiptTableViewCell {
     
     /// 오토레이아웃 설정
     private func configureAutoLayout() {
-        self.addSubview(self.baseView)
-        self.baseView.addSubview(self.topStackView)
-        self.baseView.addSubview(self.bottomStackView)
+        self.addSubview(self.topStackView)
+        self.addSubview(self.bottomStackView)
         
-        self.baseView.snp.makeConstraints { make in
-            make.leading.top.trailing.equalToSuperview()
-            make.bottom.equalToSuperview().offset(-4)
-        }
         self.topStackView.snp.makeConstraints { make in
             make.top.equalToSuperview().offset(24)
             make.leading.equalToSuperview().offset(20)
@@ -129,12 +116,11 @@ extension ReceiptTableViewCell {
         isLast: Bool
     ) {
         // 모서리 설정
-        var cornerRoundType: CornerRoundType = .all
+        var cornerRoundType: CornerRoundType = .none
         if isFirst && isLast    { cornerRoundType = .all    }
         else if isFirst         { cornerRoundType = .bottom }
         else if isLast          { cornerRoundType = .top    }
         self.setRoundedCorners(cornerRoundType, withCornerRadius: 10)
-        
         
         // 뷰모델 저장
         self.viewModel = viewModel
@@ -146,6 +132,7 @@ extension ReceiptTableViewCell {
             self.allPayerLbl.text = receipt.payerName
             self.priceLbl.text = "\(receipt.price)"
             self.timeLbl.text = receipt.time
+            self.backgroundColor = viewModel.getBackgroundColor
         }
     }
 }

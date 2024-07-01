@@ -5,7 +5,7 @@
 //  Created by 계은성 on 2024/01/06.
 //
 
-import Foundation
+import UIKit
 
 struct ReceiptTableViewCellVM: ReceiptTableViewCellVMProtocol {
     private let receiptID: String
@@ -24,7 +24,18 @@ struct ReceiptTableViewCellVM: ReceiptTableViewCellVMProtocol {
     var getReceipt: Receipt {
         return self.receipt
     }
-    
+    var getBackgroundColor: UIColor {
+        switch self.receipt.type {
+        case -1:
+            return .red
+        case 0:
+            return .normal_white
+        case 1:
+            return .medium_Blue
+        default:
+            return .normal_white
+        }
+    }
     
     var receiptDate: String {
         return self.receipt.date
@@ -34,7 +45,7 @@ struct ReceiptTableViewCellVM: ReceiptTableViewCellVMProtocol {
         self.receipt = receipt
     }
     
-    mutating func updateReceipt(_ dict: [String: Any]) {
-        self.receipt = Receipt(dictionary: dict)
+    mutating func updateReceipt(receiptID: String, _ dict: [String: Any]) {
+        self.receipt = Receipt(receiptID: receiptID, dictionary: dict)
     }
 }

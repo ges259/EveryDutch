@@ -124,7 +124,8 @@ extension ReceiptAPI {
                 .observeSingleEvent(of: .value) { snapshot in
                     
                     if let dict = snapshot.value as? [String: Any] {
-                        let receipt = Receipt(dictionary: dict)
+                        let receipt = Receipt(receiptID: snapshot.key,
+                                              dictionary: dict)
                         receiptsTupleArray.append((receiptID: snapshot.key, receipt: receipt))
                     }
                     group.leave()

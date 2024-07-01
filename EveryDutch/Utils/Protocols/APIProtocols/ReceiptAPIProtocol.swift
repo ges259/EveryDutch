@@ -60,5 +60,18 @@ protocol ReceiptAPIProtocol {
     )
     
     
-      
+    
+    func updatePaymentDetail(
+        versionID: String,
+        receiptID: String,
+        paymentDetailsDict: [String : [String : Any]]
+    ) async throws
+    
+    
+    // 새로운 함수: 영수증 타입 업데이트
+      func updateReceiptType(
+          versionID: String,
+          receiptID: String,
+          newType: Int
+      ) async throws
 }

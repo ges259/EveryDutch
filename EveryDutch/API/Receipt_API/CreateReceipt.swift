@@ -93,6 +93,42 @@ extension ReceiptAPI {
         }
     }
     
+
+    
+    private func updateChildValues(
+        path: DatabaseReference,
+        values: [String: Any]) async throws
+    {
+        try await withCheckedThrowingContinuation
+        { (continuation: CheckedContinuation<Void, Error>) in
+            path.updateChildValues(values) { error, _ in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume()
+                }
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+extension ReceiptAPI {
+    
     // MARK: - 누적 금액 업데이트
     func updateCumulativeMoney(
         versionID: String,
@@ -158,19 +194,29 @@ extension ReceiptAPI {
         }
     }
     
-    private func updateChildValues(
-        path: DatabaseReference,
-        values: [String: Any]) async throws
-    {
-        try await withCheckedThrowingContinuation
-        { (continuation: CheckedContinuation<Void, Error>) in
-            path.updateChildValues(values) { error, _ in
-                if let error = error {
-                    continuation.resume(throwing: error)
-                } else {
-                    continuation.resume()
-                }
-            }
-        }
-    }
+    
+    
+    
+    // 새로운 함수: 영수증 타입 업데이트
+      func updateReceiptType(
+          versionID: String,
+          receiptID: String,
+          newType: Int
+      ) async throws {
+          let path = RECEIPT_REF
+              .child(versionID)
+              .child(receiptID)
+              .child(DatabaseConstants.type)
+          
+          try await withCheckedThrowingContinuation 
+          { (continuation: CheckedContinuation<Void, Error>) in
+              path.setValue(newType) { error, _ in
+                  if let error = error {
+                      continuation.resume(throwing: error)
+                  } else {
+                      continuation.resume(returning: ())
+                  }
+              }
+          }
+      }
 }

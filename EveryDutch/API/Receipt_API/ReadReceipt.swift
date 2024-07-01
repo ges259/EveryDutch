@@ -34,7 +34,8 @@ extension ReceiptAPI {
             
             allObjects.forEach { snapshot in
                 if let dict = snapshot.value as? [String: Any] {
-                    let receipt = Receipt(dictionary: dict)
+                    let receipt = Receipt(receiptID: snapshot.key, 
+                                          dictionary: dict)
                     receiptsTupleArray.append((receiptID: snapshot.key, receipt: receipt))
                 }
             }
@@ -84,7 +85,8 @@ extension ReceiptAPI {
             
             allObjects.forEach { snapshot in
                 if let dict = snapshot.value as? [String: Any] {
-                    let receipt = Receipt(dictionary: dict)
+                    let receipt = Receipt(receiptID: snapshot.key,
+                                          dictionary: dict)
                     receiptsTupleArray.append((receiptID: snapshot.key, receipt: receipt))
                 }
             }
@@ -128,7 +130,8 @@ extension ReceiptAPI {
             if let dict = snapshot.value as? [String: Any] {
                 let receiptID = snapshot.key
                 
-                let receipt = Receipt(dictionary: dict)
+                let receipt = Receipt(receiptID: receiptID,
+                                      dictionary: dict)
                 let receiptTuple = (receiptID: receiptID, receipt: receipt)
                 
                 completion(.success(.added([receiptTuple])))
