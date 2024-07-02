@@ -27,7 +27,7 @@ final class RoomSettingVC: UIViewController {
         let view = UsersTableView(
             viewModel: UsersTableViewVM(
                 roomDataManager: RoomDataManager.shared, .isRoomSetting))
-        view.usersTableViewDelegate = self
+        view.delegate = self
         return view
     }()
     

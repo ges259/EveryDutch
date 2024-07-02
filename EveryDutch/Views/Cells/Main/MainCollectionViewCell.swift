@@ -37,18 +37,19 @@ final class MainCollectionViewCell: UICollectionViewCell {
         self.cardImageView.prepareForReuseData()
     }
 }
-// MARK: - 화면 설정
 
+
+
+// MARK: - 화면 설정
 extension MainCollectionViewCell {
-    
-    // MARK: - UI 설정
+    /// UI 설정
     private func configureUI() {
         self.backgroundColor = UIColor.medium_Blue
         self.layer.cornerRadius = 10
         self.addShadow(shadowType: .card)
     }
     
-    // MARK: - 오토레이아웃 설정
+    /// 오토레이아웃 설정
     private func configureAutoLayout() {
         self.addSubview(self.cardImageView)
         self.cardImageView.snp.makeConstraints { make in
@@ -61,16 +62,13 @@ extension MainCollectionViewCell {
 
 // MARK: - 데이터 설정
 extension MainCollectionViewCell {
-
     func configureCell(with viewModel: MainCollectionViewCellVMProtocol?) {
+        guard let viewModel = viewModel else { return }
         // 뷰모델 저장
         self.viewModel = viewModel
-        
-        // viewModel을 사용하여 셀의 뷰를 업데이트.2
-        if let viewModel = viewModel {
-            self.cardImageView.setupRoomData(data: viewModel.getRoom)
-            self.cardImageView.setupDecorationData(data: viewModel.getDecoration)
-        }
+        // viewModel을 사용하여 셀의 뷰를 업데이트
+        self.cardImageView.setupRoomData(data: viewModel.getRoom)
+        self.cardImageView.setupDecorationData(data: viewModel.getDecoration)
     }
 }
 

@@ -24,7 +24,7 @@ final class SettleMoneyTopView: UIView {
     
     weak var delegate: UsersTableViewDelegate? {
         didSet {
-            self.usersTableView.usersTableViewDelegate = delegate
+            self.usersTableView.delegate = delegate
         }
     }
     

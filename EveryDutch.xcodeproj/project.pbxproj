@@ -13,6 +13,7 @@
 		5F02B5062B74294800069C2E /* CellSelectionUIStv.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F02B5052B74294800069C2E /* CellSelectionUIStv.swift */; };
 		5F02B5082B742A0F00069C2E /* ReceiptWriteDataCellVMProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F02B5072B742A0F00069C2E /* ReceiptWriteDataCellVMProtocol.swift */; };
 		5F02CAB72B6570E000CD5280 /* UINavigationController+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F02CAB62B6570E000CD5280 /* UINavigationController+Ext.swift */; };
+		5F0437942C338691002A3AE7 /* UsersTableHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F0437932C338691002A3AE7 /* UsersTableHeaderView.swift */; };
 		5F079C182B48182700E42EF6 /* BottomButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F079C172B48182700E42EF6 /* BottomButton.swift */; };
 		5F0A2AB22B755EEF00ABDD59 /* AppCoordProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F0A2AB12B755EEF00ABDD59 /* AppCoordProtocol.swift */; };
 		5F0BCE322B5313AA007A3564 /* ReceiptScreenPanVMProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F0BCE312B5313AA007A3564 /* ReceiptScreenPanVMProtocol.swift */; };
@@ -270,6 +271,7 @@
 		5F02B5052B74294800069C2E /* CellSelectionUIStv.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellSelectionUIStv.swift; sourceTree = "<group>"; };
 		5F02B5072B742A0F00069C2E /* ReceiptWriteDataCellVMProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptWriteDataCellVMProtocol.swift; sourceTree = "<group>"; };
 		5F02CAB62B6570E000CD5280 /* UINavigationController+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UINavigationController+Ext.swift"; sourceTree = "<group>"; };
+		5F0437932C338691002A3AE7 /* UsersTableHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UsersTableHeaderView.swift; sourceTree = "<group>"; };
 		5F079C172B48182700E42EF6 /* BottomButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomButton.swift; sourceTree = "<group>"; };
 		5F0A2AB12B755EEF00ABDD59 /* AppCoordProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordProtocol.swift; sourceTree = "<group>"; };
 		5F0BCE312B5313AA007A3564 /* ReceiptScreenPanVMProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptScreenPanVMProtocol.swift; sourceTree = "<group>"; };
@@ -946,6 +948,7 @@
 				5F1BFF972C2961A000EBED77 /* ReceiptSectionHeaderView.swift */,
 				5F3211AE2B50028B0027C8B3 /* UsersTableView.swift */,
 				5F2A4FF52C2B2C7900509A98 /* ReceiptTableView.swift */,
+				5F0437932C338691002A3AE7 /* UsersTableHeaderView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1685,6 +1688,7 @@
 				5F4E66492B63FE99004EF81E /* SplashScreenVC.swift in Sources */,
 				5F47CD142B3AF01400FCBFA4 /* SettleMoneyRoomProtocol.swift in Sources */,
 				5F614B422B4593E900EF35CE /* PeopleSelectionPanVC.swift in Sources */,
+				5F0437942C338691002A3AE7 /* UsersTableHeaderView.swift in Sources */,
 				5F24ADB82B6EA42100843AA8 /* ReceiptScreenDataCell.swift in Sources */,
 				5F80EA8F2B67BDED00BD8D0C /* UIViewController+Ext.swift in Sources */,
 				5FB4F6F62B432528002F6CF3 /* UsersTableEnum.swift in Sources */,

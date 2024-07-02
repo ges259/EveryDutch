@@ -145,7 +145,10 @@ final class MainVC: UIViewController {
             self.menuBtnTapped()
         }
     }
-    deinit { print("\(#function)-----\(self)") }
+    deinit {
+        NotificationCenter.default.removeObserver(self)
+        print("\(#function)-----\(self)")
+    }
 }
 
 
@@ -263,69 +266,55 @@ extension MainVC {
 // MARK: - viewWillAppear 업데이트
 extension MainVC {
     @objc private func handleRoomDataChanged(notification: Notification) {
-        guard let userInfo = notification.userInfo as? [String: [IndexPath]], !userInfo.isEmpty else { return }
+        guard let userInfo = notification.userInfo as? [String: Any],
+              !userInfo.isEmpty 
+        else { return }
         // userInfo를 viewModel에 전달
         self.viewModel.userDataChanged(userInfo)
         // isViewVisible이 true인 경우 processPendingUpdates 호출
-        if self.isViewVisible {
-            self.processPendingUpdates()
-        }
+        if self.isViewVisible { self.processPendingUpdates() }
     }
     // 모든 대기 중인 변경 사항을 적용
     private func processPendingUpdates() {
         print("\(#function) ----- MainVC")
         // 뷰모델에 저장된 인덱스 패스 가져오기
-        let indexPaths = self.viewModel.getPendingUpdates()
+        let pendingIndexPaths = self.viewModel.getPendingUpdates()
         // 비어있다면, 아무 행동도 하지 않음
-        guard !indexPaths.isEmpty else { return }
+        guard pendingIndexPaths.count != 0 else { return }
         
-        
-        if indexPaths.count > 1 {
-            self.collectionView.reloadData()
-        } else {
+        if pendingIndexPaths.count == 1 {
             // 콜레션뷰 리로드
-            indexPaths.forEach { (key: String, value: [IndexPath]) in
+            pendingIndexPaths.forEach { (key: String, value: [IndexPath]) in
                 self.updateIndexPath(key: key, indexPaths: value)
             }
+        } else {
+            self.collectionView.reloadData()
         }
         // 변경 사항 초기화
         self.viewModel.resetPendingUpdates()
     }
     
     private func updateIndexPath(key: String, indexPaths: [IndexPath]) {
-        self.collectionView.reloadData()
-        
-//        DispatchQueue.main.async {
-//            switch key {
-//            case DataChangeType.updated.notificationName:
-//                guard self.checkRoomCount else { return }
-//                self.collectionView.reloadItems(at: indexPaths)
-//                break
-//            case DataChangeType.initialLoad.notificationName:
-//                self.collectionView.reloadData()
-//                break
-//            case DataChangeType.added.notificationName:
-//                guard self.checkRoomCount else { return }
-//                self.collectionView.insertItems(at: indexPaths)
-//                break
-//            case DataChangeType.removed.notificationName:
-//                guard self.checkRoomCount else { return }
-//                self.collectionView.deleteItems(at: indexPaths)
-//                break
-//            default:
-//                self.collectionView.reloadData()
-//                print("\(self) ----- \(#function) ----- Error")
-//                break
-//            }
-//        }
-    }
-    private var checkRoomCount: Bool {
-        if self.viewModel.numberOfRooms == self.collectionView.numberOfItems(inSection: 0)
-        {
-            self.collectionView.reloadData()
-            return false
+        DispatchQueue.main.async {
+            switch key {
+            case DataChangeType.updated.notificationName:
+                self.collectionView.reloadItems(at: indexPaths)
+                break
+            case DataChangeType.initialLoad.notificationName:
+                self.collectionView.reloadData()
+                break
+            case DataChangeType.added.notificationName:
+                self.collectionView.insertItems(at: indexPaths)
+                break
+            case DataChangeType.removed.notificationName:
+                self.collectionView.deleteItems(at: indexPaths)
+                break
+            default:
+                self.collectionView.reloadData()
+                print("\(self) ----- \(#function) ----- Error")
+                break
+            }
         }
-        return true
     }
 }
 
@@ -442,14 +431,16 @@ extension MainVC {
 extension MainVC: UICollectionViewDelegateFlowLayout {
     /// 아이템을 눌렀을 때
     func collectionView(_ collectionView: UICollectionView,
-                        didSelectItemAt indexPath: IndexPath) {
+                        didSelectItemAt indexPath: IndexPath
+    ) {
         self.viewModel.itemTapped(index: indexPath.row)
     }
     
     /// 아이템의 크기 설정
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
-                        sizeForItemAt indexPath: IndexPath) -> CGSize {
+                        sizeForItemAt indexPath: IndexPath
+    ) -> CGSize {
         return CGSize(width: self.width,
                       height: self.cardHeight())
     }
@@ -457,8 +448,8 @@ extension MainVC: UICollectionViewDelegateFlowLayout {
     // 아이템 간 상하 간격 설정
     func collectionView(_ collectionView: UICollectionView,
                         layout collectionViewLayout: UICollectionViewLayout,
-                        minimumLineSpacingForSectionAt section: Int)
-    -> CGFloat {
+                        minimumLineSpacingForSectionAt section: Int
+    ) -> CGFloat {
         return 12
     }
 }
@@ -467,15 +458,15 @@ extension MainVC: UICollectionViewDelegateFlowLayout {
 extension MainVC: UICollectionViewDataSource {
     /// 아이템 개수 설정
     func collectionView(_ collectionView: UICollectionView,
-                        numberOfItemsInSection section: Int)
-    -> Int {
+                        numberOfItemsInSection section: Int
+    ) -> Int {
         return self.viewModel.numberOfRooms
     }
     
     /// 아이템 설정
     func collectionView(_ collectionView: UICollectionView,
-                        cellForItemAt indexPath: IndexPath)
-    -> UICollectionViewCell {
+                        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
         let cell = self.collectionView.dequeueReusableCell(
             withReuseIdentifier: Identifier.mainCollectionViewCell,
             for: indexPath) as! MainCollectionViewCell

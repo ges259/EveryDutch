@@ -9,11 +9,9 @@ import UIKit
 
 class UsersTableViewVM: UsersTableViewVMProtocol {
     // MARK: - 프로퍼티
-    
-    
     private var userDataManager: IndexPathDataManager<User> = IndexPathDataManager()
     
-
+    
     
     // MARK: - 첫번째 사람인지 판단
     var isFirstBtnTapped: Bool = true

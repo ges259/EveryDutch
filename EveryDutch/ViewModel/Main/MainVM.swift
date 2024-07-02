@@ -74,7 +74,7 @@ extension MainVM {
     
     // MARK: - 노티피케이션 인덱스패스
     // 바뀐 인덱스패스 데이터 저장
-    func userDataChanged(_ userInfo: [String: [IndexPath]]) {
+    func userDataChanged(_ userInfo: [String: Any]) {
         self.pendingIndexPaths.dataChanged(userInfo)
     }
     // 뷰모델에 저장된 변경 사항 반환
