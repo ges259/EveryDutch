@@ -55,7 +55,7 @@ struct ReceiptScreenPanUsersCellVM: ReceiptScreenPanUsersCellVMProtocol, UserPri
         : .empty_Square_Img
     }
     var profileImg: UIImage? {
-        return self.user?.userProfile == ""
+        return self.user?.userProfileImage == ""
         ? .person_Fill_Img
         : .x_Mark_Img
     }

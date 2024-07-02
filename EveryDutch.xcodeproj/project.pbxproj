@@ -218,6 +218,7 @@
 		5FC151072B4EEDC0008A9B16 /* ReceiptScreenPanVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FC151062B4EEDC0008A9B16 /* ReceiptScreenPanVM.swift */; };
 		5FC196B92B627583005CC369 /* ReceiptCheckEnum.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FC196B82B627583005CC369 /* ReceiptCheckEnum.swift */; };
 		5FC196BB2B629224005CC369 /* CheckUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FC196BA2B629224005CC369 /* CheckUser.swift */; };
+		5FC378A62C3440A00082148B /* FloatingButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FC378A52C3440A00082148B /* FloatingButtonView.swift */; };
 		5FC648452B42EB8000C451BF /* ReceiptWriteCoordProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FC648442B42EB8000C451BF /* ReceiptWriteCoordProtocol.swift */; };
 		5FC648472B42EB9500C451BF /* ReceiptWriteCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FC648462B42EB9500C451BF /* ReceiptWriteCoordinator.swift */; };
 		5FD5D6132BEF5576008972A0 /* RoomDataManager+RoomUsers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FD5D6122BEF5576008972A0 /* RoomDataManager+RoomUsers.swift */; };
@@ -462,6 +463,7 @@
 		5FC151062B4EEDC0008A9B16 /* ReceiptScreenPanVM.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptScreenPanVM.swift; sourceTree = "<group>"; };
 		5FC196B82B627583005CC369 /* ReceiptCheckEnum.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptCheckEnum.swift; sourceTree = "<group>"; };
 		5FC196BA2B629224005CC369 /* CheckUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckUser.swift; sourceTree = "<group>"; };
+		5FC378A52C3440A00082148B /* FloatingButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingButtonView.swift; sourceTree = "<group>"; };
 		5FC648442B42EB8000C451BF /* ReceiptWriteCoordProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptWriteCoordProtocol.swift; sourceTree = "<group>"; };
 		5FC648462B42EB9500C451BF /* ReceiptWriteCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptWriteCoordinator.swift; sourceTree = "<group>"; };
 		5FD5D6122BEF5576008972A0 /* RoomDataManager+RoomUsers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RoomDataManager+RoomUsers.swift"; sourceTree = "<group>"; };
@@ -853,6 +855,7 @@
 				5FB4F7022B433DEF002F6CF3 /* MainVC.swift */,
 				5F5FC6112B6A7EBD00693E6F /* ProfileVC.swift */,
 				5FB4F7002B433DEF002F6CF3 /* EditScreenVC.swift */,
+				5FC378A52C3440A00082148B /* FloatingButtonView.swift */,
 			);
 			path = Main;
 			sourceTree = "<group>";
@@ -1544,6 +1547,7 @@
 				5FFF66192B51B9BE000A5EC4 /* ReceiptWriteUsersCellVM.swift in Sources */,
 				5F8513E52B4D68B600A5B22D /* UpdateVersion.swift in Sources */,
 				5F6848802B441C260015BFCC /* SignUpScreenCoordProtocol.swift in Sources */,
+				5FC378A62C3440A00082148B /* FloatingButtonView.swift in Sources */,
 				5F2061242BE7542F00AB44F2 /* ReceiptWriteTableFooterView.swift in Sources */,
 				5F3211AF2B50028B0027C8B3 /* UsersTableView.swift in Sources */,
 				5FFFED052B83CAE50090542D /* CrashlyticsLoggable.swift in Sources */,

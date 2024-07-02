@@ -83,6 +83,8 @@ extension TableCellStackView {
         self.axis = .horizontal
         self.alignment = .fill
         self.distribution = .fill
+        
+        self.profileImg.setRoundedCorners(.all, withCornerRadius: 21 / 2)
     }
     
     // MARK: - 오토레이아웃 설정

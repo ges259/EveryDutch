@@ -64,6 +64,9 @@ final class ProfileVC: UIViewController {
     private var imagePickrHeight: Constraint!
     
     
+    
+    
+    
     // MARK: - 프로퍼티
     private var viewModel: ProfileVMProtocol
     private let coordinator: ProfileCoordProtocol
@@ -75,6 +78,8 @@ final class ProfileVC: UIViewController {
     }()
     
     private var isImagePickerOpen: Bool = false
+    
+    
     
     
     
@@ -381,12 +386,8 @@ extension ProfileVC: ImagePickerDelegate {
 
 extension ProfileVC: CustomPickerDelegate {
     func cancel(type: EditScreenPicker) {
-        
+        // 피커 내리기
         self.adjustPickerHeight(isOpen: false)
-    }
-    
-    func changedCropLocation(data: Any) {
-        print(#function)
     }
     
     func done<T>(with data: T) {
@@ -405,10 +406,15 @@ extension ProfileVC: CustomPickerDelegate {
     private func saveImageData(image: UIImage?) {
         // MARK: - Fix
         // 이제 이미지를 저장하는 api를 만들면 되겠다.
-        guard let indexPath = self.viewModel.profileImageCellIndexPath else { return }
+        guard let image = image,
+              let indexPath = self.viewModel.profileImageCellIndexPath
+        else { return }
+        
         self.updateProfileCell(withIndexPath: indexPath) { cell in
             cell.configureRightImage(with: image)
         }
+        
+        self.viewModel.saveProfileImage(image)
     }
     
     /// [공통] 피커의 높이를 재설정하는 메서드

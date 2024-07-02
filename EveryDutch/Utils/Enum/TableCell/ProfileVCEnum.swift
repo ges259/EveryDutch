@@ -57,7 +57,7 @@ enum UserInfoType: Int, ProfileCellType, CaseIterable {
         switch self {
         case .personalID: return user?.personalID
         case .nickName: return user?.userName
-        case .profileImage: return user?.userProfile
+        case .profileImage: return user?.userProfileImage
         }
     }
     

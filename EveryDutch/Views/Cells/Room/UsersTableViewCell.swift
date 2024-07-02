@@ -106,9 +106,19 @@ extension UsersTableViewCell {
                                   firstBtnTapped: Bool) {
         // 스택뷰 설정
         self.tableCellStv.userNameLbl.text = viewModel.getUserName
-        self.tableCellStv.profileImg.image = viewModel.profileImg
+        
         self.tableCellStv.priceLbl.text = firstBtnTapped
         ? "\(viewModel.cumulativeAmount)"
         : "\(viewModel.paybackPrice)"
+        
+        
+//        self.tableCellStv.profileImg.image = viewModel.profileImg
+        if viewModel.isExistImageUrl {
+            self.tableCellStv.profileImg.setImage(from: viewModel.imageUrl)
+        } else {
+            self.tableCellStv.profileImg.image = viewModel.baseImage
+        }
+        
+        
     }
 }

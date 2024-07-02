@@ -382,7 +382,7 @@ extension EditScreenVM {
         guard !imageDict.isEmpty else { return }
         
         // 이미지를 업로드 후, url을 가져옴
-        let urlDict = try await self._api?.uploadImage(data: imageDict) ?? [:]
+        let urlDict = try await self._api?.uploadDecortaionImage(data: imageDict) ?? [:]
         // URL 데이터를 데코 데이터에 병합
         self._decorationData.merge(urlDict) { _, new in new }
     }

@@ -5,7 +5,7 @@
 //  Created by 계은성 on 2/2/24.
 //
 
-import Foundation
+import UIKit
 
 protocol ProfileVMProtocol {
     
@@ -27,4 +27,9 @@ protocol ProfileVMProtocol {
     func getHeaderTitle(section: Int) -> String?
     
     func getCellData(indexPath: IndexPath) -> ProfileTypeCell?
+    
+    
+    
+    
+    func saveProfileImage(_ image: UIImage)
 }

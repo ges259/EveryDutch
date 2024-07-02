@@ -14,7 +14,10 @@ protocol UsersTableViewCellVMProtocol: ReceiptWriteCellVMProtocol, UserPriceData
     var cumulativeAmount: Int { get }
     var customTableEnum: UsersTableEnum { get }
     
-    var profileImg: UIImage? { get }
+    
+    var isExistImageUrl: Bool { get }
+    var imageUrl: String { get }
+    var baseImage: UIImage? { get }
     
     var rightBtnImg: UIImage? { get }
     var paybackPrice: Int { get }

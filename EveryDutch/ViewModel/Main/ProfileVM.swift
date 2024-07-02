@@ -180,4 +180,17 @@ extension ProfileVM {
             self.errorClosure?(ErrorEnum.unknownError)
         }
     }
+    
+    func saveProfileImage(_ image: UIImage) {
+        Task {
+            do {
+                let imageUrl = try await self.userAPI.uploadProfileImage(image)
+                
+                try await self.userAPI.updateUserProfileImage(imageUrl: imageUrl)
+                print("\(#function) ----- Success")
+            } catch {
+                print("\(#function) ----- Fail")
+            }
+        }
+    }
 }

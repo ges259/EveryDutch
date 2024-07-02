@@ -8,32 +8,12 @@
 import UIKit
 
 protocol MainVMProtocol {
-//    var rooms: [Rooms] { get }
-    func itemTapped(index: Int)
-    
-//    var isFloatingShow: Bool { get set }
-    var getSpinRotation: CGAffineTransform { get }
-//    var onFloatingShowChanged: (() -> Void)? { get set }
-    var onFloatingShowChangedClosure: ((floatingType) -> Void)? { get set }
-    
-    
-    func toggleFloatingShow()
-    var getMenuBtnImg: UIImage? { get }
-    
-    
-    var getBtnTransform: CGAffineTransform { get }
-    
-    
-    var getIsFloatingStatus: Bool { get }
-    
-    
     
     var numberOfRooms: Int { get }
-    
     func cellViewModel(at index: Int) -> MainCollectionViewCellVMProtocol?
     
+    func itemTapped(index: Int)
     var moveToSettleMoneyRoomClosure: (() -> Void)? { get set }
-    
     
     
 

@@ -12,3 +12,9 @@ protocol CustomPickerDelegate: AnyObject {
     func changedCropLocation(data: Any)
     func done<T>(with data: T)
 }
+
+extension CustomPickerDelegate {
+    func changedCropLocation(data: Any) {
+        print("\(#function) ----- Error")
+    }
+}

@@ -139,10 +139,17 @@ extension ReceiptWriteUsersCell {
     
     // MARK: - 셀 설정
     func configureCell(with viewModel: UsersTableViewCellVMProtocol?) {
+        
+        guard let viewModel = viewModel else { return }
         self.viewModel = viewModel
         
-        self.tableCellStackView.userNameLbl.text = viewModel?.getUserName
-        self.tableCellStackView.profileImg.image = viewModel?.profileImg
+        self.tableCellStackView.userNameLbl.text = viewModel.getUserName
+        
+        if viewModel.isExistImageUrl {
+            self.tableCellStackView.profileImg.setImage(from: viewModel.imageUrl)
+        } else {
+            self.tableCellStackView.profileImg.image = viewModel.baseImage
+        }
     }
     
     

@@ -16,12 +16,12 @@ protocol EditProviderModel {
 struct User: EditProviderModel {
     var personalID: String
     var userName: String
-    var userProfile: String
+    var userProfileImage: String
     
     init(dictionary: [String: Any]) {
         self.personalID = dictionary[DatabaseConstants.personal_ID] as? String ?? ""
         self.userName = dictionary[DatabaseConstants.user_name] as? String ?? ""
-        self.userProfile = dictionary[DatabaseConstants.user_image] as? String ?? ""
+        self.userProfileImage = dictionary[DatabaseConstants.profile_image] as? String ?? ""
     }
     
     var titleText: String {

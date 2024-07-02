@@ -16,8 +16,8 @@ extension DatabaseConstants {
 enum DatabaseConstants {
     static let email: String = "email"
     static let personal_ID: String = "personal_ID"
-    static let user_image: String = "user_image"
     static let user_name: String = "user_name"
+    static let profile_image: String = "profile_image"
 }
 
 
@@ -41,7 +41,6 @@ extension DatabaseConstants {
     static let payment_details: String = "paymentDetails"
     
     static let pay: String = "pay"
-    
 }
 
 

@@ -11,22 +11,29 @@ import FirebaseStorage
 extension DecorationAPI {
     
     // MARK: - 이미지 저장
-    func uploadImage(data: [String: UIImage]) async throws -> [String: String] {
+    func uploadProfileImage(_ image: UIImage) async throws -> String {
+        let uniqueKey = UUID().uuidString // 고유 키 생성
+        let uploadURL = try await self.uploadImageAndGetURL(uniqueKey: uniqueKey, image: image)
+        return uploadURL
+    }
+    
+    
+    func uploadDecortaionImage(data: [String: UIImage]) async throws -> [String: String] {
         var urlDict = [String: String]()
         for (key, image) in data {
             let uniqueKey = UUID().uuidString // 고유 키 생성
-            let uploadURL = try await self.uploadImageAndGetURL(key: uniqueKey, image: image)
+            let uploadURL = try await self.uploadImageAndGetURL(uniqueKey: uniqueKey, image: image)
             urlDict[key] = uploadURL // 고유 키와 URL 저장
         }
         return urlDict
     }
     
     
-    private func uploadImageAndGetURL(key: String, image: UIImage) async throws -> String {
+    private func uploadImageAndGetURL(uniqueKey: String, image: UIImage) async throws -> String {
         guard let imageData = image.jpegData(compressionQuality: 0.8) else {
             throw NSError(domain: "ImageConversionError", code: 0, userInfo: [NSLocalizedDescriptionKey: "Unable to convert UIImage to JPEG data"])
         }
-        let storageRef = Storage.storage().reference().child("images/\(key).jpg")
+        let storageRef = Storage.storage().reference().child("images/\(uniqueKey).jpg")
         let metadata = StorageMetadata()
         metadata.contentType = "image/jpeg"
         
