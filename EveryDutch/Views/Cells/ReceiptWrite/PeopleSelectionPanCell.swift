@@ -85,14 +85,17 @@ extension PeopleSelectionPanCell {
     // MARK: - 셀의 데이터 설정
     func configureCellData(isSingleMode: Bool,
                            isSelected: Bool,
-                           user: User) {
+                           user: User?) {
         // 모드 설정
         self.isSingleMode = isSingleMode
         
         // 프로필 이미지 설정
         self.cellStv.profileImg.image = UIImage.person_Fill_Img
         // 이름 설정
-        self.cellStv.userNameLbl.text = user.userName
+        self.cellStv.userNameLbl.text = user?.userName
+        if user?.userProfileImage != "" {
+            self.cellStv.profileImg.setImage(from: user?.userProfileImage)
+        }
         
         // 셀이 선택되었는지 확인
         DispatchQueue.main.async {

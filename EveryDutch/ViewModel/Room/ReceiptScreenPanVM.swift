@@ -132,7 +132,9 @@ extension ReceiptScreenPanVM {
     }
     
     /// 셀의 뷰모델 반환
-    func cellViewModel(at index: Int) -> ReceiptScreenPanUsersCellVMProtocol {
+    func cellViewModel(at index: Int) -> ReceiptScreenPanUsersCellVMProtocol? {
+        guard index < self.userCellViewModels.count else { return nil }
+        
         return self.userCellViewModels[index]
     }
 }

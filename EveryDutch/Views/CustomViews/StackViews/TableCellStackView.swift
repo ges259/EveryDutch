@@ -12,7 +12,7 @@ final class TableCellStackView: UIStackView {
     
     // MARK: - 레이아웃
     var profileImg: UIImageView = {
-        let img = UIImageView()
+        let img = UIImageView(image: UIImage.person_Fill_Img)
         img.tintColor = UIColor.black
         return img
     }()

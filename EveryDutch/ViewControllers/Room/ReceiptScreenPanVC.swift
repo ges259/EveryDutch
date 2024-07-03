@@ -234,30 +234,6 @@ extension ReceiptScreenPanVC: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, 
-                   willDisplay cell: UITableViewCell,
-                   forRowAt indexPath: IndexPath
-    ) {
-        // 코너 둥글기 적용
-        let isFirstIndex = indexPath.row == 0
-        
-        let isLastIndex = indexPath.row == tableView.numberOfRows(inSection: indexPath.section) - 1
-        
-        
-        // 섹션 내의 첫 번째 셀인지, 마지막 셀인지, 또는 유일한 셀인지 확인
-        if isFirstIndex
-            && isLastIndex {
-            // 섹션에 셀이 하나뿐인 경우
-            cell.setRoundedCorners(.all, withCornerRadius: 10)
-            
-        } else if isFirstIndex {
-            // 섹션의 첫 번째 셀인 경우
-            cell.setRoundedCorners(.top, withCornerRadius: 10)
-        } else if isLastIndex {
-            // 섹션의 마지막 셀인 경우
-            cell.setRoundedCorners(.bottom, withCornerRadius: 10)
-        }
-    }
-    func tableView(_ tableView: UITableView, 
                    didSelectRowAt indexPath: IndexPath
     ) {
         // '유저 셀'인지 확인
@@ -275,11 +251,10 @@ extension ReceiptScreenPanVC: UITableViewDelegate {
                 with: .automatic
             )
             
-            
-            
         } else {
             // 자신의 영수증이 아닌 경우
             print("\(#function) ----- 2")
+            
         }
     }
 }
@@ -309,9 +284,14 @@ extension ReceiptScreenPanVC: UITableViewDataSource {
     func tableView(_ tableView: UITableView, 
                    cellForRowAt indexPath: IndexPath
     ) -> UITableViewCell {
-        return indexPath.section == 0
+        let cell = indexPath.section == 0
         ? self.makeDataCell(indexPath: indexPath)
         : self.makeUsersCell(indexPath: indexPath)
+        
+        
+        self.configureCellCornerRadius(cell: cell, at: indexPath)
+        
+        return cell
     }
     
     /// cellForRowAt - [데이터 셀]
@@ -337,6 +317,31 @@ extension ReceiptScreenPanVC: UITableViewDataSource {
         cell.configureCell(with: cellViewModel)
         
         return cell
+    }
+    
+    /// 셀의 모서리 설정
+    private func configureCellCornerRadius(cell: UITableViewCell,
+                                           at indexPath: IndexPath) {
+        // 코너 둥글기 적용
+        let isFirstIndex = indexPath.row == 0
+        
+        let isLastIndex = indexPath.row == self.usersTableView.numberOfRows(inSection: indexPath.section) - 1
+        
+        
+        // 섹션 내의 첫 번째 셀인지, 마지막 셀인지, 또는 유일한 셀인지 확인
+        if isFirstIndex
+            && isLastIndex {
+            // 섹션에 셀이 하나뿐인 경우
+            cell.setRoundedCorners(.all, withCornerRadius: 10)
+            
+        } else if isFirstIndex {
+            // 섹션의 첫 번째 셀인 경우
+            cell.setRoundedCorners(.top, withCornerRadius: 10)
+            
+        } else if isLastIndex {
+            // 섹션의 마지막 셀인 경우
+            cell.setRoundedCorners(.bottom, withCornerRadius: 10)
+        }
     }
 }
 

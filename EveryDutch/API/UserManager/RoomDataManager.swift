@@ -74,10 +74,6 @@ final class RoomDataManager: RoomDataManagerProtocol {
     var roomUsersInitialLoad: Bool = true
     /// [플래그] Receipt 데이터 observe를 설정했는지 판단하는 변수
     var roomReceiptInitialLoad: Bool = false
-    //    var roomReceiptSearchModeInitialLoad: Bool = false
-    
-    /// [플래그] Receipt 데이터를 추가적으로 가져올 지에 대한 플래그
-    //    var hasMoreRoomReceiptData: Bool = true
     
     
     

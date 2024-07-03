@@ -156,6 +156,10 @@ extension PeopleSelectionPanVC {
                 self.viewModel.bottomBtnTextColor,
                 for: .normal)
         }
+        self.viewModel.errorClosure = { [weak self] errorType in
+            guard let self = self else { return }
+            self.peopleSelectionTableView.reloadData()
+        }
     }
 }
 
@@ -258,15 +262,15 @@ extension PeopleSelectionPanVC: UITableViewDelegate {
 extension PeopleSelectionPanVC: UITableViewDataSource {
     /// 셀의 개수
     func tableView(_ tableView: UITableView,
-                   numberOfRowsInSection section: Int)
-    -> Int {
+                   numberOfRowsInSection section: Int
+    ) -> Int {
         return self.viewModel.numOfUsers
     }
     
     /// 셀 구성
     func tableView(_ tableView: UITableView,
-                   cellForRowAt indexPath: IndexPath)
-    -> UITableViewCell {
+                   cellForRowAt indexPath: IndexPath
+    ) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(
             withIdentifier: Identifier.peopleSelectionPanCell,
             for: indexPath) as! PeopleSelectionPanCell
@@ -274,7 +278,7 @@ extension PeopleSelectionPanVC: UITableViewDataSource {
         let userEntry = self.viewModel.returnUserData(index: indexPath.row)
         
         // 셀이 선택된 상태인지 확인
-        let isSelected = self.viewModel.getIdToRoomUser(userID: userEntry.key)
+        let isSelected = self.viewModel.getIdToRoomUser(userID: userEntry?.key)
         
         // 현재 모드 전달
         let mode = self.viewModel.isSingleSelectionMode
@@ -282,7 +286,7 @@ extension PeopleSelectionPanVC: UITableViewDataSource {
         // 셀에 userID와 user 데이터 설정
         cell.configureCellData(isSingleMode: mode, 
                                isSelected: isSelected,
-                               user: userEntry.value)
+                               user: userEntry?.value)
         return cell
     }
 }

@@ -6,8 +6,12 @@
 //
 
 import UIKit
-protocol ReceiptWriteCellVMProtocol {
-}
+
+// ReceiptWriteDataCell과 ReceiptWriteUserCell셀 공통의 프로토롤을 가지는데,
+// ReceiptWriteUserCell과 UsersTableViewCell과의 차이는 없기 때문에 UsersTableViewCellVMProtocol에도 ReceiptWriteCellVMProtocol를 상속 받음.
+protocol ReceiptWriteCellVMProtocol {}
+
+
 
 protocol UsersTableViewCellVMProtocol: ReceiptWriteCellVMProtocol, UserPriceDataProtocol {
     
@@ -15,9 +19,7 @@ protocol UsersTableViewCellVMProtocol: ReceiptWriteCellVMProtocol, UserPriceData
     var customTableEnum: UsersTableEnum { get }
     
     
-    var isExistImageUrl: Bool { get }
-    var imageUrl: String { get }
-    var baseImage: UIImage? { get }
+
     
     var rightBtnImg: UIImage? { get }
     var paybackPrice: Int { get }
@@ -31,6 +33,11 @@ protocol UsersTableViewCellVMProtocol: ReceiptWriteCellVMProtocol, UserPriceData
     var getUserName: String { get }
     
     var userID: String { get }
+    
+    
+    
+    
+    var imageUrl: String? { get }
     
      
     
@@ -46,6 +53,18 @@ protocol UsersTableViewCellVMProtocol: ReceiptWriteCellVMProtocol, UserPriceData
     var getRoomUserDataDict: RoomUserDataDict { get }
     var getUser: User { get }
 }
+
+
+//protocol UsersImageProtocol {
+//
+//}
+//
+//extension UsersImageProtocol {
+//    var baseImage: UIImage? {
+//        return UIImage.person_Fill_Img
+//    }
+//}
+//
 
 
 protocol UserPriceDataProtocol {

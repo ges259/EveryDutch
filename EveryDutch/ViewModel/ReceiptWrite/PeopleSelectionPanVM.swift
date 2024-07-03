@@ -41,7 +41,7 @@ final class PeopleSelectionPanVM: PeopleSelectionPanVMProtocol  {
     
     // MARK: - 클로저
     var bottomBtnClosure: (() -> Void)?
-    
+    var errorClosure: ((ErrorEnum) -> Void)?
     
     
     // MARK: - 플래그
@@ -81,12 +81,17 @@ extension PeopleSelectionPanVM {
     }
     
     /// 딕셔너리의 key-value 쌍을 배열로 변환
-    func returnUserData(index: Int) -> UserDataTuple {
+    func returnUserData(index: Int) -> UserDataTuple? {
         return Array(self.users)[index]
     }
     
     /// 유저 찾기
-    func getIdToRoomUser(userID: String) -> Bool {
+    func getIdToRoomUser(userID: String?) -> Bool {
+        guard let userID = userID else {
+            self.errorClosure?(.tableViewRowMismatch)
+            return false
+        }
+        
         if self.addedUsers[userID] != nil
             || self.selectedUsers[userID] != nil {
             
@@ -186,7 +191,10 @@ extension PeopleSelectionPanVM {
 extension PeopleSelectionPanVM {
     func multipleModeSelectedUsers(index: Int) {
         // 선택된 유저의 데이터 가져오기
-        let user = self.returnUserData(index: index)
+        guard let user = self.returnUserData(index: index) else {
+            self.errorClosure?(.tableViewRowMismatch)
+            return
+        }
         
         // 가져온 유저가 삭제된 상태 (선택되어있지 않은 상태)
         if self.removedSelectedUsers[user.key] != nil {
@@ -255,7 +263,10 @@ extension PeopleSelectionPanVM {
     ///
     private func getIndex() -> Int? {
         // `selectedUsers`의 첫 번째 키를 가져옵니다.
-        guard let key = self.selectedUsers.keys.first else { return nil }
+        guard let key = self.selectedUsers.keys.first else {
+            self.errorClosure?(.tableViewRowMismatch)
+            return nil
+        }
         // `users` 딕셔너리에서 해당 키의 인덱스를 찾습니다.
         if let index = Array(self.users.keys).firstIndex(of: key) {
             // 찾은 인덱스로 `IndexPath`를 생성하여 반환합니다.
@@ -266,7 +277,7 @@ extension PeopleSelectionPanVM {
     ///
     func singleModeSelectionUser(index: Int) {
         self.addedUsers.removeAll()
-        let user = self.returnUserData(index: index)
+        guard let user = self.returnUserData(index: index) else { return }
         self.addedUsers[user.key] = user.value
     }
 }

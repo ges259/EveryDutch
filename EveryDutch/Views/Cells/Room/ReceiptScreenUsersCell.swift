@@ -33,6 +33,10 @@ final class ReceiptScreenUsersCell: UITableViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        self.layer.cornerRadius = 0
+    }
 }
 
 // MARK: - 화면 설정
@@ -46,13 +50,15 @@ extension ReceiptScreenUsersCell {
         self.rightImageView.tintColor = .black
     }
     
-    func configureCell(with viewModel: ReceiptScreenPanUsersCellVMProtocol) {
+    func configureCell(with viewModel: ReceiptScreenPanUsersCellVMProtocol?) {
+        guard let viewModel = viewModel else { return }
         self.viewModel = viewModel
         
         self.tableCellStackView.userNameLbl.text = viewModel.getUserName
         self.tableCellStackView.profileImg.image = viewModel.profileImg
         self.tableCellStackView.priceLbl.text = "\(viewModel.getPay)"
         self.rightImageView.image = viewModel.doneImg
+        self.backgroundColor = viewModel.cellBackgroundColor
     }
     
     /// 오토레이아웃 설정

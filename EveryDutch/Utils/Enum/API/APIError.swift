@@ -36,7 +36,7 @@ enum ErrorEnum: Error {
     // Report
     case alreadyReported
     
-    
+    case tableViewRowMismatch
     
     // UpdateRooms + FindFriendsVC
     // 검색

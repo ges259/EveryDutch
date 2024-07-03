@@ -47,7 +47,11 @@ struct ReceiptScreenPanUsersCellVM: ReceiptScreenPanUsersCellVMProtocol, UserPri
         self.paymentDetail.done.toggle()
     }
     
-    
+    var cellBackgroundColor: UIColor {
+        return self.paymentDetail.done
+        ? .medium_Blue
+        : .normal_white
+    }
     
     var doneImg: UIImage? {
         return self.paymentDetail.done

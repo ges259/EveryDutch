@@ -11,9 +11,6 @@ extension RoomDataManager {
     
     // MARK: - 데이터 fetch
     func loadRooms() {
-        // 만약 User_RoomsID에 데이터가 없더라도 SplashScreenVC에서 MainVC로 넘어가기 위해 일단 디바운싱을 트리거 해놓음
-        self.roomDebouncer.triggerDebounceWithIndexPaths(eventType: .initialLoad)
-        
         // 옵저버 설정
         DispatchQueue.global(qos: .utility).async {
             self.roomsAPI.setUserRoomsIDObserver { [weak self] result in
@@ -22,6 +19,7 @@ extension RoomDataManager {
                 case .success(let observeData):
                     print("방ID 옵저버 가져오기 성공")
                     self.handleRoomEvent(observeData)
+                    
                 case .failure(let error):
                     DispatchQueue.main.async {
                         print("방ID 옵저버 가져오기 실패")

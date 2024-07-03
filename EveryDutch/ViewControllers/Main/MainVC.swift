@@ -243,27 +243,26 @@ extension MainVC {
     }
     
     private func updateIndexPath(key: String, indexPaths: [IndexPath]) {
-        self.collectionView.reloadData()
-//        DispatchQueue.main.async {
-//            switch key {
-//            case DataChangeType.updated.notificationName:
-//                self.collectionView.reloadItems(at: indexPaths)
-//                break
-//            case DataChangeType.initialLoad.notificationName:
-//                self.collectionView.reloadData()
-//                break
-//            case DataChangeType.added.notificationName:
-//                self.collectionView.insertItems(at: indexPaths)
-//                break
-//            case DataChangeType.removed.notificationName:
-//                self.collectionView.deleteItems(at: indexPaths)
-//                break
-//            default:
-//                self.collectionView.reloadData()
-//                print("\(self) ----- \(#function) ----- Error")
-//                break
-//            }
-//        }
+        DispatchQueue.main.async {
+            switch key {
+            case DataChangeType.updated.notificationName:
+                self.collectionView.reloadItems(at: indexPaths)
+                break
+            case DataChangeType.initialLoad.notificationName:
+                self.collectionView.reloadData()
+                break
+            case DataChangeType.added.notificationName:
+                self.collectionView.insertItems(at: indexPaths)
+                break
+            case DataChangeType.removed.notificationName:
+                self.collectionView.deleteItems(at: indexPaths)
+                break
+            default:
+                self.collectionView.reloadData()
+                print("\(self) ----- \(#function) ----- Error")
+                break
+            }
+        }
     }
 }
 

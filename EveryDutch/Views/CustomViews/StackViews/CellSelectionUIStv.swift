@@ -68,6 +68,7 @@ extension CellSelectionUIStv {
             self.profileImg.snp.makeConstraints { make in
                 make.width.height.equalTo(21)
             }
+            self.profileImg.setRoundedCorners(.all, withCornerRadius: 21 / 2)
         }
     }
     /// UI 설정

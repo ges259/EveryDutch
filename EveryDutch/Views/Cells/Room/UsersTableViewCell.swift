@@ -42,6 +42,11 @@ final class UsersTableViewCell: UITableViewCell {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        
+        self.tableCellStv.profileImg.image = UIImage.person_Fill_Img
+    }
 }
 
 
@@ -112,13 +117,8 @@ extension UsersTableViewCell {
         : "\(viewModel.paybackPrice)"
         
         
-//        self.tableCellStv.profileImg.image = viewModel.profileImg
-        if viewModel.isExistImageUrl {
-            self.tableCellStv.profileImg.setImage(from: viewModel.imageUrl)
-        } else {
-            self.tableCellStv.profileImg.image = viewModel.baseImage
+        if let imageUrl = viewModel.imageUrl {
+            self.tableCellStv.profileImg.setImage(from: imageUrl)
         }
-        
-        
     }
 }

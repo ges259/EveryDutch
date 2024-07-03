@@ -18,6 +18,7 @@ protocol ReceiptScreenPanUsersCellVMProtocol {
     var getPaymentDetail: PaymentDetail { get }
     mutating func toggleDone() 
     
+    var cellBackgroundColor: UIColor { get }
     
     var getDone: Bool { get }
     

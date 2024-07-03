@@ -66,7 +66,7 @@ final class ReceiptWriteUsersCell: UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         self.tableCellStackView.userNameLbl.text = ""
-        self.tableCellStackView.profileImg.image = nil
+        self.tableCellStackView.profileImg.image = UIImage.person_Fill_Img
         self.tableCellStackView.priceLbl.text = "0원"
         self.priceTf.text = ""
     }
@@ -145,10 +145,8 @@ extension ReceiptWriteUsersCell {
         
         self.tableCellStackView.userNameLbl.text = viewModel.getUserName
         
-        if viewModel.isExistImageUrl {
-            self.tableCellStackView.profileImg.setImage(from: viewModel.imageUrl)
-        } else {
-            self.tableCellStackView.profileImg.image = viewModel.baseImage
+        if let imageUrl = viewModel.imageUrl {
+            self.tableCellStackView.profileImg.setImage(from: imageUrl)
         }
     }
     

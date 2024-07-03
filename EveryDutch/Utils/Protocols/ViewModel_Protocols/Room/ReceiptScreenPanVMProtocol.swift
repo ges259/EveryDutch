@@ -10,7 +10,7 @@ import UIKit
 protocol ReceiptScreenPanVMProtocol {
     func updatePaymentDetailData()
     var isMyReceipt: Bool { get }
-    func cellViewModel(at index: Int) -> ReceiptScreenPanUsersCellVMProtocol
+    func cellViewModel(at index: Int) -> ReceiptScreenPanUsersCellVMProtocol?
     var paymentDetailCountChanged: ((Bool) -> Void)? { get set }
     func changedUserPayback(at index: Int) 
     

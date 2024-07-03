@@ -21,6 +21,7 @@ protocol PeopleSelectionPanVMProtocol {
     var isFirst: Bool { get set }
     
     
+    var errorClosure: ((ErrorEnum) -> Void)? { get set }
     
     
     
@@ -47,12 +48,12 @@ protocol PeopleSelectionPanVMProtocol {
     
     var bottomBtnText: String { get }
     
-    func returnUserData(index: Int) -> (key: String, value: User)
+    func returnUserData(index: Int) -> UserDataTuple?
     
     
     func multipleModeSelectedUsers(index: Int)
     
     func singleModeSelectionUser(index: Int)
     
-    func getIdToRoomUser(userID: String) -> Bool
+    func getIdToRoomUser(userID: String?) -> Bool
 }

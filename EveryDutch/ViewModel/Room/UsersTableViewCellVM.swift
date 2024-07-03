@@ -57,16 +57,12 @@ struct UsersTableViewCellVM: UsersTableViewCellVMProtocol {
 // MARK: - 이미지
 extension UsersTableViewCellVM {
     /// 프로필 이미지 설정
-    
-    var isExistImageUrl: Bool {
-        return self.roomUser.userProfileImage != ""
+    var imageUrl: String? {
+        return self.roomUser.userProfileImage == ""
+        ? nil
+        : self.roomUser.userProfileImage
     }
-    var imageUrl: String {
-        return self.roomUser.userProfileImage
-    }
-    var baseImage: UIImage? {
-        return UIImage.person_Fill_Img
-    }
+
     
     
     /// 오른쪽 이미지

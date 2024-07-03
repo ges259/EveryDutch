@@ -51,6 +51,8 @@ final class Debouncer {
         eventType: DataChangeType,
         indexPaths: [IndexPath]
     ) {
+        guard !indexPaths.isEmpty else { return }
+        
         let notiName = eventType.notificationName
         
         if self.indexPaths[notiName] == nil {
