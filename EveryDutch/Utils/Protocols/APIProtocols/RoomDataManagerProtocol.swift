@@ -40,7 +40,7 @@ protocol RoomDataManagerProtocol {
     )
     
     var getCurrentUserData: UserDecoTuple? { get }
-    var getCurrentUserID: String? { get }
+    var getSelectedUserID: String? { get }
     var currentUserIsEuqualToMyUid: Bool { get }
     
     
@@ -85,6 +85,7 @@ protocol RoomDataManagerProtocol {
     
     func deleteUserFromRoom(
         isDeletingSelf: Bool,
+        isRoomManager: Bool,
         completion: @escaping Typealias.VoidCompletion
     )
     

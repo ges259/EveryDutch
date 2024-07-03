@@ -21,7 +21,7 @@ final class PeopleSelectionPanCell: UITableViewCell {
     // MARK: - 프로퍼티
     var cellIsSelected: Bool = false {
         didSet {
-            self.cellStv.isTappedView.isHidden = !self.cellIsSelected
+            self.cellStv.isColorView.isHidden = !self.cellIsSelected
         }
     }
     
@@ -47,7 +47,7 @@ final class PeopleSelectionPanCell: UITableViewCell {
         // 싱글 선택 모드라면.
         guard self.isSingleMode else { return }
         // 셀을 눌렀을 때, 해당 셀만 이미지 표시 (나머지는 이미지 숨기기)
-        self.cellStv.isTappedView.isHidden = !selected
+        self.cellStv.isColorView.isHidden = !selected
     }
 }
 

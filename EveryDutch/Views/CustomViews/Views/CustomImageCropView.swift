@@ -151,6 +151,7 @@ extension CustomImageCropView {
         DispatchQueue.main.async {
             self.setupOverlayViews()
             self.setupCropArea()
+            self.changeCardImageView()
         }
     }
     

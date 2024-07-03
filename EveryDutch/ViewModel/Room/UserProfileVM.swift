@@ -140,7 +140,7 @@ extension UserProfileVM {
     /// 특정 유저를 신고하는 메서드
     func reportUser() {
         guard let roomID = self.roomDataManager.getCurrentRoomsID,
-              let userID = self.roomDataManager.getCurrentUserID
+              let userID = self.roomDataManager.getSelectedUserID
         else {
             self.errorClosure?(.readError)
             return
@@ -186,7 +186,8 @@ extension UserProfileVM {
         successClosure: (() -> Void)?
     ) {
         self.roomDataManager.deleteUserFromRoom(
-            isDeletingSelf: false
+            isDeletingSelf: false, 
+            isRoomManager: false
         ) { [weak self] result in
             guard let self = self else { return }
             switch result {

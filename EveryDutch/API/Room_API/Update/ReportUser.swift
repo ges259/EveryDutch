@@ -22,7 +22,7 @@ extension RoomsAPI {
         completion: @escaping (Result<Int, ErrorEnum>) -> Void
     ) {
         // 현재 로그인한 사용자의 ID를 가져옴
-        guard let reporterID: String = self.getCurrentUserID else {
+        guard let reporterID: String = self.getMyUserID else {
             completion(.failure(.readError))
             return
         }

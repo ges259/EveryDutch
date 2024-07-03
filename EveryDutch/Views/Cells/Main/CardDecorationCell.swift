@@ -29,6 +29,8 @@ final class CardDecorationCell: UITableViewCell {
         super.prepareForReuse()
         // 셀이 재사용 되기 전, UI 초기화
         self.layer.cornerRadius = 0
+        self.cellStv.rightView.image = nil
+        self.cellStv.isTapped(color: .deep_Blue)
     }
 }
 
@@ -80,31 +82,32 @@ extension CardDecorationCell {
         
         //
         guard let type = cellTuple.type as? DecorationCellType,
-                let detailString = cellTuple.detail else { return }
+                let detailString = cellTuple.detail 
+        else { return }
+        
         let color = UIColor(hex: detailString,
                             defaultColor: .clear)
         switch type {
         case .background:
-            if detailString.checkIsHexColor() {
-                self.colorIsChanged(color: color)
-            } else {
-                self.cellStv.rightView.setImage(from: detailString)
-            }
+            self.colorIsChanged(imageUrl: detailString,
+                                color: color)
             
         case .titleColor, .nameColor:
             self.colorIsChanged(color: color)
             break
         case .blurEffect:
             let boolean = "true" == detailString
-
-            self.blurEffectIsHidden(boolean)
+            
+            self.blurEffectIsHidden(!boolean)
             break
         }
     }
     
     /// 오른쪽 뷰의 색을 바꾸는 메서드
-    func colorIsChanged(color: UIColor? = .clear) {
-        self.cellStv.rightView.image = nil
+    func colorIsChanged(imageUrl: String? = "",
+                        color: UIColor? = .clear
+    ) {
+        self.cellStv.rightView.setImage(from: imageUrl)
         self.cellStv.isTapped(color: color)
     }
     
@@ -117,7 +120,7 @@ extension CardDecorationCell {
     /// 색상 넣기
     func blurEffectIsHidden(_ isHidden: Bool) {
         // cardImgView의 blurView와 같음
-        self.cellStv.isTappedView.isHidden = isHidden
+        self.cellStv.isColorView.isHidden = isHidden
     }
 }
 

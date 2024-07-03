@@ -189,7 +189,7 @@ extension CardImageView {
         self.backgroundImg.backgroundColor = .medium_Blue
         
         guard let decorationData = decorationData else { return }
-        self.blurView.isHidden = decorationData.blur
+        self.blurView.isHidden = !decorationData.blur
         self.titleLbl.textColor = decorationData.getTitleColor
         self.nameLbl.textColor = decorationData.getNameColor
         self.backgroundImg.backgroundColor = decorationData.getBackgroundColor

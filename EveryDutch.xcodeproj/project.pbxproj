@@ -194,6 +194,7 @@
 		5F9F76632B6C227D00BB6511 /* ProfileCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F9F76622B6C227D00BB6511 /* ProfileCoordinator.swift */; };
 		5FA14C632B5422C000E8F0E7 /* ReadRoomMoneyData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FA14C622B5422C000E8F0E7 /* ReadRoomMoneyData.swift */; };
 		5FA1D0092BAF2E8E00FBA423 /* ProfileCellType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FA1D0082BAF2E8E00FBA423 /* ProfileCellType.swift */; };
+		5FAC80192C3588EE00EC0D23 /* DecorationAPI+Delete.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FAC80182C3588ED00EC0D23 /* DecorationAPI+Delete.swift */; };
 		5FAC810F2C16E3FD00AA299D /* UserProfileVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FAC810E2C16E3FD00AA299D /* UserProfileVC.swift */; };
 		5FAC8A952B5860AD003B4A05 /* ReceiptWriteTableDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FAC8A942B5860AD003B4A05 /* ReceiptWriteTableDelegate.swift */; };
 		5FB278612B4716B400491C2B /* CheckReceiptCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FB278602B4716B400491C2B /* CheckReceiptCoordinator.swift */; };
@@ -439,6 +440,7 @@
 		5F9F76622B6C227D00BB6511 /* ProfileCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCoordinator.swift; sourceTree = "<group>"; };
 		5FA14C622B5422C000E8F0E7 /* ReadRoomMoneyData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReadRoomMoneyData.swift; sourceTree = "<group>"; };
 		5FA1D0082BAF2E8E00FBA423 /* ProfileCellType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCellType.swift; sourceTree = "<group>"; };
+		5FAC80182C3588ED00EC0D23 /* DecorationAPI+Delete.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DecorationAPI+Delete.swift"; sourceTree = "<group>"; };
 		5FAC810E2C16E3FD00AA299D /* UserProfileVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfileVC.swift; sourceTree = "<group>"; };
 		5FAC8A942B5860AD003B4A05 /* ReceiptWriteTableDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReceiptWriteTableDelegate.swift; sourceTree = "<group>"; };
 		5FB278602B4716B400491C2B /* CheckReceiptCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CheckReceiptCoordinator.swift; sourceTree = "<group>"; };
@@ -924,6 +926,7 @@
 				5F67FE962C0C666100018E65 /* DecorationAPI+Image.swift */,
 				5F71FEEC2BB723BD0005FC7A /* DecorationAPI+Read.swift */,
 				5F67FE982C0C668E00018E65 /* DecorationAPI+Update.swift */,
+				5FAC80182C3588ED00EC0D23 /* DecorationAPI+Delete.swift */,
 			);
 			path = Decoration_API;
 			sourceTree = "<group>";
@@ -1681,6 +1684,7 @@
 				5FE3DEB22B39CB5A008D58AE /* Coordinator.swift in Sources */,
 				5F1AC30E2BA2AC9400E34CAC /* FindFriendsVMProtocol.swift in Sources */,
 				5FE3DEC62B39CBD9008D58AE /* MainCoordProtocol.swift in Sources */,
+				5FAC80192C3588EE00EC0D23 /* DecorationAPI+Delete.swift in Sources */,
 				5F5B2ED52B516C870064B738 /* Date+Ext.swift in Sources */,
 				5F1B97572BD5901300BAE2D0 /* ChromaBrightnessSlider.swift in Sources */,
 				5F4FA7252B553C5B009EE4F4 /* ReceiptAPIProtocol.swift in Sources */,

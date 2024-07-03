@@ -236,7 +236,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
     }
     
     /// 현재 선택된 유저의 userID
-    var getCurrentUserID: String? {
+    var getSelectedUserID: String? {
         return self.currentUser?.userID
     }
     
@@ -299,7 +299,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     /// 자신이 방장인지를 판단하는 변수
     var checkIsRoomManager: Bool {
-        guard let myUid = self.roomsAPI.getCurrentUserID,
+        guard let myUid = self.roomsAPI.getMyUserID,
               let roomManager = self.currentRoom?.room.roomManager
         else {
             return false
@@ -308,7 +308,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
     }
     
     var myUserID: String? {
-        return self.roomsAPI.getCurrentUserID
+        return self.roomsAPI.getMyUserID
     }
     
     var currentUserIsEuqualToMyUid: Bool {

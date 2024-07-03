@@ -11,7 +11,7 @@ extension RoomDataManager {
     
     func loadUserReceipt(completion: @escaping Typealias.VoidCompletion) {
         guard let versionID = self.getCurrentVersion,
-              let userID = self.getCurrentUserID 
+              let userID = self.getSelectedUserID 
         else {
             self.receiptDebouncer.triggerErrorDebounce(.readError)
             return
@@ -46,7 +46,7 @@ extension RoomDataManager {
     
     func loadMoreUserReceipt() {
         guard let versionID = self.getCurrentVersion,
-              let userID = self.getCurrentUserID 
+              let userID = self.getSelectedUserID 
         else {
             self.receiptDebouncer.triggerErrorDebounce(.readError)
             return

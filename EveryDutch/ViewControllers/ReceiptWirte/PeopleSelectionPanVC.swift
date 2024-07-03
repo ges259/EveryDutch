@@ -234,7 +234,7 @@ extension PeopleSelectionPanVC: UITableViewDelegate {
                   let cell = self.currentCell(indexPath: indexPath)
             else { return }
             
-            cell.cellStv.isTappedView.isHidden = true
+            cell.cellStv.isColorView.isHidden = true
             self.viewModel.isFirst = false
         }
     }

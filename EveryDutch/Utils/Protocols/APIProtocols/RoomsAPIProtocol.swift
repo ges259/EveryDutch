@@ -10,7 +10,7 @@ import Foundation
 protocol RoomsAPIProtocol: EditScreenAPIType {
     
     
-    var getCurrentUserID: String? { get }
+    var getMyUserID: String? { get }
     
     // 개별 사용자의 데이터 변경을 관찰하는 함수
     func setUserRoomsIDObserver(completion: @escaping (Result<DataChangeEvent<[String: Rooms]>, ErrorEnum>) -> Void)
@@ -42,9 +42,11 @@ protocol RoomsAPIProtocol: EditScreenAPIType {
     
     
     func removeRoomUsersAndUserObserver()
-    
-    func deleteUser(roomID: String, userID: String?) async throws
-    
+    func deleteUser(
+        roomID: String,
+        userID: String?,
+        isRoomManager: Bool
+    ) async throws
     
     func reportUser(
         roomID: String,

@@ -18,7 +18,7 @@ extension RoomsAPI {
     func fetchData(dataRequiredWhenInEidtMode: String?) async throws -> EditProviderModel
     {
         
-        guard let roomID = dataRequiredWhenInEidtMode ?? self.getCurrentUserID else {
+        guard let roomID = dataRequiredWhenInEidtMode ?? self.getMyUserID else {
             throw ErrorEnum.readError
         }
         return try await withCheckedThrowingContinuation

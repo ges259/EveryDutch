@@ -21,7 +21,7 @@ extension RoomsAPI {
     
     // MARK: - 방 생성
     func createData(dict: [String: Any]) async throws  -> String {
-        guard let uid = self.getCurrentUserID else {
+        guard let uid = self.getMyUserID else {
             throw ErrorEnum.readError
         }
         // Room_Users에 데이터 업데이트

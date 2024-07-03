@@ -24,7 +24,7 @@ final class CellSelectionUIStv: UIStackView {
         img.backgroundColor = .white
         return img
     }()
-    var isTappedView: UIView = UIView.configureView(
+    var isColorView: UIView = UIView.configureView(
         color: UIColor.deep_Blue)
     
     
@@ -78,10 +78,10 @@ extension CellSelectionUIStv {
         self.alignment = .center
         self.distribution = .fill
         
-        self.isTappedView.isHidden = true
+        self.isColorView.isHidden = true
         
         self.rightView.setRoundedCorners(.all, withCornerRadius: 26 / 2)
-        self.isTappedView.setRoundedCorners(.all, withCornerRadius: 22.5 / 2)
+        self.isColorView.setRoundedCorners(.all, withCornerRadius: 22.5 / 2)
     }
     
     /// 오토레이아웃 설정
@@ -90,13 +90,13 @@ extension CellSelectionUIStv {
          self.rightView].forEach { view in
             self.addArrangedSubview(view)
         }
-        self.addSubview(self.isTappedView)
+        self.addSubview(self.isColorView)
         
         
         self.rightView.snp.makeConstraints { make in
             make.width.height.equalTo(26)
         }
-        self.isTappedView.snp.makeConstraints { make in
+        self.isColorView.snp.makeConstraints { make in
             make.width.height.equalTo(22.5)
             make.centerX.centerY.equalTo(self.rightView)
         }
@@ -114,8 +114,8 @@ extension CellSelectionUIStv {
 //    }
     
     func isTapped(color: UIColor?) {
-        self.isTappedView.isHidden = false
-        self.isTappedView.backgroundColor = color
+        self.isColorView.isHidden = false
+        self.isColorView.backgroundColor = color
     }
 }
 

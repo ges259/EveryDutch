@@ -12,6 +12,7 @@ extension RoomDataManager {
     // MARK: - 강퇴 및 나가기
     func deleteUserFromRoom(
         isDeletingSelf: Bool,
+        isRoomManager: Bool = false,
         completion: @escaping Typealias.VoidCompletion
     ) {
         
@@ -25,12 +26,14 @@ extension RoomDataManager {
                 // userID 결정
                 let userID: String? = isDeletingSelf
                 ? nil
-                : self.getCurrentUserID
+                : self.getSelectedUserID
                 
                 // 유저 삭제
                 try await self.roomsAPI.deleteUser(
                     roomID: roomID,
-                    userID: userID)
+                    userID: userID,
+                    isRoomManager: isRoomManager
+                )
                 
                 result = .success(())
             } catch let error as ErrorEnum {

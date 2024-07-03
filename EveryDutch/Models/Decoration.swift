@@ -17,7 +17,7 @@ struct Decoration {
     var backgroundImageUrl: String?
     
     init(dictionary: [String: Any]) {
-         self.blur = dictionary[DatabaseConstants.blur_Effect] as? Bool ?? false
+         self.blur = !(dictionary[DatabaseConstants.blur_Effect] as? Bool ?? false)
          self.nameColor = dictionary[DatabaseConstants.name_Color] as? String
          self.titleColor = dictionary[DatabaseConstants.title_Color] as? String
          

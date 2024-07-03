@@ -13,7 +13,7 @@ extension UserAPI {
     func updateUserProfileImage(
         imageUrl: String
     ) async throws {
-        guard let uid = self.getCurrentUserID else { return }
+        guard let uid = self.getMyUserID else { return }
         
         let path = USER_REF
             .child(uid)

@@ -49,7 +49,7 @@ enum ProfileEditEnum: Int, EditScreenType, CaseIterable {
         // textData에서 personal_ID를 가져옴
         // userID도 가져옴
         guard let personalID = textData[DatabaseConstants.personal_ID] as? String,
-              let userID = api?.getCurrentUserID
+              let userID = api?.getMyUserID
         else { throw ErrorEnum.readError }
         // personal_ID가 중복되어있는지 확인
         let isExists = try await api?.validatePersonalID(

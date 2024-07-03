@@ -12,16 +12,22 @@ import FirebaseDatabaseInternal
 extension RoomsAPI {
     func deleteUser(
         roomID: String,
-        userID: String? = nil
+        userID: String? = nil,
+        isRoomManager: Bool
     ) async throws {
         // uid 옵셔널 바인딩
-        guard let userID = userID ?? Auth.auth().currentUser?.uid else {
+        guard let userID = userID ?? self.getMyUserID else {
             throw ErrorEnum.readError // 적절한 에러로 변경
         }
         // User_RoomsID 삭제
         try await self.deleteUserRoomsID(roomID: roomID, userID: userID)
         // Room_Users 삭제
         try await self.deleteRoomUsers(roomID: roomID, userID: userID)
+        // 삭제하려는 유저가 방장이라면, Rooms에서 삭제
+        if isRoomManager {
+            try await self.deleteRooms(roomID: roomID)
+            try await self.deleteDecoration(with: roomID)
+        }
     }
     
     private func deleteUserRoomsID(
@@ -58,41 +64,21 @@ extension RoomsAPI {
             }
         }
     }
+    
+    
+    private func deleteRooms(
+        roomID: String
+    ) async throws {
+        return try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            ROOMS_REF
+                .child(roomID)
+                .removeValue { error, _ in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume()
+                }
+            }
+        }
+    }
 }
-
-/*
- func deleteUser(roomID: String, userID: String, completion: @escaping (Result<Void, ErrorEnum>) -> Void) {
-      // User_RoomsID 삭제
-      deleteUserRoomsID(roomID: roomID, userID: userID) { [weak self] result in
-          guard let self = self else { return }
-          switch result {
-          case .success:
-              self.deleteRoomUsers(roomID: roomID, userID: userID, completion: completion)
-          case .failure(let error):
-              completion(.failure(error))
-          }
-      }
-  }
-  
-  private func deleteUserRoomsID(roomID: String, userID: String, completion: @escaping (Result<Void, ErrorEnum>) -> Void) {
-      deleteValue(for: USER_ROOMSID.child(userID).child(roomID)) { result in
-          completion(result.mapError { _ in .userRoomsIDDeleteError })
-      }
-  }
-  
-  private func deleteRoomUsers(roomID: String, userID: String, completion: @escaping (Result<Void, ErrorEnum>) -> Void) {
-      deleteValue(for: ROOM_USERS_REF.child(roomID).child(userID)) { result in
-          completion(result.mapError { _ in .roomUsersDeleteError })
-      }
-  }
-  
-  private func deleteValue(for reference: DatabaseReference, completion: @escaping (Result<Void, Error>) -> Void) {
-      reference.removeValue { error, _ in
-          if let error = error {
-              completion(.failure(error))
-          } else {
-              completion(.success(()))
-          }
-      }
-  }
- */

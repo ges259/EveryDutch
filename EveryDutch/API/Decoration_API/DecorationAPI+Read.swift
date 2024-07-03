@@ -12,7 +12,7 @@ import FirebaseAuth
 protocol DecorationAPI {}
 
 extension DecorationAPI {
-    var getCurrentUserID: String? {
+    var getMyUserID: String? {
         return Auth.auth().currentUser?.uid
     }
     
@@ -21,7 +21,7 @@ extension DecorationAPI {
     // MARK: - 데코레이션 가져오기
     func fetchDecoration(dataRequiredWhenInEditMode: String?) async throws -> Decoration? {
         
-        guard let decoID = dataRequiredWhenInEditMode ?? self.getCurrentUserID else {
+        guard let decoID = dataRequiredWhenInEditMode ?? self.getMyUserID else {
             throw ErrorEnum.readError
         }
         

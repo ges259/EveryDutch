@@ -25,7 +25,7 @@ extension UserAPI {
     
     func fetchData(dataRequiredWhenInEidtMode: String?) async throws -> EditProviderModel
     {
-        guard let decoID = dataRequiredWhenInEidtMode ?? self.getCurrentUserID else {
+        guard let decoID = dataRequiredWhenInEidtMode ?? self.getMyUserID else {
             throw ErrorEnum.readError
         }
         

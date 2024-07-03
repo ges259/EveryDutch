@@ -19,6 +19,11 @@ final class RoomSettingVM: RoomSettingVMProtocol {
     
     
     var roomManagerIsKicked: Bool {
+        print("____________________________")
+        print(#function)
+        print(self.roomDataManager.checkIsRoomManager)
+        print(self.roomDataManager.getNumOfRoomUsers)
+        print("____________________________")
         // 유저가 1명이고, 방장인 경우.
         if self.roomDataManager.checkIsRoomManager
             && self.roomDataManager.getNumOfRoomUsers == 1 {
@@ -41,7 +46,8 @@ final class RoomSettingVM: RoomSettingVMProtocol {
     
     func leaveRoom() {
         self.roomDataManager.deleteUserFromRoom(
-            isDeletingSelf: false
+            isDeletingSelf: true, 
+            isRoomManager: self.checkIsRoomManager
         ) { [weak self] result in
             guard let self = self else { return }
             switch result {
