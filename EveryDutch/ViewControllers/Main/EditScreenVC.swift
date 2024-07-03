@@ -343,23 +343,29 @@ extension EditScreenVC: UITableViewDataSource {
     
     /// 셀의 개수
     func tableView(_ tableView: UITableView,
-                   numberOfRowsInSection section: Int)
-    -> Int {
-        return self.viewModel.getNumOfCell(section: section)
+                   numberOfRowsInSection section: Int
+    ) -> Int {
+        if let numOfReceipts = self.viewModel.getNumOfCell(section: section) {
+            return numOfReceipts
+        } else {
+            // numOfReceipts가 nil인 경우
+            DispatchQueue.main.async { tableView.reloadData() }
+            return 0
+        }
     }
     
     /// cellForRowAt
     func tableView(_ tableView: UITableView,
-                   cellForRowAt indexPath: IndexPath)
-    -> UITableViewCell {
+                   cellForRowAt indexPath: IndexPath
+    ) -> UITableViewCell {
         return indexPath.section == 0
         ? self.configureDataCell(indexPath: indexPath)
         : self.configureDecorationCell(indexPath: indexPath)
     }
     /// cellForRowAt - [데이터 셀] 구성
     private func configureDataCell(
-        indexPath: IndexPath)
-    -> CardDataCell {
+        indexPath: IndexPath
+    ) -> CardDataCell {
         let cell = tableView.dequeueReusableCell(
             withIdentifier: Identifier.cardDataCell,
             for: indexPath) as! CardDataCell
@@ -380,8 +386,8 @@ extension EditScreenVC: UITableViewDataSource {
     }
     /// cellForRowAt - [데코 셀] 구성
     private func configureDecorationCell(
-        indexPath: IndexPath)
-    -> CardDecorationCell {
+        indexPath: IndexPath
+    ) -> CardDecorationCell {
         let cell = tableView.dequeueReusableCell(
             withIdentifier: Identifier.cardDecorationCell,
             for: indexPath) as! CardDecorationCell
@@ -417,6 +423,7 @@ extension EditScreenVC: UITableViewDataSource {
             self.blurCellSelected()
             break
         case .titleColor, .nameColor:
+            // 색상 피커뷰 보이게 하기
             self.configureColorPicker(isOpen: true)
             break
         case .background:
@@ -444,11 +451,13 @@ extension EditScreenVC: UITableViewDataSource {
     }
     /// didSelectRowAt - .blurEffect(블러효과) 셀 선택 시, 카드이미지뷰의 효과 바꾸기
     private func blurCellSelected() {
+        // 카드 이미지뷰의 blur효과 바꾸기
         self.cardImgView.updateCardView(
             type: .blurEffect,
             data: true,
             onFailure: self.errorType(_:)
         )
+        // 데코 셀에 블러 효과가 적용 되었는지를 판단하는 colorView에 대한 설정
         self.blurEffectChanged()
     }
 }
@@ -465,6 +474,7 @@ extension EditScreenVC: UITableViewDataSource {
 // MARK: - [데이터] 셀 델리게이트
 extension EditScreenVC: CardDataCellDelegate {
     /// CardDataCell에서 텍스트 변경 시, 해당 메서드가 호출 됨.
+    /// 텍스트 설정 완료 시 호출 됨.
     func textData(cell: CardDataCell, type: EditCellType, text: String) {
         // 선택된 셀의 IndexPath 저장
         // row가져오기 및 옵셔널 바인딩(존재하는지 확인)
@@ -496,11 +506,11 @@ extension EditScreenVC: CardDataCellDelegate {
 
 // MARK: - [데코] 셀 업데이트
 extension EditScreenVC {
-    /// 변경된 데이터 처리 및 셀 업데이트
+    /// 데코 셀에서 데이터 변경 시, 셀의 UI를 업데이트하는 메서드
     private func updatedDecorationCellUI(
         data: Any?,
-        updateAction: @escaping (CardDecorationCell) -> Void)
-    {
+        updateAction: @escaping (CardDecorationCell) -> Void
+    ) {
         // 변경된 데이터와 타입을 저장하고 반환받기
         guard let changedData = self.viewModel.getDecorationCellTypeTuple() else {
             self.customAlert(alertEnum: .userAlreadyExists) { _ in return }
@@ -527,13 +537,13 @@ extension EditScreenVC {
         }
     }
     /// 이미지
-    private func updateImage(image: UIImage) {
+    private func updateCellImageView(image: UIImage) {
         self.updatedDecorationCellUI(data: image) { cell in
             cell.imgIsChanged(image: image)
         }
     }
     /// 색상
-    private func updateColor(color: UIColor) {
+    private func updateCellColorView(color: UIColor) {
         self.updatedDecorationCellUI(data: color) { cell in
             cell.colorIsChanged(color: color)
         }
@@ -551,6 +561,7 @@ extension EditScreenVC {
 
 // MARK: - 이미지 피커 델리게이트
 extension EditScreenVC: ImagePickerDelegate {
+    /// 이미지 피커를 화면에 보이게 설정.
     /// CardDecorationCell에서 .blackground셀 선택 -> 앨범으로 화면이동 -> 이미지 선택 -> 해당 함수 호출 됨
     func imageSelected(image: UIImage?) {
         // 이미지 피커 띄우기
@@ -569,7 +580,7 @@ extension EditScreenVC: ImagePickerDelegate {
 
 // MARK: - 피커 뷰 open / close
 extension EditScreenVC {
-    /// [공통] 메인 설정 함수는 필요에 따라 각 설정 메소드를 호출
+    /// [이미지 / 색상] 피커를 [보이게 / 숨기게] 설정하는 메서드
     private func setPickerState(type: EditScreenPicker,
                                 isOpen: Bool,
                                 image: UIImage? = nil,
@@ -582,12 +593,12 @@ extension EditScreenVC {
             self.configureColorPicker(isOpen: isOpen)
         }
     }
-    /// [color] 색상 피커 설정
+    /// 색상 피커 설정
     private func configureColorPicker(isOpen: Bool) {
         self.setPickerMode(for: .colorPicker, isOpen: isOpen)
         self.customColorPicker.updateConstraintsForExpandedState(isExpanded: isOpen)
     }
-    /// [image] 이미지 피커 설정
+    /// 이미지 피커 설정
     private func configureImagePicker(isOpen: Bool, with image: UIImage? = nil) {
         // 피커를 여는 상황이라면,
         if isOpen {
@@ -599,6 +610,9 @@ extension EditScreenVC {
     }
     
     /// [공통] picker 타입에 따른 설정
+    /// 피커의 isOpen 을 저장
+    /// isOpen에 따라 피커를 [보이게 / 숨기게] 설정
+    /// 스크롤뷰의 설정(isScrollEnable)
     private func setPickerMode(for picker: EditScreenPicker, isOpen: Bool) {
         // 현재 상태 저장
         self.viewModel.savePickerState(picker: picker, isOpen: isOpen)
@@ -607,7 +621,7 @@ extension EditScreenVC {
         // 피커의 높이 재설정
         self.adjustPickerHeight(for: picker, isOpen: isOpen)
     }
-    /// [공통] 스크롤뷰를 화면 상단에 고정하는 메서드
+    /// 스크롤뷰를 화면 상단에 고정할지를 설정하는 메서드
     private func disableScrollAndMoveToTop(isOpen: Bool) {
         if isOpen {
             // 스크롤뷰의 contentOffset을 (0,0)으로 설정하여 맨 위로 이동
@@ -616,8 +630,11 @@ extension EditScreenVC {
         // 스크롤 기능을 비활성화
         self.scrollView.isScrollEnabled = !isOpen
     }
-    /// [공통] 피커의 높이를 재설정하는 메서드
-    private func adjustPickerHeight(for picker: EditScreenPicker, isOpen: Bool) {
+    /// [이미지 / 색상] 피커의 높이를 재설정하는 메서드
+    private func adjustPickerHeight(
+        for picker: EditScreenPicker,
+        isOpen: Bool
+    ) {
         // 높이 설정
         let height = isOpen ? self.openImagePickerHeight : 0
         
@@ -695,14 +712,14 @@ extension EditScreenVC: CustomPickerDelegate {
     /// 이미지 저장 및 피커 내리기
     private func processImage(_ image: UIImage) {
         // [셀] - 이미지 바꾸기 및 바뀐 이미지 저장
-        self.updateImage(image: image)
+        self.updateCellImageView(image: image)
         // 이미지 피커 안 보이게 하기
         self.configureImagePicker(isOpen: false, with: image)
     }
     /// 색상 저장
     private func processColor(_ color: UIColor) {
         // [셀] - 이미지 바꾸기 및 바뀐 이미지 저장
-        self.updateColor(color: color)
+        self.updateCellColorView(color: color)
         // 이미지 피커 안 보이게 하기
         self.configureColorPicker(isOpen: false)
     }

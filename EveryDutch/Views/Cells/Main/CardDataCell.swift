@@ -141,11 +141,10 @@ extension CardDataCell {
         self.textField.setRoundedCorners(.leftTop, withCornerRadius: 12)
     }
     
-    
+    /// 텍스트필드의 수정이 끝났을 때, 뷰컨트롤러로 delegate를 전달하는 메서드
     private func delegateTextData() {
         guard let cellType = self.cellType,
-              let text = self.textField.currentText,
-              !text.isEmpty
+              let text = self.textField.currentText
         else { return }
         // 텍스트필드가 빈칸이 아니라면, 델리게이트 전달
         self.delegate?.textData(cell: self,

@@ -49,7 +49,7 @@ protocol ProfileEditVMProtocol {
     
     
     // MARK: - 셀의 개수
-    func getNumOfCell(section: Int) -> Int
+    func getNumOfCell(section: Int) -> Int?
     
     // MARK: - 셀에 사용할 타입 반환
     func getCellTuple(indexPath: IndexPath) -> EditCellTypeTuple?

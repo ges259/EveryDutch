@@ -38,6 +38,11 @@ struct Decoration {
         }
     }
     
+    func blurToStringType() -> String? {
+        return self.blur ? "true" : "false"
+    }
+    
+    
     
 
     var getBackgroundColor: UIColor? {

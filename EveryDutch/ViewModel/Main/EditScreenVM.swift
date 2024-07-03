@@ -19,8 +19,6 @@ final class EditScreenVM: ProfileEditVMProtocol {
     private var _api: EditScreenAPIType?
     // typealias EditCellTypeTuple = (type: EditCellType, detail: String?)
     private var _cellDataDictionary: [Int: [EditCellTypeTuple]] = [:]
-    /// 현재 선택된 셀 타입과 인덱스 패스를 저장하는 튜플
-    private var _selectedIndexTuple: (type: EditCellType, indexPath: IndexPath)?
     /// 생성이 아닌 '수정'인 경우, 이전 화면에서 가져온 데이터
     private var _dataRequiredWhenInEidtMode: String?
     
@@ -42,7 +40,8 @@ final class EditScreenVM: ProfileEditVMProtocol {
     /// cardDecoration의 다양한 타입의 데이터를 저장하는 딕셔너리
     private var _decorationData: [String: Any?] = [:]
     
-    private var originalData: (data: EditProviderModel?, deco: Decoration?)?
+    /// 현재 선택된 셀 타입과 인덱스 패스를 저장하는 튜플
+    private var _selectedIndexTuple: (type: EditCellType, indexPath: IndexPath)?
     
     
     // 클로저
@@ -91,9 +90,6 @@ extension EditScreenVM {
         guard let datas = datas else { return }
         
         self._cellDataDictionary = datas
-        
-        // 오리지널 데이터를 저장
-        self.originalData = (data: data, deco: decoration)
         
         // 테이블뷰 리로드를 통해 [테이블 업데이트]
         self.updateDataClosure?()
@@ -174,20 +170,31 @@ extension EditScreenVM {
 
 // MARK: - [테이블 데이터]
 extension EditScreenVM {
-    // 총 섹션의 개수를 반환하는 계산 프로퍼티
+    /// 총 섹션의 개수를 반환하는 계산 프로퍼티
     var getNumOfSection: Int {
         return self._allCases.count
     }
     
-    // 특정 섹션의 셀 개수를 반환하는 메소드
-    func getNumOfCell(section: Int) -> Int {
-        return self._cellDataDictionary[section]?.count ?? 0
+    /// 특정 섹션의 셀 개수를 반환하는 메소드
+    func getNumOfCell(section: Int) -> Int? {
+        // 섹션의 수가 맞지 않으면, nil을 리턴
+        guard section >= 0 
+              && section < self._allCases.count
+        else {
+            print("Section out of range: \(section)")
+            return nil
+        }
+        return self._cellDataDictionary[section]?.count
     }
     
-    // 특정 섹션의 헤더 타이틀을 반환하는 메소드
+    /// 특정 섹션의 헤더 타이틀을 반환하는 메소드
     func getHeaderTitle(section: Int) -> String {
-        guard section >= 0 && section < self._allCases.count else {
-            return "Invalid Section"
+        // 섹션의 수가 맞지 않으면, nil을 리턴
+        guard section >= 0
+              && section < self._allCases.count 
+        else {
+            print("Section out of range: \(section)")
+            return ""
         }
         return self._allCases[section].getHeaderTitle
     }
@@ -226,27 +233,16 @@ extension EditScreenVM {
         self._selectedIndexTuple = (type: type, indexPath: indexPath)
     }
     
-    // 변경된 텍스트 데이터를 textData에 저장하는 메소드
+    /// 변경된 텍스트 데이터를 _textData에 저장하는 메소드
     func saveChangedTextData(data: Any?) {
         guard let type = self._selectedIndexTuple?.type else { return }
         type.saveTextData(data: data, to: &self._textData)
     }
-
+    /// 변경된 데코레이션 데이터를 _decorationData 변수에 저장하는 메소드
     func saveChangedDecorationData(data: Any?) {
         guard let type = self._selectedIndexTuple?.type else { return }
         type.saveDecorationData(data: data, to: &self._decorationData)
     }
-    
-    /// 텍스트 저장
-    private func updateText(databaseString: String, text: Any?) {
-        // 옵셔널바인딩 실패, 비어있는 상태라면, 지우기
-        if let text = text as? String, text == "" {
-            self._textData.removeValue(forKey: databaseString)
-        } else {
-            self._textData[databaseString] = text
-        }
-    }
-    
     /// 피커 상태 저장
     func savePickerState(picker: EditScreenPicker, isOpen: Bool) {
         self._pickerStates[picker] = isOpen
@@ -295,10 +291,13 @@ extension EditScreenVM {
     func validation() {
         Task {
             do {
-                print(#function)
-                dump(self._textData)
+                // 유효성 검사 및 옵셔널 바인딩
                 guard self.roomValidation() else { return }
+                // 개인_ID(Personal_ID) 유효성 검사 (ProfileEditEnum 한정)
+                try await self.validationPersonalID()
+                // 데이터 생성 또는 업데이트
                 try await self.ApiOperation()
+                // 성공 시, 성골 클로저 호출
                 self.successDataClosure?()
                 
             } catch let error as ErrorEnum {
@@ -321,12 +320,29 @@ extension EditScreenVM {
         }
         return true
     }
+    
+    /// 개인_ID 중복 검사
+    private func validationPersonalID() async throws {
+        guard let firstCase = self._allCases.first else { return }
+        // '수정' 화면이라면
+        if !self._isMake {
+            // 개인 ID 중복 확인
+            try await firstCase.validatePersonalID(
+                api: self._api,
+                textData: self._textData
+            )
+        }
+    }
+}
 
+
+
+
+
+// MARK: - 데이터 업데이트/생성
+extension EditScreenVM {
     /// 모든 유효성 검사 및 데이터 처리 함수
     private func ApiOperation() async throws {
-        // 개인_ID(Personal_ID) 유효성 검사 (ProfileEditEnum 한정)
-        try await self.validationPersonalID()
-        
         // 데이터 생성 또는 업데이트
         let refIdString: String = self._isMake
         ? try await self.createDataCellData()
@@ -339,20 +355,11 @@ extension EditScreenVM {
         // 데코 데이터 업데이트
         try await self._api?.updateDecoration(
             at: refIdString,
-            with: self._decorationData)
-    }
-    private func validationPersonalID() async throws {
-        guard let firstCase = self._allCases.first else { return }
-        // '수정' 화면이라면
-        if !self._isMake {
-            // 개인 ID 중복 확인
-            try await firstCase.validatePersonalID(
-                api: self._api,
-                textData: self._textData)
-        }
+            with: self._decorationData
+        )
     }
     
-    // MARK: - Update
+    // Update
     private func updateDataCellData() async throws -> String {
         // 데이터 업데이트
         guard let refID = self._dataRequiredWhenInEidtMode else {
@@ -364,15 +371,14 @@ extension EditScreenVM {
         return refID
     }
     
-    // MARK: - Create
-    // 데이터 셀 데이터를 생성하는 함수
+    // Create
+    /// 데이터 셀 데이터를 생성하는 함수
     private func createDataCellData() async throws -> String {
         let dataDict = self._textData.compactMapValues { $0 }
         return try await self._api?.createData(dict: dataDict) ?? ""
     }
     
-    // MARK: - 데코레이션
-    // 이미지
+    // 데코레이션 업데이트
     /// 이미지를 저장하고 데코 데이터를 저장하는 함수
     private func saveImagesAndDecorationData() async throws {
         // 데코 데이터에서 이미지를 추출
@@ -387,7 +393,6 @@ extension EditScreenVM {
         self._decorationData.merge(urlDict) { _, new in new }
     }
     
-    // 색상
     /// 색상 데이터를 hex 값으로 변환하는 함수
     private func updateColorDataToHex() {
         self._decorationData = self._decorationData.mapValues { value in

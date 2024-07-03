@@ -26,12 +26,23 @@ protocol EditCellType {
     func saveDecorationData(data: Any?, to decorationData: inout [String: Any?]) 
 }
 extension EditCellType {
-    func saveTextData(data: Any?, to textData: inout [String: Any?]) {
-        // 기본 구현 (아무것도 하지 않음)
-        print("\(#function) --- 구현 안 됨")
+    func saveTextData(
+        data: Any?,
+        to textData: inout [String: Any?]
+    ) {
+        // 옵셔널바인딩 실패, 비어있는 상태라면, 지우기
+        if let text = data as? String,
+           text == "" {
+            textData.removeValue(forKey: databaseString)
+        } else {
+            textData[databaseString] = data
+        }
     }
 
-    func saveDecorationData(data: Any?, to decorationData: inout [String: Any?]) {
+    func saveDecorationData(
+        data: Any?,
+        to decorationData: inout [String: Any?]
+    ) {
         // 기본 구현 (아무것도 하지 않음)
         print("\(#function) --- 구현 안 됨")
     }
