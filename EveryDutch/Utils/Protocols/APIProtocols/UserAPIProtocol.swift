@@ -9,13 +9,17 @@ import Foundation
 
 protocol UserAPIProtocol: EditScreenAPIType {
     
-    func readYourOwnUserData() async throws -> [String: User]
-
+//    func readMyUserData() async throws -> [String: User]
+    
+    func readMyUserData() async throws -> User
+    
+    
     func readUser(uid: String) async throws -> [String: User]
     
     func searchUser(_ userID: String) async throws -> [String: User]
     
-    
+    func checkLogin() async throws
+    func signInAnonymously() async throws
     
     func updateUserProfileImage(
         imageUrl: String

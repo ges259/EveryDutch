@@ -38,7 +38,7 @@ final class SelectALoginMethodCoordinator: SelectALoginMethodCoordProtocol {
     private func selectALoginMethodScreen() {
         DispatchQueue.main.async {
             let selectALoginMethodVM = SelectALoginMethodVM(
-                authAPI: AuthAPI.shared)
+                userAPI: UserAPI.shared)
             
             let selectALoginMethodVC = SelectALoginMethodVC(
                 viewModel: selectALoginMethodVM,

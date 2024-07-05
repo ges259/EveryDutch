@@ -67,8 +67,12 @@ final class Debouncer {
             }
         }
     }
+    func initialDebounce() {
+        self.debounce(interval: 3)
+    }
+    
     /// 디바운스를 설정하는 메서드
-    private func debounce() {
+    private func debounce(interval: CGFloat? = nil) {
         // 일정 시간이 지난 후, 동작할 행동 설정
         let newWorkItem = DispatchWorkItem { [weak self] in
             guard let self = self else { return }
@@ -77,8 +81,12 @@ final class Debouncer {
         }
         // 행동 저장
         self.workItem = newWorkItem
+        
+        let timeInterval: CGFloat = interval ?? self.interval
+        
         // 디바운스 설정
-        self.queue.asyncAfter(deadline: .now() + self.interval, execute: newWorkItem)
+        self.queue.asyncAfter(deadline: .now() + timeInterval,
+                              execute: newWorkItem)
     }
     
     // MARK: - 에러 디바운스

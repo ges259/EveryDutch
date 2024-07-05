@@ -45,7 +45,7 @@ final class AppCoordinator: AppCoordProtocol {
     // MARK: - 스플레시 화면
     func splashScreen() {
         let splashScreenVM = SplashScreenVM(
-            authAPI: AuthAPI.shared,
+            userAPI: UserAPI.shared,
             roomDataManager: RoomDataManager.shared)
         
         // SplashScreenVC를 루트 뷰 컨트롤러로 설정하는 방식

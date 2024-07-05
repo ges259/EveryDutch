@@ -21,7 +21,7 @@ enum ProfileVCEnum: Int, CaseIterable {
         }
     }
     
-    func createProviders(user: User) -> [Int: [ProfileTypeCell]] {
+    func createProviders(user: User?) -> [Int: [ProfileTypeCell]] {
         var allCellData: [Int: [ProfileTypeCell]] = [:]
         
         ProfileVCEnum.allCases.forEach { sectionEnum in
@@ -45,7 +45,7 @@ enum UserInfoType: Int, ProfileCellType, CaseIterable {
     case nickName
     case profileImage
     
-    static func getDetails(data: User) -> [ProfileTypeCell] {
+    static func getDetails(data: User?) -> [ProfileTypeCell] {
         return UserInfoType.allCases.map { cellType -> ProfileTypeCell in
             return (type: cellType, 
                     detail: cellType.detail(from: data),

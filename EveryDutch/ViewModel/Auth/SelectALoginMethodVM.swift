@@ -11,13 +11,13 @@ final class SelectALoginMethodVM: SelectALoginMethodVMProtocol {
     
     
     // MARK: - 모델
-    var userAPI: AuthAPIProtocol
+    var userAPI: UserAPIProtocol
     
     
     
     // MARK: - 라이프사이클
-    init(authAPI: AuthAPIProtocol) {
-        self.userAPI = authAPI
+    init(userAPI: UserAPIProtocol) {
+        self.userAPI = userAPI
     }
     
     

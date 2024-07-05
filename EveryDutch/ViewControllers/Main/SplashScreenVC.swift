@@ -24,7 +24,8 @@ class SplashScreenVC: UIViewController {
         self.viewModel.checkLogin() // 로그인 확인
     }
     init(viewModel: SplashScreenVMProtocol,
-         coordinator: AppCoordProtocol) {
+         coordinator: AppCoordProtocol
+    ) {
         self.viewModel = viewModel
         self.coordinator = coordinator
         super.init(nibName: nil, bundle: nil)
@@ -33,18 +34,6 @@ class SplashScreenVC: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     deinit { print("\(#function)-----\(self)") }
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(self.handleRoomDataFetched(notification:)),
-            name: .roomDataChanged,
-            object: nil)
-    }
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        NotificationCenter.default.removeObserver(self)
-    }
 }
 
 
@@ -55,7 +44,7 @@ class SplashScreenVC: UIViewController {
 extension SplashScreenVC {
     /// UI 설정
     private func configureUI() {
-        self.view.backgroundColor = .red
+        self.view.backgroundColor = .base_Blue
     }
 
     /// 클로저 설정
@@ -63,6 +52,10 @@ extension SplashScreenVC {
         self.viewModel.errorClosure = { [weak self] errorType in
             guard let self = self else { return }
             self.configureError(with: errorType)
+        }
+        self.viewModel.successClosure = { [weak self] in
+            guard let self = self else { return }
+            self.goToMainScreen()
         }
     }
 }
@@ -73,21 +66,6 @@ extension SplashScreenVC {
 
 // MARK: - 화면 이동 함수
 extension SplashScreenVC {
-    /// 노티피케이션 함수
-    @objc private func handleRoomDataFetched(notification: Notification) {
-        if let errorKey = DataChangeType.error.notificationName as String?,
-            notification.userInfo?.keys.contains(errorKey) == true {
-             if let error = notification.userInfo?[errorKey] as? ErrorEnum {
-                 self.configureError(with: error)
-             } else {
-                 // errorKey는 있지만 실제로 ErrorEnum 타입의 값이 없는 경우에 대한 처리
-                 self.configureError(with: .unknownError)
-             }
-         } else {
-             self.goToMainScreen()
-         }
-    }
-    
     /// 성공 시, MainVC로 이동
     private func goToMainScreen() {
         DispatchQueue.main.async {
@@ -96,15 +74,16 @@ extension SplashScreenVC {
     }
     
     /// 에러 설정
-    @MainActor
     private func configureError(with errorType: ErrorEnum) {
-        switch errorType {
-        case .NotLoggedIn:
-            self.coordinator.selectALoginMethodScreen()
-        case .NoPersonalID:
-            self.coordinator.mainToMakeUser()
-        default:
-            self.coordinator.selectALoginMethodScreen()
+        DispatchQueue.main.async {
+            switch errorType {
+            case .NotLoggedIn:
+                self.coordinator.selectALoginMethodScreen()
+            case .NoPersonalID, .userNotFound:
+                self.coordinator.mainToMakeUser()
+            default:
+                self.coordinator.selectALoginMethodScreen()
+            }
         }
     }
 }

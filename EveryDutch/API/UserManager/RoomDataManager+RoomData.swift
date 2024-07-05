@@ -11,6 +11,9 @@ extension RoomDataManager {
     
     // MARK: - 데이터 fetch
     func loadRooms() {
+        print("\(#function) ----- 1")
+//        self.roomDebouncer.initialDebounce()
+        self.roomDebouncer.triggerDebounceWithIndexPaths(eventType: .added)
         // 옵저버 설정
         DispatchQueue.global(qos: .utility).async {
             self.roomsAPI.setUserRoomsIDObserver { [weak self] result in

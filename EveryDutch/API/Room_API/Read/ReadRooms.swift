@@ -77,6 +77,7 @@ extension RoomsAPI {
             completion(.failure(.readError))
             return
         }
+        
         // roomID를 가져오기 위한 path
         let userRoomsIDPath = USER_ROOMSID.child(uid)
         
@@ -87,7 +88,6 @@ extension RoomsAPI {
             }
             self.setRoomsObserver(roomID: roomID, completion: completion)
         }
-        
         userRoomsIDPath.observe(.childRemoved) { snapshot in
             guard let userID = snapshot.key as String? else {
                 completion(.failure(.readError))
@@ -100,8 +100,8 @@ extension RoomsAPI {
     // MARK: - Rooms 옵저법
     private func setRoomsObserver(
         roomID: String,
-        completion: @escaping (Result<DataChangeEvent<[String: Rooms]>, ErrorEnum>) -> Void)
-    {
+        completion: @escaping (Result<DataChangeEvent<[String: Rooms]>, ErrorEnum>) -> Void
+    ) {
         let roomsPath = ROOMS_REF.child(roomID)
         
         roomsPath.observe(.childChanged) { snapshot in

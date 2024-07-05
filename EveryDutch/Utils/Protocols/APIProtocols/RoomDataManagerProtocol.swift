@@ -44,6 +44,9 @@ protocol RoomDataManagerProtocol {
     var currentUserIsEuqualToMyUid: Bool { get }
     
     
+    func updateUser(newUser: User)
+    func updateDecoration(newDecoration: Decoration)
+    
     
     
     // MARK: - Receipt

@@ -36,6 +36,7 @@ final class ProfileVM: ProfileVMProtocol {
     // MARK: - 라이프사이클
     init(userAPI: UserAPIProtocol) {
         self.userAPI = userAPI
+        self.makeCellData()
     }
     deinit { print("\(#function)-----\(self)") }
     
@@ -43,10 +44,10 @@ final class ProfileVM: ProfileVMProtocol {
     
     // MARK: - 초기 데이터 설정
     func initializeUserData() {
-        Task { await fetchOwnUserData() }
+        Task { await self.fetchOwnUserData() }
     }
-    // 사용자 데이터를 기반으로 섹션별 셀 데이터를 생성하는 메서드
-    private func makeCellData(user: User) {
+    /// 사용자 데이터를 기반으로 섹션별 셀 데이터를 생성하는 메서드
+    private func makeCellData(user: User? = nil) {
         guard let datas = ProfileVCEnum.allCases.first?.createProviders(user: user) else { return }
         self._cellTypesDictionary = datas
     }
@@ -158,27 +159,28 @@ extension ProfileVM {
     /// 유저 데이터 가져오기
     @MainActor
     private func fetchOwnUserData() async {
-        do {
-            let userDict = try await self.userAPI.readYourOwnUserData()
-            if let uid = userDict.keys.first,
-                let user = userDict.values.first {
-                // 셀 데이터로 저장
-                self.makeCellData(user: user)
-                
-                self.uid = uid
-                // 가져온 user데이터 저장하기
-                self.currentUserData = user
-                
-            } else {
-                self.errorClosure?(ErrorEnum.userNotFound) // 예시 에러 처리
-            }
-            
-        } catch let error as ErrorEnum {
-            self.errorClosure?(error)
-            
-        } catch {
-            self.errorClosure?(ErrorEnum.unknownError)
-        }
+        // MARK: - Fix User
+//        do {
+//            let userDict = try await self.userAPI.readMyUserData()
+//            if let uid = userDict.keys.first,
+//                let user = userDict.values.first {
+//                // 셀 데이터로 저장
+//                self.makeCellData(user: user)
+//                
+//                self.uid = uid
+//                // 가져온 user데이터 저장하기
+//                self.currentUserData = user
+//                
+//            } else {
+//                self.errorClosure?(ErrorEnum.userNotFound) // 예시 에러 처리
+//            }
+//            
+//        } catch let error as ErrorEnum {
+//            self.errorClosure?(error)
+//            
+//        } catch {
+//            self.errorClosure?(ErrorEnum.unknownError)
+//        }
     }
     
     func saveProfileImage(_ image: UIImage) {

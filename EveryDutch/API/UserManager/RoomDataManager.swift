@@ -10,15 +10,19 @@ import UIKit
 final class RoomDataManager: RoomDataManagerProtocol {
     
     static let shared: RoomDataManagerProtocol = RoomDataManager(
+        userAPI: UserAPI.shared,
         roomsAPI: RoomsAPI.shared,
         receiptAPI: ReceiptAPI.shared)
-    
+    var userAPI: UserAPIProtocol
     var roomsAPI: RoomsAPIProtocol
     var receiptAPI: ReceiptAPIProtocol
     
     // MARK: - 라이프사이클
-    init(roomsAPI: RoomsAPIProtocol,
-         receiptAPI: ReceiptAPIProtocol) {
+    init(userAPI: UserAPIProtocol,
+         roomsAPI: RoomsAPIProtocol,
+         receiptAPI: ReceiptAPIProtocol
+    ) {
+        self.userAPI = userAPI
         self.roomsAPI = roomsAPI
         self.receiptAPI = receiptAPI
     }
@@ -40,6 +44,15 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     
     // MARK: - RoomUsrs
+    var myUserData: (user: User,
+                     deco: Decoration?)?
+    func updateUser(newUser: User) {
+        myUserData?.user = newUser
+    }
+    func updateDecoration(newDecoration: Decoration) {
+        myUserData?.deco = newDecoration
+    }
+    
     var currentUser: (userID: String,
                       user: User,
                       deco: Decoration?)?
@@ -47,6 +60,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
     // [UsersID : IndexPath]
     var userIDToIndexPathMap = [String: IndexPath]()
     var usersCellViewModels = [UsersTableViewCellVMProtocol]()
+
     
     
     

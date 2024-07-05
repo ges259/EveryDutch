@@ -9,9 +9,7 @@ import Foundation
 import FirebaseAuth
 import Firebase
 
-final class AuthAPI: AuthAPIProtocol {
-    static let shared: AuthAPIProtocol = AuthAPI()
-    private init() {}
+extension UserAPI: AuthAPIProtocol {
     
     
      // MARK: - 로그인 여부 확인

@@ -44,11 +44,24 @@ extension UserAPI {
     
     
     // MARK: - User데이터 가져오기
-    func readYourOwnUserData() async throws -> [String: User] {
+    func readMyUserData() async throws -> User {
         guard let uid = Auth.auth().currentUser?.uid else {
             throw ErrorEnum.readError
         }
-        return try await self.readUser(uid: uid)
+        
+        return try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<User, Error>) in
+            USER_REF
+                .child(uid)
+                .observeSingleEvent(of: .value) { snapshot in
+                    guard snapshot.exists(), let userSnap = snapshot.value as? [String: Any] else {
+                        continuation.resume(throwing: ErrorEnum.userNotFound)
+                        return
+                    }
+                    
+                    let user = User(dictionary: userSnap)
+                    continuation.resume(returning: user)
+                }
+        }
     }
     
     
