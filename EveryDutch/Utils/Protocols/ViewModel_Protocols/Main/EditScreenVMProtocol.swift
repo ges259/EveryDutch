@@ -7,12 +7,13 @@
 
 import Foundation
 
-protocol ProfileEditVMProtocol {
+protocol EditScreenVMProtocol {
     var successDataClosure: (() -> Void)? { get set }
-    var updateDataClosure: (() -> Void)? { get set }
+    var updateCellClosure: (() -> Void)? { get set }
     var errorClosure: ((ErrorEnum) -> Void)? { get set }
-    var decorationDataClosure: ((Decoration?) -> Void)? { get set }
     
+    /// 셀을 만드는 메서드
+    func setupDataProviders() 
     // MARK: - 하단 버튼 타이틀
     var getBottomBtnTitle: String? { get }
     
@@ -22,8 +23,9 @@ protocol ProfileEditVMProtocol {
     func saveCurrentIndex(indexPath: IndexPath)
     func getCurrentType() -> EditCellType?
     
-    func initializeCellTypes()
-//    var imagePickerIsOpen: Bool { get set }
+    
+    var getProviderModel: EditProviderModel? { get }
+    var getDecoration: Decoration? { get }
     
     
     func savePickerState(picker: EditScreenPicker, isOpen: Bool)

@@ -33,7 +33,8 @@ final class ProfileCoordinator: ProfileCoordProtocol {
     
     // MARK: - 프로필 화면
     private func profileScreen() {
-        let profileVM = ProfileVM(userAPI: UserAPI.shared)
+        let profileVM = ProfileVM(userAPI: UserAPI.shared, 
+                                  roomDataManager: RoomDataManager.shared)
         let profileVC = ProfileVC(viewModel: profileVM,
                                   coordinator: self)
         self.imageDelegate = profileVC
@@ -41,11 +42,11 @@ final class ProfileCoordinator: ProfileCoordProtocol {
     }
     
     // MARK: - 프로필 수정 화면
-    func editScreen(DataRequiredWhenInEditMode: String?) {
+    func editScreen(providerTuple: ProviderTuple) {
         let editScreenVCCoordinator = EditScreenCoordinator(
             nav: self.nav,
             isUserDataMode: true,
-            DataRequiredWhenInEidtMode: DataRequiredWhenInEditMode)
+            providerTuple: providerTuple)
         self.childCoordinators.append(editScreenVCCoordinator)
         // 부모 코디네이터가 자신이라는 것을 명시 (뒤로가기 할 때 필요)
         editScreenVCCoordinator.parentCoordinator = self

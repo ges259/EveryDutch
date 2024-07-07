@@ -8,7 +8,7 @@
 import UIKit
 
 
-final class EditScreenVM: ProfileEditVMProtocol {
+final class EditScreenVM: EditScreenVMProtocol {
     /**
      제네릭 T의 모든 타입
      - roomData / userData
@@ -19,16 +19,26 @@ final class EditScreenVM: ProfileEditVMProtocol {
     private var _api: EditScreenAPIType?
     // typealias EditCellTypeTuple = (type: EditCellType, detail: String?)
     private var _cellDataDictionary: [Int: [EditCellTypeTuple]] = [:]
-    /// 생성이 아닌 '수정'인 경우, 이전 화면에서 가져온 데이터
-    private var _dataRequiredWhenInEidtMode: String?
+    
+    private var roomDataManager: RoomDataManagerProtocol? = nil
+    
+    
+    /**
+     ProviderTuple = (user: EditProviderModel,
+                 deco: Decoration?,
+                 dataID: String?)?
+     */
+    private var _providerTuple: ProviderTuple? = nil
     
     
     
     // 플래그
     /// 객체 생성 또는 편집 화면인지 구분하는 플래그
-    private var _isMake: Bool {
-        return self._dataRequiredWhenInEidtMode == nil
-    }
+    private lazy var _isMake: Bool = {
+        return self._providerTuple == nil
+    }()
+    
+    
     /// [이미지 / 색상] 피커 상태를 저장하는 플래그
     private var _pickerStates: [EditScreenPicker: Bool] = [:]
     
@@ -47,29 +57,26 @@ final class EditScreenVM: ProfileEditVMProtocol {
     // 클로저
     // 방 데이터와 사용자 데이터를 업데이트할 때 사용할 클로저
     /// [화면에 처음 들어섰을 때, 테이블뷰의 데이터를 추가]
-    var updateDataClosure: (() -> Void)?
+    var updateCellClosure: (() -> Void)?
     var successDataClosure: (() -> Void)?
-    var decorationDataClosure: ((Decoration?) -> Void)?
     /// 에러 발생 시 처리할 클로저
     var errorClosure: ((ErrorEnum) -> Void)?
     
     
-    
-    
-    
-    
 
-    
+
     
     // MARK: - 라이프사이클
     init<T: EditScreenType & CaseIterable>(
         screenType: T.Type,
-        dataRequiredWhenInEidtMode: String? = nil)
-    {
+        providerTuple: ProviderTuple? = nil,
+        roomDataManager: RoomDataManagerProtocol? = nil
+    ) {
         self._allCases = Array(T.allCases)
-        self._dataRequiredWhenInEidtMode = dataRequiredWhenInEidtMode
         self._api = self._allCases.first?.apiType
-        self.setupDataProviders()
+        
+        self._providerTuple = providerTuple
+        self.roomDataManager = roomDataManager
     }
     deinit { print("\(#function)-----\(self)") }
 }
@@ -79,35 +86,16 @@ final class EditScreenVM: ProfileEditVMProtocol {
 // MARK: - 초기 설정
 extension EditScreenVM {
     /// 셀을 만드는 메서드
-    private func setupDataProviders(
-        withData data: EditProviderModel? = nil,
-        decoration: Decoration? = nil)
-    {
+    func setupDataProviders() {
         let datas = self._allCases.first?.createProviders(
-            withData: data,
-            decoration: decoration)
+            withData: self._providerTuple?.provider,
+            decoration: self._providerTuple?.deco)
         
         guard let datas = datas else { return }
         
         self._cellDataDictionary = datas
-        
         // 테이블뷰 리로드를 통해 [테이블 업데이트]
-        self.updateDataClosure?()
-    }
-    /// '프로필 수정 화면'한정, 데이터를 가져오는 메서드
-    func initializeCellTypes() {
-        guard !self._isMake else { return }
-        print(#function)
-        Task {
-            // 수정 -> 데이터 가져오기 ->> 셀 타입 초기화
-            do {
-                try await self.fetchDatas()
-            } catch let error as ErrorEnum {
-                self.errorClosure?(error)
-            } catch {
-                self.errorClosure?(.unknownError)
-            }
-        }
+        self.updateCellClosure?()
     }
 }
 
@@ -122,13 +110,20 @@ extension EditScreenVM {
 
 // MARK: - 데이터 반환
 extension EditScreenVM {
-    // 화면 데이터
+    
+    var getProviderModel: EditProviderModel? {
+        return self._providerTuple?.provider
+    }
+    var getDecoration: Decoration? {
+        return self._providerTuple?.deco
+    }
+    
     /// 하단 버튼 타이틀 - 화면 하단에 표시될 버튼의 제목을 반환하는 변수
     /// T 타입(섹션 타입)의 첫 번째 케이스를 기준으로, isMake 변수의 값(true 또는 false)에 따라 해당하는 제목을 반환 이는 '생성' 또는 '수정' 화면에 따라 다른 텍스트를 표시할 때 사용
     var getBottomBtnTitle: String? {
         return self._allCases.first?.bottomBtnTitle(isMake: self._isMake)
     }
-    // 화면 데이터
+    
     /// 네비게이션 바에 표시될 제목을 반환하는 변수
     /// 이 역시 T 타입의 첫 번째 케이스를 기준으로, isMake 변수에 따라 적절한 제목을 반환
     /// '생성' 또는 '수정' 화면에 맞는 네비게이션 바 제목을 결정하는 데 사용 됨
@@ -258,36 +253,19 @@ extension EditScreenVM {
 
 
 
-// MARK: - 데이터 가져오기
-extension EditScreenVM {
-    /// 데이터 가져오기
-    private func fetchDatas() async throws {
-        guard let dataID = self._dataRequiredWhenInEidtMode else { return }
-        
-        let data = try await self._api?.fetchData(dataRequiredWhenInEidtMode: dataID)
-        let decoration = try await self._api?.fetchDecoration(dataRequiredWhenInEditMode: dataID)
-        DispatchQueue.main.async {
-            self.setupDataProviders(withData: data, decoration: decoration)
-            // CardImgView와 테이블뷰의 decoration 섹션을 업데이트
-            self.decorationDataClosure?(decoration)
-        }
-    }
-}
-
-
-
-
-
-
-
-
-
-
 // MARK: - 유효성 검사
 extension EditScreenVM {
+    func runOnMainThread(_ closure: @escaping () -> Void) {
+        if Thread.isMainThread {
+            closure()
+        } else {
+            DispatchQueue.main.async { closure() }
+        }
+    }
+    
+    
     // 비동기적으로 유효성 검사를 수행하는 함수
     // 현재 타입이 RoomEditEnum 또는 ProfileEditEnum인지 확인하고, 해당하는 동작을 실행
-    @MainActor
     func validation() {
         Task {
             do {
@@ -297,17 +275,30 @@ extension EditScreenVM {
                 try await self.validationPersonalID()
                 // 데이터 생성 또는 업데이트
                 try await self.ApiOperation()
+                
+                if let roomDataManager = self.roomDataManager {
+                    print("\(#function) ----- checkMyUserDataIsExist")
+                    try await roomDataManager.checkMyUserDataIsExist()
+                }
+                
                 // 성공 시, 성골 클로저 호출
-                self.successDataClosure?()
+                self.runOnMainThread {
+                    self.successDataClosure?()
+                }
                 
             } catch let error as ErrorEnum {
-                self.errorClosure?(error)
+                self.runOnMainThread {
+                    self.errorClosure?(error)
+                }
                 
             } catch {
-                self.errorClosure?(ErrorEnum.unknownError)
+                self.runOnMainThread {
+                    self.errorClosure?(ErrorEnum.unknownError)
+                }
             }
         }
     }
+
     
     /// 유효성 검사
     private func roomValidation() -> Bool {
@@ -315,7 +306,9 @@ extension EditScreenVM {
         
         // 오류 처리 (databaseString)
         if let dict = dict, !dict.isEmpty {
-            self.errorClosure?(.validationError(dict))
+            self.runOnMainThread {
+                self.errorClosure?(.validationError(dict))
+            }
             return false
         }
         return true
@@ -362,7 +355,7 @@ extension EditScreenVM {
     // Update
     private func updateDataCellData() async throws -> String {
         // 데이터 업데이트
-        guard let refID = self._dataRequiredWhenInEidtMode else {
+        guard let refID = self._providerTuple?.dataID else {
             throw ErrorEnum.readError
         }
         let dataDict = self._textData.compactMapValues { $0 }

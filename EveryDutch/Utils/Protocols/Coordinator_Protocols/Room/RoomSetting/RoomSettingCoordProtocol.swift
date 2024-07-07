@@ -11,7 +11,7 @@ protocol RoomSettingCoordProtocol: Coordinator {
 //    func settlementScreen()
     func FindFriendsScreen()
     func exitSuccess()
-    func roomEditScreen(DataRequiredWhenInEidtMode roomID: String?)
+    func roomEditScreen(providerTuple: ProviderTuple) 
     
     func userProfileScreen()
 }

@@ -49,7 +49,7 @@ final class MainCoordinator: MainCoordProtocol{
     }
     func startMakeUser() {
         self.mainScreen()
-        self.ProfileEditScreen(isMakeUserMode: true)
+        self.profileEditScreen()
     }
     
     
@@ -104,13 +104,13 @@ final class MainCoordinator: MainCoordProtocol{
     // MARK: - EditScreen
     /// 프로필 생성 화면,
     /// 첫 로그인 시 유저의 프로필을 생성할  때,
-    func ProfileEditScreen(isMakeUserMode: Bool = false) {
+    func profileEditScreen() {
         // Main-Coordinator 생성
         let editScreenVCCoordinator = EditScreenCoordinator(
             nav: self.nav,
             isUserDataMode: true,
-            isFistLoginMakeUser: isMakeUserMode,
-            DataRequiredWhenInEidtMode: nil)
+            isFistLoginMakeUser: true,
+            providerTuple: nil)
         self.moveToEditScreenVCCoord(to: editScreenVCCoordinator)
     }
     
@@ -123,7 +123,7 @@ final class MainCoordinator: MainCoordProtocol{
         let editScreenVCCoordinator = EditScreenCoordinator(
             nav: self.nav,
             isUserDataMode: false, 
-            DataRequiredWhenInEidtMode: nil)
+            providerTuple: nil)
         self.moveToEditScreenVCCoord(to: editScreenVCCoordinator)
     }
     

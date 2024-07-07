@@ -200,6 +200,9 @@ extension SelectALoginMethodVC {
     
     // MARK: - MainVC로 화면 이동
     private func signInSuccess() {
+        
+        
+        // MARK: - Fix - ProviderTuple
         self.coordinator.mainToMakeUser()
     }
     

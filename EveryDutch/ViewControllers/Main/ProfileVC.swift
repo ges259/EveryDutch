@@ -21,7 +21,7 @@ final class ProfileVC: UIViewController {
     /// 컨텐트뷰 ( - 스크롤뷰)
     private var contentView: UIView = UIView()
     
-    private var cardImgView: CardImageView = CardImageView()
+    private lazy var cardImgView: CardImageView = CardImageView()
     
     
     
@@ -91,8 +91,6 @@ final class ProfileVC: UIViewController {
         self.configureAutoLayout()
         self.configureAction()
         self.configureClosure()
-        // 내 정보 가져오기
-        self.viewModel.initializeUserData()
     }
     init(viewModel: ProfileVMProtocol,
          coordinator: ProfileCoordProtocol) {
@@ -124,6 +122,12 @@ extension ProfileVC {
         self.view.backgroundColor = .base_Blue
         
         self.logoutBtn.setRoundedCorners(.all, withCornerRadius: 10)
+        
+        
+        if let userDecoTuple = self.viewModel.userDecoTuple {
+            self.cardImgView.setupUserData(data: userDecoTuple.user)
+            self.cardImgView.setupDecorationData(data: userDecoTuple.deco)
+        }
     }
     
     /// 오토레이아웃 설정
@@ -182,11 +186,6 @@ extension ProfileVC {
     
     /// 클로저 설정
     private func configureClosure() {
-        self.viewModel.userDataClosure = { [weak self] userData in
-            guard let self = self else { return }
-            print(#function)
-            self.dataChange(data: userData)
-        }
         self.viewModel.errorClosure = { [weak self] errorType in
             guard let self = self else { return }
             self.errorType(errorType)
@@ -208,18 +207,6 @@ extension ProfileVC {
     /// 뒤로가기 버튼 설정
     @objc private func backButtonTapped() {
         self.coordinator.didFinish()
-    }
-    
-    /// 회원 정보 수정 화면(EditScreenVC)으로 이동
-    private func editScreenScreen() {
-        self.coordinator.editScreen(
-            DataRequiredWhenInEditMode: self.viewModel.getUserID)
-    }
-    
-    /// 카드 이미지 및 테이블뷰 설정
-    private func dataChange(data: User) {
-        self.cardImgView.setupUserData(data: data)
-        self.tableView.reloadData()
     }
     
     /// 에러 클로저를 통한 에러 설정
@@ -299,8 +286,16 @@ extension ProfileVC: UITableViewDelegate {
     private func userInfoTypeCellDidSeleted(_ type: UserInfoType) {
         switch type {
         case .personalID, .nickName:
-            let userID: String = self.viewModel.getUserID
-            self.coordinator.editScreen(DataRequiredWhenInEditMode: userID)
+            // 회원 정보 수정 화면(EditScreenVC)으로 이동
+            // 방 설정 화면으로 이동
+            guard let providerTuple = self.viewModel.getProviderTuple else {
+                // 얼럿창
+                self.customAlert(alertEnum: .unknownError) { _ in }
+                return
+            }
+            // MARK: - Fix - ProviderTuple
+            self.coordinator.editScreen(providerTuple: providerTuple)
+            
             
         case .profileImage:
             self.coordinator.requestPhotoLibraryAccess(delegate: self)

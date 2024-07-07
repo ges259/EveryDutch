@@ -9,14 +9,12 @@ import UIKit
 
 protocol ProfileVMProtocol {
     
-    var getUserID: String { get }
     
-    var userDataClosure: ((User) -> Void)? { get set }
+    
     var errorClosure: ((ErrorEnum) -> Void)? { get set }
-    func initializeUserData() 
     
     var profileImageCellIndexPath: IndexPath? { get }
-    
+    var userDecoTuple: UserDecoTuple? { get }
     
     var getNumOfSection: Int { get }
     
@@ -29,6 +27,8 @@ protocol ProfileVMProtocol {
     func getCellData(indexPath: IndexPath) -> ProfileTypeCell?
     
     
+    
+    var getProviderTuple: ProviderTuple? { get }
     
     
     func saveProfileImage(_ image: UIImage)

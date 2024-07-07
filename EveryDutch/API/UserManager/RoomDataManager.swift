@@ -35,23 +35,19 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     // MARK: - Rooms
     // 현재 선택된 Rooms
-    private var currentRoom: (roomID: String, room: Rooms)?
+    var currentRoom: (roomID: String, room: Rooms)?
     var roomIDToIndexPathMap = [String: IndexPath]()
     var roomsCellViewModels = [MainCollectionViewCellVMProtocol]()
     
     
-    
-    
-    
     // MARK: - RoomUsrs
-    var myUserData: (user: User,
-                     deco: Decoration?)?
-    func updateUser(newUser: User) {
-        myUserData?.user = newUser
-    }
-    func updateDecoration(newDecoration: Decoration) {
-        myUserData?.deco = newDecoration
-    }
+    var _myUserData: (user: User,
+                      deco: Decoration?)?
+    
+
+    
+    
+    
     
     var currentUser: (userID: String,
                       user: User,
@@ -98,25 +94,7 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     
     
-    // MARK: - 정산방 초기 데이터 로드
-    func startLoadRoomData(completion: @escaping (Result<Void, ErrorEnum>) -> Void) {
-        // 초기 로드일 때 모든 데이터 초기화
-        self.removeRoomsUsersObserver()
-        
-        self.loadRoomUsers { [weak self] result in
-            guard let self = self else {
-                completion(.failure(.readError))
-                return
-            }
-            switch result {
-            case .success():
-                self.loadFinancialData()
-                self.loadRoomReceipt(completion: completion)
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
-    }
+
     
     
     
@@ -160,6 +138,10 @@ final class RoomDataManager: RoomDataManagerProtocol {
     
     
     // MARK: - User 정보
+
+    
+    
+    
     /// 방의 개수
     var getNumOfRoomUsers: Int {
         return self.usersCellViewModels.count

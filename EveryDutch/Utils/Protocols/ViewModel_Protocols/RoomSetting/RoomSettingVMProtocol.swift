@@ -19,4 +19,5 @@ protocol RoomSettingVMProtocol {
     var successLeaveRoom: (() -> Void)? { get set }
     var errorClosure: ((ErrorEnum) -> Void)? { get set }
     func leaveRoom()
+    var getProviderTuple: ProviderTuple? { get }
 }

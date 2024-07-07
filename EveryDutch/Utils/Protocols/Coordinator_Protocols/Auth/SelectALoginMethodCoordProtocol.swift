@@ -10,5 +10,6 @@ import Foundation
 protocol SelectALoginMethodCoordProtocol: Coordinator {
 //    func loginScreen()
     func navigateToMain()
-    func mainToMakeUser() 
+    
+    func mainToMakeUser()
 }

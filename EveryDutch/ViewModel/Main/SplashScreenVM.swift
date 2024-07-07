@@ -84,8 +84,7 @@ final class SplashScreenVM: SplashScreenVMProtocol {
     func checkMyUserDataIsExist() {
         Task {
             do {
-                let user = try await self.userAPI.readMyUserData()
-                self.roomDataManager.updateUser(newUser: user)
+                try await self.roomDataManager.checkMyUserDataIsExist()
                 self.successClosure?()
                 
             } catch let error as ErrorEnum {

@@ -36,6 +36,9 @@ enum Typealias {
     
     // ReceiptWriteVM
     typealias ReceiptCompletion = (Result<Receipt, ErrorEnum>) -> Void
+    
+    
+    
 }
 
 
@@ -67,3 +70,8 @@ typealias ReceiptWriteCellTuple = (type: ReceiptWriteCellType?, viewModel: Recei
 
 
 typealias UserDecoTuple = (user: User, deco: Decoration?)
+
+
+typealias ProviderTuple = (provider: EditProviderModel,
+                           deco: Decoration?,
+                           dataID: String?)

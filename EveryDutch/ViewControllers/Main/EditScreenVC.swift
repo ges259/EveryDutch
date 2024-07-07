@@ -17,7 +17,6 @@ import Photos
  Decoration이 저장이 안 됨
  */
 final class EditScreenVC: UIViewController {
-
     
     // MARK: - 레이아웃
     /// 스크롤뷰
@@ -79,7 +78,7 @@ final class EditScreenVC: UIViewController {
     
     
     // MARK: - 프로퍼티
-    private var viewModel: ProfileEditVMProtocol
+    private var viewModel: EditScreenVMProtocol
     private var coordinator: EditScreenCoordProtocol
     
     /// 열린 상태의 이미지 피커의 높이
@@ -103,13 +102,14 @@ final class EditScreenVC: UIViewController {
         self.configureAutoLayout()
         self.configureAction()
         self.configureClosure()
+        
+        self.viewModel.setupDataProviders()
     }
-    init(viewModel: ProfileEditVMProtocol,
+    init(viewModel: EditScreenVMProtocol,
          coordinator: EditScreenCoordProtocol) {
         self.viewModel = viewModel
         self.coordinator = coordinator
         super.init(nibName: nil, bundle: nil)
-        self.viewModel.initializeCellTypes()
     }
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -132,6 +132,9 @@ extension EditScreenVC {
         self.view.backgroundColor = UIColor.base_Blue
         // 네비게이션 타이틀 설정
         self.navigationItem.title = self.viewModel.getNavTitle
+        
+        self.cardImgView.setupProviderData(data: self.viewModel.getProviderModel)
+        self.cardImgView.setupDecorationData(data: self.viewModel.getDecoration)
     }
     
     /// 오토레이아웃 설정
@@ -190,18 +193,18 @@ extension EditScreenVC {
         self.bottomBtn.addTarget(
             self,
             action: #selector(self.bottomBtnTapped),
-            for: .touchUpInside)
+            for: .touchUpInside
+        )
     }
     
     /// 클로저 설정
     private func configureClosure() {
-        self.viewModel.successDataClosure = { @MainActor [weak self] in
-            print("\(#function) --- successDataClosure")
+        self.viewModel.successDataClosure = { [weak self] in
             guard let self = self else { return }
             self.coordinator.didFinish()
         }
         
-        self.viewModel.updateDataClosure = { @MainActor [weak self] in
+        self.viewModel.updateCellClosure = { [weak self] in
             guard let self = self else { return }
             self.tableView.reloadData()
         }
@@ -209,11 +212,6 @@ extension EditScreenVC {
         self.viewModel.errorClosure = { [weak self] errorType in
             guard let self = self else { return }
             self.errorType(errorType)
-        }
-        
-        self.viewModel.decorationDataClosure = { [weak self] deco in
-            guard let self = self else { return }
-            self.cardImgView.setupOriginalDecorationData(deco)
         }
     }
     
@@ -376,12 +374,13 @@ extension EditScreenVC: UITableViewDataSource {
         
         // 셀의 타입 가져오기
         let cellTuple = self.viewModel.getCellTuple(indexPath: indexPath)
+        cell.delegate = self
         
         // 셀의 텍스트 및 모서리 설정
         cell.setDetailLbl(cellTuple: cellTuple,
                           isFirst: isFirst,
                           isLast: isLast)
-        cell.delegate = self
+        
         return cell
     }
     /// cellForRowAt - [데코 셀] 구성
@@ -401,7 +400,9 @@ extension EditScreenVC: UITableViewDataSource {
     }
     
     /// didSelectRowAt
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, 
+                   didSelectRowAt indexPath: IndexPath
+    ) {
         // 텍스트 필드를 수정 주이라면 -> 멈추기
         self.view.endEditing(true)
         // 현재 선택된 셀의 [타입 및 IndexPath] 저장
@@ -475,7 +476,10 @@ extension EditScreenVC: UITableViewDataSource {
 extension EditScreenVC: CardDataCellDelegate {
     /// CardDataCell에서 텍스트 변경 시, 해당 메서드가 호출 됨.
     /// 텍스트 설정 완료 시 호출 됨.
-    func textData(cell: CardDataCell, type: EditCellType, text: String) {
+    func textData(cell: CardDataCell, 
+                  type: EditCellType,
+                  text: String
+    ) {
         // 선택된 셀의 IndexPath 저장
         // row가져오기 및 옵셔널 바인딩(존재하는지 확인)
         guard let row = self.saveTextFieldsIndexPath(cell),

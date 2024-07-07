@@ -247,8 +247,13 @@ extension RoomSettingVC {
         // roomManager라면
         if self.viewModel.checkIsRoomManager {
             // 방 설정 화면으로 이동
-            let roomID = self.viewModel.getCurrentRoomID
-            self.coordinator.roomEditScreen(DataRequiredWhenInEidtMode: roomID)
+            guard let providerTuple = self.viewModel.getProviderTuple else {
+                // 얼럿창
+                self.customAlert(alertEnum: .unknownError) { _ in }
+                return
+            }
+            // MARK: - Fix - ProviderTuple
+            self.coordinator.roomEditScreen(providerTuple: providerTuple)
             
         } else {
             // 얼럿창

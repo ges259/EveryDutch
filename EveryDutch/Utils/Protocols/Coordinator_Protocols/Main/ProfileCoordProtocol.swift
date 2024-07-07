@@ -8,5 +8,6 @@
 import Foundation
 
 protocol ProfileCoordProtocol: ImagePickerCoordinator {
-    func editScreen(DataRequiredWhenInEditMode: String?) 
+    
+    func editScreen(providerTuple: ProviderTuple)
 }

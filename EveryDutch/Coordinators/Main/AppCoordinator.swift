@@ -75,6 +75,7 @@ final class AppCoordinator: AppCoordProtocol {
             nav: self.nav)
         self.childCoordinators.append(mainCoordinator)
         mainCoordinator.parentCoordinator = self
+        // MARK: - Fix - ProviderTuple
         mainCoordinator.startMakeUser()
         self.transitionAndRemoveSplashVC()
     }

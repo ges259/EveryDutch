@@ -38,6 +38,10 @@ final class RoomSettingVM: RoomSettingVMProtocol {
     }
      
     
+    var getProviderTuple: ProviderTuple? {
+        return self.roomDataManager.getProviderTuple(isUser: false)
+    }
+    
     
     var getCurrentRoomID: String? {
         return self.roomDataManager.getCurrentRoomsID

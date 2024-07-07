@@ -25,6 +25,12 @@ protocol EditScreenType {
     
     // MARK: - 섹션의 인덱스
     var sectionIndex: Int { get }
+    
+    
+    func validatePersonalID(
+        api: EditScreenAPIType?,
+        textData: [String: Any?]
+    ) async throws
 }
 
 

@@ -43,9 +43,19 @@ protocol RoomDataManagerProtocol {
     var getSelectedUserID: String? { get }
     var currentUserIsEuqualToMyUid: Bool { get }
     
+    var myUserData: UserDecoTuple? { get }
     
-    func updateUser(newUser: User)
-    func updateDecoration(newDecoration: Decoration)
+    
+    func getProviderTuple(isUser: Bool) -> ProviderTuple?
+    
+    
+    /// 유저의 정보(User)가 존재하는지 확인 후, 가져온 데이터는 저장
+    func checkMyUserDataIsExist() async throws
+    
+    
+    
+    
+    
     
     
     

@@ -40,7 +40,10 @@ final class EditScreenCoordinator: NSObject, EditScreenCoordProtocol {
     /// 수정 / 생성을 구분
     /// nil인 경우       -> 생성
     /// nil이 아닌 경우   -> 수정
-    private var dataRequiredWhenInEidtMode: String? = nil
+//    private var dataRequiredWhenInEidtMode: String? = nil
+    private var providerTuple: ProviderTuple? = nil
+    
+    
     /// 유저 생성 모드 플래그 (첫 로그인 시에만 활성화)
     private var isMakeUserMode: Bool
     
@@ -50,15 +53,15 @@ final class EditScreenCoordinator: NSObject, EditScreenCoordProtocol {
     init(nav: UINavigationController, 
          isUserDataMode: Bool,
          isFistLoginMakeUser: Bool = false,
-         DataRequiredWhenInEidtMode: String? = nil)
-    {
+         providerTuple: ProviderTuple? = nil
+    ) {
         self.nav = nav
         // 유저 / 정산방을 구분
         self.isUserDataMode = isUserDataMode
         // 유저 생성 화면 (첫 로그인 시에만 해당)
         self.isMakeUserMode = isFistLoginMakeUser
         // 수정 / 생성을 구분
-        self.dataRequiredWhenInEidtMode = DataRequiredWhenInEidtMode
+        self.providerTuple = providerTuple
     }
     deinit { print("\(#function)-----\(self)") }
     
@@ -73,11 +76,17 @@ final class EditScreenCoordinator: NSObject, EditScreenCoordProtocol {
     
     // MARK: - 프로필 화면
     private func startUserDataMode() {
+        let roomDataManager: RoomDataManagerProtocol? = self.isMakeUserMode
+        ? RoomDataManager.shared
+        : nil
+        
         self.moveToEditScreen {
             // ProfileEditEnum을 사용하여 ViewModel 생성
             let profileEditVM = EditScreenVM(
                 screenType: ProfileEditEnum.self,
-                dataRequiredWhenInEidtMode: self.dataRequiredWhenInEidtMode)
+                providerTuple: self.providerTuple,
+                roomDataManager: roomDataManager
+            )
             return EditScreenVC(viewModel: profileEditVM, coordinator: self)
         }
     }
@@ -88,7 +97,7 @@ final class EditScreenCoordinator: NSObject, EditScreenCoordProtocol {
             // RoomEditEnum을 사용하여 ViewModel 생성
             let roomEditVM = EditScreenVM(
                 screenType: RoomEditEnum.self,
-                dataRequiredWhenInEidtMode: self.dataRequiredWhenInEidtMode)
+                providerTuple: self.providerTuple)
             return EditScreenVC(viewModel: roomEditVM, coordinator: self)
         }
     }

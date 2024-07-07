@@ -182,6 +182,14 @@ extension CardImageView {
         self.nameLbl.text = userData.personalID
     }
     
+    /// EditScreenVC에서 EditProviderModel을 받아 업데이트
+    func setupProviderData(data provider: EditProviderModel?) {
+        guard let provider = provider else { return }
+        self.titleLbl.text = provider.nameText
+        self.nameLbl.text = provider.titleText
+    }
+    
+    
     /// [데코]
     func setupDecorationData(data decorationData: Decoration?) {
         
