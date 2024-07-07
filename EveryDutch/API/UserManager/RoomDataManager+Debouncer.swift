@@ -83,7 +83,6 @@ final class Debouncer {
         self.workItem = newWorkItem
         
         let timeInterval: CGFloat = interval ?? self.interval
-        
         // 디바운스 설정
         self.queue.asyncAfter(deadline: .now() + timeInterval,
                               execute: newWorkItem)

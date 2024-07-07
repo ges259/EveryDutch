@@ -28,7 +28,15 @@ protocol UsersTableViewVMProtocol {
     
     func selectUser(index: Int)
     
+    func validateRowCountChange(
+        currentRowCount: Int,
+        changedUsersCount: Int
+    ) -> Bool
     
+    func validateRowExistenceForUpdate(
+        indexPaths: [IndexPath],
+        totalRows: Int
+    ) -> Bool
     
     
     // User data handling

@@ -15,7 +15,6 @@ final class IndexPathDataManager<T> {
     // 데이터 저장
     func dataChanged(_ userInfo: [String: Any]) {
         
-        print("errorData ----- \(#function)")
         dump(userInfo)
         
         for (key, value) in userInfo {
@@ -36,8 +35,8 @@ final class IndexPathDataManager<T> {
     
     private func mergeIndexPaths(
         _ existingValues: [IndexPath],
-        _ newValues: [IndexPath])
-    -> [IndexPath] {
+        _ newValues: [IndexPath]
+    ) -> [IndexPath] {
         return Array(Set(existingValues + newValues))
     }
     

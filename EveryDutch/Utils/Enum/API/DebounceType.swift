@@ -38,11 +38,11 @@ enum DebounceType {
     var interval: CGFloat {
         switch self {
         case .userData:
-            return 0.7
+            return 0.2
         case .roomData:
             return 1.5
         case .receiptData:
-            return 0.3
+            return 0.5
         }
     }
 }

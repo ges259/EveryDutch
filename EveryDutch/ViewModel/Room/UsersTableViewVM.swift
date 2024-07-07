@@ -87,6 +87,19 @@ extension UsersTableViewVM {
             return true
         }
     }
+    func validateRowCountChange(
+        currentRowCount: Int,
+        changedUsersCount: Int
+    ) -> Bool {
+        return currentRowCount + changedUsersCount == self.numbersOfUsers
+    }
+    
+    func validateRowExistenceForUpdate(
+        indexPaths: [IndexPath],
+        totalRows: Int
+    ) -> Bool {
+        return !indexPaths.contains { $0.row >= totalRows }
+    }
 }
 
 // MARK: - 인덱스패스

@@ -14,6 +14,8 @@ extension RoomDataManager {
     // 콜백 함수 만들기(completion)
     // SettlementMoneyRoomVM에서 호출 됨
     func loadRoomUsers(completion: @escaping Typealias.VoidCompletion) {
+        
+        self.userDebouncer.triggerDebounceWithIndexPaths(eventType: .added)
         // roomID가져오기
         guard let roomID = self.getCurrentRoomsID else {
             completion(.failure(.readError))

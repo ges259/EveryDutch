@@ -69,7 +69,9 @@ final class UsersTableView: UIView {
     var isViewVisible: Bool = true {
         didSet { self.updateUsersTableView() }
     }
-    
+    var currentTableViewRowCount: Int {
+        return self.usersTableView.numberOfRows(inSection: 0)
+    }
     
     // MARK: - 라이프사이클
     init(viewModel: UsersTableViewVMProtocol) {
@@ -248,7 +250,6 @@ extension UsersTableView {
     /// 노티피케이션을 통해 받은 변경사항을 바로 반영하거나 저장하는 메서드
     @objc private func handleDataChanged(notification: Notification) {
         guard let dataInfo = notification.userInfo as? [String: Any] else { return }
-        
         let rawValue = notification.name.rawValue
         
         switch rawValue {
@@ -261,44 +262,79 @@ extension UsersTableView {
     }
     
     private func updateUsersTableView() {
+        // 현재 화면에 보이는 상태라면,
         guard self.isViewVisible else { return }
+        // 변경된 IndexPath배열 가져오기
         let pendingIndexPaths = self.viewModel.getPendingUserDataIndexPaths()
-        
-        guard pendingIndexPaths.count != 0 else { return }
-        
-        if pendingIndexPaths.count == 1 {
-            pendingIndexPaths.forEach { (key: String, value: [IndexPath]) in
-                self.updateIndexPath(key: key, indexPaths: value)
-                self.numberOfUsersChanges(key: key)
+        // 비어있다면, return
+        guard !pendingIndexPaths.isEmpty else { return }
+        // 메인스레드에서 진행
+        DispatchQueue.main.async {
+            if pendingIndexPaths.count == 1 {
+                // 1개라면, 따로 진행
+                self.updateIndexPath(pendingIndexPaths: pendingIndexPaths)
+                
+            } else {
+                // 여러개라면, 전체 리로드
+                self.usersTableView.reloadData()
             }
-        } else {
-            self.usersTableView.reloadData()
         }
+        // 변경된 IndexPath배열을 리셋
         self.viewModel.resetPendingUserDataIndexPaths()
     }
     
-    @MainActor
-    private func updateIndexPath(key: String, indexPaths: [IndexPath]) {
-        switch key {
-        case DataChangeType.updated.notificationName:
-            self.usersTableView.reloadRows(at: indexPaths, with: .automatic)
-            break
-        case DataChangeType.initialLoad.notificationName:
-            self.usersTableView.reloadData()
-            break
-        case DataChangeType.added.notificationName:
-            // 테이블 뷰 업데이트
-            self.usersTableView.insertRows(at: indexPaths, with: .automatic)
-            break
-        case DataChangeType.removed.notificationName:
-            // 테이블 뷰 업데이트
-            self.usersTableView.deleteRows(at: indexPaths, with: .automatic)
-            break
-        default:
-            print("\(self) ----- \(#function) ----- Error")
-            self.usersTableView.reloadData()
-            break
+    private func updateIndexPath(pendingIndexPaths: [String : [IndexPath]]) {
+        pendingIndexPaths.forEach { (key: String, indexPaths: [IndexPath]) in
+            switch key {
+            case DataChangeType.updated.notificationName:
+                self.handleUpdate(indexPaths: indexPaths)
+                
+            case DataChangeType.added.notificationName:
+                self.handleAdd(indexPaths: indexPaths)
+                
+            case DataChangeType.removed.notificationName:
+                self.handleRemove(indexPaths: indexPaths)
+                
+            default:
+                print("DEBUG: Unexpected key \(key)")
+                self.tableViewTotalReload()
+            }
+            // 유저의 수가 바뀌었는지 확인, 바뀌었다면, TopView를 업데이트
+            self.numberOfUsersChanges(key: key)
         }
+    }
+    // 셀 업데이트
+    private func handleUpdate(indexPaths: [IndexPath]) {
+        guard self.viewModel.validateRowExistenceForUpdate(
+            indexPaths: indexPaths,
+            totalRows: self.currentTableViewRowCount
+        ) else {
+            self.tableViewTotalReload()
+            return
+        }
+        self.usersTableView.reloadRows(at: indexPaths, with: .automatic)
+    }
+    // 셀 insert
+    private func handleAdd(indexPaths: [IndexPath]) {
+        guard self.viewModel.validateRowCountChange(
+            currentRowCount: self.currentTableViewRowCount,
+            changedUsersCount: indexPaths.count
+        ) else {
+            self.tableViewTotalReload()
+            return
+        }
+        self.usersTableView.insertRows(at: indexPaths, with: .automatic)
+    }
+    // 셀 삭제
+    private func handleRemove(indexPaths: [IndexPath]) {
+        guard self.viewModel.validateRowCountChange(
+            currentRowCount: self.currentTableViewRowCount,
+            changedUsersCount: -indexPaths.count
+        ) else {
+            self.tableViewTotalReload()
+            return
+        }
+        self.usersTableView.deleteRows(at: indexPaths, with: .automatic)
     }
     
     /// 유저의 수가 바뀐다면, 노티피케이션을 post하여 셀의 개수 변경
@@ -309,5 +345,11 @@ extension UsersTableView {
         self.usersTableView.isScrollEnabled = self.viewModel.tableViewIsScrollEnabled
         // 높이 업데이트를 위한 delgate
         self.delegate?.didUpdateUserCount()
+    }
+    
+    // 셀 리로드
+    func tableViewTotalReload() {
+        print("DEBUG: ----- \(#function)")
+        self.usersTableView.reloadData()
     }
 }
