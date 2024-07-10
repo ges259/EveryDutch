@@ -125,6 +125,7 @@ extension RoomDataManager {
     
     // MARK: - 추가
     func handleAddedReceiptEvent(_ toAdd: [ReceiptTuple], sections: inout [ReceiptSection]) {
+
         // 추가할 섹션의 IndexPath 저장
         var sectionsToInsert = IndexSet()
         // 추가할 행의 IndexPath 저장
@@ -132,9 +133,9 @@ extension RoomDataManager {
         
         for (receiptID, receipt) in toAdd {
             // 이미 존재하는 영수증은 건너뜀
-            if sections.contains(where: { $0.receipts.contains { $0.getReceiptID == receiptID } }) {
-                continue
-            }
+            if sections.contains(
+                where: { $0.receipts.contains { $0.getReceiptID == receiptID } }
+            ) { continue }
             
             // 영수증의 날짜를 가져옴
             let date = receipt.date
@@ -156,11 +157,13 @@ extension RoomDataManager {
                 }
                 // 새 섹션의 인덱스를 sectionsToInsert에 추가
                 sectionsToInsert.insert(sectionIndex!)
+            } else {
+                // 해당 섹션이 존재하는 경우, 행 추가
+                let rowIndex = sections[sectionIndex!].receipts.count
+                rowsToInsert.append(IndexPath(row: rowIndex, section: sectionIndex!))
             }
             
-            // 해당 섹션이 존재하는 경우, 행 추가
-            let rowIndex = sections[sectionIndex!].receipts.count
-            rowsToInsert.append(IndexPath(row: rowIndex, section: sectionIndex!))
+            
             
             // 새 영수증의 ViewModel을 생성하고 섹션에 추가
             let viewModel = ReceiptTableViewCellVM(receiptID: receiptID, 
@@ -183,6 +186,10 @@ extension RoomDataManager {
                 eventType: .sectionInsert,
                 sectionsToInsert.map { IndexPath(row: 0, section: $0) }
             )
+            print("____________________")
+            print(#function)
+            dump(sectionsToInsert)
+            print("____________________")
         }
         // 행이 추가된 경우, sectionReload 이벤트 트리거
         if !rowsToInsert.isEmpty {
@@ -190,6 +197,10 @@ extension RoomDataManager {
                 eventType: .added,
                 rowsToInsert
             )
+            print("____________________")
+            print(#function)
+            dump(rowsToInsert)
+            print("____________________")
         }
     }
     

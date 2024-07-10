@@ -91,7 +91,7 @@ extension MainVM {
         self.pendingIndexPaths.dataChanged(userInfo)
     }
     // 뷰모델에 저장된 변경 사항 반환
-    func getPendingUpdates() -> [String: [IndexPath]] {
+    func getPendingUpdates() -> [(key: String, indexPaths: [IndexPath])] {
         return self.pendingIndexPaths.getPendingIndexPaths()
     }
     // 모든 대기 중인 변경 사항 초기화

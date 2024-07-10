@@ -21,7 +21,7 @@ extension ReceiptAPI {
     ) {
         let path = RECEIPT_REF
             .child(versionID)
-            .queryLimited(toLast: 1)
+            .queryLimited(toLast: 7)
         
         
         path.observeSingleEvent(of: .value) { snapshot in

@@ -150,8 +150,8 @@ extension UsersTableView {
         }
     }
 }
-    
-    
+
+
 
 
 
@@ -270,20 +270,13 @@ extension UsersTableView {
         guard !pendingIndexPaths.isEmpty else { return }
         // 메인스레드에서 진행
         DispatchQueue.main.async {
-            if pendingIndexPaths.count == 1 {
-                // 1개라면, 따로 진행
-                self.updateIndexPath(pendingIndexPaths: pendingIndexPaths)
-                
-            } else {
-                // 여러개라면, 전체 리로드
-                self.usersTableView.reloadData()
-            }
+            self.updateIndexPath(pendingIndexPaths: pendingIndexPaths)
         }
         // 변경된 IndexPath배열을 리셋
         self.viewModel.resetPendingUserDataIndexPaths()
     }
     
-    private func updateIndexPath(pendingIndexPaths: [String : [IndexPath]]) {
+    private func updateIndexPath(pendingIndexPaths: [(key: String, indexPaths: [IndexPath])]) {
         pendingIndexPaths.forEach { (key: String, indexPaths: [IndexPath]) in
             switch key {
             case DataChangeType.updated.notificationName:
@@ -297,7 +290,7 @@ extension UsersTableView {
                 
             default:
                 print("DEBUG: Unexpected key \(key)")
-                self.tableViewTotalReload()
+                self.usersTableViewTotalReload()
             }
             // 유저의 수가 바뀌었는지 확인, 바뀌었다면, TopView를 업데이트
             self.numberOfUsersChanges(key: key)
@@ -309,7 +302,7 @@ extension UsersTableView {
             indexPaths: indexPaths,
             totalRows: self.currentTableViewRowCount
         ) else {
-            self.tableViewTotalReload()
+            self.usersTableViewTotalReload()
             return
         }
         self.usersTableView.reloadRows(at: indexPaths, with: .automatic)
@@ -320,7 +313,7 @@ extension UsersTableView {
             currentRowCount: self.currentTableViewRowCount,
             changedUsersCount: indexPaths.count
         ) else {
-            self.tableViewTotalReload()
+            self.usersTableViewTotalReload()
             return
         }
         self.usersTableView.insertRows(at: indexPaths, with: .automatic)
@@ -331,7 +324,7 @@ extension UsersTableView {
             currentRowCount: self.currentTableViewRowCount,
             changedUsersCount: -indexPaths.count
         ) else {
-            self.tableViewTotalReload()
+            self.usersTableViewTotalReload()
             return
         }
         self.usersTableView.deleteRows(at: indexPaths, with: .automatic)
@@ -348,8 +341,8 @@ extension UsersTableView {
     }
     
     // 셀 리로드
-    func tableViewTotalReload() {
-        print("DEBUG: ----- \(#function)")
+    func usersTableViewTotalReload() {
+//        print("DEBUG: ----- \(#function)")
         self.usersTableView.reloadData()
     }
 }

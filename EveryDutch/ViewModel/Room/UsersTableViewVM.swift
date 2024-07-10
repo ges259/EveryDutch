@@ -61,8 +61,8 @@ class UsersTableViewVM: UsersTableViewVMProtocol {
         }
     }
 }
-    
-    
+
+
 
 // MARK: - 테이블뷰
 extension UsersTableViewVM {
@@ -105,17 +105,19 @@ extension UsersTableViewVM {
     }
 }
 
+
+
 // MARK: - 인덱스패스
 extension UsersTableViewVM {
     // 유저 데이터 인덱스패스
     func userDataChanged(_ userInfo: [String: Any]) {
         self.userDataManager.dataChanged(userInfo)
     }
-
-    func getPendingUserDataIndexPaths() -> [String: [IndexPath]] {
+    
+    func getPendingUserDataIndexPaths() -> [(key: String, indexPaths: [IndexPath])] {
         return self.userDataManager.getPendingIndexPaths()
     }
-
+    
     func resetPendingUserDataIndexPaths() {
         self.userDataManager.resetIndexPaths()
     }

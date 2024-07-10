@@ -41,6 +41,6 @@ protocol UsersTableViewVMProtocol {
     
     // User data handling
     func userDataChanged(_ userInfo: [String: Any])
-    func getPendingUserDataIndexPaths() -> [String: [IndexPath]]
+    func getPendingUserDataIndexPaths() -> [(key: String, indexPaths: [IndexPath])]
     func resetPendingUserDataIndexPaths()
 }

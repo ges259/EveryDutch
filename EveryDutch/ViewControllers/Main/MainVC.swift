@@ -138,7 +138,7 @@ extension MainVC {
             self.view.addSubview(view)
         }
         
-
+        
         // 콜렉션뷰
         self.collectionView.snp.makeConstraints { make in
             make.top.equalTo(self.view.safeAreaLayoutGuide.snp.top).offset(2)
@@ -217,7 +217,7 @@ extension MainVC {
 extension MainVC {
     @objc private func handleRoomDataChanged(notification: Notification) {
         guard let userInfo = notification.userInfo as? [String: Any],
-              !userInfo.isEmpty 
+              !userInfo.isEmpty
         else { return }
         
         // userInfo를 viewModel에 전달
@@ -228,23 +228,17 @@ extension MainVC {
     // 모든 대기 중인 변경 사항을 적용
     private func processPendingUpdates() {
         // 뷰모델에 저장된 인덱스 패스 가져오기
-        let pendingIndexPaths = self.viewModel.getPendingUpdates()
+        let pendingIndexPaths: [(key: String, indexPaths: [IndexPath])] = self.viewModel.getPendingUpdates()
         // 비어있다면, 아무 행동도 하지 않음
         guard pendingIndexPaths.count != 0 else { return }
         DispatchQueue.main.async {
-            if pendingIndexPaths.count == 1 {
-                // 콜레션뷰 리로드
-                self.updateIndexPath(pendingIndexPaths: pendingIndexPaths)
-                
-            } else {
-                self.collectionView.reloadData()
-            }
+            self.updateIndexPath(pendingIndexPaths: pendingIndexPaths)
         }
         // 변경 사항 초기화
         self.viewModel.resetPendingUpdates()
     }
     
-    private func updateIndexPath(pendingIndexPaths: [String : [IndexPath]]) {
+    private func updateIndexPath(pendingIndexPaths: [(key: String, indexPaths: [IndexPath])]) {
         pendingIndexPaths.forEach { (key: String, indexPaths: [IndexPath]) in
             switch key {
             case DataChangeType.updated.notificationName:
