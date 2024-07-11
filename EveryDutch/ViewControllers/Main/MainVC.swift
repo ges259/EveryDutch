@@ -101,14 +101,30 @@ final class MainVC: UIViewController {
         super.viewDidAppear(animated)
         self.isViewVisible = true
         self.processPendingUpdates()
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(self.receiptDataChanged(notification:)),
+            name: Notification.Name.receiptDataChanged,
+            object: nil
+        )
     }
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         self.isViewVisible = false
+        NotificationCenter.default.removeObserver(
+            self,
+            name: Notification.Name.receiptDataChanged,
+            object: nil
+        )
     }
     deinit {
         NotificationCenter.default.removeObserver(self)
         print("\(#function)-----\(self)")
+    }
+    @objc private func receiptDataChanged(notification: Notification) {
+        DispatchQueue.main.async {
+            self.coordinator.settlementMoneyRoomScreen()
+        }
     }
 }
 

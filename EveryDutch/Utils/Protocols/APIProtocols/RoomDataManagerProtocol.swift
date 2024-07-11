@@ -16,9 +16,7 @@ protocol RoomDataManagerProtocol {
     var getNumOfRooms: Int { get }
     func getRoomsViewModel(index: Int) -> MainCollectionViewCellVMProtocol?
     
-    func saveCurrentRooms(
-        index: Int,
-        completion: @escaping (Result<Void, ErrorEnum>) -> ())
+    func saveCurrentRooms(index: Int)
     var getCurrentRoomsID: String? { get }
     var getCurrentVersion: String? { get }
     var getCurrentRoomName: String? { get }

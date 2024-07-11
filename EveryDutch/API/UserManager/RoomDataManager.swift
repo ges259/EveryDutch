@@ -261,20 +261,16 @@ final class RoomDataManager: RoomDataManagerProtocol {
     }
     
     /// 현재 방 저장
-    func saveCurrentRooms(
-        index: Int,
-        completion: @escaping (Result<Void, ErrorEnum>) -> ()
-    ) {
+    func saveCurrentRooms(index: Int) {
         // 배열 범위 검사
         guard index < self.roomsCellViewModels.count else {
-            completion(.failure(.readError))
             return
         }
         // 인덱스로부터 뷰모델 가져오기
         let viewModel = self.roomsCellViewModels[index]
         // currentRoom 설정
         self.currentRoom = (roomID: viewModel.getRoomID, room: viewModel.getRoom)
-        self.startLoadRoomData(completion: completion)
+        self.startLoadRoomData()
     }
     
     /// 현재 방의 이름

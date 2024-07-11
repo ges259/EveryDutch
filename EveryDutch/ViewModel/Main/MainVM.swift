@@ -47,21 +47,24 @@ extension MainVM {
     }
     /// 아이템이 눌렸을 때, roomDataManager에 선택된(현재) 방 저장
     func itemTapped(index: Int) {
-        self.roomDataManager.saveCurrentRooms(index: index) { [weak self] result in
-            DispatchQueue.main.async {
-                guard let self = self else { return }
-                switch result {
-                    
-                case .success():
-                    // 클로저 호출
-                    self.moveToSettleMoneyRoomClosure?()
-                    print("\(#function) ----- success")
-                case .failure(_):
-                    print("\(#function) ----- error")
-                    break
-                }
-            }
-        }
+        
+        self.roomDataManager.saveCurrentRooms(index: index)
+        
+//        self.roomDataManager.saveCurrentRooms(index: index) { [weak self] result in
+//            DispatchQueue.main.async {
+//                guard let self = self else { return }
+//                switch result {
+//                    
+//                case .success():
+//                    // 클로저 호출
+//                    self.moveToSettleMoneyRoomClosure?()
+//                    print("\(#function) ----- success")
+//                case .failure(_):
+//                    print("\(#function) ----- error")
+//                    break
+//                }
+//            }
+//        }
     }
     /// 테이블뷰의 셀을 insert/delete 할 때, [현재 셀]의 개수와 [기존 셀 + 추가하려는 셀]의 개수를 비교
     func validateRowCountChange(

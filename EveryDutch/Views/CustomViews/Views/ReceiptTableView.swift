@@ -323,195 +323,130 @@ extension ReceiptTableView {
         self.viewModel.resetPendingReceiptIndexPaths()
     }
 
+
+    // 메인 업데이트 메소드
     private func updateIndexPath(receiptSections: [(key: String, indexPaths: [IndexPath])]) {
-        print("____________________")
-        print(#function)
-        dump(receiptSections)
-        print("____________________")
-        // 행 추가, 업데이트 및 삭제를 나중에 처리
+        self.beginUpdates()
         receiptSections.forEach { (key: String, indexPaths: [IndexPath]) in
             switch key {
             case DataChangeType.added.notificationName:
-                print("added")
-                self.addTableViewRows(indexPaths)
+                self.handleAdditions(indexPaths)
+            case DataChangeType.sectionInsert.notificationName:
+                self.insertTableViewSections(indexPaths)
             case DataChangeType.updated.notificationName:
-                print("updated")
                 self.updateTableViewRow(indexPaths)
             case DataChangeType.removed.notificationName:
-                print("removed")
                 self.removeTableViewCells(indexPaths)
-            case DataChangeType.sectionInsert.notificationName:
-                print("sectionInsert")
-                self.insertTableViewSections(indexPaths)
-            case DataChangeType.sectionRemoved.notificationName:
-                print("sectionRemoved")
-                self.removeTableViewSections(indexPaths)
             default:
                 break
             }
         }
-    }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    // 섹션 추가
-    private func insertTableViewSections(_ indexPaths: [IndexPath]) {
-        print("\(#function) ----- 1")
-        // 추가하려는 섹션을 가져옴
-        let sections: [Int] = self.viewModel.indexPathsToArraySet(indexPaths)
-        // viewModel에서 유효성 검사 (섹션의 수를 비교)
-        guard self.viewModel.validateSectionCountChange(
-            currentSectionCount: self.numberOfSections,
-            changedSectionsCount: sections.count
-        ) else {
-            print("\(#function) ----- -1")
-            return
-        }
-        print("\(#function) ----- 2")
-        print("_________ 현재 섹션의 수 _________")
-        print(self.numberOfSections)
-        print("_________업데이트하려는 indexPaths_________")
-        dump(indexPaths)
-        let indexSet = self.viewModel.createIndexSet(from: indexPaths)
-        print("_________업데이트하려는 indexSet_________")
-        dump(indexSet)
-        print("____________________________________")
-        self.insertSections(indexSet, with: .automatic)
-        
-//        self.addTableViewRows(indexPaths)
+        self.endUpdates()
     }
 
-    // 섹션 삭제
-    private func removeTableViewSections(_ indexPaths: [IndexPath]) {
+    // 행 및 섹션 추가 처리
+    private func handleAdditions(_ indexPaths: [IndexPath]) {
+        print("*******************************")
         print("\(#function) ----- 1")
-        // 추가하려는 섹션을 가져옴
-        let sections: [Int] = self.viewModel.indexPathsToArraySet(indexPaths)
-        // viewModel에서 유효성 검사 (섹션의 수를 비교)
-        guard self.viewModel.validateSectionCountChange(
-            currentSectionCount: self.numberOfSections,
-            changedSectionsCount: sections.count
-        ) else {
-            print("\(#function) ----- -1")
-            return
-        }
-        print("\(#function) ----- 2")
-        let indexSet = self.viewModel.createIndexSet(from: indexPaths)
-        self.deleteSections(indexSet, with: .automatic)
-    }
-    
-    private func sectionsTuple(
-        _ indexPaths: [IndexPath]
-    ) -> [(sectionIndex: Int,
-           currentRowCount: Int,
-           changedUsersCount: Int)] {
-        print("\(#function) ----- 1")
-        var sectionsTuple: [(sectionIndex: Int,
-                             currentRowCount: Int,
-                             changedUsersCount: Int)] = []
-
-        // 추가하려는 섹션을 가져옴(배열인 상태)
-        let sections = indexPaths.map { $0.section }
-        let sectionsSet = Set(sections)
-
-        // 해당 섹션의 행이 몇 개인지 가져와서, 튜플로 만듦
-        for section in sectionsSet {
-            // 섹션이 유효한지 확인
-            guard section < self.numberOfSections else {
-                print("\(#function) ----- -1")
-                // 유효하지 않은 섹션인 경우 continue
-                continue
-            }
-            print("\(#function) ----- 2")
-            // 현재 해당 섹션의 행의 개수를 가져옴
-            let numOfRows = self.numberOfRows(inSection: section)
-            // 추가하려는 IndexPath배열에서 해당 섹션에 추가하려는 행의 개수를 가져옴
-            let numOfAddedRows = indexPaths.filter { $0.section == section }.count
-
-            // sectionsTuple에 추가
-            sectionsTuple.append((sectionIndex: section,
-                                  currentRowCount: numOfRows,
-                                  changedUsersCount: numOfAddedRows))
-        }
-        dump(sectionsTuple)
-        return sectionsTuple
-    }
-    
-    // 행 추가
-    private func addTableViewRows(_ indexPaths: [IndexPath]) {
-        print("\(#function) ----- 1")
-        // sectionsTuple을 가져옴
-        let sectionsTuple = self.sectionsTuple(indexPaths)
-        
-        // viewModel에서 유효성 검사 (각 섹션의 행이 맞는지 확인)
-        guard self.viewModel.validateRowCountChange(sectionTuple: sectionsTuple) else {
-            print("\(#function) ----- -1")
-            self.receiptReloadTableView()
-            return
-        }
-        print("\(#function) ----- 2")
+        print("업데이트하려는 indexPaths ----- \(indexPaths)")
+        print("*******************************")
         self.insertRows(at: indexPaths, with: .automatic)
+    }
+    
+    private func insertTableViewSections(_ indexPaths: [IndexPath]) {
+        let indexSet = self.viewModel.createIndexSet(from: indexPaths)
+        self.insertSections(indexSet, with: .automatic)
+    }
+    
+    private func printUpdateDebugInfo() {
+        print("섹션의 개수 - 데이터소스: \(self.viewModel.numOfSections)")
+        print("현재 섹션의 총 개수 - 테이블: \(self.numberOfSections)")
+    }
+    // 행 업데이트
+    private func updateTableViewRow(_ indexPaths: [IndexPath]) {
+        self.reloadRows(at: indexPaths, with: .automatic)
     }
 
     // 행 삭제
     private func removeTableViewCells(_ indexPaths: [IndexPath]) {
-        print("\(#function) ----- 1")
-        // sectionsTuple을 가져옴
-        let sectionsTuple = self.sectionsTuple(indexPaths)
-        
-        // viewModel에서 유효성 검사 (각 섹션의 행이 맞는지 확인)
-        guard self.viewModel.validateRowCountChange(sectionTuple: sectionsTuple) else {
-            print("\(#function) ----- -1")
-            return
-        }
-        print("\(#function) ----- 2")
         self.deleteRows(at: indexPaths, with: .automatic)
     }
-    
-    // 행 리로드(업데이트)
-    private func updateTableViewRow(_ indexPaths: [IndexPath]) {
-        print("\(#function) ----- 1")
-        // viewModel에서 유효성 검사 (각 섹션의 행이 맞는지 확인)
-        guard self.viewModel.validateRowExistenceForUpdate(indexPaths: indexPaths) else {
-            print("\(#function) ----- -1")
-            self.updateTableSections(indexPaths)
-            return
-        }
-        print("\(#function) ----- 2")
-        self.reloadRows(at: indexPaths, with: .automatic)
-    }
-    // 섹션 리로드
-    private func updateTableSections(_ indexPaths: [IndexPath]) {
-        print("\(#function) ----- 1")
-        // 추가하려는 섹션을 가져옴
-        guard self.viewModel.validateSectionsExistenceForUpdate(indexPaths: indexPaths) else {
-            print("\(#function) ----- -1")
-            return
-        }
-        print("\(#function) ----- 2")
-        // 추가하려는 IndeSet을 가져옴
+
+    // 섹션 삭제
+    private func removeTableViewSections(_ indexPaths: [IndexPath]) {
         let indexSet = self.viewModel.createIndexSet(from: indexPaths)
-        // 해당 섹션의 행이 몇 개인지 가져와서, 튜플로 만듦
+        self.deleteSections(indexSet, with: .automatic)
+    }
+
+    // 섹션 업데이트
+    private func updateTableSections(_ indexPaths: [IndexPath]) {
+        let indexSet = self.viewModel.createIndexSet(from: indexPaths)
         self.reloadSections(indexSet, with: .automatic)
     }
-    
-    
-    
 
-    
-    
-    
+    // 테이블 전체 리로드
     private func receiptReloadTableView() {
         print("DEBUG: \(self)----- \(#function)")
         self.reloadData()
     }
 }
+
+
+// 행 추가
+//    private func addTableViewRows(_ indexPaths: [IndexPath]) {
+//        print("\(#function) ----- 1")
+//
+//        print("_____________________________")
+//        print("섹션의 개수 ----- \(self.numberOfSections)")
+//        if self.numberOfSections > 4 {
+//            print("5번 섹션의 개수 ----- \(self.numberOfRows(inSection: 5))")
+//        }
+//
+//        print("업데이트하려는 indexPaths ----- \(indexPaths)")
+//        print("_____________________________")
+//
+//        self.insertRows(at: indexPaths, with: .automatic)
+//        print("\(#function) ----- 2")
+//    }
+
+/*
+ 
+ private func sectionsTuple(
+     _ indexPaths: [IndexPath]
+ ) -> [(sectionIndex: Int,
+        currentRowCount: Int,
+        changedUsersCount: Int)] {
+     
+     print("\(#function) ----- 1")
+     var sectionsTuple: [(sectionIndex: Int,
+                          currentRowCount: Int,
+                          changedUsersCount: Int)] = []
+
+     // 추가하려는 섹션을 가져옴(배열인 상태)
+     let sections = indexPaths.map { $0.section }
+     let sectionsSet = Set(sections)
+
+     // 해당 섹션의 행이 몇 개인지 가져와서, 튜플로 만듦
+     for section in sectionsSet {
+         // 섹션이 유효한지 확인
+         guard section < self.numberOfSections else {
+             print("\(#function) ----- -1")
+             // 유효하지 않은 섹션인 경우 continue
+             continue
+         }
+         print("\(#function) ----- 2")
+         // 현재 해당 섹션의 행의 개수를 가져옴
+         let numOfRows = self.numberOfRows(inSection: section)
+         // 추가하려는 IndexPath배열에서 해당 섹션에 추가하려는 행의 개수를 가져옴
+         let numOfAddedRows = indexPaths.filter { $0.section == section }.count
+
+         // sectionsTuple에 추가
+         sectionsTuple.append((sectionIndex: section,
+                               currentRowCount: numOfRows,
+                               changedUsersCount: numOfAddedRows))
+     }
+     dump(sectionsTuple)
+     return sectionsTuple
+ }
+ 
+ */
