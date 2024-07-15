@@ -56,6 +56,7 @@ protocol NotificationUpdateProtocol {
     // 노티피케이션
     var isNotificationError: ErrorEnum? { get }
     func receiptDataChanged(_ userInfo: [String: Any])
+    func searchDataChanged(_ userInfo: [String: Any]) 
     func getPendingReceiptIndexPaths() -> [(key: String, indexPaths: [IndexPath])]
     func resetPendingReceiptIndexPaths()
 }

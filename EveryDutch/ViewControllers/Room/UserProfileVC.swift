@@ -30,7 +30,8 @@ final class UserProfileVC: UIViewController {
     private lazy var receiptTableView: ReceiptTableView = {
         let receiptVM = ReceiptTableViewVM(
             roomDataManager: RoomDataManager.shared,
-            isSearchMode: true)
+            isSearchMode: true
+        )
         let view = ReceiptTableView(viewModel: receiptVM)
         view.receiptDelegate = self
         return view
@@ -129,15 +130,17 @@ final class UserProfileVC: UIViewController {
     }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(false)
+        print("\(#function) ----- 1")
         self.openView()
+        self.postNotification(false)
     }
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        self.receiptTableView.isViewVisible = true
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        print("\(#function) ----- 1")
+        self.postNotification(true)
     }
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        self.receiptTableView.isViewVisible = false
+    private func postNotification(_ boolean: Bool) {
+        NotificationCenter.default.post(name: .presentViewChanged, object: nil, userInfo: ["someKey": boolean])
     }
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
@@ -161,6 +164,9 @@ final class UserProfileVC: UIViewController {
 extension UserProfileVC {
     /// UI 설정
     private func configureUI() {
+        self.receiptTableView.isViewVisible = true
+        self.view.backgroundColor = .black.withAlphaComponent(0.3)
+        
         // 자기 자신인지 확인
         if self.viewModel.currentUserIsEuqualToMyUid {
             // 자기 자신이 아니라면, 신고 버튼 추가

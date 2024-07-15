@@ -26,7 +26,8 @@ final class SettleMoneyRoomVC: UIViewController {
     private lazy var receiptTableView: ReceiptTableView = {
         let receiptVM = ReceiptTableViewVM(
             roomDataManager: RoomDataManager.shared,
-            isSearchMode: false)
+            isSearchMode: false
+        )
         let view = ReceiptTableView(viewModel: receiptVM)
         view.receiptDelegate = self
         return view
@@ -68,15 +69,13 @@ final class SettleMoneyRoomVC: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        self.receiptTableView.isViewVisible = true
-        self.topView.setupIsViewVisible(true)
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.setIsViewVisible(true)
     }
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        self.receiptTableView.isViewVisible = false
-        self.topView.setupIsViewVisible(false)
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        self.setIsViewVisible(false)
     }
     deinit { NotificationCenter.default.removeObserver(self) }
 }
@@ -175,6 +174,31 @@ extension SettleMoneyRoomVC {
             target: self,
             action: #selector(self.scrollVertical))
         self.navigationController?.navigationBar.addGestureRecognizer(navPanGesture)
+        
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(self.presentViewDismiss(notification:)),
+            name: .presentViewChanged,
+            object: nil)
+    }
+    
+    @objc private func presentViewDismiss(notification: Notification) {
+        print("\(#function) ----- 1")
+        let isVisible: Bool
+        
+        if notification.name == .presentViewChanged,
+           let userInfo = notification.userInfo,
+           let value = userInfo["someKey"] as? Bool 
+        {
+            print("\(#function) ----- 2")
+            isVisible = value
+            
+        } else {
+            print("\(#function) ----- 3")
+            isVisible = isViewLoaded && (view.window != nil)
+        }
+        print("\(#function) ----- 4")
+        self.setIsViewVisible(isVisible)
     }
 }
     
@@ -202,6 +226,12 @@ extension SettleMoneyRoomVC {
     /// 뒤로가기 버튼
     @objc private func backBtnTapped() {
         self.coordinator.didFinish()
+    }
+    
+    private func setIsViewVisible(_ boolean: Bool) {
+        print("\(#function) ----- 2")
+        self.receiptTableView.isViewVisible = boolean
+        self.topView.setupIsViewVisible(boolean)
     }
 }
 

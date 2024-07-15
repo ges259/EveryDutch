@@ -11,7 +11,7 @@ final class ReceiptTableViewVM: ReceiptTableViewVMProtocol {
     
     // MARK: - 모델
     private var _receiptDataManager: IndexPathDataManager<Receipt> = IndexPathDataManager()
-    private var _receiptSearchModeDataManager: IndexPathDataManager<Receipt> = IndexPathDataManager()
+    private var _receiptSearchModeDataManager: IndexPathDataManager<User> = IndexPathDataManager()
     private let roomDataManager: RoomDataManagerProtocol
     
     
@@ -24,7 +24,9 @@ final class ReceiptTableViewVM: ReceiptTableViewVMProtocol {
     
     // MARK: - 라이프사이클
     init (roomDataManager: RoomDataManagerProtocol,
-          isSearchMode: Bool) {
+          isSearchMode: Bool
+    ) {
+        print("searchMode - init : \(isSearchMode)")
         self.roomDataManager = roomDataManager
         self._isSearchMode = isSearchMode
     }
@@ -38,6 +40,7 @@ final class ReceiptTableViewVM: ReceiptTableViewVMProtocol {
 extension ReceiptTableViewVM {
     // MARK: - 플래그 변경
     func hasNoMoreDataSetTrue() {
+        print(#function)
         self._hasNoMoreData = true
     }
     
@@ -66,6 +69,7 @@ extension ReceiptTableViewVM {
 // MARK: - 인덱스패스
 extension ReceiptTableViewVM {
     var isNotificationError: ErrorEnum? {
+        print("\(#function) ----- \(self._isSearchMode) ----- \(self._receiptSearchModeDataManager.error)")
         return self._isSearchMode
         ? self._receiptSearchModeDataManager.error
         : self._receiptDataManager.error
@@ -73,11 +77,21 @@ extension ReceiptTableViewVM {
     
     // 영수증 데이터 인덱스패스
     func receiptDataChanged(_ userInfo: [String: Any]) {
-        return self._isSearchMode
-        ? self._receiptSearchModeDataManager.dataChanged(userInfo)
-        : self._receiptDataManager.dataChanged(userInfo)
+        print("___________________________")
+        print(#function)
+        print("isSeachMode: \(self._isSearchMode)")
+        dump(userInfo)
+        print("___________________________")
+        self._receiptDataManager.dataChanged(userInfo)
     }
-    
+    func searchDataChanged(_ userInfo: [String: Any]) {
+        print("___________________________")
+        print(#function)
+        print("isSeachMode: \(self._isSearchMode)")
+        dump(userInfo)
+        print("___________________________")
+        self._receiptSearchModeDataManager.dataChanged(userInfo)
+    }
     
     
     func getPendingReceiptIndexPaths() -> [(key: String, indexPaths: [IndexPath])] {
@@ -250,6 +264,16 @@ extension ReceiptTableViewVM {
         }
         return nil
     }
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
     /// 테이블뷰의 섹션을 insert/delete 할 때, [현재 섹션]의 개수와 [기존 섹션 + 추가하려는 섹션]의 개수를 비교
     func validateSectionCountChange(

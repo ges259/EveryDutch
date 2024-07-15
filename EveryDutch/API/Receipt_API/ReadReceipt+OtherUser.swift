@@ -134,8 +134,12 @@ extension ReceiptAPI {
         group.notify(queue: .main) {
             if receiptsTupleArray.isEmpty {
                 completion(.failure(.noMoreData))
+                
             } else {
-                completion(.success(receiptsTupleArray.reversed()))
+                // 정렬
+                receiptsTupleArray.sort { $0.receipt.date < $1.receipt.date }
+                // 컴플리션
+                completion(.success(receiptsTupleArray))
             }
         }
     }

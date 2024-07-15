@@ -71,9 +71,14 @@ final class RoomDataManager: RoomDataManagerProtocol {
     // MARK: - 디바운서
     let userDebouncer = Debouncer(.userData)
     let roomDebouncer = Debouncer(.roomData)
-    let receiptDebouncer = Debouncer(.receiptData)
+    var receiptDebouncer = Debouncer(.receiptData)
+    var receiptSearchDebouncer = Debouncer(.searchData)
     
     
+    var receiptTupleArray: [ReceiptTuple] = []
+    let receiptQueue = DispatchQueue(label: "receipt-added-queue",
+                                     qos: .userInitiated)
+    var receiptWorkItem: DispatchWorkItem?
     
     
     
@@ -380,52 +385,66 @@ final class RoomDataManager: RoomDataManagerProtocol {
         return returndReceipt
     }
     
+    
+    
+    
+    
+    
+    
+    
+    
     /// 섹션의 개수
     var getNumOfUserReceiptsSection: Int {
-        return self.receiptSections.count
+        return self.receiptSearchModeSections.count
     }
     
     /// 영수증 개수
     func getNumOfUserReceipts(section: Int) -> Int? {
-        guard section < self.receiptSections.count else {
+        guard section < self.receiptSearchModeSections.count else {
             print("Section out of range: \(section)")
             return nil
         }
-        return self.receiptSections[section].receipts.count
+        print(#function)
+        print(self.receiptSearchModeSections[section].receipts.count)
+        return self.receiptSearchModeSections[section].receipts.count
     }
     
     /// 섹션 헤더의 타이틀(날짜)를 리턴
     func getUserReceiptSectionDate(section: Int) -> String? {
-        guard section < self.receiptSections.count else {
+        guard section < self.receiptSearchModeSections.count else {
             print("Section out of range: \(section)")
             return nil
         }
-        return self.receiptSections[section].date
+        print(#function)
+        print(self.receiptSearchModeSections[section].date)
+        return self.receiptSearchModeSections[section].date
     }
     
     /// 영수증 셀(ReceiptTableViewCellVMProtocol) 리턴
     func getUserReceiptViewModel(indexPath: IndexPath) -> ReceiptTableViewCellVMProtocol? {
-        guard indexPath.section < self.receiptSections.count,
-              indexPath.row < self.receiptSections[indexPath.section].receipts.count else {
+        guard indexPath.section < self.receiptSearchModeSections.count,
+              indexPath.row < self.receiptSearchModeSections[indexPath.section].receipts.count else {
             print("Index out of range: section \(indexPath.section), row \(indexPath.row)")
             return nil
         }
         
-        var receiptVM = self.receiptSections[indexPath.section].receipts[indexPath.row]
+        var receiptVM = self.receiptSearchModeSections[indexPath.section].receipts[indexPath.row]
         
         let updatedReceipt = self.updateReceiptUserName(receipt: receiptVM.getReceipt)
         receiptVM.setReceipt(updatedReceipt)
-        
+        print(#function)
         return receiptVM
     }
     
     /// index를 받아 알맞는 영수증을 리턴
     func getUserReceipt(at indexPath: IndexPath) -> Receipt? {
-        guard indexPath.section < self.receiptSections.count,
-              indexPath.row < self.receiptSections[indexPath.section].receipts.count else {
+        guard indexPath.section < self.receiptSearchModeSections.count,
+              indexPath.row < self.receiptSearchModeSections[indexPath.section].receipts.count else {
             print("Index out of range: section \(indexPath.section), row \(indexPath.row)")
             return nil
         }
-        return self.receiptSections[indexPath.section].receipts[indexPath.row].getReceipt
+        print(#function)
+        print(self.receiptSearchModeSections[indexPath.section].receipts[indexPath.row].getReceipt)
+        return self.receiptSearchModeSections[indexPath.section].receipts[indexPath.row].getReceipt
     }
 }

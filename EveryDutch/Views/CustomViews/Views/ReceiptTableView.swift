@@ -78,7 +78,14 @@ extension ReceiptTableView {
             self,
             selector: #selector(self.handleDataChanged(notification:)),
             name: Notification.Name.receiptDataChanged,
-            object: nil)
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(self.handleDataChanged(notification:)),
+            name: Notification.Name.searchDataChanged,
+            object: nil
+        )
     }
 }
 
@@ -113,6 +120,7 @@ extension ReceiptTableView: UITableViewDelegate {
         guard !self.viewModel.hasNoMoreData,
               indexPath.section == self.viewModel.numOfSections - 1
         else { return }
+        print("delegate를 통한 fetch")
         // 마지막 셀
         self.receiptDelegate?.willDisplayLastCell()
     }
@@ -299,6 +307,10 @@ extension ReceiptTableView {
         switch rawValue {
         case Notification.Name.receiptDataChanged.rawValue:
             self.viewModel.receiptDataChanged(dataInfo)
+            
+        case Notification.Name.searchDataChanged.rawValue:
+            self.viewModel.searchDataChanged(dataInfo)
+            
         default:
             break
         }
@@ -309,12 +321,15 @@ extension ReceiptTableView {
         guard self.isViewVisible else { return }
         
         if let _ = self.viewModel.isNotificationError {
+            print("\(#function) ----- 데이터 더이상 없음")
             self.viewModel.hasNoMoreDataSetTrue()
         }
         
         let receiptSections: [(key: String, indexPaths: [IndexPath])] = self.viewModel.getPendingReceiptIndexPaths()
         
-        guard !receiptSections.isEmpty else { return }
+        guard !receiptSections.isEmpty else {
+            return
+        }
         
         DispatchQueue.main.async {
             self.updateIndexPath(receiptSections: receiptSections)
@@ -327,7 +342,14 @@ extension ReceiptTableView {
     // 메인 업데이트 메소드
     private func updateIndexPath(receiptSections: [(key: String, indexPaths: [IndexPath])]) {
         self.beginUpdates()
-        receiptSections.forEach { (key: String, indexPaths: [IndexPath]) in
+        receiptSections.forEach { [weak self](key: String, indexPaths: [IndexPath]) in
+            guard let self = self else { return }
+            print("*******************************")
+            print("\(#function) ----- 1")
+            print("업데이트하려는 key ----- \(key)")
+            print("업데이트하려는 indexPaths ----- \(indexPaths)")
+            print("*******************************")
+            self.printUpdateDebugInfo()
             switch key {
             case DataChangeType.added.notificationName:
                 self.handleAdditions(indexPaths)
@@ -346,10 +368,7 @@ extension ReceiptTableView {
 
     // 행 및 섹션 추가 처리
     private func handleAdditions(_ indexPaths: [IndexPath]) {
-        print("*******************************")
-        print("\(#function) ----- 1")
-        print("업데이트하려는 indexPaths ----- \(indexPaths)")
-        print("*******************************")
+ 
         self.insertRows(at: indexPaths, with: .automatic)
     }
     
@@ -359,8 +378,14 @@ extension ReceiptTableView {
     }
     
     private func printUpdateDebugInfo() {
-        print("섹션의 개수 - 데이터소스: \(self.viewModel.numOfSections)")
-        print("현재 섹션의 총 개수 - 테이블: \(self.numberOfSections)")
+        print("_____________________________")
+        print("\(#function) ----- 1")
+        
+        print("searchMode: \(self.viewModel.isSearchMode)")
+        print("데이터소스   : 섹션의 개수: \(self.viewModel.numOfSections)")
+        print("테이블      : 현재 섹션의 총 개수: \(self.numberOfSections)")
+        print("\(#function) ----- 2")
+        print("_____________________________")
     }
     // 행 업데이트
     private func updateTableViewRow(_ indexPaths: [IndexPath]) {

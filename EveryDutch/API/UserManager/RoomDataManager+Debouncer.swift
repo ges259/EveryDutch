@@ -281,7 +281,6 @@ final class IndexPathDataManager<T> {
     
     // MARK: - 데이터 리셋
     func resetIndexPaths() {
-        self._error = nil
         self.indexPathTuple.removeAll()
     }
 }

@@ -13,7 +13,7 @@ extension RoomDataManager {
         guard let versionID = self.getCurrentVersion,
               let userID = self.getSelectedUserID 
         else {
-            self.receiptDebouncer.triggerErrorDebounce(.readError)
+            self.receiptSearchDebouncer.triggerErrorDebounce(.readError)
             return
         }
         
@@ -24,17 +24,18 @@ extension RoomDataManager {
             switch result {
             case .success(let load):
                 // 영수증 데이터를 성공적으로 가져옴
-                print("영수증 가져오기 성공")
+                print("유저 영수증 가져오기 성공")
                 self.handleAddedReceiptEvent(
                     load,
-                    sections: &self.receiptSearchModeSections
+                    sections: &self.receiptSearchModeSections, 
+                    debouncer: &self.receiptSearchDebouncer
                 )
                 
                 completion(.success(()))
                 
                 
             case .failure(_):
-                print("영수증 가져오기 실패")
+                print("유저 영수증 가져오기 실패")
                 // 영수증 데이터를 가져오지 못한 경우 오류를 반환
                 completion(.failure(.hasNoAPIData))
                 // 여기서는 Error를 debounce를 통해 trigger하지 않음.
@@ -48,7 +49,7 @@ extension RoomDataManager {
         guard let versionID = self.getCurrentVersion,
               let userID = self.getSelectedUserID 
         else {
-            self.receiptDebouncer.triggerErrorDebounce(.readError)
+            self.receiptSearchDebouncer.triggerErrorDebounce(.readError)
             return
         }
         self.receiptAPI.loadMoreUserReceipts(userID: userID,
@@ -58,16 +59,17 @@ extension RoomDataManager {
             switch result {
             case .success(let load):
                 // 영수증 데이터를 성공적으로 가져옴
-                print("영수증 추가적으로 가져오기 성공")
+                print("유저 영수증 추가적으로 가져오기 성공")
                 self.handleAddedReceiptEvent(
                     load,
-                    sections: &self.receiptSearchModeSections
+                    sections: &self.receiptSearchModeSections,
+                    debouncer: &self.receiptSearchDebouncer
                 )
                 
             case .failure(_):
-                print("영수증 추가적으로 가져오기 실패")
+                print("유저 영수증 추가적으로 가져오기 실패")
                 // 영수증 데이터를 가져오지 못한 경우 오류를 반환
-                self.receiptDebouncer.triggerErrorDebounce(.hasNoAPIData)
+                self.receiptSearchDebouncer.triggerErrorDebounce(.hasNoAPIData)
             }
         }
     }

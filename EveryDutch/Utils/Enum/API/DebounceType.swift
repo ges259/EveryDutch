@@ -11,6 +11,7 @@ enum DebounceType {
     case userData
     case roomData
     case receiptData
+    case searchData
     
     var queue: DispatchQueue {
         switch self {
@@ -20,6 +21,8 @@ enum DebounceType {
             return DispatchQueue(label: "room-data-queue", qos: .userInitiated)
         case .receiptData:
             return DispatchQueue(label: "receipt-data-queue", qos: .userInitiated)
+        case .searchData:
+            return DispatchQueue(label: "search-data-queue", qos: .userInitiated)
         }
     }
     
@@ -31,7 +34,8 @@ enum DebounceType {
             return .roomDataChanged
         case .receiptData:
             return .receiptDataChanged
-            
+        case .searchData:
+            return .searchDataChanged
         }
     }
     
@@ -41,8 +45,8 @@ enum DebounceType {
             return 0.2
         case .roomData:
             return 1.5
-        case .receiptData:
-            return 0.3
+        case .receiptData, .searchData:
+            return 0.2
         }
     }
 }

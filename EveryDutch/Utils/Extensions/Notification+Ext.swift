@@ -13,4 +13,9 @@ extension Notification.Name {
 //    static let receiptSearchModeChanged = Notification.Name("receiptSearchModeChanged")
     static let roomDataChanged = Notification.Name("roomDataChanged")
     static let userDataChanged = Notification.Name("userDataChanged")
+    static let searchDataChanged = Notification.Name("serachDataChanged")
+    
+    
+    
+    static let presentViewChanged = Notification.Name("presentViewChanged")
 }

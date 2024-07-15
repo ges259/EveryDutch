@@ -27,16 +27,20 @@ protocol ReceiptAPIProtocol {
     func updatePayback(versionID: String, payerID: String, moneyDict: [String: Int]) async throws
     
     
+    func observeRoomReceipts(
+         versionID: String,
+         isInitialLoad: Bool,
+         completion: @escaping (Result<DataChangeEvent<[ReceiptTuple]>, ErrorEnum>) -> Void
+     )
     
+//    func readRoomReceipts(
+//        versionID: String,
+//        completion: @escaping (Result<DataChangeEvent<[ReceiptTuple]>, ErrorEnum>) -> Void)
+//    func loadMoreRoomReceipts(
+//        versionID: String,
+//        completion: @escaping (Result<[ReceiptTuple], ErrorEnum>) -> Void)
     
-    func readRoomReceipts(
-        versionID: String,
-        completion: @escaping (Result<DataChangeEvent<[ReceiptTuple]>, ErrorEnum>) -> Void)
-    func loadMoreRoomReceipts(
-        versionID: String,
-        completion: @escaping (Result<[ReceiptTuple], ErrorEnum>) -> Void)
-    
-    
+//    
     
 //    func observeReceipt(
 //        versionID: String,
