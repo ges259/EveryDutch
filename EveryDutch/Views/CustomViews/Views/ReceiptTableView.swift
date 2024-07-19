@@ -97,7 +97,7 @@ extension ReceiptTableView {
 
 
 
-    
+
 // MARK: - 테이블뷰 델리게이트
 extension ReceiptTableView: UITableViewDelegate {
     func tableView(_ tableView: UITableView,
@@ -136,7 +136,7 @@ extension ReceiptTableView: UITableViewDataSource {
     func tableView(_ tableView: UITableView,
                    numberOfRowsInSection section: Int
     ) -> Int {
-        if let numOfReceipts = self.viewModel.numOfReceipts(section: section) {
+        if let numOfReceipts = self.viewModel.numOfRows(in: section) {
             return numOfReceipts
         } else {
             // numOfReceipts가 nil인 경우
@@ -159,19 +159,20 @@ extension ReceiptTableView: UITableViewDataSource {
         )
         return headerView
     }
+    // 헤더뷰의 높이를 설정
     func tableView(_ tableView: UITableView,
                    heightForFooterInSection section: Int
     ) -> CGFloat {
         return 40 // 최소 높이를 40으로 설정
     }
     
-    /// 헤더를 nil로 설정
+    /// 푸터를 nil로 설정
     func tableView(_ tableView: UITableView,
                    viewForHeaderInSection section: Int
     ) -> UIView? {
         return nil
     }
-    /// 헤더의 높이를 0으로 설정
+    /// 푸터의 높이를 0으로 설정
     func tableView(_ tableView: UITableView,
                    heightForHeaderInSection section: Int
     ) -> CGFloat {
@@ -201,90 +202,6 @@ extension ReceiptTableView: UITableViewDataSource {
         return cell
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -327,9 +244,7 @@ extension ReceiptTableView {
         
         let receiptSections: [(key: String, indexPaths: [IndexPath])] = self.viewModel.getPendingReceiptIndexPaths()
         
-        guard !receiptSections.isEmpty else {
-            return
-        }
+        guard !receiptSections.isEmpty else { return }
         
         DispatchQueue.main.async {
             self.updateIndexPath(receiptSections: receiptSections)
@@ -337,141 +252,204 @@ extension ReceiptTableView {
         // 변경된 IndexPath배열을 리셋
         self.viewModel.resetPendingReceiptIndexPaths()
     }
-
-
+    
     // 메인 업데이트 메소드
-    private func updateIndexPath(receiptSections: [(key: String, indexPaths: [IndexPath])]) {
-        self.beginUpdates()
-        receiptSections.forEach { [weak self](key: String, indexPaths: [IndexPath]) in
-            guard let self = self else { return }
-            print("*******************************")
-            print("\(#function) ----- 1")
-            print("업데이트하려는 key ----- \(key)")
-            print("업데이트하려는 indexPaths ----- \(indexPaths)")
-            print("*******************************")
-            self.printUpdateDebugInfo()
-            switch key {
-            case DataChangeType.added.notificationName:
-                self.handleAdditions(indexPaths)
-            case DataChangeType.sectionInsert.notificationName:
-                self.insertTableViewSections(indexPaths)
-            case DataChangeType.updated.notificationName:
-                self.updateTableViewRow(indexPaths)
-            case DataChangeType.removed.notificationName:
-                self.removeTableViewCells(indexPaths)
-            default:
-                break
-            }
-        }
-        self.endUpdates()
-    }
-
-    // 행 및 섹션 추가 처리
-    private func handleAdditions(_ indexPaths: [IndexPath]) {
- 
-        self.insertRows(at: indexPaths, with: .automatic)
-    }
-    
-    private func insertTableViewSections(_ indexPaths: [IndexPath]) {
-        let indexSet = self.viewModel.createIndexSet(from: indexPaths)
-        self.insertSections(indexSet, with: .automatic)
-    }
-    
-    private func printUpdateDebugInfo() {
+    private func updateIndexPath(
+        receiptSections: [(key: String, indexPaths: [IndexPath])]
+    ) {
         print("_____________________________")
-        print("\(#function) ----- 1")
+        print("_____________________________")
+        print("_____________________________")
+        print("_____________________________")
+        print("_____________________________")
+        print(#function)
+        dump(receiptSections)
+        print("업데이트된 테이블의 섹션의 개수: \(self.numberOfSections)")
+        print("_____________________________")
+        print("_____________________________")
+        print("_____________________________")
+        print("_____________________________")
+        print("_____________________________")
         
-        print("searchMode: \(self.viewModel.isSearchMode)")
-        print("데이터소스   : 섹션의 개수: \(self.viewModel.numOfSections)")
-        print("테이블      : 현재 섹션의 총 개수: \(self.numberOfSections)")
-        print("\(#function) ----- 2")
-        print("_____________________________")
+        do {
+            print("100 ----- 1")
+            // 섹션 [추가 및 삭제]에 대한 유효성 검사
+            try self.validationInsertSections(receiptSections)
+            print("100 ----- 2")
+            // 행 [추가 및 삭제]에 대한 유효성 검사
+            try self.validateRowChanges(receiptSections)
+            print("100 ----- 3")
+            // 행 [리로드]에 대한 유효성 검사
+            try self.validationReloadRow(receiptSections)
+            print("100 ----- 4")
+            // 테이블뷰 업데이트
+            try self.performBatchUpdatesWithRollback(receiptSections)
+            print("100 ----- 5")
+            
+        } catch {
+            print("DEBUG111 : reloadData")
+            self.reloadData()
+        }
     }
+    
+    // performBatchUpdates with rollback
+    private func performBatchUpdatesWithRollback(
+        _ receiptSections: [(key: String, indexPaths: [IndexPath])]
+    ) throws {
+
+        
+        
+        var didThrowError = false
+        
+        UIView.performWithoutAnimation {
+            self.performBatchUpdates({
+                receiptSections.forEach { [weak self] (key: String, indexPaths: [IndexPath]) in
+                    guard let self = self else { return }
+                    
+                    switch key {
+                    case DataChangeType.added.notificationName:
+                        self.handleAdditions(indexPaths)
+                        
+                    case DataChangeType.sectionInsert.notificationName:
+                        self.insertTableViewSections(indexPaths)
+                        
+                    case DataChangeType.updated.notificationName:
+                        self.updateTableViewRow(indexPaths)
+                        
+                    case DataChangeType.sectionRemoved.notificationName:
+                        self.removeTableViewSections(indexPaths)
+                        
+                    case DataChangeType.removed.notificationName:
+                        self.removeTableViewCells(indexPaths)
+                    default:
+                        break
+                    }
+                }
+            }, completion: { finished in
+                if !finished {
+                    didThrowError = true
+                }
+            })
+        }
+        // 1711897200 // 4/1
+        // 1720018800 // 7/4
+        // 1720450800 // 7/9
+        // 1721280576 // 7/18
+
+        
+        if didThrowError {
+            throw NSError(domain: "BatchUpdatesFailed", code: 1, userInfo: nil)
+        }
+    }
+    
+    // 섹션 추가
+    private func insertTableViewSections(_ indexPaths: [IndexPath]) {
+        print("11111111111111 ----- \(#function)")
+        let indexSet = self.viewModel.createIndexSet(from: indexPaths)
+        self.insertSections(indexSet, with: .none)
+    }
+    
+    // 행 추가
+    private func handleAdditions(_ indexPaths: [IndexPath]) {
+        print("11111111111111 ----- \(#function)")
+        self.insertRows(at: indexPaths, with: .none)
+    }
+    
     // 행 업데이트
     private func updateTableViewRow(_ indexPaths: [IndexPath]) {
-        self.reloadRows(at: indexPaths, with: .automatic)
+        print("11111111111111 ----- \(#function)")
+        self.reloadRows(at: indexPaths, with: .none)
     }
-
-    // 행 삭제
-    private func removeTableViewCells(_ indexPaths: [IndexPath]) {
-        self.deleteRows(at: indexPaths, with: .automatic)
-    }
-
+    
     // 섹션 삭제
     private func removeTableViewSections(_ indexPaths: [IndexPath]) {
+        print("11111111111111 ----- \(#function)")
         let indexSet = self.viewModel.createIndexSet(from: indexPaths)
-        self.deleteSections(indexSet, with: .automatic)
+        self.deleteSections(indexSet, with: .none)
     }
-
-    // 섹션 업데이트
-    private func updateTableSections(_ indexPaths: [IndexPath]) {
-        let indexSet = self.viewModel.createIndexSet(from: indexPaths)
-        self.reloadSections(indexSet, with: .automatic)
+    
+    // 행 삭제
+    private func removeTableViewCells(_ indexPaths: [IndexPath]) {
+        print("11111111111111 ----- \(#function)")
+        self.deleteRows(at: indexPaths, with: .none)
+        
+        
     }
-
-    // 테이블 전체 리로드
-    private func receiptReloadTableView() {
-        print("DEBUG: \(self)----- \(#function)")
-        self.reloadData()
+    private func moveTableRows(_ indexPaths: [IndexPath]) {
+        guard indexPaths.count >= 2 else { return }
+        
+        self.moveRow(at: indexPaths[0], to: indexPaths[1])
     }
 }
 
 
-// 행 추가
-//    private func addTableViewRows(_ indexPaths: [IndexPath]) {
-//        print("\(#function) ----- 1")
-//
-//        print("_____________________________")
-//        print("섹션의 개수 ----- \(self.numberOfSections)")
-//        if self.numberOfSections > 4 {
-//            print("5번 섹션의 개수 ----- \(self.numberOfRows(inSection: 5))")
-//        }
-//
-//        print("업데이트하려는 indexPaths ----- \(indexPaths)")
-//        print("_____________________________")
-//
-//        self.insertRows(at: indexPaths, with: .automatic)
-//        print("\(#function) ----- 2")
-//    }
 
-/*
- 
- private func sectionsTuple(
-     _ indexPaths: [IndexPath]
- ) -> [(sectionIndex: Int,
-        currentRowCount: Int,
-        changedUsersCount: Int)] {
-     
-     print("\(#function) ----- 1")
-     var sectionsTuple: [(sectionIndex: Int,
-                          currentRowCount: Int,
-                          changedUsersCount: Int)] = []
 
-     // 추가하려는 섹션을 가져옴(배열인 상태)
-     let sections = indexPaths.map { $0.section }
-     let sectionsSet = Set(sections)
 
-     // 해당 섹션의 행이 몇 개인지 가져와서, 튜플로 만듦
-     for section in sectionsSet {
-         // 섹션이 유효한지 확인
-         guard section < self.numberOfSections else {
-             print("\(#function) ----- -1")
-             // 유효하지 않은 섹션인 경우 continue
-             continue
-         }
-         print("\(#function) ----- 2")
-         // 현재 해당 섹션의 행의 개수를 가져옴
-         let numOfRows = self.numberOfRows(inSection: section)
-         // 추가하려는 IndexPath배열에서 해당 섹션에 추가하려는 행의 개수를 가져옴
-         let numOfAddedRows = indexPaths.filter { $0.section == section }.count
 
-         // sectionsTuple에 추가
-         sectionsTuple.append((sectionIndex: section,
-                               currentRowCount: numOfRows,
-                               changedUsersCount: numOfAddedRows))
-     }
-     dump(sectionsTuple)
-     return sectionsTuple
- }
- 
- */
+
+
+
+
+// MARK: -  유효성 검사
+extension ReceiptTableView {
+    
+    /// 섹션 유효성 검사
+    private func validationInsertSections(
+        _ receiptSections: [(key: String,
+                             indexPaths: [IndexPath])]
+    ) throws {
+        guard self.viewModel.isValidSectionChangeCount(
+            receiptSections: receiptSections,
+            currentSectionCount: self.numberOfSections
+        ) else {
+            throw ErrorEnum.readError
+        }
+    }
+    /// 행 유효성 검사
+    private func validateRowChanges(
+        _ receiptSections: [(key: String, indexPaths: [IndexPath])]
+    ) throws {
+        guard
+            self.viewModel.isValidRowsChanged(
+                receiptSections,
+                numberOfRowsInSection: { [weak self] section in
+                    // 약한 참조로 self를 사용하여 메모리 누수를 방지
+                    guard let self = self else { return nil }
+                    // 현재 섹션 인덱스가 유효한 경우 해당 섹션의 행 수를 반환
+                    guard section < self.numberOfSections else { return nil }
+                    // 해당 섹션의 행의 개수를 보냄
+                    return self.numberOfRows(inSection: section)
+                }
+            ) else {
+            // 유효성 검사를 실패하면 에러를 던짐
+            throw ErrorEnum.readError
+        }
+    }
+    
+    
+    /// 리로드 유효성 검사
+    private func validationReloadRow(
+        _ receiptSections: [(key: String, indexPaths: [IndexPath])]
+    ) throws {
+        guard
+            // 영수증 섹션들에 대한 행 재로드 유효성 검사를 뷰모델에 위임
+            self.viewModel.canReloadRows(
+                // 튜플 배열을 보내기
+                in: receiptSections,
+                // 클로저: 섹션의 대한 행의 개수를 보냄
+                numberOfRowsInSection: { [weak self] section in
+                    // 약한 참조로 self를 사용하여 메모리 누수를 방지
+                    guard let self = self else { return nil }
+                    // 현재 섹션 인덱스가 유효한 경우 해당 섹션의 행 수를 반환
+                    guard section < self.numberOfSections else { return nil }
+                    // 해당 섹션의 행의 개수를 보냄
+                    return self.numberOfRows(inSection: section)
+                }
+            ) else {
+            // 유효성 검사를 실패하면 에러를 던짐
+            throw ErrorEnum.readError
+        }
+    }
+    
+}

@@ -20,11 +20,16 @@ class ReceiptAPI: ReceiptAPIProtocol, CrashlyticsLoggable {
     func resetReceiptLastKey() {
         self.roomLastKey = nil
         self.observing = false
+        self.roomLastDate = nil
+        self.existingReceiptIDs = []
     }
     func resetUserReceiptKey() {
         self.userLastKey = nil
     }
     var roomLastDate: Double?
+    
+    var existingReceiptIDs: Set<String> = []
+    
     var roomLastKey: String?
     var userLastKey: String?
     var observing = false

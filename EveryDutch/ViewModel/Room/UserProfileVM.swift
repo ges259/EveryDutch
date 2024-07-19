@@ -35,7 +35,6 @@ final class UserProfileVM: UserProfileVMProtocol {
     
     
     // MARK: - 클로저
-    var fetchSuccessClosure: (() -> Void)?
     var deleteUserSuccessClosure: (() -> Void)?
     var reportSuccessClosure: ((AlertEnum, Int) -> Void)?
     var searchModeClosure: ((UIImage?, String) -> Void)?
@@ -205,16 +204,7 @@ extension UserProfileVM {
     
     // MARK: - 영수증 데이터
     func loadReceiptData() {
-        self.roomDataManager.loadUserReceipt() { [weak self] result in
-            guard let self = self else { return }
-            self._userReceiptInitialLoad = true
-            switch result {
-            case .success():
-                self.fetchSuccessClosure?()
-            case .failure(let error):
-                self.errorClosure?(error)
-            }
-        }
+        self.roomDataManager.loadUserReceipt()
     }
     
     func loadMoreReceiptData() {

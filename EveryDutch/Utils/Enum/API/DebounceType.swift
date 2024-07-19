@@ -46,7 +46,7 @@ enum DebounceType {
         case .roomData:
             return 1.5
         case .receiptData, .searchData:
-            return 0.2
+            return 0.4
         }
     }
 }

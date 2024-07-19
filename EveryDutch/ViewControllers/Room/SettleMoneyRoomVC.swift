@@ -181,31 +181,44 @@ extension SettleMoneyRoomVC {
             name: .presentViewChanged,
             object: nil)
     }
+}
     
+    
+
+
+
+
+    
+    
+    
+
+// MARK: - isVisible
+extension SettleMoneyRoomVC {
     @objc private func presentViewDismiss(notification: Notification) {
-        print("\(#function) ----- 1")
         let isVisible: Bool
         
         if notification.name == .presentViewChanged,
            let userInfo = notification.userInfo,
-           let value = userInfo["someKey"] as? Bool 
+           let value = userInfo["someKey"] as? Bool
         {
-            print("\(#function) ----- 2")
             isVisible = value
             
         } else {
-            print("\(#function) ----- 3")
             isVisible = isViewLoaded && (view.window != nil)
         }
-        print("\(#function) ----- 4")
         self.setIsViewVisible(isVisible)
     }
+    
+    private func setIsViewVisible(_ boolean: Bool) {
+        self.receiptTableView.isViewVisible = boolean
+        self.topView.setupIsViewVisible(boolean)
+    }
 }
-    
-    
-    
-    
-    
+
+
+
+
+
 
 
 
@@ -226,12 +239,6 @@ extension SettleMoneyRoomVC {
     /// 뒤로가기 버튼
     @objc private func backBtnTapped() {
         self.coordinator.didFinish()
-    }
-    
-    private func setIsViewVisible(_ boolean: Bool) {
-        print("\(#function) ----- 2")
-        self.receiptTableView.isViewVisible = boolean
-        self.topView.setupIsViewVisible(boolean)
     }
 }
 

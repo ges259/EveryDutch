@@ -17,7 +17,7 @@ protocol ReceiptTableViewVMProtocol: NotificationUpdateProtocol {
     
     // 영수증 테이블뷰 (delgate / dataSource)
     var numOfSections: Int { get }
-    func numOfReceipts(section: Int) -> Int?
+    func numOfRows(in section: Int) -> Int?
     func cellViewModel(at indexPath: IndexPath) -> ReceiptTableViewCellVMProtocol?
     func getReceipt(at indexPath: IndexPath) -> Receipt?
     func getReceiptSectionDate(section: Int) -> String?
@@ -25,28 +25,53 @@ protocol ReceiptTableViewVMProtocol: NotificationUpdateProtocol {
     func isLastCell(indexPath: IndexPath) -> Bool?
     
     
-    /// 테이블뷰의 섹션을 insert/delete 할 때, [현재 섹션]의 개수와 [기존 섹션 + 추가하려는 섹션]의 개수를 비교
-    func validateSectionCountChange(
-        currentSectionCount: Int,
-        changedSectionsCount: Int
-    ) -> Bool
     
-    /// 테이블뷰의 셀을 insert/delete 할 때, [현재 셀]의 개수와 [기존 셀 + 추가하려는 셀]의 개수를 비교
-    func validateRowCountChange(
-        sectionTuple: [(sectionIndex: Int,
-                        currentRowCount: Int,
-                        changedUsersCount: Int)]
-    ) -> Bool     /// 테이블뷰의 셀을 reload할 때, 해당 셀의 index가 옳은지 확인
-    func validateRowExistenceForUpdate(
-        indexPaths: [IndexPath]
-    ) -> Bool
     
-    func validateSectionsExistenceForUpdate(
-        indexPaths: [IndexPath]
-    ) -> Bool
     
-    func indexPathsToArraySet(_ indexPaths: [IndexPath]) -> [Int]
     func createIndexSet(from indexPaths: [IndexPath]) -> IndexSet
+    
+    
+    
+    
+//    
+//    
+//    
+//    func filteredSections(
+//        isInsert: Bool,
+//        section: Int,
+//        receiptSections: [(key: String, indexPaths: [IndexPath])]
+//    ) -> Int 
+    
+    
+    
+    /// IndexPath 배열에서 섹션 배열로 변환
+//    func indexPathsToArraySet(_ indexPaths: [IndexPath]) -> Set<Int> 
+    
+    // 리로드 유효성 검사
+//    func canReloadRows(_ indexPaths: [IndexPath]) -> Bool
+    
+    
+    func isValidSectionChangeCount(
+        receiptSections: [(key: String, indexPaths: [IndexPath])],
+        currentSectionCount: Int // 현재 테이블뷰의 개수
+    ) -> Bool
+//    
+//    func isValidRowInsertCount(currentSection: Int,
+//                               rowInsertCount: Int,
+//                               currentRowCount: Int
+//    ) -> Bool 
+//    
+    
+    func isValidRowsChanged(
+        _ receiptSections: [(key: String, indexPaths: [IndexPath])],
+        numberOfRowsInSection: (Int) -> Int?
+    ) -> Bool 
+    func canReloadRows(
+        in receiptSections: [(key: String, indexPaths: [IndexPath])],
+        numberOfRowsInSection: (Int) -> Int?
+    ) -> Bool
+    
+    
 }
 
 

@@ -9,7 +9,7 @@ import Foundation
 
 extension RoomDataManager {
     
-    func loadUserReceipt(completion: @escaping Typealias.VoidCompletion) {
+    func loadUserReceipt() {
         guard let versionID = self.getCurrentVersion,
               let userID = self.getSelectedUserID 
         else {
@@ -17,8 +17,9 @@ extension RoomDataManager {
             return
         }
         
-        self.receiptAPI.loadInitialUserReceipts(userID: userID,
-                                                versionID: versionID
+        self.receiptAPI.loadInitialUserReceipts(
+            userID: userID,
+            versionID: versionID
         ) { [weak self] result in
             guard let self = self else { return }
             switch result {
@@ -31,13 +32,11 @@ extension RoomDataManager {
                     debouncer: &self.receiptSearchDebouncer
                 )
                 
-                completion(.success(()))
-                
                 
             case .failure(_):
                 print("유저 영수증 가져오기 실패")
                 // 영수증 데이터를 가져오지 못한 경우 오류를 반환
-                completion(.failure(.hasNoAPIData))
+                self.receiptSearchDebouncer.triggerErrorDebounce(.hasNoAPIData)
                 // 여기서는 Error를 debounce를 통해 trigger하지 않음.
                 // 이유는, UserProfileVC에서 NoDataView를 띄울 것이기 때문
             }
@@ -52,8 +51,9 @@ extension RoomDataManager {
             self.receiptSearchDebouncer.triggerErrorDebounce(.readError)
             return
         }
-        self.receiptAPI.loadMoreUserReceipts(userID: userID,
-                                             versionID: versionID
+        self.receiptAPI.loadMoreUserReceipts(
+            userID: userID,
+            versionID: versionID
         ) { [weak self] result in
             guard let self = self else { return }
             switch result {

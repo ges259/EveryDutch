@@ -13,9 +13,12 @@ struct ReceiptSection {
     var receipts: [ReceiptTableViewCellVMProtocol]
 }
 
+
 extension RoomDataManager {
     // MARK: - 데이터 fetch
     func loadRoomReceipt() {
+        
+        self.receiptDebouncer.initialDebounce(1)
         guard let versionID = self.getCurrentVersion else {
             return
         }
@@ -27,6 +30,7 @@ extension RoomDataManager {
                 guard let self = self else { return }
                 switch result {
                 case .success(let initialLoad):
+                    print("\(#function) ----- observe ----- \(initialLoad)")
                     self.handleReceiptEvent(initialLoad)
                     print("방 영수증 가져오기 성공")
                 case .failure(let error):
@@ -88,46 +92,38 @@ extension RoomDataManager {
     
     
     
-    // MARK: - 업데이트
-    private func handleUpdatedReceiptEvent(_ toUpdate: [String: [String: Any]]) {
-        if toUpdate.isEmpty { return }
-        
-        var updatedIndexPaths = [IndexPath]()
-        
-        for (receiptID, changedData) in toUpdate {
-            for sectionIndex in 0..<self.receiptSections.count {
-                if let rowIndex = self.receiptSections[sectionIndex].receipts.firstIndex(where: { $0.getReceiptID == receiptID }) {
-                    self.receiptSections[sectionIndex]
-                        .receipts[rowIndex]
-                        .updateReceipt(receiptID: receiptID, changedData)
-                    
-                    updatedIndexPaths.append(IndexPath(row: rowIndex, section: sectionIndex))
-                    break
-                }
-            }
-        }
-        
-        self.receiptDebouncer.triggerDebounceWithIndexPaths(
-            eventType: .updated,
-            updatedIndexPaths
-        )
-    }
+    
+    
     
     
     
     // MARK: - 삭제
     private func handleRemovedReceiptEvent(_ receiptID: String) {
+        
+        print("\(#function) ----- 1")
         var removedIndexPaths = [IndexPath]()
         var sectionsToRemove = [Int]()
         
         for sectionIndex in 0..<self.receiptSections.count {
-            if let rowIndex = self.receiptSections[sectionIndex].receipts.firstIndex(where: { $0.getReceiptID == receiptID }) {
+            print("\(#function) ----- 2")
+            if let rowIndex = self.receiptSections[safe: sectionIndex]?
+                .receipts
+                .firstIndex(where: { $0.getReceiptID == receiptID })
+            {
+                print("\(#function) ----- 3")
                 // 영수증을 해당 섹션에서 제거
-                self.receiptSections[sectionIndex].receipts.remove(at: rowIndex)
-                removedIndexPaths.append(IndexPath(row: rowIndex, section: sectionIndex))
+                self.receiptSections[sectionIndex]
+                    .receipts
+                    .remove(at: rowIndex)
+                removedIndexPaths.append(IndexPath(row: rowIndex,
+                                                   section: sectionIndex))
                 
                 // 섹션이 비어있다면 섹션 자체를 제거
-                if self.receiptSections[sectionIndex].receipts.isEmpty {
+                if self.receiptSections[sectionIndex]
+                    .receipts
+                    .isEmpty
+                {
+                    print("\(#function) ----- 4")
                     self.receiptSections.remove(at: sectionIndex)
                     sectionsToRemove.append(sectionIndex)
                 }
@@ -140,11 +136,15 @@ extension RoomDataManager {
         
         // debounce를 사용하여 테이블뷰 업데이트
         if !sectionsToRemove.isEmpty {
+            print("\(#function) ----- 5")
             self.receiptDebouncer.triggerDebounceWithIndexPaths(
                 eventType: .sectionRemoved,
                 sectionsToRemove.map { IndexPath(row: 0, section: $0) }
             )
-        } else {
+        }
+        
+        if !removedIndexPaths.isEmpty {
+            print("\(#function) ----- 6")
             self.receiptDebouncer.triggerDebounceWithIndexPaths(
                 eventType: .removed,
                 removedIndexPaths
@@ -154,48 +154,13 @@ extension RoomDataManager {
     
     
     
-    /// 디바운스를 설정하는 메서드
-    // typealias ReceiptTuple = (receiptID: String, receipt: Receipt)
-    private func receiptDebounce(_ toAdd: [ReceiptTuple]) {
-        print("\(#function) ----- 1")
-        // 비어있지 않다면,
-        guard !toAdd.isEmpty else { return }
-        // 현재 작업 취소
-        self.receiptWorkItem?.cancel()
-        
-        // 인덱스 패스를 서로 합치기
-        self.receiptTupleArray.append(contentsOf: toAdd)
-        
-        
-        // 일정 시간이 지난 후, 동작할 행동 설정
-        let newWorkItem = DispatchWorkItem { [weak self] in
-            guard let self = self else { return }
-            self.handleAddedReceiptEvent(self.receiptTupleArray,
-                                         sections: &self.receiptSections,
-                                         debouncer: &self.receiptDebouncer)
-            // 초기화
-            self.receiptTupleArray = []
-            self.receiptWorkItem = nil
-        }
-        // 행동 저장
-        self.receiptWorkItem = newWorkItem
-        
-        
-        // 디바운스 설정
-        self.receiptQueue.asyncAfter(deadline: .now() + 0.1,
-                              execute: newWorkItem)
-    }
-    
-    
     // MARK: - 추가
     func handleAddedReceiptEvent(
         _ toAdd: [ReceiptTuple],
         sections: inout [ReceiptSection],
         debouncer: inout Debouncer
     ) {
-        print("\(#function) ----- 1")
-        print("toAdd 개수 ---- \(toAdd.count)")
-        
+        print("\(#function) ----- toAdd 개수 ---- \(toAdd.count)")
         // 추가할 섹션의 IndexPath 저장
         var sectionsToInsert = IndexSet()
         // 추가할 행의 IndexPath 저장
@@ -230,10 +195,8 @@ extension RoomDataManager {
             }
             // 행 추가
             let rowIndex = sections[sectionIndex!].receipts.count
-            rowsToInsert.append(IndexPath(row: rowIndex, 
+            rowsToInsert.append(IndexPath(row: rowIndex,
                                           section: sectionIndex!))
-            print("rowIndex - 행추가 : \(rowIndex)")
-            print("rowsToInsert - 현재 인덱스패스 : \(rowsToInsert)")
             // 새 영수증의 ViewModel을 생성하고 섹션에 추가
             let viewModel = ReceiptTableViewCellVM(receiptID: receiptID,
                                                    receiptData: receipt)
@@ -256,7 +219,7 @@ extension RoomDataManager {
                 sectionsToInsert.map { IndexPath(row: 0, section: $0) }
             )
         }
-        // 행이 추가된 경우, sectionReload 이벤트 트리거
+        // 행이 추가된 경우, added 이벤트 트리거
         if !rowsToInsert.isEmpty {
             debouncer.triggerDebounceWithIndexPaths(
                 eventType: .added,
@@ -265,5 +228,179 @@ extension RoomDataManager {
         }
         print("sectionsToInsert 개수 ----- \(sectionsToInsert)")
         print("rowsToInsert 개수 ----- \(rowsToInsert)")
+    }
+    
+    
+    
+    
+    
+    
+    
+    
+    /// 디바운스를 설정하는 메서드
+    // typealias ReceiptTuple = (receiptID: String, receipt: Receipt)
+    private func receiptDebounce(_ toAdd: [ReceiptTuple]) {
+        // 비어있지 않다면,
+        guard !toAdd.isEmpty else { return }
+        // 현재 작업 취소
+        self.receiptWorkItem?.cancel()
+        
+        // 인덱스 패스를 서로 합치기
+        self.receiptTupleArray.append(contentsOf: toAdd)
+        
+        
+        // 일정 시간이 지난 후, 동작할 행동 설정
+        let newWorkItem = DispatchWorkItem { [weak self] in
+            guard let self = self else { return }
+            self.handleAddedReceiptEvent(self.receiptTupleArray,
+                                         sections: &self.receiptSections,
+                                         debouncer: &self.receiptDebouncer)
+            // 초기화
+            self.receiptTupleArray = []
+            self.receiptWorkItem = nil
+        }
+        // 행동 저장
+        self.receiptWorkItem = newWorkItem
+        
+        
+        // 디바운스 설정
+        self.receiptQueue.asyncAfter(deadline: .now() + 0.1,
+                              execute: newWorkItem)
+    }
+    
+}
+
+
+
+// 1720450800 // 7/9
+// 1721280576 // 7/18
+
+extension RoomDataManager {
+    
+    
+    
+    // MARK: - 업데이트
+    private func handleUpdatedReceiptEvent(_ toUpdate: [String: [String: Any]]) {
+        
+        print("\(#function) ----- \(toUpdate)")
+        
+        if toUpdate.isEmpty { return }
+        
+        var updatedIndexPaths = [IndexPath]()
+        // 바뀐 데이터 for in
+        for (receiptID, changedData) in toUpdate {
+            //
+            for sectionIndex in 0..<self.receiptSections.count {
+                // 바뀐 영수증 찾기
+                if let rowIndex = self.receiptSections[sectionIndex]
+                    .receipts
+                    .firstIndex(where: { $0.getReceiptID == receiptID })
+                {
+                    
+                    // 영수증 업데이트하기 전에 현재 영수증의 '날짜' 가져오기
+                    let currentDate = self.receiptSections[sectionIndex]
+                        .receipts[rowIndex].receiptDate
+                    
+                    // 인덱스가 바뀌기 전에 영수증 업데이트
+                    self.receiptSections[sectionIndex]
+                        .receipts[rowIndex]
+                        .updateReceipt(receiptID: receiptID, changedData)
+                    
+                    
+                    
+                    // 업데이트된 데이터의 '날짜'가져오기 (+ String으로 변환)
+                    var updateDate = ""
+                    // 4. DatabaseConstants.date가 있는 섹션으로 이동
+                    if let newDate = changedData[DatabaseConstants.date] as? Int {
+                        updateDate = Date.returnYearString(date: Date(timeIntervalSince1970: TimeInterval(newDate)))
+                    }
+                    
+                    
+                    print("\(#function) ----- currentDate ----- \(currentDate)")
+                    print("\(#function) ----- updateDate ----- \(updateDate)")
+                    if currentDate != updateDate {
+                        // DatabaseConstants.date가 바뀐다면
+                        self.handleMoveReceiptEvent(
+                            receiptID: receiptID,
+                            changedData: changedData,
+                            oldSectionIndex: sectionIndex,
+                            oldRowIndex: rowIndex
+                        )
+                    } else {
+                        // 바뀐 데이터 저장
+                        updatedIndexPaths.append(
+                            IndexPath(row: rowIndex,
+                                      section: sectionIndex)
+                        )
+                        
+                    }
+                    break
+                }
+            }
+        }
+        if !updatedIndexPaths.isEmpty {
+            self.receiptDebouncer.triggerDebounceWithIndexPaths(
+                eventType: .updated,
+                updatedIndexPaths
+            )
+        }
+    }
+    
+    // MARK: - 이동
+    private func handleMoveReceiptEvent(
+        receiptID: String,
+        changedData: [String: Any],
+        oldSectionIndex: Int,
+        oldRowIndex: Int
+    ) {
+        var removedIndexPath: IndexPath?
+        var newSectionIndex: Int?
+
+        // 1. 해당 영수증을 찾고, 해당 영수증을 제거
+        self.receiptSections[oldSectionIndex].receipts.remove(at: oldRowIndex)
+        removedIndexPath = IndexPath(row: oldRowIndex, section: oldSectionIndex)
+
+        // 2. 제거 시, 섹션에 행이 없다면, sectionRemoved 호출
+        if self.receiptSections[oldSectionIndex].receipts.isEmpty {
+            self.receiptSections.remove(at: oldSectionIndex)
+            self.receiptDebouncer.triggerDebounceWithIndexPaths(eventType: .sectionRemoved, [IndexPath(row: 0, section: oldSectionIndex)])
+        }
+        // 행 제거
+        self.receiptDebouncer.triggerDebounceWithIndexPaths(eventType: .removed, [removedIndexPath!])
+        
+        
+        // 4. DatabaseConstants.date가 있는 섹션으로 이동
+        guard let newDate = changedData[DatabaseConstants.date] as? Int else { return }
+        let newDateString = Date.returnYearString(date: Date(timeIntervalSince1970: TimeInterval(newDate)))
+
+        
+        
+        if let index = self.receiptSections.firstIndex(where: { $0.date == newDateString }) {
+            newSectionIndex = index
+        } else {
+            let newSection = ReceiptSection(date: newDateString, receipts: [])
+            if let insertIndex = self.receiptSections.firstIndex(where: { $0.date < newDateString }) {
+                self.receiptSections.insert(newSection, at: insertIndex)
+                newSectionIndex = insertIndex
+            } else {
+                self.receiptSections.append(newSection)
+                newSectionIndex = self.receiptSections.count - 1
+            }
+            self.receiptDebouncer.triggerDebounceWithIndexPaths(
+                eventType: .sectionInsert,
+                [IndexPath(row: 0, section: newSectionIndex!)]
+            )
+        }
+
+        // 5. 추가 시, 섹션이 없다면, sectionInsert 호출
+        let rowIndex = self.receiptSections[newSectionIndex!].receipts.count
+        let viewModel = ReceiptTableViewCellVM(receiptID: receiptID, receiptData: Receipt(receiptID: receiptID, dictionary: changedData))
+        self.receiptSections[newSectionIndex!].receipts.append(viewModel)
+        
+        self.receiptDebouncer.triggerDebounceWithIndexPaths(
+            eventType: .added,
+            [IndexPath(row: rowIndex, section: newSectionIndex!)]
+        )
+        print("업데이트된 섹션의 개수 : \(self.receiptSections.count)")
     }
 }

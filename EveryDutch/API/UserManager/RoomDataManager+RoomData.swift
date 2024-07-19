@@ -13,7 +13,7 @@ extension RoomDataManager {
     func loadRooms() {
         print("\(#function) ----- 1")
 //        self.roomDebouncer.initialDebounce()
-        self.roomDebouncer.triggerDebounceWithIndexPaths(eventType: .added)
+        self.roomDebouncer.triggerDebounceWithIndexPaths(eventType: .initialLoad)
         // 옵저버 설정
         DispatchQueue.global(qos: .utility).async {
             self.roomsAPI.setUserRoomsIDObserver { [weak self] result in

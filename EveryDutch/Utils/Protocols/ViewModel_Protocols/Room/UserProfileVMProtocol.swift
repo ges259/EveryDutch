@@ -13,7 +13,7 @@ protocol UserProfileVMProtocol {
     var userReceiptInitialLoad: Bool { get }
     
     
-    var fetchSuccessClosure: (() -> Void)? { get set }
+    
     
     
     

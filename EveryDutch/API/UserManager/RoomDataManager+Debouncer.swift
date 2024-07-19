@@ -17,8 +17,7 @@ final class Debouncer {
     private var workItem: DispatchWorkItem?
     private var error: ErrorEnum?
     
-    private var indexPathTuple: [String: (index: Int, indexPaths: [IndexPath])] = [:]
-    private var currentIndex: Int = 0
+    private var indexPathTuple: [String: [IndexPath]] = [:]
     
     // MARK: - 라이프사이클
     init(_ type: DebounceType) {
@@ -53,21 +52,21 @@ final class Debouncer {
         let notiName = eventType.notificationName
         
         if self.indexPathTuple[notiName] == nil {
-            self.indexPathTuple[notiName] = (index: currentIndex, indexPaths: [])
-            currentIndex += 1
+            self.indexPathTuple[notiName] = indexPaths
+            
         }
         
         for indexPath in indexPaths {
-            if let existingIndexPaths = self.indexPathTuple[notiName]?.indexPaths,
+            if let existingIndexPaths = self.indexPathTuple[notiName],
                 !existingIndexPaths.contains(indexPath)
             {
-                self.indexPathTuple[notiName]?.indexPaths.append(indexPath)
+                self.indexPathTuple[notiName]?.append(indexPath)
             }
         }
     }
     
-    func initialDebounce() {
-        self.debounce(interval: 3)
+    func initialDebounce(_ interval: CGFloat = 3) {
+        self.debounce(interval: interval)
     }
     
     /// 디바운스를 설정하는 메서드
@@ -121,7 +120,7 @@ final class Debouncer {
     private var getUserInfoData: [String: Any] {
         return self.error != nil
         ? [DataChangeType.error.notificationName: self.error!]
-        : self.indexPathTuple.mapValues { $0.indexPaths }
+        : self.indexPathTuple
     }
     
     // MARK: - 데이터 초기화
@@ -130,7 +129,6 @@ final class Debouncer {
         self.cancelScheduledWork()
         self.indexPathTuple = [:]
         self.error = nil
-        self.currentIndex = 0
     }
     
     private func cancelScheduledWork() {
@@ -166,7 +164,7 @@ final class Debouncer {
 // MARK: - IndexPathDataManager
 final class IndexPathDataManager<T> {
     // MARK: - 모델
-    private var indexPathTuple: [String: (index: Int, indexPaths: [IndexPath])] = [:]
+    private var indexPathTuple: [String: [IndexPath]] = [:]
     private var _error: ErrorEnum?
     
     
@@ -177,48 +175,26 @@ final class IndexPathDataManager<T> {
     // 데이터 저장
     func dataChanged(_ userInfo: [String: Any]) {
         // userInfo 딕셔너리의 각 항목에 대해 반복
-        for (key, value) in userInfo {
-            // value가 ErrorEnum 타입인 경우, 에러를 설정하고 로그를 출력
-            if let error = value as? ErrorEnum {
-                self._error = error
-                // 에러 처리
-                print("DEBUG: Error received: \(error)")
+         for (key, value) in userInfo {
+             
+             // value가 ErrorEnum 타입인 경우, 에러를 설정하고 로그를 출력
+             if let error = value as? ErrorEnum {
+                 self._error = error
+                 // 에러 처리
+                 print("DEBUG: Error received: \(error)")
 
-            // value가 [IndexPath] 타입인 경우, indexPathTuple 딕셔너리에 병합
-            } else if let newValues = value as? [IndexPath] {
-
-                // 기존에 동일한 key가 있는 경우, 해당 key의 튜플을 업데이트
-                if var existingTuple = self.indexPathTuple[key] {
-
-                    // 기존 indexPaths와 새로운 indexPaths를 병합
-                    existingTuple.indexPaths = self.mergeIndexPaths(
-                        existingTuple.indexPaths,
-                        newValues
-                    )
-
-                    // 업데이트된 튜플을 indexPathTuple 딕셔너리에 저장
-                    self.indexPathTuple[key] = existingTuple
-
-                // 동일한 key가 없는 경우, 새로운 튜플을 생성하여 추가
-                } else {
-                    self.indexPathTuple[key] = (
-                        index: self.indexPathTuple.count, // 새로운 인덱스를 설정
-                        indexPaths: newValues
-                    )
-                }
-            }
-        }
+             // value가 [IndexPath] 타입인 경우, indexPathTuple 딕셔너리에 병합
+             } else if let newValues = value as? [IndexPath] {
+                 
+                 // indexPathTuple 딕셔너리가 nil이라면 초기화
+                 if self.indexPathTuple[key] == nil {
+                     self.indexPathTuple[key] = []
+                 }
+                 // IndexPath들을 추가
+                 self.indexPathTuple[key]?.append(contentsOf: newValues)
+             }
+         }
     }
-    
-    private func mergeIndexPaths(
-        _ existingValues: [IndexPath],
-        _ newValues: [IndexPath]
-    ) -> [IndexPath] {
-        return Array(Set(existingValues + newValues))
-    }
-    
-    
-    
     
     
     // MARK: - 데이터 반환
@@ -230,12 +206,13 @@ final class IndexPathDataManager<T> {
     
     func getPendingIndexPaths() -> [(key: String, indexPaths: [IndexPath])] {
         var sectionDict: [Int: [(key: String, indexPaths: [IndexPath])]] = [:]
-
+        
         // 섹션별로 indexPaths를 분류
         for (key, value) in self.indexPathTuple {
-            let indexPaths = value.indexPaths
+            let indexPaths = value
             
             for indexPath in indexPaths {
+                
                 let section = indexPath.section
                 if sectionDict[section] == nil {
                     sectionDict[section] = []
@@ -273,11 +250,17 @@ final class IndexPathDataManager<T> {
                 }
             }
         }
+//        if result.count > 4 {
+//            result.remove(at: 0) // o
+//            result.remove(at: 1) // x
+//            result.remove(at: 4) // o
+//        }
         return result
     }
 
     
     
+        
     
     // MARK: - 데이터 리셋
     func resetIndexPaths() {

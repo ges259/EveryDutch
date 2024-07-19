@@ -105,6 +105,13 @@ final class FindFriendsVC: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    // 화면의 탭을 감지하는 매서드
+    override func touchesBegan(
+        _ touches: Set<UITouch>,
+        with event: UIEvent?
+    ) {
+        self.endEditing()
+    }
 }
 
 
@@ -305,7 +312,11 @@ extension FindFriendsVC {
     
     /// 검색 버튼
     @objc private func searchBtnTapped() {
-        let currentText = self.textField.currentText
+        
+        guard let currentText = self.textField.currentText,
+                !currentText.isEmpty
+        else { return }
+        self.endEditing()
         // 유저 검색
         self.viewModel.searchUser(text: currentText)
     }
@@ -314,4 +325,29 @@ extension FindFriendsVC {
     @objc private func inviteBottomBtnTapped() {
         self.viewModel.inviteUser()
     }
+    
+    
+    
+    
+    private func endEditing() {
+        self.view.endEditing(true)
+    }
 }
+
+
+
+
+/*
+ 날짜 5월 29일
+ 메모: 529
+ 
+ 
+ +1
+ 날짜: 4월 12일
+ 메모: 412
+ 
+ 
+ +2
+ 날짜: 3월 28일
+ 메모: 328
+ */

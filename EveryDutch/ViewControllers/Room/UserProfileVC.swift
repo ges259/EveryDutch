@@ -113,6 +113,7 @@ final class UserProfileVC: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        self.conifureNotification()
         self.configureUI()
         self.configureAutoLayout()
         self.configureAction()
@@ -128,6 +129,7 @@ final class UserProfileVC: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    deinit { NotificationCenter.default.removeObserver(self) }
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(false)
         print("\(#function) ----- 1")
@@ -282,15 +284,18 @@ extension UserProfileVC {
         viewTapGesture.delegate = self
     }
     
+    /// 노티피케이션을 설정
+    private func conifureNotification() {
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(self.handleDataChanged(notification:)),
+            name: Notification.Name.searchDataChanged,
+            object: nil
+        )
+    }
+    
     /// 클로저를 설정
     private func configureClosure() {
-        self.viewModel.fetchSuccessClosure = { [weak self] in
-            guard let self = self else { return }
-            self.noDataView.isHidden = true
-            self.showLoading(false)
-            self.updateTableViewisHidden(true)
-        }
-        
         self.viewModel.deleteUserSuccessClosure = { [weak self] in
             guard let self = self else { return }
             self.closeView()
@@ -357,6 +362,16 @@ extension UserProfileVC {
     /// '검색' 버튼을 눌렀을 때, 검색 버튼의 이미지와 타이틀을 바꾸는 메서드
     private func searchModeSuccess(image: UIImage?, title: String) {
         self.searchBtn.imageAndTitleFix(image: image, title: title)
+    }
+    
+    
+    
+    @objc private func handleDataChanged(notification: Notification) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+            self.noDataView.isHidden = true
+            self.showLoading(false)
+            self.updateTableViewisHidden(true)
+        }
     }
 }
 

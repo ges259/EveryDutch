@@ -333,13 +333,10 @@ final class RoomDataManager: RoomDataManagerProtocol {
         return self.receiptSections.count
     }
     
-    /// 영수증 개수
+    // 기존의 getNumOfRoomReceipts 메서드를 Array 확장 메서드를 활용하여 리팩토링
     func getNumOfRoomReceipts(section: Int) -> Int? {
-        guard section < self.receiptSections.count else {
-            print("Section out of range: \(section)")
-            return nil
-        }
-        return self.receiptSections[section].receipts.count
+        // 배열에 안전하게 접근하여 해당 섹션의 영수증 개수를 반환
+        return self.receiptSections[safe: section]?.receipts.count
     }
     
     /// 섹션 헤더의 타이틀(날짜)를 리턴

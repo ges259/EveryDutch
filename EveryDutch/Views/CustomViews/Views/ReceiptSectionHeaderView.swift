@@ -11,12 +11,12 @@ final class ReceiptSectionHeaderView: UITableViewHeaderFooterView {
     private let dateLabel: CustomLabel = {
         let label = CustomLabel(
             textAlignment: .center,
-            topBottomInset: 5,
-            leftInset: 12,
-            rightInset: 12
+            topBottomInset: 4,
+            leftInset: 14,
+            rightInset: 14
         )
         label.font = UIFont.boldSystemFont(ofSize: 13)
-        label.setRoundedCorners(.all, withCornerRadius: 10)
+        label.setRoundedCorners(.all, withCornerRadius: 12)
         return label
     }()
     
@@ -31,9 +31,7 @@ final class ReceiptSectionHeaderView: UITableViewHeaderFooterView {
         // 오토레이아웃 설정
         self.addSubview(self.dateLabel)
         self.dateLabel.snp.makeConstraints { make in
-            make.top.bottom.equalToSuperview().inset(10)
-            make.centerX.equalToSuperview()
-//            make.leading.trailing.equalToSuperview()
+            make.center.equalToSuperview()
         }
     }
     required init?(coder: NSCoder) {
@@ -42,7 +40,8 @@ final class ReceiptSectionHeaderView: UITableViewHeaderFooterView {
     
     /// 섹션 헤더의 날짜 설정
     func configure(with date: String?,
-                   labelBackgroundColor: UIColor) {
+                   labelBackgroundColor: UIColor
+    ) {
         self.dateLabel.text = date
         self.dateLabel.backgroundColor = labelBackgroundColor
     }

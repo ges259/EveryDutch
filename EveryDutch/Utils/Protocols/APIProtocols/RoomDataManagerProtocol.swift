@@ -67,7 +67,7 @@ protocol RoomDataManagerProtocol {
     func loadMoreRoomReceipt()
     func getRoomReceiptSectionDate(section: Int) -> String?
     
-    func loadUserReceipt(completion: @escaping Typealias.VoidCompletion)
+    func loadUserReceipt()
     func loadMoreUserReceipt()
     
     
